@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<listener>
+		<listener-class>jipdbs.web.JIPDBSContextListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>serverlist</servlet-name>
+		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>serversave</servlet-name>
+		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>serverlist</servlet-name>
+		<url-pattern>/serverlist</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>serversave</servlet-name>
+		<url-pattern>/serversave</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
