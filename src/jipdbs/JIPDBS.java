@@ -50,4 +50,19 @@ public class JIPDBS {
 				.getDatastoreService();
 		return serverDAO.getAll(service);
 	}
+
+	public void updateName(String key, String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void insertLog(String key, List<PlayerInfo> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateBanInfo(String key, List<BanInfo> list) {
+		// TODO Auto-generated method stub
+		
+	}
 }
