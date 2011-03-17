@@ -16,7 +16,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serversave</servlet-name>
 		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>remoteservice</servlet-name>
+		<servlet-class>jipdbs.rpc.RemoteServiceServlet</servlet-class>
+		<init-param>
+			<param-name>streamMessages</param-name>
+			<param-value>1</param-value>
+		</init-param>
+		<init-param> <!-- Optional! Defaults to text/xml and ISO-8859-1 -->
+			<param-name>contentType</param-name>
+			<param-value>text/xml; charset=ISO-8859-1</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>remoteservice</servlet-name>
+		<url-pattern>/rpc/*</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>serverlist</servlet-name>
 		<url-pattern>/serverlist</url-pattern>
