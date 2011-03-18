@@ -2,17 +2,16 @@ package jipdbs.data;
 
 import java.util.Date;
 
-import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 
-public class Server {
+public class Player {
 
 	private Key key;
-	private String uid;
-	private String name;
-	private Email admin;
+	private Key server;
+	private String guid;
 	private Date created;
 	private Date updated;
+	private String banInfo;
 
 	public Key getKey() {
 		return key;
@@ -22,28 +21,20 @@ public class Server {
 		this.key = key;
 	}
 
-	public String getUid() {
-		return uid;
+	public Key getServer() {
+		return server;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setServer(Key server) {
+		this.server = server;
 	}
 
-	public String getName() {
-		return name;
+	public String getGuid() {
+		return guid;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Email getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Email admin) {
-		this.admin = admin;
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 	public Date getCreated() {
@@ -62,12 +53,20 @@ public class Server {
 		this.updated = updated;
 	}
 
+	public String getBanInfo() {
+		return banInfo;
+	}
+
+	public void setBanInfo(String banInfo) {
+		this.banInfo = banInfo;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");
-		b.append(name);
+		b.append(server);
 		b.append("[");
-		b.append(uid);
+		b.append(guid);
 		b.append("]");
 		return b.toString();
 	}

@@ -23,7 +23,7 @@ public class ServerSaveServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		app.updateServer(req.getParameter("name"), req.getParameter("admin"),
+		app.addServer(req.getParameter("name"), req.getParameter("admin"),
 				req.getParameter("uid"));
 	}
 }

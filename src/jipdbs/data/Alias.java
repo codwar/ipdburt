@@ -2,17 +2,18 @@ package jipdbs.data;
 
 import java.util.Date;
 
-import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 
-public class Server {
+public class Alias {
 
 	private Key key;
-	private String uid;
-	private String name;
-	private Email admin;
+
+	private Key player;
+	private String nickname;
+	private String ip;
 	private Date created;
 	private Date updated;
+	private int count;
 
 	public Key getKey() {
 		return key;
@@ -22,28 +23,28 @@ public class Server {
 		this.key = key;
 	}
 
-	public String getUid() {
-		return uid;
+	public Key getPlayer() {
+		return player;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setPlayer(Key player) {
+		this.player = player;
 	}
 
-	public String getName() {
-		return name;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
-	public Email getAdmin() {
-		return admin;
+	public String getIp() {
+		return ip;
 	}
 
-	public void setAdmin(Email admin) {
-		this.admin = admin;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	public Date getCreated() {
@@ -52,6 +53,14 @@ public class Server {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	public Date getUpdated() {
@@ -65,9 +74,9 @@ public class Server {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");
-		b.append(name);
+		b.append(nickname);
 		b.append("[");
-		b.append(uid);
+		b.append(ip);
 		b.append("]");
 		return b.toString();
 	}
