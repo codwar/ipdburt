@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jipdbs.util.LocalCache;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -50,11 +52,17 @@ public class AliasDAO {
 		Entity entity = map(alias);
 		service.put(entity);
 		alias.setKey(entity.getKey());
+		// save to cache
+		LocalCache.getInstance().put("alias-" + alias.getPlayer().toString() + alias.getNickname() + alias.getIp(), alias);				
 	}
 
 	public Alias findByPlayerAndNicknameAndIp(DatastoreService service,
 			Key player, String nickname, String ip) {
 
+		// retrieve from cache
+		Alias p = (Alias) LocalCache.getInstance().get("alias-" + player.toString() + nickname + ip);
+		if (p != null) return p;
+		
 		Query q = new Query("Alias");
 		q.addFilter("player", FilterOperator.EQUAL, player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);

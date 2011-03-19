@@ -1,0 +1,129 @@
+/* Table Styling */
+table,td {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	font: small/ 1.5 "Tahoma", "Bitstream Vera Sans", Verdana, Helvetica,
+		sans-serif;
+}
+
+table {
+	width: 100%;
+	border: none;
+	border: 1px solid #CCC;
+	display: table;
+}
+
+thead th,tbody th {
+	background:url(images/sprites.gif) repeat-x scroll 0 -1500px #EFEFEF;
+	color: #555;
+	padding: 5px 10px;
+	border-left: 1px solid #CCC;
+	text-align: left;
+	font-weight: bold;
+}
+
+.desc-img,.asc-img {
+	opacity: 0.5;
+}
+
+.desc-img:hover,.asc-img:hover {
+	opacity: 0.8;
+}
+
+tbody tr td {
+	padding: 5px 10px;
+	color: #666;
+}
+
+tbody tr:hover {
+	background: #FFF url(images/table-hover.png) repeat;
+}
+
+tbody tr:hover td {
+	color: #454545;
+}
+
+tfoot td,tfoot th {
+	border-left: none;
+	border-top: 1px solid #CCC;
+	padding: 6px;
+	background: #FFF url(images/table-foot.png) repeat;
+	color: #666;
+}
+
+caption {
+	text-align: left;
+	font-size: 20px;
+	padding: 0 10px;
+	color: #333;
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+caption small {
+	font-size: 11px;
+	color: #666;
+	margin-left: 5px;
+	padding-left: 5px;
+	border-left: 1px solid #ccc;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+caption .cap-link {
+	float: right;
+	padding: 1px 3px;
+	border: 1px solid #bbb;
+	background: #eee;
+	font-size: 15px;
+}
+
+table a:link {
+	color: #666;
+	border-bottom: 1px dotted #dedede;
+}
+
+table a:visited {
+	color: #777;
+}
+
+table a:hover {
+	color: #036;
+	text-decoration: none;
+}
+
+table a:active {
+	color: #036;
+}
+
+tr.odd {
+	background: #FFF;
+}
+
+tr.even {
+	background: #F8F8F8;
+}
+
+tr.inact {
+	background: #fbeee4 !important;
+}
+
+tr.table-good:hover,tr.table-error:hover {
+	background: #fff;
+}
+
+tr.table-good td span,tr.table-error td span {
+	display: block;
+	background: #e19d9d;
+	color: white;
+	font-size: 15px;
+	padding: 3px 8px;
+	border: 2px solid #ae2525;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	margin: 8px;
+}
+
+tr.table-good td span {
+	border-color: #3fa244 !important;
+	background: #a5e9a8 !important;
+	color: #333;
+}

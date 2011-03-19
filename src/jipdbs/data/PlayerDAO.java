@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jipdbs.util.LocalCache;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -48,11 +50,17 @@ public class PlayerDAO {
 		Entity entity = map(player);
 		service.put(entity);
 		player.setKey(entity.getKey());
+		// save to cache
+		LocalCache.getInstance().put("player-" + player.getServer().toString() + player.getGuid(), player);		
 	}
 
 	public Player findByServerAndGuid(DatastoreService service, Key server,
 			String guid) {
 
+		// retrieve from cache
+		Player p = (Player) LocalCache.getInstance().get("player-" + server.toString() + guid);
+		if (p != null) return p;
+		
 		Query q = new Query("Player");
 		q.addFilter("server", FilterOperator.EQUAL, server);
 		q.addFilter("guid", FilterOperator.EQUAL, guid);

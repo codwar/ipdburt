@@ -10,7 +10,7 @@
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
-<link rel="stylesheet" type="text/css" href="media/default.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="media/styles.css" media="screen"/>
 <title>IPDBS Sudamericana</title>
 </head>
 

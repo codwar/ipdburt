@@ -52,6 +52,7 @@ public class ServerDAO {
 		Entity entity = map(server);
 		service.put(entity);
 		server.setKey(entity.getKey());
+		// save to cache
 		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
 
@@ -70,6 +71,7 @@ public class ServerDAO {
 
 	public Server findByUid(DatastoreService service, String uid) {
 
+		// retrieve from cache
 		Server s = (Server) LocalCache.getInstance().get("server-" + uid);
 		if (s != null) return s;
 		

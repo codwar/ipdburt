@@ -57,7 +57,7 @@ public class JIPDBSCore {
 				serverDAO.save(service, server);
 				tx.commit();
 			} else {
-				log.severe("Trying to update non existent server (" + key + ","
+				log.severe("Trying to update non existing server (" + key + ","
 						+ name + ")");
 			}
 
@@ -105,6 +105,8 @@ public class JIPDBSCore {
 
 					Date lastPlayerUpdate = player.getUpdated();
 					player.setUpdated(stamp);
+					/* if player is connected the clear baninfo */
+					player.setBanInfo(null);
 					playerDAO.save(service, player);
 
 					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
@@ -135,10 +137,8 @@ public class JIPDBSCore {
 				serverDAO.save(service, server);
 
 			} else {
-				log.severe("Trying to update non existent server (" + key + ")");
+				log.severe("Trying to update non existing server (" + key + ")");
 			}
-
-			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,10 +166,6 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-
-				server.setUpdated(stamp);
-				serverDAO.save(service, server);
-
 				for (BanInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
@@ -188,13 +184,12 @@ public class JIPDBSCore {
 						reason = null;
 
 					player.setBanInfo(reason);
-					player.setUpdated(stamp);
 					playerDAO.save(service, player);
 				}
-
+			} else {
+				log.severe("Trying to update non existing server (" + key + ")");
 			}
-
-			// If the server doesn't exist do nothing.
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

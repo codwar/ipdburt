@@ -1,11 +1,14 @@
 package jipdbs.util;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheManager;
+
+import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
 
 public class LocalCache {
 	
@@ -13,10 +16,14 @@ public class LocalCache {
 	
 	private static LocalCache localManager = null;
 	private static Cache cacheManager = null;
-
+	
+	private final Integer CACHE_EXPIRATION = 300; // 5 minutes
+	
 	private LocalCache() {
+		Map<String, Integer> props = new HashMap<String, Integer>();
+        props.put(GCacheFactory.EXPIRATION_DELTA, CACHE_EXPIRATION);
 		try {
-			cacheManager = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+			cacheManager = CacheManager.getInstance().getCacheFactory().createCache(props);
 		} catch (CacheException e) {
 			log.severe(e.getMessage());
 		}
@@ -40,4 +47,5 @@ public class LocalCache {
 		log.finest("Save key " + key);
 		cacheManager.put(key, value);
 	}
+	
 }

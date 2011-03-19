@@ -7,9 +7,27 @@
 
 <jsp:include page="/search" />
 
-<table border="1">
-	<c:forEach items="${list}" var="player">
+<table>
+	<thead>
 		<tr>
+			<th></th>
+			<th>Nombre</th>
+			<th>IP</th>
+			<th>Visto</th>
+			<th>Servidor</th>
+		</tr>
+	</thead>
+	<tbody>
+	<c:forEach items="${list}" var="player" varStatus="rowCounter">
+        <c:choose>
+          <c:when test="${rowCounter.count % 2 == 0}">
+            <c:set var="rowStyle" scope="page" value="odd"/>
+          </c:when>
+          <c:otherwise>
+            <c:set var="rowStyle" scope="page" value="even"/>
+          </c:otherwise>
+        </c:choose>
+        <tr class="<c:out value="${rowStyle}"/>">	
 			<td><a href="alias.jsp?id=${player.key}">${player.key}</a></td>
 			<td>${player.name}</td>
 			<td>${player.ip}</td>
@@ -17,4 +35,6 @@
 			<td>${player.server}</td>
 		</tr>
 	</c:forEach>
+	</tbody>
+	<tfoot></tfoot>
 </table>

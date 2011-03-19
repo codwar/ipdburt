@@ -2,10 +2,19 @@ package jipdbs.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.util.UUID;
 
 public class GuidGenerator {
 
+	/**
+	 * Returns a random generated uuid encoded with SHA1
+	 * If text is supplied it is used as a 'seed' to generate the hash.
+	 * 
+	 * @param String
+	 * 			text (optional)
+	 * @return random generated uuid
+	 */
 	public static String generate(String text) {
 		UUID uuid = UUID.randomUUID();
 		StringBuffer buffer = new StringBuffer(uuid.toString());
@@ -19,6 +28,12 @@ public class GuidGenerator {
 		return hash;
 	}
 
+	/**
+	 * Return a SHA1 hash representation of text
+	 * @param String
+	 * 			text
+	 * @return SHA1 hash
+	 */
 	public static String getSHA1Hash(String text) {
 		try {
 			MessageDigest md;
@@ -36,5 +51,5 @@ public class GuidGenerator {
 			return null;
 		}
 	}
-
+	
 }
