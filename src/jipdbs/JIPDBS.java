@@ -89,7 +89,7 @@ public class JIPDBS extends JIPDBSCore {
 		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		try {
-
+			// TODO case insensitive search and like behaviour
 			List<Alias> aliasses = aliasDAO.findByNickname(service, query);
 
 			for (Alias alias : aliasses) {

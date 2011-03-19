@@ -24,12 +24,7 @@
 		</div>
 		 		
 		<div class="right">
- 
-			<h2>Tristique porta</h2>
-			
-			<p>Fusce porta pede nec eros. Maecenas ipsum sem, interdum non, aliquam vitae, interdum nec, metus. Maecenas ornare lobortis risus.</p>
-
-		</div>
+ 		</div>
 
 	</div>	
 
@@ -38,7 +33,9 @@
 <div class="container">	
 
 	<div class="navigation">
-        <a href="serverlist.jsp">Servers</a>
+	    <a href="/">Inicio</a>
+        <a href="serverlist.jsp">Servidores</a>
+        <a href="#">Contacto</a>
 		<div class="clearer"><span></span></div>
 	</div>
 
@@ -48,7 +45,7 @@
 
 	<div class="footer">
 	
-		<div class="left">&copy; 2008 <a href="index.html">Website.com</a>. Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> &amp; <a href="http://validator.w3.org/check?uri=referer">XHTML</a>.</div>
+		<div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom.</div>
 		<div class="right"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></div>
 
 		<div class="clearer"><span></span></div>

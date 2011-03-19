@@ -2,9 +2,10 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<form action="" method="get"><input type="text" name="alias"
+<small>
+<form action="" method="get"><input class="search" type="text" name="alias"
 	value="${param.alias}" /> <input type="submit" value="Search" /></form>
-
+</small>
 <jsp:include page="/search" />
 
 <table>

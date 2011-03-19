@@ -101,11 +101,12 @@ h1,h2,h3 {padding-top: 6px;}
 	font: normal 2.8em "Trebuchet MS",sans-serif;
 	line-height: 150px;
 	text-align: center;	
-	width: 564px;
+	width: 579px;
 }
 .header .right {
 	overflow: auto;
-	width: 212px;
+	width: 200px;
+	background: transparent url(images/logo.jpg) no-repeat 100%;
 }
 .header .right p,.header .right h2 {padding: 0 16px;}
 .header .right h2 {padding-top: 16px; font: normal 1.6em "Trebuchet MS",sans-serif;}
@@ -198,7 +199,8 @@ h1,h2,h3 {padding-top: 6px;}
 	padding: 0 12px;
 	text-align: center;
 }
-.footer .right {color: #DEF;}
+.footer .right { color: #DEF; }
+}
 .footer .right a {color: #DEF; text-decoration: none;}
 .footer a, .footer a:hover,.footer .right a:hover {color: #FFF;}
 
