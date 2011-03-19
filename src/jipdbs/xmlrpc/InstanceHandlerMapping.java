@@ -7,6 +7,7 @@ import org.apache.xmlrpc.XmlRpcHandler;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcNoSuchHandlerException;
+import org.datanucleus.util.StringUtils;
 
 public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 
@@ -26,6 +27,12 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 			public Object execute(XmlRpcRequest req) throws XmlRpcException {
 
 				try {
+					/*
+					 * For backward compatibility. Strip out namespace
+					 */
+					String[] methods = StringUtils.split(req.getMethodName(), ".");
+					String methodName = methods[methods.length-1];
+					 
 					Class<?>[] types = new Class<?>[req.getParameterCount()];
 					Object[] args = new Object[req.getParameterCount()];
 
@@ -36,7 +43,7 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 					}
 
 					Method method = instance.getClass().getMethod(
-							req.getMethodName(), types);
+							methodName, types);
 					Object result = method.invoke(instance, args);
 
 					return result != null ? result : "";
