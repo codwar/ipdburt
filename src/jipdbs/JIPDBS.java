@@ -1,5 +1,7 @@
 package jipdbs;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +15,11 @@ import jipdbs.data.ServerDAO;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.repackaged.com.google.common.util.Base64;
+import com.google.appengine.repackaged.com.google.common.util.Base64DecoderException;
 
 public class JIPDBS {
 
@@ -78,7 +84,7 @@ public class JIPDBS {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-//		Transaction tx = service.beginTransaction();
+		// Transaction tx = service.beginTransaction();
 
 		try {
 
@@ -107,8 +113,9 @@ public class JIPDBS {
 					player.setUpdated(stamp);
 					playerDAO.save(service, player);
 
-					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
-							player.getKey(), info.getName(), info.getIp());
+					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+							service, player.getKey(), info.getName(),
+							info.getIp());
 
 					if (alias == null) {
 						alias = new Alias();
@@ -125,15 +132,15 @@ public class JIPDBS {
 					aliasDAO.save(service, alias);
 				}
 
-//				tx.commit();
+				// tx.commit();
 			}
 
 			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-//			if (tx.isActive())
-//				tx.rollback();
+			// if (tx.isActive())
+			// tx.rollback();
 		}
 	}
 
@@ -152,7 +159,7 @@ public class JIPDBS {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-//		Transaction tx = service.beginTransaction();
+		// Transaction tx = service.beginTransaction();
 
 		try {
 
@@ -187,15 +194,15 @@ public class JIPDBS {
 					playerDAO.save(service, player);
 				}
 
-//				tx.commit();
+				// tx.commit();
 			}
 
 			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-//			if (tx.isActive())
-//				tx.rollback();
+			// if (tx.isActive())
+			// tx.rollback();
 		}
 	}
 
@@ -220,5 +227,80 @@ public class JIPDBS {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 		return serverDAO.findAll(service);
+	}
+
+	public List<SearchResult> rootQuery() {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		List<Player> players = playerDAO.findLatest(service);
+
+		List<SearchResult> results = new ArrayList<SearchResult>();
+
+		try {
+			for (Player player : players) {
+
+				Alias alias = aliasDAO.findLatest(service, player.getKey());
+				Server server = serverDAO.get(service, player.getServer());
+
+				// Whoops! inconsistent data.
+				if (alias == null || server == null)
+					continue;
+
+				SearchResult result = new SearchResult();
+				result.setKey(KeyFactory.keyToString(player.getKey()));
+				result.setIp(alias.getIp());
+				result.setLatest(server.getUpdated()
+						.equals(player.getUpdated()) ? "Connected" : player
+						.getUpdated().toString());
+				result.setName(alias.getNickname());
+				result.setServer(server.getName());
+
+				results.add(result);
+			}
+		} catch (EntityNotFoundException e) {
+			// Do nothing...?
+			e.printStackTrace();
+		}
+
+		return results;
+	}
+
+	public List<SearchResult> search(String query) {
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		List<Alias> aliasses = aliasDAO.findByNickname(service, query);
+
+		List<SearchResult> results = new ArrayList<SearchResult>();
+
+		try {
+			for (Alias alias : aliasses) {
+
+				Player player = playerDAO.get(service, alias.getPlayer());
+				Server server = serverDAO.get(service, player.getServer());
+
+				// Whoops! inconsistent data.
+				if (alias == null || server == null)
+					continue;
+
+				SearchResult result = new SearchResult();
+				result.setKey(KeyFactory.keyToString(player.getKey()));
+				result.setIp(alias.getIp());
+				result.setLatest(server.getUpdated()
+						.equals(player.getUpdated()) ? "Connected" : player
+						.getUpdated().toString());
+				result.setName(alias.getNickname());
+				result.setServer(server.getName());
+
+				results.add(result);
+			}
+		} catch (EntityNotFoundException e) {
+			// Do nothing...?
+			e.printStackTrace();
+		}
+
+		return results;
 	}
 }

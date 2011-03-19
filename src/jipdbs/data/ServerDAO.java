@@ -7,6 +7,8 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -73,4 +75,8 @@ public class ServerDAO {
 		return null;
 	}
 
+	public Server get(DatastoreService service, Key server)
+			throws EntityNotFoundException {
+		return map(service.get(server));
+	}
 }

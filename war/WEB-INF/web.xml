@@ -20,6 +20,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>xmlrpc</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpcServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>search</servlet-name>
+		<servlet-class>jipdbs.web.SearchServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>serverlist</servlet-name>
@@ -33,8 +37,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>search</servlet-name>
+		<url-pattern>/search</url-pattern>
+	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

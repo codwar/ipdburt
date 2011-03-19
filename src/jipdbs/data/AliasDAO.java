@@ -1,13 +1,17 @@
 package jipdbs.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAO {
 
@@ -61,5 +65,39 @@ public class AliasDAO {
 			return map(entity);
 
 		return null;
+	}
+
+	public Alias findLatest(DatastoreService service, Key player) {
+
+		Query q = new Query("Alias");
+		q.addFilter("player", FilterOperator.EQUAL, player);
+		q.addSort("updated", SortDirection.DESCENDING);
+
+		PreparedQuery pq = service.prepare(q);
+
+		List<Entity> list = pq.asList(FetchOptions.Builder.withLimit(1));
+
+		if (list.size() == 0)
+			return null;
+
+		return map(list.get(0));
+	}
+
+	public List<Alias> findByNickname(DatastoreService service, String query) {
+
+		Query q = new Query("Alias");
+		q.addFilter("nickname", FilterOperator.EQUAL, query);
+		q.addSort("updated", SortDirection.DESCENDING);
+
+		PreparedQuery pq = service.prepare(q);
+
+		List<Entity> list = pq.asList(FetchOptions.Builder.withLimit(1));
+
+		List<Alias> result = new ArrayList<Alias>();
+
+		for (Entity alias : list)
+			result.add(map(alias));
+
+		return result;
 	}
 }

@@ -1,13 +1,18 @@
 package jipdbs.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class PlayerDAO {
 
@@ -58,5 +63,23 @@ public class PlayerDAO {
 			return map(entity);
 
 		return null;
+	}
+
+	public List<Player> findLatest(DatastoreService service) {
+		Query q = new Query("Player");
+		q.addSort("updated", SortDirection.DESCENDING);
+		PreparedQuery pq = service.prepare(q);
+
+		List<Player> players = new ArrayList<Player>();
+
+		for (Entity entity : pq.asIterable(FetchOptions.Builder.withLimit(50)))
+			players.add(map(entity));
+
+		return players;
+	}
+
+	public Player get(DatastoreService service, Key player)
+			throws EntityNotFoundException {
+		return map(service.get(player));
 	}
 }
