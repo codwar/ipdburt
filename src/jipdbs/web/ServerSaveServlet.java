@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
+import jipdbs.util.GuidGenerator;
 
 public class ServerSaveServlet extends HttpServlet {
 
@@ -23,7 +24,10 @@ public class ServerSaveServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		app.addServer(req.getParameter("name"), req.getParameter("admin"),
-				req.getParameter("uid"));
+
+		String uid = GuidGenerator.generate(req.getParameter("name"));
+
+		app.addServer(req.getParameter("name"), req.getParameter("admin"), uid);
+
 	}
 }

@@ -1,6 +1,5 @@
 package jipdbs;
 
-
 public class SearchResult {
 
 	// A key to be able to retrieve player details.

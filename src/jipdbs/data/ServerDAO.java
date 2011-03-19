@@ -25,6 +25,7 @@ public class ServerDAO {
 		entity.setProperty("updated", server.getUpdated());
 		entity.setProperty("admin", server.getAdmin());
 		entity.setProperty("uid", server.getUid());
+		entity.setProperty("players", server.getOnlinePlayers());
 
 		return entity;
 	}
@@ -39,6 +40,8 @@ public class ServerDAO {
 		server.setAdmin((Email) entity.getProperty("admin"));
 		server.setName((String) entity.getProperty("name"));
 		server.setUid((String) entity.getProperty("uid"));
+		server.setOnlinePlayers(((Long) entity.getProperty("players"))
+				.intValue());
 
 		return server;
 	}
