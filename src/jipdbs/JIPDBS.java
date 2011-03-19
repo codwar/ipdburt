@@ -271,11 +271,12 @@ public class JIPDBS {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		List<Alias> aliasses = aliasDAO.findByNickname(service, query);
-
 		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		try {
+
+			List<Alias> aliasses = aliasDAO.findByNickname(service, query);
+
 			for (Alias alias : aliasses) {
 
 				Player player = playerDAO.get(service, alias.getPlayer());
@@ -297,10 +298,52 @@ public class JIPDBS {
 				results.add(result);
 			}
 		} catch (EntityNotFoundException e) {
-			// Do nothing...?
+			// TODO Do nothing...?
 			e.printStackTrace();
 		}
 
 		return results;
+	}
+
+	public List<AliasResult> alias(String encodedKey) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		List<AliasResult> result = new ArrayList<AliasResult>();
+
+		try {
+
+			Player player = playerDAO.get(service,
+					KeyFactory.stringToKey(encodedKey));
+
+			if (player != null) {
+				// Server fetched to print the date "Connected".
+				// If null, no comparison of dates.
+				Server server = serverDAO.get(service, player.getServer());
+
+				List<Alias> aliasses = aliasDAO.findByPlayer(service,
+						player.getKey());
+
+				for (Alias alias : aliasses) {
+
+					AliasResult item = new AliasResult();
+					item.setCount(alias.getCount());
+					// TODO mask IP address.
+					item.setIp(alias.getIp());
+					item.setNickname(alias.getNickname());
+					item.setUpdated(server != null
+							&& server.getUpdated().equals(alias.getUpdated()) ? "Connected"
+							: alias.getUpdated().toString());
+
+					result.add(item);
+				}
+			}
+
+		} catch (EntityNotFoundException e) {
+			// TODO Do nothing...?
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

@@ -10,7 +10,7 @@
 <table border="1">
 	<c:forEach items="${list}" var="player">
 		<tr>
-			<td>${player.key}</td>
+			<td><a href="alias.jsp?id=${player.key}">${player.key}</a></td>
 			<td>${player.name}</td>
 			<td>${player.ip}</td>
 			<td>${player.latest}</td>

@@ -100,4 +100,20 @@ public class AliasDAO {
 
 		return result;
 	}
+
+	public List<Alias> findByPlayer(DatastoreService service, Key player) {
+		Query q = new Query("Alias");
+		q.addFilter("player", FilterOperator.EQUAL, player);
+		q.addSort("count", SortDirection.DESCENDING);
+
+		PreparedQuery pq = service.prepare(q);
+		List<Entity> list = pq.asList(withLimit(20));
+
+		List<Alias> result = new ArrayList<Alias>();
+
+		for (Entity entity : list)
+			result.add(map(entity));
+
+		return result;
+	}
 }
