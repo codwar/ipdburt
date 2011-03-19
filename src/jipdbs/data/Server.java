@@ -13,7 +13,8 @@ public class Server {
 	private Email admin;
 	private Date created;
 	private Date updated;
-
+	private int onlinePlayers;
+	
 	public Key getKey() {
 		return key;
 	}
@@ -60,6 +61,14 @@ public class Server {
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
+	}
+
+	public int getOnlinePlayers() {
+		return onlinePlayers;
+	}
+
+	public void setOnlinePlayers(int onlinePlayers) {
+		this.onlinePlayers = onlinePlayers;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package jipdbs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
 import jipdbs.data.AliasDAO;
@@ -17,6 +18,8 @@ import com.google.appengine.api.datastore.Transaction;
 
 public class JIPDBS {
 
+	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
+	
 	private final ServerDAO serverDAO = new ServerDAO();
 	private final PlayerDAO playerDAO = new PlayerDAO();
 	private final AliasDAO aliasDAO = new AliasDAO();
@@ -54,6 +57,8 @@ public class JIPDBS {
 				server.setName(name);
 				serverDAO.save(service, server);
 				tx.commit();
+			} else {
+				log.severe("Trying to update non existent server ("+key+","+name+")");
 			}
 
 			// If the server doesn't exist do nothing.
@@ -78,18 +83,12 @@ public class JIPDBS {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-//		Transaction tx = service.beginTransaction();
-
 		try {
-
 			Date stamp = new Date();
 
 			Server server = serverDAO.findByUid(service, key);
-
+			
 			if (server != null) {
-
-				server.setUpdated(stamp);
-				serverDAO.save(service, server);
 
 				for (PlayerInfo info : list) {
 
@@ -104,6 +103,7 @@ public class JIPDBS {
 						player.setBanInfo(null);
 					}
 
+					Date lastPlayerUpdate = player.getUpdated();
 					player.setUpdated(stamp);
 					playerDAO.save(service, player);
 
@@ -112,28 +112,32 @@ public class JIPDBS {
 
 					if (alias == null) {
 						alias = new Alias();
-						alias.setCount(0);
+						alias.setCount(1);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
+					} else {
+						if (server.getUpdated() == null || lastPlayerUpdate == null || server.getUpdated().after(lastPlayerUpdate)) {
+							alias.setCount(alias.getCount() + 1);
+						}
 					}
 
-					alias.setCount(alias.getCount() + 1);
 					alias.setUpdated(stamp);
-
 					aliasDAO.save(service, alias);
+					
 				}
+				server.setOnlinePlayers(list.size());
+				server.setUpdated(stamp);
+				serverDAO.save(service, server);
 
-//				tx.commit();
+			} else {
+				log.severe("Trying to update non existent server ("+key+")");
 			}
 
 			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-//			if (tx.isActive())
-//				tx.rollback();
 		}
 	}
 
@@ -151,8 +155,6 @@ public class JIPDBS {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-
-//		Transaction tx = service.beginTransaction();
 
 		try {
 
@@ -187,15 +189,11 @@ public class JIPDBS {
 					playerDAO.save(service, player);
 				}
 
-//				tx.commit();
 			}
 
 			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-//			if (tx.isActive())
-//				tx.rollback();
 		}
 	}
 
@@ -209,10 +207,10 @@ public class JIPDBS {
 		Server server = new Server();
 		server.setAdmin(new Email(admin));
 		server.setCreated(new Date());
-		server.setUpdated(new Date());
+		//server.setUpdated(new Date()); // skip this. it should be updated when the server actually start sending data.
 		server.setUid(uid);
 		server.setName(name);
-
+		server.setOnlinePlayers(0);
 		serverDAO.save(service, server);
 	}
 
