@@ -3,6 +3,8 @@ package jipdbs.data;
 import java.io.Serializable;
 import java.util.Date;
 
+import jipdbs.util.Functions;
+
 import com.google.appengine.api.datastore.Key;
 
 public class Alias implements Serializable {
@@ -75,6 +77,10 @@ public class Alias implements Serializable {
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
+	}
+	
+	public String getMaskedIp() {
+		return Functions.maskIpAddress(this.ip);
 	}
 
 	@Override

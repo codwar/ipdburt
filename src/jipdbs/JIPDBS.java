@@ -144,8 +144,7 @@ public class JIPDBS extends JIPDBSCore {
 
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount());
-					// TODO mask IP address.
-					item.setIp(alias.getIp());
+					item.setIp(alias.getMaskedIp());
 					item.setNickname(alias.getNickname());
 					item.setUpdated(server != null
 							&& server.getUpdated().equals(alias.getUpdated()) ? "Connected"
