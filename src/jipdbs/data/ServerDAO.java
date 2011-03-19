@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jipdbs.util.LocalCache;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
@@ -50,6 +52,7 @@ public class ServerDAO {
 		Entity entity = map(server);
 		service.put(entity);
 		server.setKey(entity.getKey());
+		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
 
 	public List<Server> findAll(DatastoreService service) {
@@ -67,6 +70,9 @@ public class ServerDAO {
 
 	public Server findByUid(DatastoreService service, String uid) {
 
+		Server s = (Server) LocalCache.getInstance().get("server-" + uid);
+		if (s != null) return s;
+		
 		Query q = new Query("Server");
 		q.addFilter("uid", FilterOperator.EQUAL, uid);
 		PreparedQuery pq = service.prepare(q);

@@ -1,11 +1,17 @@
 package jipdbs.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Key;
 
-public class Player {
+public class Player implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6984528322229982497L;
+	
 	private Key key;
 	private Key server;
 	private String guid;

@@ -1,12 +1,18 @@
 package jipdbs.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 
-public class Server {
+public class Server implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1356474862304251338L;
+	
 	private Key key;
 	private String uid;
 	private String name;
