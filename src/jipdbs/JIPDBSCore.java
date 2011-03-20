@@ -10,14 +10,16 @@ import jipdbs.data.Player;
 import jipdbs.data.PlayerDAO;
 import jipdbs.data.Server;
 import jipdbs.data.ServerDAO;
+import jipdbs.util.NGrams;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Transaction;
 
 public class JIPDBSCore {
-	
-	private static final Logger log = Logger.getLogger(JIPDBSCore.class.getName());
+
+	private static final Logger log = Logger.getLogger(JIPDBSCore.class
+			.getName());
 
 	protected final ServerDAO serverDAO = new ServerDAO();
 	protected final PlayerDAO playerDAO = new PlayerDAO();
@@ -118,6 +120,7 @@ public class JIPDBSCore {
 						alias.setCount(1);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.bigrams(info.getName()));
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 					} else {
@@ -189,7 +192,7 @@ public class JIPDBSCore {
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

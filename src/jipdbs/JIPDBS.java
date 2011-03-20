@@ -92,6 +92,10 @@ public class JIPDBS extends JIPDBSCore {
 			// TODO case insensitive search and like behaviour
 			List<Alias> aliasses = aliasDAO.findByNickname(service, query);
 
+			// No exact match, try ngrams.
+			if (aliasses.size() == 0)
+				aliasses = aliasDAO.findByNGrams(service, query);
+
 			for (Alias alias : aliasses) {
 
 				Player player = playerDAO.get(service, alias.getPlayer());

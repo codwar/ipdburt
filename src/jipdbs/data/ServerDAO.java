@@ -73,8 +73,9 @@ public class ServerDAO {
 
 		// retrieve from cache
 		Server s = (Server) LocalCache.getInstance().get("server-" + uid);
-		if (s != null) return s;
-		
+		if (s != null)
+			return s;
+
 		Query q = new Query("Server");
 		q.addFilter("uid", FilterOperator.EQUAL, uid);
 		PreparedQuery pq = service.prepare(q);

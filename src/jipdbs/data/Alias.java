@@ -1,6 +1,7 @@
 package jipdbs.data;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 import jipdbs.util.Functions;
@@ -9,15 +10,14 @@ import com.google.appengine.api.datastore.Key;
 
 public class Alias implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3801797021472636813L;
 
 	private Key key;
 
 	private Key player;
 	private String nickname;
+	// transient?
+	private Collection<String> ngrams;
 	private String ip;
 	private Date created;
 	private Date updated;
@@ -81,6 +81,14 @@ public class Alias implements Serializable {
 	
 	public String getMaskedIp() {
 		return Functions.maskIpAddress(this.ip);
+	}
+
+	public Collection<String> getNgrams() {
+		return ngrams;
+	}
+
+	public void setNgrams(Collection<String> ngrams) {
+		this.ngrams = ngrams;
 	}
 
 	@Override

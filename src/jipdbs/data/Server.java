@@ -12,7 +12,7 @@ public class Server implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1356474862304251338L;
-	
+
 	private Key key;
 	private String uid;
 	private String name;

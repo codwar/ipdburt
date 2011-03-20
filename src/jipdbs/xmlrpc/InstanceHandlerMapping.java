@@ -30,9 +30,10 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 					/*
 					 * For backward compatibility. Strip out namespace
 					 */
-					String[] methods = StringUtils.split(req.getMethodName(), ".");
-					String methodName = methods[methods.length-1];
-					 
+					String[] methods = StringUtils.split(req.getMethodName(),
+							".");
+					String methodName = methods[methods.length - 1];
+
 					Class<?>[] types = new Class<?>[req.getParameterCount()];
 					Object[] args = new Object[req.getParameterCount()];
 
@@ -42,8 +43,8 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 						types[i] = param.getClass();
 					}
 
-					Method method = instance.getClass().getMethod(
-							methodName, types);
+					Method method = instance.getClass().getMethod(methodName,
+							types);
 					Object result = method.invoke(instance, args);
 
 					return result != null ? result : "";
