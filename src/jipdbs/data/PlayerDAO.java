@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -52,7 +53,7 @@ public class PlayerDAO {
 		player.setKey(entity.getKey());
 		// save to cache
 		LocalCache.getInstance().put(
-				"player-" + player.getServer().toString() + player.getGuid(),
+				"player-" + KeyFactory.keyToString(player.getServer()) + player.getGuid(),
 				player);
 	}
 
@@ -61,7 +62,7 @@ public class PlayerDAO {
 
 		// retrieve from cache
 		Player p = (Player) LocalCache.getInstance().get(
-				"player-" + server.toString() + guid);
+				"player-" + KeyFactory.keyToString(server) + guid);
 		if (p != null)
 			return p;
 

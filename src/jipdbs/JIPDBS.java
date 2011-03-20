@@ -21,7 +21,7 @@ public class JIPDBS extends JIPDBSCore {
 
 	// web fron-end methods ////////////////////////////////////////////////////
 
-	public void addServer(String name, String admin, String uid) {
+	public void addServer(String name, String admin, String uid, String ip) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -34,6 +34,7 @@ public class JIPDBS extends JIPDBSCore {
 		server.setUid(uid);
 		server.setName(name);
 		server.setOnlinePlayers(0);
+		server.setAddress(ip);
 		serverDAO.save(service, server);
 	}
 
@@ -66,8 +67,8 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(server.getUpdated()
-						.equals(player.getUpdated()) ? "Connected" : player
+				result.setLatest(player.getUpdated()
+						.equals(server.getUpdated()) ? "Connected" : player
 						.getUpdated().toString());
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());
@@ -112,8 +113,8 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(server.getUpdated()
-						.equals(player.getUpdated()) ? "Connected" : player
+				result.setLatest(player.getUpdated()
+						.equals(server.getUpdated()) ? "Connected" : player
 						.getUpdated().toString());
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());

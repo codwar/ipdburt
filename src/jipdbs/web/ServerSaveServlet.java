@@ -27,7 +27,7 @@ public class ServerSaveServlet extends HttpServlet {
 
 		String uid = GuidGenerator.generate(req.getParameter("name"));
 
-		app.addServer(req.getParameter("name"), req.getParameter("admin"), uid);
+		app.addServer(req.getParameter("name"), req.getParameter("admin"), uid, req.getParameter("ip"));
 
 	}
 }

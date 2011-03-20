@@ -28,6 +28,7 @@ public class ServerDAO {
 		entity.setProperty("admin", server.getAdmin());
 		entity.setProperty("uid", server.getUid());
 		entity.setProperty("players", server.getOnlinePlayers());
+		entity.setProperty("ip", server.getAddress());
 
 		return entity;
 	}
@@ -44,6 +45,7 @@ public class ServerDAO {
 		server.setUid((String) entity.getProperty("uid"));
 		server.setOnlinePlayers(((Long) entity.getProperty("players"))
 				.intValue());
+		server.setAddress((String) entity.getProperty("ip"));
 
 		return server;
 	}

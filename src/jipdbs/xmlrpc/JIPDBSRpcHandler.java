@@ -16,7 +16,8 @@ public class JIPDBSRpcHandler {
 	}
 
 	public void updateName(String key, String name) {
-		app.updateName(key, name);
+		// TODO hacer configurable la verificación de IP a nivel servidor
+		app.updateName(key, name, null); //JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 
 	public void insertLog(String key, Object[] plist) {
@@ -36,7 +37,7 @@ public class JIPDBSRpcHandler {
 
 		}
 
-		app.insertLog(key, list);
+		app.insertLog(key, list, null); //JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 
 	public void updateBanInfo(String key, Object[] plist) {
@@ -55,6 +56,6 @@ public class JIPDBSRpcHandler {
 
 		}
 
-		app.updateBanInfo(key, list);
+		app.updateBanInfo(key, list, null); //JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 }

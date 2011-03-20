@@ -20,7 +20,8 @@ public class Server implements Serializable {
 	private Date created;
 	private Date updated;
 	private int onlinePlayers;
-
+	private String address;
+	
 	public Key getKey() {
 		return key;
 	}
@@ -75,6 +76,14 @@ public class Server implements Serializable {
 
 	public void setOnlinePlayers(int onlinePlayers) {
 		this.onlinePlayers = onlinePlayers;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	@Override

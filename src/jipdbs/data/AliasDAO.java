@@ -15,6 +15,7 @@ import jipdbs.util.NGrams;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -61,7 +62,7 @@ public class AliasDAO {
 		alias.setKey(entity.getKey());
 		// save to cache
 		LocalCache.getInstance().put(
-				"alias-" + alias.getPlayer().toString() + alias.getNickname()
+				"alias-" + KeyFactory.keyToString(alias.getPlayer()) + alias.getNickname()
 						+ alias.getIp(), alias);
 	}
 
@@ -70,7 +71,7 @@ public class AliasDAO {
 
 		// retrieve from cache
 		Alias p = (Alias) LocalCache.getInstance().get(
-				"alias-" + player.toString() + nickname + ip);
+				"alias-" + KeyFactory.keyToString(player) + nickname + ip);
 		if (p != null)
 			return p;
 

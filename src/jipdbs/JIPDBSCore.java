@@ -45,7 +45,7 @@ public class JIPDBSCore {
 	 * @param name
 	 *            the server's new name.
 	 */
-	public void updateName(String key, String name) {
+	public void updateName(String key, String name, String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -55,6 +55,12 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
+				if (remoteAddr != null) {
+					if (!remoteAddr.equals(server.getAddress())) {
+						log.warning("Unauthorized update");
+						return;
+					}
+				}
 				server.setName(name);
 				serverDAO.save(service, server);
 				tx.commit();
@@ -62,8 +68,6 @@ public class JIPDBSCore {
 				log.severe("Trying to update non existing server (" + key + ","
 						+ name + ")");
 			}
-
-			// If the server doesn't exist do nothing.
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -80,7 +84,7 @@ public class JIPDBSCore {
 	 * @param list
 	 *            the list of currently logged in players.
 	 */
-	public void insertLog(String key, List<PlayerInfo> list) {
+	public void insertLog(String key, List<PlayerInfo> list, String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -91,7 +95,14 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-
+				
+				if (remoteAddr != null) {
+					if (!remoteAddr.equals(server.getAddress())) {
+						log.warning("Unauthorized update");
+						return;
+					}
+				}
+				
 				for (PlayerInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
@@ -107,7 +118,7 @@ public class JIPDBSCore {
 
 					Date lastPlayerUpdate = player.getUpdated();
 					player.setUpdated(stamp);
-					/* if player is connected the clear baninfo */
+					/* if player is connected then clear baninfo */
 					player.setBanInfo(null);
 					playerDAO.save(service, player);
 
@@ -157,7 +168,7 @@ public class JIPDBSCore {
 	 *            null or empty, stores <code>null</code> y the datastore.
 	 *            That's in order to unban a player.
 	 */
-	public void updateBanInfo(String key, List<BanInfo> list) {
+	public void updateBanInfo(String key, List<BanInfo> list, String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -169,6 +180,14 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
+				
+				if (remoteAddr != null) {
+					if (!remoteAddr.equals(server.getAddress())) {
+						log.warning("Unauthorized update");
+						return;
+					}
+				}
+				
 				for (BanInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
