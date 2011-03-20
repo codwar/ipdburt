@@ -21,7 +21,8 @@ public final class NGrams {
 			if (Character.isWhitespace(a) || Character.isWhitespace(b))
 				continue;
 
-			String bigram = new String(new char[] { a, b });
+			String bigram = new String(new char[] { Character.toLowerCase(a),
+					Character.toLowerCase(b) });
 
 			bigrams.add(bigram);
 		}
