@@ -2,11 +2,17 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<small>
-<form action="" method="get"><input class="search" type="text" name="alias"
-	value="${param.alias}" /> <input type="submit" value="Search" /></form>
-</small>
 <jsp:include page="/search" />
+
+<small>
+<form method="get">
+    <input class="search" type="text" name="q" value="${query}" />
+    <select name="t" style="width: 65px;">
+        <option value="alias" <c:if test='${type == "alias"}'>selected</c:if>>Alias</option>
+        <option value="ip" <c:if test='${type == "ip"}'>selected</c:if>>IP</option>
+    </select>
+    <input type="submit" value="Buscar" /></form>
+</small>
 
 <table>
 	<thead>

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import jipdbs.util.Functions;
 import jipdbs.util.LocalCache;
 import jipdbs.util.NGrams;
 
@@ -29,7 +30,7 @@ public class AliasDAO {
 		entity.setProperty("created", alias.getCreated());
 		entity.setProperty("updated", alias.getUpdated());
 		entity.setProperty("count", alias.getCount());
-		entity.setProperty("ip", alias.getIp());
+		entity.setProperty("ip", Functions.ipToDecimal(alias.getIp()));
 		entity.setProperty("nickname", alias.getNickname());
 		entity.setProperty("ngrams", alias.getNgrams());
 		entity.setProperty("player", alias.getPlayer());
@@ -46,7 +47,7 @@ public class AliasDAO {
 		alias.setCreated((Date) entity.getProperty("created"));
 		alias.setUpdated((Date) entity.getProperty("updated"));
 		alias.setCount(((Long) entity.getProperty("count")).intValue());
-		alias.setIp((String) entity.getProperty("ip"));
+		alias.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
 		alias.setPlayer((Key) entity.getProperty("player"));
 		alias.setNickname((String) entity.getProperty("nickname"));
 		alias.setNgrams((Collection<String>) entity.getProperty("ngrams"));
@@ -157,4 +158,25 @@ public class AliasDAO {
 
 		return result;
 	}
+	
+	public List<Alias> findByIP(DatastoreService service, String query) {
+		Query q = new Query("Alias");
+		
+		Long[] range = Functions.getIpRange(query);
+		q.addFilter("ip", FilterOperator.GREATER_THAN_OR_EQUAL, range[0]);
+		q.addFilter("ip", FilterOperator.LESS_THAN_OR_EQUAL, range[1]);
+		q.addSort("ip", SortDirection.ASCENDING);
+		q.addSort("updated", SortDirection.DESCENDING);
+
+		PreparedQuery pq = service.prepare(q);
+		List<Entity> list = pq.asList(withLimit(50));
+
+		List<Alias> result = new ArrayList<Alias>();
+
+		for (Entity entity : list)
+			result.add(map(entity));
+
+		return result;
+	}
+	
 }

@@ -27,15 +27,18 @@ public class SearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String alias = req.getParameter("alias");
-
+		String query = req.getParameter("q");
+		String type = req.getParameter("t");
+		
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
-		if (alias == null || "".equals(alias))
+		if (query == null || "".equals(query))
 			list = app.rootQuery();
-		else
-			list = app.search(alias);
-
+		else {
+			list = app.search(query, type);
+		}
 		req.setAttribute("list", list);
+		req.setAttribute("query", query);
+		req.setAttribute("type", type);
 	}
 }

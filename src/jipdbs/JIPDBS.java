@@ -65,7 +65,7 @@ public class JIPDBS extends JIPDBSCore {
 
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
-				result.setIp(alias.getIp());
+				result.setIp(alias.getMaskedIp());
 				result.setLatest(server.getUpdated()
 						.equals(player.getUpdated()) ? "Connected" : player
 						.getUpdated().toString());
@@ -82,19 +82,23 @@ public class JIPDBS extends JIPDBSCore {
 		return results;
 	}
 
-	public List<SearchResult> search(String query) {
+	public List<SearchResult> search(String query, String type) {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
 		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		try {
-			// TODO case insensitive search and like behaviour
-			List<Alias> aliasses = aliasDAO.findByNickname(service, query);
-
-			// No exact match, try ngrams.
-			if (aliasses.size() == 0)
-				aliasses = aliasDAO.findByNGrams(service, query);
+			List<Alias> aliasses = new ArrayList<Alias>();
+			
+			if ("alias".equals(type)) {
+				aliasses = aliasDAO.findByNickname(service, query);
+				// No exact match, try ngrams.
+				if (aliasses.size() == 0)
+					aliasses = aliasDAO.findByNGrams(service, query);
+			} else if ("ip".equals(type)) {
+				aliasses = aliasDAO.findByIP(service, query);
+			} 
 
 			for (Alias alias : aliasses) {
 
@@ -107,7 +111,7 @@ public class JIPDBS extends JIPDBSCore {
 
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
-				result.setIp(alias.getIp());
+				result.setIp(alias.getMaskedIp());
 				result.setLatest(server.getUpdated()
 						.equals(player.getUpdated()) ? "Connected" : player
 						.getUpdated().toString());
