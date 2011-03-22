@@ -7,7 +7,7 @@
 <json:object>
 	<json:array name="items" var="item" items="${list}">
 		<json:object>
-			<json:property name="nickame" value="${item.nickname}" />
+			<json:property name="nickname" value="${item.nickname}" />
 			<json:property name="ip" value="${item.ip}" />
 			<json:property name="updated" value="${item.updated}" />
 			<json:property name="count" value="${item.count}" />
