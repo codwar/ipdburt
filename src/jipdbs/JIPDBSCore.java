@@ -131,7 +131,7 @@ public class JIPDBSCore {
 						alias.setCount(1);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
-						alias.setNgrams(NGrams.bigrams(info.getName()));
+						alias.setNgrams(NGrams.ngrams(info.getName()));
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 					} else {

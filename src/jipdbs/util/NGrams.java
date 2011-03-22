@@ -1,12 +1,15 @@
 package jipdbs.util;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public final class NGrams {
 
-	public static List<String> bigrams(String s) {
+	public static Collection<String> bigrams(String s) {
 
 		if (s.trim().length() < 2)
 			return Collections.emptyList();
@@ -30,9 +33,28 @@ public final class NGrams {
 		return bigrams;
 	}
 
+	public static Collection<String> ngrams(String s) {
+
+		if (s.trim().length() < 2)
+			return Collections.emptySet();
+
+		Set<String> ngrams = new HashSet<String>();
+
+		for (int i = 0; i < s.length() - 2; i++) {
+
+			for (int j = s.length(); j > i; j--)
+
+				ngrams.add(s.substring(i, j).toLowerCase());
+		}
+
+		return ngrams;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(bigrams("[+ter]Shonaka"));
 		System.out.println(bigrams("[+ter]Sho naka"));
+		System.out.println(ngrams("[+ter]Shonaka"));
+		System.out.println(ngrams("[+ter]Sho naka"));
 	}
 
 }
