@@ -38,5 +38,4 @@
 		<div class="clearer"><span></span></div>
 	</div>
 
-<h1>prelude</h1>
 	<div class="main">

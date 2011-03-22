@@ -2,8 +2,6 @@
     pageEncoding="UTF-8" isELIgnored="false"%>
 
 	</div>
-<h1>coda</h1>    
-
 	<div class="footer">
 	
 		<div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom.</div>
