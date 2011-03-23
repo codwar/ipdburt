@@ -105,9 +105,12 @@ public class AliasDAO {
 	}
 
 	public List<Alias> findByNickname(DatastoreService service, String query) {
-
+		
+		Collection<String> ngrams = new ArrayList<String>();
+		ngrams.add(query.toLowerCase());
+		
 		Query q = new Query("Alias");
-		q.addFilter("nickname", FilterOperator.EQUAL, query);
+		q.addFilter("ngrams", FilterOperator.IN, ngrams);
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
@@ -124,14 +127,13 @@ public class AliasDAO {
 
 	public List<Alias> findByNGrams(DatastoreService service, String query) {
 
-		Collection<String> bigrams = new ArrayList<String>();
-		bigrams.add(query);
+		Collection<String> ngrams = NGrams.ngrams(query);
 
-		if (bigrams.size() == 0)
+		if (ngrams.size() == 0)
 			return Collections.emptyList();
 
 		Query q = new Query("Alias");
-		q.addFilter("ngrams", FilterOperator.IN, bigrams);
+		q.addFilter("ngrams", FilterOperator.IN, ngrams);
 
 		PreparedQuery pq = service.prepare(q);
 
