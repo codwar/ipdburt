@@ -31,7 +31,7 @@ public class AliasServlet extends HttpServlet {
 
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
-		list = app.alias(id);
+		list = app.alias(id, 0, 30);
 
 		req.setAttribute("list", list);
 	}

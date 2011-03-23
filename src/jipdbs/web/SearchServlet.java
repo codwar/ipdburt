@@ -29,14 +29,15 @@ public class SearchServlet extends HttpServlet {
 
 		String query = req.getParameter("q");
 		String type = req.getParameter("t");
-		
+
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
 		if (query == null || "".equals(query))
-			list = app.rootQuery();
+			list = app.rootQuery(0, 30);
 		else {
-			list = app.search(query, type);
+			list = app.search(query, type, 0, 30);
 		}
+		
 		req.setAttribute("list", list);
 		req.setAttribute("query", query);
 		req.setAttribute("type", type);

@@ -14,6 +14,7 @@ import jipdbs.util.NGrams;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -96,26 +97,22 @@ public class AliasDAO {
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
-		List<Entity> list = pq.asList(withLimit(1));
-
-		if (list.size() > 0)
-			return map(list.get(0));
-
-		return null;
+		return map(pq.asSingleEntity());
 	}
 
-	public List<Alias> findByNickname(DatastoreService service, String query) {
-		
+	public List<Alias> findByNickname(DatastoreService service, String query,
+			int offset, int limit) {
+
 		Collection<String> ngrams = new ArrayList<String>();
 		ngrams.add(query.toLowerCase());
-		
+
 		Query q = new Query("Alias");
 		q.addFilter("ngrams", FilterOperator.IN, ngrams);
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
 
-		List<Entity> list = pq.asList(withLimit(50));
+		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 
 		List<Alias> result = new ArrayList<Alias>();
 
@@ -125,7 +122,20 @@ public class AliasDAO {
 		return result;
 	}
 
-	public List<Alias> findByNGrams(DatastoreService service, String query) {
+	public int findByNicknameCount(DatastoreService service, String query) {
+
+		Collection<String> ngrams = new ArrayList<String>();
+		ngrams.add(query.toLowerCase());
+
+		Query q = new Query("Alias");
+		q.addFilter("ngrams", FilterOperator.IN, ngrams);
+
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
+	}
+
+	public List<Alias> findByNGrams(DatastoreService service, String query,
+			int offset, int limit) {
 
 		Collection<String> ngrams = NGrams.ngrams(query);
 
@@ -137,7 +147,7 @@ public class AliasDAO {
 
 		PreparedQuery pq = service.prepare(q);
 
-		List<Entity> list = pq.asList(withLimit(50));
+		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 
 		List<Alias> result = new ArrayList<Alias>();
 
@@ -145,16 +155,30 @@ public class AliasDAO {
 			result.add(map(alias));
 
 		return result;
-
 	}
 
-	public List<Alias> findByPlayer(DatastoreService service, Key player) {
+	public int findByNGramsCount(DatastoreService service, String query) {
+
+		Collection<String> ngrams = NGrams.ngrams(query);
+
+		if (ngrams.size() == 0)
+			return 0;
+
+		Query q = new Query("Alias");
+		q.addFilter("ngrams", FilterOperator.IN, ngrams);
+
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
+	}
+
+	public List<Alias> findByPlayer(DatastoreService service, Key player,
+			int offset, int limit) {
 		Query q = new Query("Alias");
 		q.addFilter("player", FilterOperator.EQUAL, player);
 		q.addSort("count", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
-		List<Entity> list = pq.asList(withLimit(20));
+		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 
 		List<Alias> result = new ArrayList<Alias>();
 
@@ -164,7 +188,16 @@ public class AliasDAO {
 		return result;
 	}
 
-	public List<Alias> findByIP(DatastoreService service, String query) {
+	public int findByPlayerCount(DatastoreService service, Key player) {
+		Query q = new Query("Alias");
+		q.addFilter("player", FilterOperator.EQUAL, player);
+
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
+	}
+
+	public List<Alias> findByIP(DatastoreService service, String query,
+			int offset, int limit) {
 		Query q = new Query("Alias");
 
 		Long[] range = Functions.getIpRange(query);
@@ -174,7 +207,7 @@ public class AliasDAO {
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
-		List<Entity> list = pq.asList(withLimit(50));
+		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 
 		List<Alias> result = new ArrayList<Alias>();
 
@@ -184,4 +217,14 @@ public class AliasDAO {
 		return result;
 	}
 
+	public int findByIPCount(DatastoreService service, String query) {
+		Query q = new Query("Alias");
+
+		Long[] range = Functions.getIpRange(query);
+		q.addFilter("ip", FilterOperator.GREATER_THAN_OR_EQUAL, range[0]);
+		q.addFilter("ip", FilterOperator.LESS_THAN_OR_EQUAL, range[1]);
+
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
+	}
 }

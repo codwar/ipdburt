@@ -1,6 +1,7 @@
 package jipdbs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -12,14 +13,11 @@ import jipdbs.data.Server;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Email;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
-
-	// web fron-end methods ////////////////////////////////////////////////////
 
 	public void addServer(String name, String admin, String uid, String ip) {
 
@@ -38,22 +36,38 @@ public class JIPDBS extends JIPDBSCore {
 		serverDAO.save(service, server);
 	}
 
-	public List<Server> getServers() {
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-		return serverDAO.findAll(service);
+	public List<Server> getServers(int offset, int limit) {
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+			return serverDAO.findAll(service, offset, limit);
+		} catch (Exception e) {
+			log.severe("Unable to fetch servers:" + e.getMessage());
+			return Collections.emptyList();
+		}
 	}
 
-	public List<SearchResult> rootQuery() {
+	public int getServersCount() {
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+			return serverDAO.findAllCount(service);
+		} catch (Exception e) {
+			log.severe("Unable to count servers:" + e.getMessage());
+			return 0;
+		}
+	}
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		List<Player> players = playerDAO.findLatest(service);
-
-		List<SearchResult> results = new ArrayList<SearchResult>();
+	public List<SearchResult> rootQuery(int offset, int limit) {
 
 		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			List<Player> players = playerDAO.findLatest(service, offset, limit);
+
+			List<SearchResult> results = new ArrayList<SearchResult>();
+
 			for (Player player : players) {
 
 				Alias alias = aliasDAO.getLastUsedAlias(service,
@@ -75,31 +89,47 @@ public class JIPDBS extends JIPDBSCore {
 
 				results.add(result);
 			}
-		} catch (EntityNotFoundException e) {
-			// Do nothing...?
-			e.printStackTrace();
+			return results;
+		} catch (Exception e) {
+			log.severe("Unable to fetch root query players:" + e.getMessage());
+			return Collections.emptyList();
 		}
-
-		return results;
 	}
 
-	public List<SearchResult> search(String query, String type) {
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		List<SearchResult> results = new ArrayList<SearchResult>();
+	public int rootQueryCount() {
 
 		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			return playerDAO.findLatestCount(service);
+		} catch (Exception e) {
+			log.severe("Unable to count root query players:" + e.getMessage());
+			return 0;
+		}
+	}
+
+	public List<SearchResult> search(String query, String type, int offset,
+			int limit) {
+
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			List<SearchResult> results = new ArrayList<SearchResult>();
+
 			List<Alias> aliasses = new ArrayList<Alias>();
-			
+
 			if ("alias".equals(type)) {
-				aliasses = aliasDAO.findByNickname(service, query);
+				aliasses = aliasDAO.findByNickname(service, query, offset,
+						limit);
 				// No exact match, try ngrams.
 				if (aliasses.size() == 0)
-					aliasses = aliasDAO.findByNGrams(service, query);
+					aliasses = aliasDAO.findByNGrams(service, query, offset,
+							limit);
 			} else if ("ip".equals(type)) {
-				aliasses = aliasDAO.findByIP(service, query);
-			} 
+				aliasses = aliasDAO.findByIP(service, query, offset, limit);
+			}
 
 			for (Alias alias : aliasses) {
 
@@ -121,33 +151,51 @@ public class JIPDBS extends JIPDBSCore {
 
 				results.add(result);
 			}
-		} catch (EntityNotFoundException e) {
-			// TODO Do nothing...?
-			e.printStackTrace();
+			return results;
+		} catch (Exception e) {
+			log.severe("Unable to fetch players:" + e.getMessage());
+			return Collections.emptyList();
 		}
-
-		return results;
 	}
 
-	public List<AliasResult> alias(String encodedKey) {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		List<AliasResult> result = new ArrayList<AliasResult>();
+	public int searchCount(String query, String type) {
 
 		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			if ("alias".equals(type)) {
+				int nickCount = aliasDAO.findByNicknameCount(service, query);
+				if (nickCount > 0)
+					return nickCount;
+
+				// No exact match, will try ngrams.
+				return aliasDAO.findByNGramsCount(service, query);
+			} else if ("ip".equals(type)) {
+				return aliasDAO.findByIPCount(service, query);
+			}
+
+			return 0;
+		} catch (Exception e) {
+			log.severe("Unable to count players:" + e.getMessage());
+			return 0;
+		}
+	}
+
+	public List<AliasResult> alias(String encodedKey, int offset, int limit) {
+
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			List<AliasResult> result = new ArrayList<AliasResult>();
 
 			Player player = playerDAO.get(service,
 					KeyFactory.stringToKey(encodedKey));
 
 			if (player != null) {
-				// Server fetched to print the date "Connected".
-				// If null, no comparison of dates.
-				Server server = serverDAO.get(service, player.getServer());
-
 				List<Alias> aliasses = aliasDAO.findByPlayer(service,
-						player.getKey());
+						player.getKey(), offset, limit);
 
 				for (Alias alias : aliasses) {
 
@@ -161,10 +209,31 @@ public class JIPDBS extends JIPDBSCore {
 				}
 			}
 
-		} catch (EntityNotFoundException e) {
-			// TODO Do nothing...?
-			e.printStackTrace();
+			return result;
+		} catch (Exception e) {
+			log.severe("Unable to fetch aliasses:" + e.getMessage());
+			return Collections.emptyList();
 		}
-		return result;
+	}
+
+	public int aliasCount(String encodedKey) {
+
+		try {
+
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			Player player = playerDAO.get(service,
+					KeyFactory.stringToKey(encodedKey));
+
+			if (player == null)
+				return 0;
+
+			return aliasDAO.findByPlayerCount(service, player.getKey());
+
+		} catch (Exception e) {
+			log.severe("Unable to count aliasses:" + e.getMessage());
+			return 0;
+		}
 	}
 }

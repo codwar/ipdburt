@@ -1,5 +1,7 @@
 package jipdbs.data;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -58,17 +61,25 @@ public class ServerDAO {
 		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
 
-	public List<Server> findAll(DatastoreService service) {
+	public List<Server> findAll(DatastoreService service, int offset, int limit) {
 
 		Query q = new Query("Server");
 		PreparedQuery pq = service.prepare(q);
 
 		List<Server> list = new ArrayList<Server>();
 
-		for (Entity e : pq.asIterable())
+		for (Entity e : pq.asIterable(withLimit(limit).offset(offset)))
 			list.add(map(e));
 
 		return list;
+	}
+
+	public int findAllCount(DatastoreService service) {
+
+		Query q = new Query("Server");
+		PreparedQuery pq = service.prepare(q);
+
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
 	}
 
 	public Server findByUid(DatastoreService service, String uid) {
@@ -93,4 +104,5 @@ public class ServerDAO {
 			throws EntityNotFoundException {
 		return map(service.get(server));
 	}
+
 }

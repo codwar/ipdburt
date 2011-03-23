@@ -1,5 +1,7 @@
 package jipdbs.data;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,8 +55,8 @@ public class PlayerDAO {
 		player.setKey(entity.getKey());
 		// save to cache
 		LocalCache.getInstance().put(
-				"player-" + KeyFactory.keyToString(player.getServer()) + player.getGuid(),
-				player);
+				"player-" + KeyFactory.keyToString(player.getServer())
+						+ player.getGuid(), player);
 	}
 
 	public Player findByServerAndGuid(DatastoreService service, Key server,
@@ -78,17 +80,24 @@ public class PlayerDAO {
 		return null;
 	}
 
-	public List<Player> findLatest(DatastoreService service) {
+	public List<Player> findLatest(DatastoreService service, int offset,
+			int limit) {
 		Query q = new Query("Player");
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
 
 		List<Player> players = new ArrayList<Player>();
 
-		for (Entity entity : pq.asIterable(FetchOptions.Builder.withLimit(50)))
+		for (Entity entity : pq.asIterable(withLimit(limit).offset(offset)))
 			players.add(map(entity));
 
 		return players;
+	}
+
+	public int findLatestCount(DatastoreService service) {
+		Query q = new Query("Player");
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withDefaults());
 	}
 
 	public Player get(DatastoreService service, Key player)

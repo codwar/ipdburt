@@ -24,7 +24,8 @@ public class ServerListServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		List<Server> servers = app.getServers();
+		
+		List<Server> servers = app.getServers(0, 30);
 		req.setAttribute("servers", servers);
 	}
 }
