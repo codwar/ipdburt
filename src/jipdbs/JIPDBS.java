@@ -155,10 +155,8 @@ public class JIPDBS extends JIPDBSCore {
 					item.setCount(alias.getCount());
 					item.setIp(alias.getMaskedIp());
 					item.setNickname(alias.getNickname());
-					item.setUpdated(server != null
-							&& server.getUpdated().equals(alias.getUpdated()) ? "Connected"
-							: alias.getUpdated().toString());
-
+					// in aliases we want to know when it was last used
+					item.setUpdated(alias.getUpdated().toString());
 					result.add(item);
 				}
 			}

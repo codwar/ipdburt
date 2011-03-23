@@ -33,7 +33,8 @@
 
 	<div class="navigation">
 	    <a href="/">Inicio</a>
-        <a href="/admin/serverlist.jsp">Servidores</a>
+	    <a href="/serverlist.jsp">Servidores</a>
+        <a href="/admin/serverlist.jsp">Administrar</a>
         <a href="#">Contacto</a>
 		<div class="clearer"><span></span></div>
 	</div>

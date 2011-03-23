@@ -53,6 +53,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>/search.jsp</url-pattern>
+			<url-pattern>/serverlist.jsp</url-pattern>
 			<url-pattern>/admin/serverlist.jsp</url-pattern>
 			<include-prelude>/WEB-INF/include/prelude.jsp</include-prelude>
 			<include-coda>/WEB-INF/include/coda.jsp</include-coda>
