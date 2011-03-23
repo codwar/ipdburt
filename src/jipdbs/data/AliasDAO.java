@@ -97,7 +97,11 @@ public class AliasDAO {
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
-		return map(pq.asSingleEntity());
+		List<Entity> list = pq.asList(withLimit(1));
+		if (list.size() == 0)
+			return null;
+
+		return map(list.get(0));
 	}
 
 	public List<Alias> findByNickname(DatastoreService service, String query,

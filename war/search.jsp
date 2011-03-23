@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="t"%>
 
 <jsp:include page="/search" />
 
@@ -110,3 +111,8 @@
 	</tbody>
 	<tfoot></tfoot>
 </table>
+
+<c:forEach items="${pageLinks}" var="link">
+	<a
+		href="/search.jsp?q=${query}&t=${type}&p=${link.pageNumber}&ps=${link.pageSize}">${link.text}</a>
+</c:forEach>
