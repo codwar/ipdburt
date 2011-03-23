@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ page import="com.google.appengine.api.users.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -32,6 +33,23 @@
 </div>
 
 <div class="container">	
+<div style="padding: 2px 10px 8px 10px; text-align: right">
+<%
+	UserService userService = UserServiceFactory.getUserService();
+
+	if (request.getUserPrincipal() != null) {
+		out.write(request.getUserPrincipal().getName());
+		out.write(" | <a href=\"");
+		out.write(userService.createLogoutURL(request.getRequestURI()));
+		out.write("\">logout</a>");
+	} else {
+		out.write("<a href=\"");
+		out.write(userService.createLoginURL(request.getRequestURI()));
+		out.write("\">login</a>");
+	}
+%>
+</div>
+
 
 	<div class="navigation">
 	    <a href="/">Inicio</a>
