@@ -31,8 +31,10 @@ public class AliasServlet extends HttpServlet {
 
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
-		list = app.alias(id, 0, 30);
+		int[] count = new int[1];
+		list = app.alias(id, 0, 30, count);
 
 		req.setAttribute("list", list);
+		req.setAttribute("count", count);
 	}
 }

@@ -25,7 +25,7 @@ public class SearchServlet extends HttpServlet {
 		final int pageNumber;
 		final int pageSize;
 		final int totalPages;
-		
+
 		public PageLink(int pageNumber, int pageSize, int totalPages) {
 			this.pageNumber = pageNumber;
 			this.totalPages = totalPages;
@@ -69,7 +69,7 @@ public class SearchServlet extends HttpServlet {
 			// Ignore.
 		}
 
-		int offset = (page-1) * pageSize;
+		int offset = (page - 1) * pageSize;
 		int limit = pageSize;
 
 		String query = req.getParameter("q");
@@ -77,16 +77,13 @@ public class SearchServlet extends HttpServlet {
 
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
-		int total = 0;
-		if (query == null || "".equals(query)) {
-			list = app.rootQuery(offset, limit);
-			total = app.rootQueryCount();
-		} else {
-			list = app.search(query, type, offset, limit);
-			total = app.searchCount(query, type);
-		}
+		int[] total = new int[1];
+		if (query == null || "".equals(query))
+			list = app.rootQuery(offset, limit, total);
+		else
+			list = app.search(query, type, offset, limit, total);
 
-		int totalPages = (int) Math.ceil((double) total / pageSize);
+		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 
 		req.setAttribute("list", list);
 		req.setAttribute("query", query);

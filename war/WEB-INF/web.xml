@@ -35,7 +35,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>serversave</servlet-name>
-		<url-pattern>/serversave</url-pattern>
+		<url-pattern>/admin/serversave</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>

@@ -1,6 +1,7 @@
 package jipdbs.data;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +13,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -61,25 +61,19 @@ public class ServerDAO {
 		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
 
-	public List<Server> findAll(DatastoreService service, int offset, int limit) {
+	public List<Server> findAll(DatastoreService service, int offset,
+			int limit, int[] count) {
 
 		Query q = new Query("Server");
 		PreparedQuery pq = service.prepare(q);
+		count[0] = pq.countEntities(withPrefetchSize(limit));
 
 		List<Server> list = new ArrayList<Server>();
 
-		for (Entity e : pq.asIterable(withLimit(limit).offset(offset)))
+		for (Entity e : pq.asIterable(withOffset(offset).limit(limit)))
 			list.add(map(e));
 
 		return list;
-	}
-
-	public int findAllCount(DatastoreService service) {
-
-		Query q = new Query("Server");
-		PreparedQuery pq = service.prepare(q);
-
-		return pq.countEntities(FetchOptions.Builder.withDefaults());
 	}
 
 	public Server findByUid(DatastoreService service, String uid) {

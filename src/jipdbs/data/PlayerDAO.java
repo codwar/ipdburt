@@ -1,6 +1,7 @@
 package jipdbs.data;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +12,6 @@ import jipdbs.util.LocalCache;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -81,23 +81,19 @@ public class PlayerDAO {
 	}
 
 	public List<Player> findLatest(DatastoreService service, int offset,
-			int limit) {
+			int limit, int[] count) {
 		Query q = new Query("Player");
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
 
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+
 		List<Player> players = new ArrayList<Player>();
 
-		for (Entity entity : pq.asIterable(withLimit(limit).offset(offset)))
+		for (Entity entity : pq.asIterable(withOffset(offset).limit(limit)))
 			players.add(map(entity));
 
 		return players;
-	}
-
-	public int findLatestCount(DatastoreService service) {
-		Query q = new Query("Player");
-		PreparedQuery pq = service.prepare(q);
-		return pq.countEntities(FetchOptions.Builder.withDefaults());
 	}
 
 	public Player get(DatastoreService service, Key player)
