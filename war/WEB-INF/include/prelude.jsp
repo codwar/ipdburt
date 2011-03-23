@@ -10,7 +10,7 @@
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
 <link rel="stylesheet" type="text/css" href="/media/styles.css" media="screen"/>
-<title>IPDBS Sudamericana</title>
+<title>IPDB Sudamericana</title>
 <script language="javascript" type="text/javascript" src="/scripts/jquery-1.5.1.min.js"></script>
 </head>
 
@@ -22,7 +22,7 @@
 				
 	<div class="header">
 		<div class="left">
-			<a href="/">IPDBS Sudamericana</a>
+			<a href="/">IPDB Sudamericana</a>
 		</div>
 		 		
 		<div class="right">

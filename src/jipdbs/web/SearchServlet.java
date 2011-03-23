@@ -78,16 +78,23 @@ public class SearchServlet extends HttpServlet {
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
 		int[] total = new int[1];
+
+		long time = System.currentTimeMillis();
+
 		if (query == null || "".equals(query))
 			list = app.rootQuery(offset, limit, total);
 		else
 			list = app.search(query, type, offset, limit, total);
+
+		time = System.currentTimeMillis() - time;
 
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 
 		req.setAttribute("list", list);
 		req.setAttribute("query", query);
 		req.setAttribute("type", type);
+		req.setAttribute("count", total[0]);
+		req.setAttribute("time", time);
 		req.setAttribute("pageLink", new PageLink(page, pageSize, totalPages));
 	}
 }

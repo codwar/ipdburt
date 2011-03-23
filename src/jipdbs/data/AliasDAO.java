@@ -116,7 +116,7 @@ public class AliasDAO {
 
 		PreparedQuery pq = service.prepare(q);
 
-		pq.countEntities(withPrefetchSize(limit));
+		count[0] = pq.countEntities(withPrefetchSize(limit));
 
 		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 

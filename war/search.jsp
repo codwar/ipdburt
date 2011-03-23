@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t"%>
-<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag" %>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
 
 <jsp:include page="/search" />
 
@@ -112,12 +112,10 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="4">
-				<pag:paginator totalPages="${pageLink.totalPages}"
-								currentPage="${pageLink.pageNumber}"
-								pageSize="${pageLink.pageSize}"
-								url="/search.jsp?q=${query}&t=${type}"/>
-			</td>
+			<td colspan="4"><span style="font-size: smaller;">Total: ${count} (${time} ms)</span><pag:paginator
+				totalPages="${pageLink.totalPages}"
+				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
+				url="/search.jsp?q=${query}&t=${type}" /></td>
 		</tr>
 	</tfoot>
 </table>
