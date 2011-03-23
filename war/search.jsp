@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag" %>
 
 <jsp:include page="/search" />
 
@@ -109,10 +110,14 @@
 			</tr>
 		</c:forEach>
 	</tbody>
-	<tfoot></tfoot>
+	<tfoot>
+		<tr>
+			<td colspan="4">
+				<pag:paginator totalPages="${pageLink.totalPages}"
+								currentPage="${pageLink.pageNumber}"
+								pageSize="${pageLink.pageSize}"
+								url="/search.jsp?q=${query}&t=${type}"/>
+			</td>
+		</tr>
+	</tfoot>
 </table>
-
-<c:forEach items="${pageLinks}" var="link">
-	<a
-		href="/search.jsp?q=${query}&t=${type}&p=${link.pageNumber}&ps=${link.pageSize}">${link.text}</a>
-</c:forEach>

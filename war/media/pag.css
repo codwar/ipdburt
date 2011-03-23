@@ -1,0 +1,58 @@
+/** PAGINATOR **/
+tfoot .pagination {
+    float:right;
+}
+
+.pagination { padding:.5em .75em; float:left; font:normal .8em arial; }
+ 
+.pagination .prev-na,
+.pagination .next-na {
+    padding:.3em;
+    font:bold .875em arial;
+}
+ 
+.pagination .prev-na,
+.pagination .next-na {
+    border:1px solid #ccc;
+    background-color:#f9f9f9;
+    color:#aaa;
+    font-weight:normal;
+}
+ 
+.pagination .prev a, .pagination .prev a:visited,
+.pagination .next a, .pagination .next a:visited {
+    border:1px solid #B3C2C7;
+    background-color:#CCD8E0;
+    color:#234f32;
+    padding:.3em;
+    font:bold .875em arial;
+}
+ 
+.pagination .prev, .pagination .prev-na { margin-right:.5em; }
+.pagination .next, .pagination .next-na { margin-left:.5em; }
+ 
+.pagination .page a, .pagination .page a:visited, .pagination .curr {
+    padding:.25em;
+    font:normal .875em verdana;
+    border:1px solid #B3C2C7;
+    background-color:#CCD8E0;
+    margin:0em .25em;   
+    color:#555555;
+}
+ 
+.pagination .curr { 
+    background-color:#AA1124;
+    color:#fff;
+    border:1px solid #AA1124;
+    font-weight:bold;
+    font-size:1em;
+}
+ 
+.pagination .page a:hover,
+.pagination .curr a:hover,
+.pagination .prev a:hover,
+.pagination .next a:hover {
+    color:#fff;
+    background-color:#AA1124;
+    border:1px solid #AA1124;
+}

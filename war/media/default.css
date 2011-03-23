@@ -204,4 +204,8 @@ h1,h2,h3 {padding-top: 6px;}
 .footer .right a {color: #DEF; text-decoration: none;}
 .footer a, .footer a:hover,.footer .right a:hover {color: #FFF;}
 
-table {
+.beta {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}

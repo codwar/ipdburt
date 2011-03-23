@@ -1,5 +1,8 @@
 package jipdbs.util;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.datanucleus.util.StringUtils;
 
 public class Functions {
@@ -55,6 +58,23 @@ public class Functions {
 		return result;
 	}
 
+	public static List<Integer> range(int min, int max) {
+		return range(min, max, 0);
+	}
+	
+	public static List<Integer> range(int min, int max, int sum) {
+		List<Integer> list = new LinkedList<Integer>();
+		if (max > 0) {
+			for (int i = min; i < max; i++) {
+				list.add(new Integer(i+sum));
+			}
+		} else {
+			for (int i = min; i > max; i--) {
+				list.add(new Integer(i+sum));
+			}			
+		}
+		return list;
+	}
 	
 	public static void main(String[] args) {
 		String s = "125.68.67.66";
@@ -63,5 +83,6 @@ public class Functions {
 		System.out.println(v);
 		System.out.println(decimalToIp(v));
 		System.out.println(getIpRange("127.0.0.*"));
+		System.out.println(range(0,-10));
 	}
 }

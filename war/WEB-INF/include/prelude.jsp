@@ -14,7 +14,9 @@
 </head>
 
 <body>
-
+<div class="beta">
+	<img src="/media/images/bimage.png">
+</div>
 <div class="top">
 				
 	<div class="header">

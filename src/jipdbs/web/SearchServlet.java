@@ -22,29 +22,22 @@ public class SearchServlet extends HttpServlet {
 
 	public static class PageLink {
 
-		final String text;
 		final int pageNumber;
 		final int pageSize;
-		final boolean enabled;
-
-		public PageLink(String text, int pageNumber, int pageSize,
-				boolean enabled) {
+		final int totalPages;
+		
+		public PageLink(int pageNumber, int pageSize, int totalPages) {
 			this.pageNumber = pageNumber;
-			this.enabled = enabled;
+			this.totalPages = totalPages;
 			this.pageSize = pageSize;
-			this.text = text;
 		}
 
-		public boolean isEnabled() {
-			return enabled;
+		public int getTotalPages() {
+			return totalPages;
 		}
 
 		public int getPageNumber() {
 			return pageNumber;
-		}
-
-		public String getText() {
-			return text;
 		}
 
 		public int getPageSize() {
@@ -61,7 +54,7 @@ public class SearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		int page = 0;
+		int page = 1;
 		int pageSize = DEFAULT_PAGE_SIZE;
 
 		try {
@@ -76,7 +69,7 @@ public class SearchServlet extends HttpServlet {
 			// Ignore.
 		}
 
-		int offset = page * pageSize;
+		int offset = (page-1) * pageSize;
 		int limit = pageSize;
 
 		String query = req.getParameter("q");
@@ -93,17 +86,11 @@ public class SearchServlet extends HttpServlet {
 			total = app.searchCount(query, type);
 		}
 
-		List<PageLink> pageLinks = new ArrayList<PageLink>();
-
 		int totalPages = (int) Math.ceil((double) total / pageSize);
-
-		for (int i = 0; i < totalPages; i++)
-			pageLinks.add(new PageLink(Integer.toString(i + 1), i, pageSize,
-					i != page));
 
 		req.setAttribute("list", list);
 		req.setAttribute("query", query);
 		req.setAttribute("type", type);
-		req.setAttribute("pageLinks", pageLinks);
+		req.setAttribute("pageLink", new PageLink(page, pageSize, totalPages));
 	}
 }
