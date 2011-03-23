@@ -59,7 +59,7 @@ public class Paginator extends TagSupport {
 			pages_outside_trailing_range = Functions.range(0, NUM_PAGES_OUTSIDE_RANGE, 1);
 		} else {
 			page_numbers = Functions.range(currentPage - ADJACENT_PAGES, currentPage + ADJACENT_PAGES + 1);
-			pages_outside_leading_range = Functions.range(0, -NUM_PAGES_OUTSIDE_RANGE);
+			pages_outside_leading_range = Functions.range(0, -NUM_PAGES_OUTSIDE_RANGE, totalPages);
 			pages_outside_trailing_range = Functions.range(0, NUM_PAGES_OUTSIDE_RANGE, 1);
 		}
 		
@@ -86,20 +86,26 @@ public class Paginator extends TagSupport {
 			}
 			html.append("...");
 		}
-		for (Integer num : page_numbers) {
-			if (currentPage.equals(num)) {
-				html.append("<span class='curr'>");
-				html.append(Integer.toString(num));
-				html.append("</span>");
-			} else {
-				html.append("<span class='page'><a href='");
-				html.append(url);
-				html.append("&p=" + Integer.toString(num));
-				html.append("&ps=" + Integer.toString(pageSize));
-				html.append("'>");
-				html.append(Integer.toString(num));
-				html.append("</a></span>");				
+		if (page_numbers.size() > 0) {
+			for (Integer num : page_numbers) {
+				if (num <= totalPages) {
+					if (currentPage.equals(num)) {
+						html.append("<span class='curr'>");
+						html.append(Integer.toString(num));
+						html.append("</span>");
+					} else {
+						html.append("<span class='page'><a href='");
+						html.append(url);
+						html.append("&p=" + Integer.toString(num));
+						html.append("&ps=" + Integer.toString(pageSize));
+						html.append("'>");
+						html.append(Integer.toString(num));
+						html.append("</a></span>");				
+					}
+				}
 			}
+		} else {
+			html.append("<span class='curr'>1</span>");
 		}
 		Collections.reverse(pages_outside_leading_range);
 		if (!in_trailing_range) {
@@ -121,7 +127,7 @@ public class Paginator extends TagSupport {
 			html.append("&ps=" + Integer.toString(pageSize));
 			html.append("'>Next &raquo;</a></span>");
 		} else {
-			html.append("<span class='next-na'>Next &raquo;</span>'");			
+			html.append("<span class='next-na'>Next &raquo;</span>");			
 		}
 		return html.toString();
 	}

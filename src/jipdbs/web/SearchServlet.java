@@ -68,7 +68,7 @@ public class SearchServlet extends HttpServlet {
 		} catch (NumberFormatException e) {
 			// Ignore.
 		}
-
+		
 		int offset = (page - 1) * pageSize;
 		int limit = pageSize;
 

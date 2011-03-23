@@ -23,7 +23,7 @@ tfoot .pagination {
 .pagination .next a, .pagination .next a:visited {
     border:1px solid #B3C2C7;
     background-color:#CCD8E0;
-    color:#234f32;
+    color:#555555;
     padding:.3em;
     font:bold .875em arial;
 }
@@ -41,9 +41,9 @@ tfoot .pagination {
 }
  
 .pagination .curr { 
-    background-color:#AA1124;
-    color:#fff;
-    border:1px solid #AA1124;
+    background-color:#555555;
+    color:#CCD8E0;
+    border:1px solid #555555;
     font-weight:bold;
     font-size:1em;
 }
@@ -53,6 +53,6 @@ tfoot .pagination {
 .pagination .prev a:hover,
 .pagination .next a:hover {
     color:#fff;
-    background-color:#AA1124;
-    border:1px solid #AA1124;
+    background-color:#555555;
+    border:1px solid #555555;
 }
