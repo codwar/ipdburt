@@ -28,7 +28,7 @@
 
 							$.each(data.items, function(key, value) {
 
-								html += "<tr style=\"cursor: pointer\";>";
+								html += "<tr>";
 								html += "<td>";
 								html += value.nickname;
 								html += "</td>";
@@ -53,28 +53,39 @@
 	}
 
 	$(function() {
-
-		$(".bound").each(function(key) {
+		$(".plus").each(function(key) {
 
 			$(this).click(function() {
 
 				var elem = $(this);
-				var key = elem.attr("id").substring(3);
-				var sibling = elem.next();
+				var key = elem.attr("id").substring("plus-".length);
+
+				var minus = elem.next();
+				var sibling = elem.parent().parent().next();
 
 				getHTML(key, function(html) {
 					sibling.html(html);
+					elem.hide();
 					sibling.show();
+					minus.show();
 				});
+
 			});
 		});
 
-		$(".sibling").each(function(key) {
+		$(".minus").each(function(key) {
 
-			var elem = $(this);
+			$(this).click(function() {
 
-			elem.click(function() {
+				var elem = $(this);
+
+				var plus = elem.prev();
+				var sibling = elem.parent().parent().next();
+
+				sibling.hide();
 				elem.hide();
+				plus.show();
+
 			});
 		});
 	});
@@ -99,9 +110,12 @@
 					<c:set var="rowStyle" scope="page" value="even" />
 				</c:otherwise>
 			</c:choose>
-			<tr class="${rowStyle} bound" id="id-${player.key}"
-				style="cursor: pointer;">
-				<td><span style="text-decoration: underline;">${fn:escapeXml(player.name)}</span></td>
+			<tr class="${rowStyle}">
+				<td><span class="plus" id="plus-${player.key}"
+					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
+					class="minus"
+					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
+				<span>${fn:escapeXml(player.name)}</span></td>
 				<td>${player.ip}</td>
 				<td><c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
@@ -109,7 +123,8 @@
 				</c:if><c:if test="${player.playing}">Conectado</c:if></td>
 				<td>${player.server}</td>
 			</tr>
-			<tr class="sibling" style="display: none;">
+			<tr style="display: none;">
+				<td>-</td>
 			</tr>
 		</c:forEach>
 		<c:if test="${fn:length(list) eq 0}">
