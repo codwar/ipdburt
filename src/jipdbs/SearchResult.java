@@ -1,5 +1,7 @@
 package jipdbs;
 
+import java.util.Date;
+
 public class SearchResult {
 
 	// A key to be able to retrieve player details.
@@ -11,11 +13,14 @@ public class SearchResult {
 	// Latest
 	private String ip;
 
-	// Last time seen. A timestamp or "Playing".
-	private String latest;
+	// Last time seen.
+	private Date latest;
 
 	// Server name.
 	private String server;
+
+	// Playing right now.
+	private boolean playing;
 
 	public String getKey() {
 		return key;
@@ -41,19 +46,27 @@ public class SearchResult {
 		this.ip = ip;
 	}
 
-	public String getLatest() {
-		return latest;
-	}
-
-	public void setLatest(String latest) {
-		this.latest = latest;
-	}
-
 	public String getServer() {
 		return server;
 	}
 
 	public void setServer(String server) {
 		this.server = server;
+	}
+
+	public Date getLatest() {
+		return latest;
+	}
+
+	public void setLatest(Date latest) {
+		this.latest = latest;
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
 	}
 }

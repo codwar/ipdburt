@@ -1,10 +1,12 @@
 package jipdbs;
 
+import java.util.Date;
+
 public class AliasResult {
 
 	private String nickname;
 	private String ip;
-	private String updated;
+	private Date updated;
 	private int count;
 
 	public String getNickname() {
@@ -23,19 +25,19 @@ public class AliasResult {
 		this.ip = ip;
 	}
 
-	public String getUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(String updated) {
-		this.updated = updated;
-	}
-
 	public int getCount() {
 		return count;
 	}
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
 	}
 }

@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="t"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
 
 <jsp:include page="/search" />
@@ -103,7 +103,10 @@
 				style="cursor: pointer;">
 				<td><span style="text-decoration: underline;">${fn:escapeXml(player.name)}</span></td>
 				<td>${player.ip}</td>
-				<td>${player.latest}</td>
+				<td><c:if test="${not player.playing }">
+					<fmt:formatDate value="${player.latest}" type="both"
+						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
+				</c:if><c:if test="${player.playing}">Conectado</c:if></td>
 				<td>${player.server}</td>
 			</tr>
 			<tr class="sibling" style="display: none;">

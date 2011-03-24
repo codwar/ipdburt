@@ -74,9 +74,9 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(player.getUpdated()
-						.equals(server.getUpdated()) ? "Connected" : player
-						.getUpdated().toString());
+				result.setLatest(player.getUpdated());
+				result.setPlaying(player.getUpdated().equals(
+						server.getUpdated()));
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());
 
@@ -128,9 +128,9 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(player.getUpdated()
-						.equals(server.getUpdated()) ? "Connected" : player
-						.getUpdated().toString());
+				result.setLatest(player.getUpdated());
+				result.setPlaying(player.getUpdated().equals(
+						server.getUpdated()));
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());
 
@@ -166,8 +166,7 @@ public class JIPDBS extends JIPDBSCore {
 					item.setCount(alias.getCount());
 					item.setIp(alias.getMaskedIp());
 					item.setNickname(alias.getNickname());
-					// in aliases we want to know when it was last used
-					item.setUpdated(alias.getUpdated().toString());
+					item.setUpdated(alias.getUpdated());
 					result.add(item);
 				}
 			}
