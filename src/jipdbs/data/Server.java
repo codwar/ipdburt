@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class Server implements Serializable {
 
@@ -21,13 +22,23 @@ public class Server implements Serializable {
 	private Date updated;
 	private int onlinePlayers;
 	private String address;
-	
+	private String keyString;
+
 	public Key getKey() {
 		return key;
 	}
 
+	public String getKeyString() {
+		return keyString;
+	}
+
+	public void setKeyString(String keyString) {
+		this.keyString = keyString;
+	}
+
 	public void setKey(Key key) {
 		this.key = key;
+		this.keyString = KeyFactory.keyToString(key);
 	}
 
 	public String getUid() {
@@ -85,7 +96,7 @@ public class Server implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");

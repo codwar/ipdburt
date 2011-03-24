@@ -12,6 +12,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serverlist</servlet-name>
 		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
 	</servlet>
+    <servlet>
+        <servlet-name>serverfetch</servlet-name>
+        <servlet-class>jipdbs.web.ServerFetchServlet</servlet-class>
+    </servlet>
 	<servlet>
 		<servlet-name>serversave</servlet-name>
 		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
@@ -37,6 +41,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serversave</servlet-name>
 		<url-pattern>/admin/serversave</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>serverfetch</servlet-name>
+        <url-pattern>/admin/serverfetch</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>
@@ -56,6 +64,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<url-pattern>/search.jsp</url-pattern>
 			<url-pattern>/serverlist.jsp</url-pattern>
 			<url-pattern>/admin/serverlist.jsp</url-pattern>
+			<url-pattern>/admin/serveredit.jsp</url-pattern>
 			<include-prelude>/WEB-INF/include/prelude.jsp</include-prelude>
 			<include-coda>/WEB-INF/include/coda.jsp</include-coda>
 		</jsp-property-group>

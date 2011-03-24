@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
 import jipdbs.SearchResult;
+import jipdbs.util.Functions;
 
 public class SearchServlet extends HttpServlet {
 
@@ -81,11 +82,14 @@ public class SearchServlet extends HttpServlet {
 
 		long time = System.currentTimeMillis();
 
-		if (query == null || "".equals(query))
+		if (query == null || "".equals(query)) {
 			list = app.rootQuery(offset, limit, total);
-		else
+		} else {
+			// this is to get the modified value and show it in search box
+			if ("ip".equals(type)) query = Functions.fixIp(query);
 			list = app.search(query, type, offset, limit, total);
-
+		}
+		
 		time = System.currentTimeMillis() - time;
 
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);

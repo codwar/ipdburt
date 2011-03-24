@@ -1,0 +1,12 @@
+.icon {
+  background-repeat: no-repeat;
+  background-position: 5px 50%;
+  padding-top: 1px;
+  padding-right: 0;
+  padding-bottom: 1px;
+  padding-left: 24px !important;
+  line-height: 16px;
+}
+.edit {
+    background-image: url('images/pencil.png');
+}

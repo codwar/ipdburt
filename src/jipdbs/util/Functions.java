@@ -44,6 +44,27 @@ public class Functions {
 		return s.toString();
 	}
 
+	public static String fixIp(String query) {
+		String[] parts = StringUtils.split(query, ".");
+		String[] r = new String[4];
+		for (int i = 0; i < 3 ; i++) {
+			if (i < parts.length) r[i]=parts[i];
+			else r[i] = "*";
+		}
+		r[3] = "*";
+		if ("*".equals(r[0])) return "0.0.0.0";
+		return join(r, ".");
+	}
+	
+	public static String join(String[] list, String token) {
+		StringBuilder builder = new StringBuilder();
+		for (int i=0;i<list.length;i++) {
+			builder.append(list[i]);
+			if (i < (list.length - 1)) builder.append(token);
+		}
+		return builder.toString();
+	}
+	
 	public static Long[] getIpRange(String query) {
 		Long[] result = new Long[2];
 		if (query.contains("*")) {

@@ -13,6 +13,7 @@ import jipdbs.data.Server;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
@@ -38,6 +39,26 @@ public class JIPDBS extends JIPDBSCore {
 		serverDAO.save(service, server);
 	}
 
+	public Server getServer(String key) throws EntityNotFoundException {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		return serverDAO.get(service, KeyFactory.stringToKey(key));
+	}
+	
+	public void saveServer(String key, String name, String admin, String ip) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		try {
+			Server server = getServer(key);
+			server.setName(name);
+			server.setAdmin(new Email(admin));
+			server.setAddress(ip);
+			serverDAO.save(service, server);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public List<Server> getServers(int offset, int limit, int[] count) {
 		try {
 			DatastoreService service = DatastoreServiceFactory
@@ -100,7 +121,7 @@ public class JIPDBS extends JIPDBSCore {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
 			List<Alias> aliasses = new ArrayList<Alias>();
-
+			
 			if ("alias".equals(type)) {
 				aliasses = aliasDAO.findByNickname(service, query, offset,
 						limit, count);
@@ -112,8 +133,7 @@ public class JIPDBS extends JIPDBSCore {
 									.substring(0, MAX_NGRAM_QUERY), offset,
 							limit, count);
 			} else if ("ip".equals(type)) {
-				aliasses = aliasDAO.findByIP(service, query, offset, limit,
-						count);
+				aliasses = aliasDAO.findByIP(service, query, offset, limit,	count);
 			}
 
 			for (Alias alias : aliasses) {
@@ -138,6 +158,7 @@ public class JIPDBS extends JIPDBSCore {
 			}
 			return results;
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();

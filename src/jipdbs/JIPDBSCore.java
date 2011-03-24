@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.datanucleus.util.StringUtils;
+
 import jipdbs.data.Alias;
 import jipdbs.data.AliasDAO;
 import jipdbs.data.Player;
@@ -55,13 +57,14 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-				if (remoteAddr != null) {
+				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
 					}
 				}
 				server.setName(name);
+				server.setUpdated(new Date());
 				serverDAO.save(service, server);
 				tx.commit();
 			} else {
@@ -96,7 +99,7 @@ public class JIPDBSCore {
 
 			if (server != null) {
 				
-				if (remoteAddr != null) {
+				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
@@ -181,7 +184,7 @@ public class JIPDBSCore {
 
 			if (server != null) {
 				
-				if (remoteAddr != null) {
+				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
