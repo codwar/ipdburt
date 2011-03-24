@@ -10,6 +10,7 @@
 		<json:object>
 			<json:property name="nickname" value="${item.nickname}" />
 			<json:property name="ip" value="${item.ip}" />
+			<json:property name="ipSearch" value="${item.ipSearch}" />
 			<json:property name="updated">
 				<fmt:formatDate value="${item.updated}" type="both"
 					timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />

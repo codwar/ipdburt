@@ -40,4 +40,14 @@ public class AliasResult {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
+
+	public String getIpSearch() {
+		if (ip == null)
+			return null;
+		int l = ip.lastIndexOf('.');
+		if (l < 0)
+			return null;
+
+		return ip.substring(0, l + 1) + "*";
+	}
 }

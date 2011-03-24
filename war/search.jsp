@@ -29,10 +29,14 @@
 							$.each(data.items, function(key, value) {
 
 								html += "<tr>";
-								html += "<td>";
+								html += "<td><a href=\"/search.jsp?q=";
 								html += value.nickname;
-								html += "</td>";
-								html += "<td>";
+								html += "&t=alias\">";
+								html += value.nickname;
+								html += "</a></td>";
+								html += "<td><a href=\"/search.jsp?q=";
+								html += value.ipSearch;
+								html += "&t=ip\">";
 								html += value.ip;
 								html += "</td>";
 								html += "<td>";
@@ -115,8 +119,8 @@
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
-				<span>${fn:escapeXml(player.name)}</span></td>
-				<td>${player.ip}</td>
+				<span> <a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
+				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a></td>
 				<td><c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />

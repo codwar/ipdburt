@@ -69,4 +69,14 @@ public class SearchResult {
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
 	}
+
+	public String getIpSearch() {
+		if (ip == null)
+			return null;
+		int l = ip.lastIndexOf('.');
+		if (l < 0)
+			return null;
+
+		return ip.substring(0, l + 1) + "*";
+	}
 }
