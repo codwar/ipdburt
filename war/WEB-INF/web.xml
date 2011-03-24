@@ -20,6 +20,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serversave</servlet-name>
 		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
 	</servlet>
+    <servlet>
+        <servlet-name>infoservlet</servlet-name>
+        <servlet-class>jipdbs.web.InfoServlet</servlet-class>
+    </servlet>
 	<servlet>
 		<servlet-name>xmlrpc</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpcServlet</servlet-class>
@@ -37,6 +41,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serverlist</servlet-name>
 		<url-pattern>/serverlist</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>infoservlet</servlet-name>
+        <url-pattern>/infoservlet</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>serversave</servlet-name>
 		<url-pattern>/admin/serversave</url-pattern>

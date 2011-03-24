@@ -31,6 +31,9 @@ $(document).ready(function() {
 </script>
 </head>
 <body>
+
+<jsp:include page="/infoservlet" />
+
 <div class="beta">
 	<img src="/media/images/bimage.png">
 </div>
