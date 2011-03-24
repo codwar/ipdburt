@@ -100,7 +100,7 @@ public class JIPDBS extends JIPDBSCore {
 						server.getUpdated()));
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());
-
+				result.setBanInfo(player.getBanInfo());
 				results.add(result);
 			}
 			return results;
@@ -153,7 +153,7 @@ public class JIPDBS extends JIPDBSCore {
 						server.getUpdated()));
 				result.setName(alias.getNickname());
 				result.setServer(server.getName());
-
+				result.setBanInfo(player.getBanInfo());
 				results.add(result);
 			}
 			return results;

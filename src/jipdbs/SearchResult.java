@@ -22,6 +22,16 @@ public class SearchResult {
 	// Playing right now.
 	private boolean playing;
 
+	private String banInfo;
+	
+	public String getBanInfo() {
+		return banInfo;
+	}
+
+	public void setBanInfo(String banInfo) {
+		this.banInfo = banInfo;
+	}
+
 	public String getKey() {
 		return key;
 	}

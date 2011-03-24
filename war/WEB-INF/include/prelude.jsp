@@ -12,11 +12,13 @@
 <meta name="author" content="author"/> 
 <link rel="stylesheet" type="text/css" href="/media/styles.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
 <script type="text/javascript" src="/media/js/jquery.loading.js"></script>
+<script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('body').ajaxStart(function() {

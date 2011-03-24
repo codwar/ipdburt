@@ -92,6 +92,9 @@
 
 			});
 		});
+		
+		$(".exclamation").tipTip();
+		
 	});
 </script>
 
@@ -119,7 +122,7 @@
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
-				<span> <a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
+				<span <c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>> <a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
 				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a></td>
 				<td><c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"

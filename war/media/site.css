@@ -7,6 +7,14 @@
   padding-left: 24px !important;
   line-height: 16px;
 }
+.icon-right {
+	background-position: 100% 50% !important;
+	padding-left: 0px !important;
+    padding-right: 24px !important;	
+}
 .edit {
     background-image: url('images/pencil.png');
+}
+.exclamation {
+    background-image: url('images/exclamation.png');
 }
