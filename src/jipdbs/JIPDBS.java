@@ -17,6 +17,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
 
+	private static final int MAX_NGRAM_QUERY = 8;
+
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
 	public void addServer(String name, String admin, String uid, String ip) {
@@ -104,7 +106,10 @@ public class JIPDBS extends JIPDBSCore {
 						limit, count);
 				// No exact match, try ngrams.
 				if (aliasses.size() == 0)
-					aliasses = aliasDAO.findByNGrams(service, query, offset,
+					aliasses = aliasDAO.findByNGrams(
+							service,
+							query.length() <= MAX_NGRAM_QUERY ? query : query
+									.substring(0, MAX_NGRAM_QUERY), offset,
 							limit, count);
 			} else if ("ip".equals(type)) {
 				aliasses = aliasDAO.findByIP(service, query, offset, limit,
