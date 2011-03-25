@@ -160,8 +160,8 @@
 						</tr>
 					</thead>
 					<tr id="more" style="cursor: pointer;">
-						<td colspan="4" style="text-align: center;"><a
-							href="javascript:;">Más...</a></td>
+						<td colspan="4" style="text-align: center;">
+						<span class="icon refresh">Más...</span></td>
 					</tr>
 				</table>
 				</td>
