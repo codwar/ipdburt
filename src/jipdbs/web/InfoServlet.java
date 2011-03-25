@@ -30,7 +30,7 @@ public class InfoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		App app = new App(SystemProperty.version.get());
+		App app = new App(SystemProperty.applicationVersion.get());
 		req.setAttribute("app", app);
 		
 	}
