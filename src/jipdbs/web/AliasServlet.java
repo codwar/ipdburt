@@ -28,12 +28,21 @@ public class AliasServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String id = req.getParameter("id");
+		
+		int offset = 0;
+		
+		try {
+			offset = Integer.parseInt(req.getParameter("o"));
+		} catch (NumberFormatException e) {
+			// Ignore.
+		}
 
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
 		int[] count = new int[1];
-		list = app.alias(id, 0, 30, count);
+		list = app.alias(id, offset, 20, count);
 
+		req.setAttribute("hasMore", new Boolean((offset + 20) < count[0]));
 		req.setAttribute("list", list);
 		req.setAttribute("count", count);
 	}

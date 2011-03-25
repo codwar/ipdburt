@@ -6,6 +6,7 @@
 <jsp:include page="/alias" />
 
 <json:object>
+	<json:property name="hasMore" value="${hasMore}" />
 	<json:array name="items" var="item" items="${list}">
 		<json:object>
 			<json:property name="nickname" value="${item.nickname}" />
