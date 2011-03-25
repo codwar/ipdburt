@@ -18,6 +18,8 @@ public class AliasServlet extends HttpServlet {
 
 	private JIPDBS app;
 
+	private final int DEFAULT_OFFSET = 10;
+	
 	@Override
 	public void init() throws ServletException {
 		app = (JIPDBS) getServletContext().getAttribute("jipdbs");
@@ -40,9 +42,9 @@ public class AliasServlet extends HttpServlet {
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
 		int[] count = new int[1];
-		list = app.alias(id, offset, 20, count);
+		list = app.alias(id, offset, DEFAULT_OFFSET, count);
 
-		req.setAttribute("hasMore", new Boolean((offset + 20) < count[0]));
+		req.setAttribute("hasMore", new Boolean((offset + DEFAULT_OFFSET) < count[0]));
 		req.setAttribute("list", list);
 		req.setAttribute("count", count);
 	}
