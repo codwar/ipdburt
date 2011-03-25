@@ -7,5 +7,17 @@
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 	</system-properties>
-	
+
+    <ssl-enabled>false</ssl-enabled>
+
+    <warmup-requests-enabled>false</warmup-requests-enabled>
+
+    <static-files>
+        <include path="/**.png" expiration="7d"/>
+        <include path="/**.jpg" expiration="7d"/>
+        <include path="/**.gif" expiration="7d"/>
+        <include path="/**.js" expiration="10m"/> <!-- AT LEAST UNTIL RELEASE -->
+        <include path="/**.css" expiration="10m"/> <!-- AT LEAST UNTIL RELEASE -->
+    </static-files>
+    	
 </appengine-web-app>
