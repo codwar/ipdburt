@@ -6,6 +6,7 @@
   padding-bottom: 1px;
   padding-left: 24px !important;
   line-height: 16px;
+  text-decoration: none;
 }
 .icon-right {
 	background-position: 100% 50% !important;
@@ -17,4 +18,7 @@
 }
 .exclamation {
     background-image: url('images/exclamation.png');
+}
+.refresh {
+    background-image: url('images/arrow_refresh.png');
 }

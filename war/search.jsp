@@ -16,44 +16,40 @@
 </small>
 
 <script language="javascript">
-	function getHTML(key, callback) {
+	function getHTML(key, offset, callback) {
 
-		$
-				.getJSON(
-						"/json/alias.jsp?id=" + key,
-						function(data) {
+		$.getJSON("/json/alias.jsp?id=" + key + "&o=" + offset, function(data) {
 
-							var html = "<td colspan=\"4\" style=\"padding: 20px;\"><table><thead><tr><th>Nombre</th><th>IP</th>"
-									+ "<th>Visto</th><th>Cantidad de Usos</th></tr></thead>";
+			var rows = new Array();
 
-							$.each(data.items, function(key, value) {
+			$.each(data.items, function(key, value) {
 
-								html += "<tr>";
-								html += "<td><a href=\"/search.jsp?q=";
-								html += value.nickname;
-								html += "&t=alias\">";
-								html += value.nickname;
-								html += "</a></td>";
-								html += "<td><a href=\"/search.jsp?q=";
-								html += value.ipSearch;
-								html += "&t=ip\">";
-								html += value.ip;
-								html += "</td>";
-								html += "<td>";
-								html += value.updated;
-								html += "</td>";
-								html += "<td>";
-								html += value.count;
-								html += "</td>";
-								html += "</tr>";
+				var html = "";
+				html += "<tr class=\"aliasrow\">";
+				html += "<td><a href=\"/search.jsp?q=";
+				html += value.nickname;
+				html += "&t=alias\">";
+				html += value.nickname;
+				html += "</a></td>";
+				html += "<td><a href=\"/search.jsp?q=";
+				html += value.ipSearch;
+				html += "&t=ip\">";
+				html += value.ip;
+				html += "</td>";
+				html += "<td>";
+				html += value.updated;
+				html += "</td>";
+				html += "<td>";
+				html += value.count;
+				html += "</td>";
+				html += "</tr>";
 
-							});
+				rows[key] = $(html);
+			});
 
-							html += "</table></td>";
+			callback(offset, rows, data.hasMore);
 
-							callback(html);
-
-						});
+		});
 	}
 
 	$(function() {
@@ -67,12 +63,31 @@
 				var minus = elem.next();
 				var sibling = elem.parent().parent().next();
 
-				getHTML(key, function(html) {
-					sibling.html(html);
+				var updateFun = function(offset, rows, hasMore) {
+
+					var table = sibling.find("table");
+
+					var more = table.find("#more");
+
+					$.each(rows, function(key, value) {
+						more.before(value);
+					});
+
+					if (hasMore) {
+						more.show();
+						more.unbind();
+						more.click(function() {
+							getHTML(key, offset + 20, updateFun);
+						});
+					} else
+						more.hide();
+
 					elem.hide();
 					minus.show();
-					sibling.show("fast");
-				});
+					sibling.show();
+				};
+
+				getHTML(key, 0, updateFun);
 
 			});
 		});
@@ -86,15 +101,16 @@
 				var plus = elem.prev();
 				var sibling = elem.parent().parent().next();
 
-				sibling.hide("fast");
+				sibling.hide();
+				sibling.find(".aliasrow").remove();
 				elem.hide();
 				plus.show();
 
 			});
 		});
-		
+
 		$(".exclamation").tipTip();
-		
+
 	});
 </script>
 
@@ -122,7 +138,9 @@
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
-				<span <c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>> <a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
+				<span
+					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
+				<a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
 				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a></td>
 				<td><c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
@@ -131,7 +149,22 @@
 				<td>${player.server}</td>
 			</tr>
 			<tr style="display: none;">
-				<td>-</td>
+				<td colspan="4" style="padding: 20px;">
+				<table>
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>IP</th>
+							<th>Visto</th>
+							<th>Cantidad de Usos</th>
+						</tr>
+					</thead>
+					<tr id="more" style="cursor: pointer;">
+						<td colspan="4" style="text-align: center;">
+						<span class="icon refresh">Más...</span></td>
+					</tr>
+				</table>
+				</td>
 			</tr>
 		</c:forEach>
 		<c:if test="${fn:length(list) eq 0}">
