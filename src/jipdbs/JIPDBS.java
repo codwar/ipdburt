@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
 
+	private static final int MIN_NGRAM_QUERY = 2;
 	private static final int MAX_NGRAM_QUERY = 8;
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
@@ -40,12 +41,14 @@ public class JIPDBS extends JIPDBSCore {
 	}
 
 	public Server getServer(String key) throws EntityNotFoundException {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 		return serverDAO.get(service, KeyFactory.stringToKey(key));
 	}
-	
+
 	public void saveServer(String key, String name, String admin, String ip) {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 		try {
 			Server server = getServer(key);
 			server.setName(name);
@@ -56,9 +59,9 @@ public class JIPDBS extends JIPDBSCore {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public List<Server> getServers(int offset, int limit, int[] count) {
 		try {
 			DatastoreService service = DatastoreServiceFactory
@@ -121,19 +124,20 @@ public class JIPDBS extends JIPDBSCore {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
 			List<Alias> aliasses = new ArrayList<Alias>();
-			
+
 			if ("alias".equals(type)) {
 				aliasses = aliasDAO.findByNickname(service, query, offset,
 						limit, count);
 				// No exact match, try ngrams.
-				if (aliasses.size() == 0)
+				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY)
 					aliasses = aliasDAO.findByNGrams(
 							service,
 							query.length() <= MAX_NGRAM_QUERY ? query : query
 									.substring(0, MAX_NGRAM_QUERY), offset,
 							limit, count);
 			} else if ("ip".equals(type)) {
-				aliasses = aliasDAO.findByIP(service, query, offset, limit,	count);
+				aliasses = aliasDAO.findByIP(service, query, offset, limit,
+						count);
 			}
 
 			for (Alias alias : aliasses) {

@@ -70,8 +70,8 @@
 				getHTML(key, function(html) {
 					sibling.html(html);
 					elem.hide();
-					sibling.show();
 					minus.show();
+					sibling.show("fast");
 				});
 
 			});
@@ -86,7 +86,7 @@
 				var plus = elem.prev();
 				var sibling = elem.parent().parent().next();
 
-				sibling.hide();
+				sibling.hide("fast");
 				elem.hide();
 				plus.show();
 
