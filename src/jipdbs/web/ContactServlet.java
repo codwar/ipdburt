@@ -56,7 +56,7 @@ public class ContactServlet extends HttpServlet {
 			builder.append("\r\n");
 		}
 		builder.append("\r\n");
-		builder.append("------------- MENSAJE -------------");
+		builder.append("------------- MENSAJE -------------\r\n\r\n");
 		builder.append(text);
 		
 		sendMail(mail, builder.toString());
