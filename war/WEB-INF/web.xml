@@ -81,21 +81,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>alias</servlet-name>
 		<url-pattern>/alias</url-pattern>
 	</servlet-mapping>
-
-	<jsp-config>
-		<jsp-property-group>
-			<url-pattern>/error.jsp</url-pattern>
-			<url-pattern>/search.jsp</url-pattern>
-			<url-pattern>/serverlist.jsp</url-pattern>
-			<url-pattern>/contact.jsp</url-pattern>
-			<url-pattern>/playerinfo.jsp</url-pattern>
-			<url-pattern>/admin/serverlist.jsp</url-pattern>
-			<url-pattern>/admin/serveredit.jsp</url-pattern>
-			<include-prelude>/WEB-INF/include/prelude.jsp</include-prelude>
-			<include-coda>/WEB-INF/include/coda.jsp</include-coda>
-		</jsp-property-group>
-	</jsp-config>
-
+    
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>tasks</web-resource-name>
@@ -114,7 +100,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<error-code>404</error-code>
 		<location>/error.jsp</location>
 	</error-page>
-
+    
 	<welcome-file-list>
 		<welcome-file>search.jsp</welcome-file>
 	</welcome-file-list>

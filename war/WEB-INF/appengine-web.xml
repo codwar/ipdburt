@@ -10,7 +10,7 @@
 
     <ssl-enabled>false</ssl-enabled>
 
-    <warmup-requests-enabled>false</warmup-requests-enabled>
+    <!-- warmup-requests-enabled>false</warmup-requests-enabled-->
 
     <static-files>
         <include path="/**.png" expiration="7d"/>

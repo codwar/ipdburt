@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
 
-<jsp:include page="_serverlist.jsp" />
+<template:insert template='/layout.jsp'>
+  <template:put name='content' content='/admin/pages/serverlist.jsp'/>
+</template:insert>
