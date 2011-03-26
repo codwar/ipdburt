@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
+import jipdbs.PageLink;
 import jipdbs.SearchResult;
 import jipdbs.util.Functions;
 
@@ -20,31 +21,6 @@ public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = -729953187311026007L;
 
 	private JIPDBS app;
-
-	public static class PageLink {
-
-		final int pageNumber;
-		final int pageSize;
-		final int totalPages;
-
-		public PageLink(int pageNumber, int pageSize, int totalPages) {
-			this.pageNumber = pageNumber;
-			this.totalPages = totalPages;
-			this.pageSize = pageSize;
-		}
-
-		public int getTotalPages() {
-			return totalPages;
-		}
-
-		public int getPageNumber() {
-			return pageNumber;
-		}
-
-		public int getPageSize() {
-			return pageSize;
-		}
-	}
 
 	@Override
 	public void init() throws ServletException {

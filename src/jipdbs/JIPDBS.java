@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
@@ -40,10 +41,14 @@ public class JIPDBS extends JIPDBSCore {
 		serverDAO.save(service, server);
 	}
 
-	public Server getServer(String key) throws EntityNotFoundException {
+	public Server getServer(String encodedKey) throws EntityNotFoundException {
+		return getServer(KeyFactory.stringToKey(encodedKey));
+	}
+	
+	public Server getServer(Key key) throws EntityNotFoundException {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-		return serverDAO.get(service, KeyFactory.stringToKey(key));
+		return serverDAO.get(service, key);
 	}
 
 	public void saveServer(String key, String name, String admin, String ip) {
@@ -167,6 +172,16 @@ public class JIPDBS extends JIPDBSCore {
 			count[0] = 0;
 			return Collections.emptyList();
 		}
+	}
+	
+	public Player getPlayer(String player) throws EntityNotFoundException {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		return playerDAO.get(service, KeyFactory.stringToKey(player));
+	}
+	
+	public Alias getLastAlias(String player) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		return aliasDAO.getLastUsedAlias(service, KeyFactory.stringToKey(player));
 	}
 
 	public List<AliasResult> alias(String encodedKey, int offset, int limit,
