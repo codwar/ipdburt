@@ -12,12 +12,18 @@
 
     <!-- warmup-requests-enabled>false</warmup-requests-enabled-->
 
+    <!-- TO ALLOW THE APP SEND MAIL WITH OWN ADDRESS -->
+    <inbound-services>
+        <service>mail</service>
+    </inbound-services>
+
     <static-files>
-        <include path="/**.png" expiration="7d"/>
-        <include path="/**.jpg" expiration="7d"/>
-        <include path="/**.gif" expiration="7d"/>
-        <include path="/**.js" expiration="10m"/> <!-- AT LEAST UNTIL RELEASE -->
-        <include path="/**.css" expiration="10m"/> <!-- AT LEAST UNTIL RELEASE -->
+        <include path="/**.png" expiration="14d"/>
+        <include path="/**.jpg" expiration="14d"/>
+        <include path="/**.gif" expiration="14d"/>
+        <include path="/**.ico" expiration="14d"/>
+        <include path="/**.js" expiration="1h"/> <!-- AT LEAST UNTIL RELEASE -->
+        <include path="/**.css" expiration="1h"/> <!-- AT LEAST UNTIL RELEASE -->
     </static-files>
     	
 </appengine-web-app>

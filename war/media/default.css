@@ -117,13 +117,13 @@ h1,h2,h3 {padding-top: 6px;}
 }
 /* navigation */
 .navigation {	
-	background: #D9E1E5 url(images/nav.gif);
+	background: #D9E1E5 url(images/nav.png);
 	border: 1px solid #DFEEF7;
 	border-color: #DFEEF7 #CFDEE7;
 	height: 41px;
 }
 .navigation a {
-	background: #D9E1E5 url(images/nav.gif);
+	background: #D9E1E5 url(images/nav.png);
 	border-right: 1px solid #AFBEC7;
 	color: #456;
 	display: block;
@@ -192,7 +192,7 @@ h1,h2,h3 {padding-top: 6px;}
 
 /* footer */
 .footer {
-	background: url(images/bgfooter.gif) repeat-x;
+	background: url(images/bgfooter.png) repeat-x;
 	color: #FFF;
 	font: bold 1em sans-serif;
 	line-height: 39px;

@@ -13,7 +13,12 @@
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
-<link rel="stylesheet" type="text/css" href="/media/styles.css" media="screen"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/pag.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/table.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/inputs.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script>
@@ -38,7 +43,7 @@ $(document).ready(function() {
 <jsp:include page="/infoservlet" />
 
 <div class="beta">
-	<img src="/media/images/bimage.png">
+	<img src="/media/images/bimage.png" width="211" height="215"/>
 </div>
 <div class="top">
 				

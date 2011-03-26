@@ -25,8 +25,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 @SuppressWarnings("serial")
 public class ContactServlet extends HttpServlet {
 
-	private final String FROM_ADDR = "admin@admin.com";
-	private final String[] CONTACT_ADDR = {"admin@ipdburt.com.ar"};
+	private final String FROM_ADDR = "contact@ipdburt.appspotmail.com";
+	private final String[] CONTACT_ADDR = {"admin@ipdburt.com.ar","info@ipdburt.com.ar"};
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)

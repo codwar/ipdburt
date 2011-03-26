@@ -12,18 +12,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>serverlist</servlet-name>
 		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>serverfetch</servlet-name>
-        <servlet-class>jipdbs.web.ServerFetchServlet</servlet-class>
-    </servlet>
+	<servlet>
+		<servlet-name>serverfetch</servlet-name>
+		<servlet-class>jipdbs.web.ServerFetchServlet</servlet-class>
+	</servlet>
 	<servlet>
 		<servlet-name>serversave</servlet-name>
 		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>infoservlet</servlet-name>
-        <servlet-class>jipdbs.web.InfoServlet</servlet-class>
-    </servlet>
+	<servlet>
+		<servlet-name>infoservlet</servlet-name>
+		<servlet-class>jipdbs.web.InfoServlet</servlet-class>
+	</servlet>
 	<servlet>
 		<servlet-name>xmlrpc</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpcServlet</servlet-class>
@@ -36,39 +36,55 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>alias</servlet-name>
 		<servlet-class>jipdbs.web.AliasServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>contactform</servlet-name>
-        <servlet-class>jipdbs.web.ContactServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>playerinfo</servlet-name>
-        <servlet-class>jipdbs.web.PlayerInfoServlet</servlet-class>
-    </servlet>
-        
-    <servlet-mapping>
-        <servlet-name>playerinfo</servlet-name>
-        <url-pattern>/playerinfo</url-pattern>
-    </servlet-mapping>
+	<servlet>
+		<servlet-name>contactform</servlet-name>
+		<servlet-class>jipdbs.web.ContactServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>playerinfo</servlet-name>
+		<servlet-class>jipdbs.web.PlayerInfoServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>truncate</servlet-name>
+		<servlet-class>jipdbs.web.TruncateServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>mailhandler</servlet-name>
+		<servlet-class>jipdbs.web.MailHandlerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mailhandler</servlet-name>
+		<url-pattern>/_ah/mail/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>playerinfo</servlet-name>
+		<url-pattern>/playerinfo</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>serverlist</servlet-name>
 		<url-pattern>/serverlist</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>contactform</servlet-name>
-        <url-pattern>/contact</url-pattern>
-    </servlet-mapping>	
-    <servlet-mapping>
-        <servlet-name>infoservlet</servlet-name>
-        <url-pattern>/infoservlet</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>contactform</servlet-name>
+		<url-pattern>/contact</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>infoservlet</servlet-name>
+		<url-pattern>/infoservlet</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>serversave</servlet-name>
 		<url-pattern>/admin/serversave</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>serverfetch</servlet-name>
-        <url-pattern>/admin/serverfetch</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>serverfetch</servlet-name>
+		<url-pattern>/admin/serverfetch</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>truncate</servlet-name>
+		<url-pattern>/admin/truncate</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>
@@ -81,10 +97,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>alias</servlet-name>
 		<url-pattern>/alias</url-pattern>
 	</servlet-mapping>
-    
+
 	<security-constraint>
 		<web-resource-collection>
-			<web-resource-name>tasks</web-resource-name>
+			<web-resource-name>mail</web-resource-name>
+			<url-pattern>/_ah/mail/*</url-pattern>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>admin</web-resource-name>
 			<url-pattern>/admin/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
@@ -100,7 +120,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<error-code>404</error-code>
 		<location>/error.jsp</location>
 	</error-page>
-    
+
 	<welcome-file-list>
 		<welcome-file>search.jsp</welcome-file>
 	</welcome-file-list>

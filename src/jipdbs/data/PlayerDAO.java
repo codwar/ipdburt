@@ -100,4 +100,15 @@ public class PlayerDAO {
 			throws EntityNotFoundException {
 		return map(service.get(player));
 	}
+	
+	public void truncate(DatastoreService service) {
+		Query q = new Query("Player");
+		q.setKeysOnly();
+		PreparedQuery pq = service.prepare(q);
+		List<Key> keys = new ArrayList<Key>();
+		for (Entity entity : pq.asIterable()) {
+			keys.add(entity.getKey());
+		}
+		service.delete(keys);
+	}
 }
