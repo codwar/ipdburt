@@ -40,15 +40,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <servlet-name>contactform</servlet-name>
         <servlet-class>jipdbs.web.ContactServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>playerinfo</servlet-name>
-        <servlet-class>jipdbs.web.PlayerInfoServlet</servlet-class>
-    </servlet>
-        
-    <servlet-mapping>
-        <servlet-name>playerinfo</servlet-name>
-        <url-pattern>/playerinfo</url-pattern>
-    </servlet-mapping>
+    
 	<servlet-mapping>
 		<servlet-name>serverlist</servlet-name>
 		<url-pattern>/serverlist</url-pattern>
@@ -88,7 +80,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<url-pattern>/search.jsp</url-pattern>
 			<url-pattern>/serverlist.jsp</url-pattern>
 			<url-pattern>/contact.jsp</url-pattern>
-			<url-pattern>/playerinfo.jsp</url-pattern>
 			<url-pattern>/admin/serverlist.jsp</url-pattern>
 			<url-pattern>/admin/serveredit.jsp</url-pattern>
 			<include-prelude>/WEB-INF/include/prelude.jsp</include-prelude>
