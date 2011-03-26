@@ -152,6 +152,10 @@
 				<td colspan="4" style="padding: 20px;">
 				<table>
 					<thead>
+					    <tr>
+					    <td colspan="4" style="text-align: right;">
+                        <a href="/playerinfo.jsp?id=${player.key}" class="icon details">Todo</a></td>
+					    </tr>
 						<tr>
 							<th>Nombre</th>
 							<th>IP</th>
