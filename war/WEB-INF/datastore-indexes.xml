@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+    <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="player" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="ngrams" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="player" direction="asc"/>
+        <property name="count" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="ip" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+</datastore-indexes>
