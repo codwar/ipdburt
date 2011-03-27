@@ -3,6 +3,7 @@ package jipdbs.data;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
 public class Player implements Serializable {
@@ -18,6 +19,29 @@ public class Player implements Serializable {
 	private Date created;
 	private Date updated;
 	private String banInfo;
+
+	public Player() {
+	}
+
+	public Player(Entity entity) {
+		this.setKey(entity.getKey());
+		this.setCreated((Date) entity.getProperty("created"));
+		this.setUpdated((Date) entity.getProperty("updated"));
+		this.setGuid((String) entity.getProperty("guid"));
+		this.setServer((Key) entity.getProperty("server"));
+		this.setBanInfo((String) entity.getProperty("baninfo"));
+	}
+
+	public Entity toEntity() {
+		Entity entity = this.getKey() == null ? new Entity("Player")
+				: new Entity(this.getKey());
+		entity.setProperty("baninfo", this.getBanInfo());
+		entity.setProperty("created", this.getCreated());
+		entity.setProperty("guid", this.getGuid());
+		entity.setProperty("server", this.getServer());
+		entity.setProperty("updated", this.getUpdated());
+		return entity;
+	}
 
 	public Key getKey() {
 		return key;

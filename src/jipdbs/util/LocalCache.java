@@ -41,8 +41,9 @@ public class LocalCache {
 	public Object get(String key) {
 		if (cacheManager == null)
 			return null;
-		log.finest("Lookup for key " + key);
-		return cacheManager.get(key);
+		Object ob = cacheManager.get(key); 
+		log.finest("Lookup for key " + key + " [" + Boolean.toString(ob != null) + "]");
+		return ob;
 	}
 
 	public void put(String key, Object value) {

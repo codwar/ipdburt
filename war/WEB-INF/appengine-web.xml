@@ -8,9 +8,9 @@
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 	</system-properties>
 
-    <ssl-enabled>false</ssl-enabled>
+    <ssl-enabled>true</ssl-enabled>
 
-    <!-- warmup-requests-enabled>false</warmup-requests-enabled-->
+    <warmup-requests-enabled>true</warmup-requests-enabled>
 
     <!-- TO ALLOW THE APP SEND MAIL WITH OWN ADDRESS -->
     <inbound-services>

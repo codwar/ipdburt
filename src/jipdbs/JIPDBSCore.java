@@ -1,5 +1,6 @@
 package jipdbs;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import jipdbs.util.NGrams;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Transaction;
 
 public class JIPDBSCore {
@@ -106,24 +108,30 @@ public class JIPDBSCore {
 					}
 				}
 				
+				List<Entity> entities = new ArrayList<Entity>();
+				
 				for (PlayerInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
 							server.getKey(), info.getGuid());
 
+					Date lastPlayerUpdate = null;
 					if (player == null) {
 						player = new Player();
 						player.setCreated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
+						player.setUpdated(stamp);
+						playerDAO.save(service, player);
+					} else {
+						lastPlayerUpdate = player.getUpdated();
+						player.setUpdated(stamp);
+						/* if player is connected then clear baninfo */
+						player.setBanInfo(null);
+						playerDAO.cache(player);
+						entities.add(player.toEntity());
 					}
-
-					Date lastPlayerUpdate = player.getUpdated();
-					player.setUpdated(stamp);
-					/* if player is connected then clear baninfo */
-					player.setBanInfo(null);
-					playerDAO.save(service, player);
 
 					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
 							service, player.getKey(), info.getName(),
@@ -144,15 +152,15 @@ public class JIPDBSCore {
 							alias.setCount(alias.getCount() + 1);
 						}
 					}
-
 					alias.setUpdated(stamp);
-					aliasDAO.save(service, alias);
-
+					if (alias.getKey() != null) aliasDAO.cache(alias);
+					entities.add(alias.toEntity());
 				}
 				server.setOnlinePlayers(list.size());
 				server.setUpdated(stamp);
-				serverDAO.save(service, server);
-
+				serverDAO.cache(server);
+				entities.add(server.toEntity());
+				service.put(entities);
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}

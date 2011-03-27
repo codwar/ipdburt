@@ -5,6 +5,11 @@
         <property name="updated" direction="desc"/>
     </datastore-index>
     <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="player" direction="asc"/>
+        <property name="nickname" direction="asc"/>
+        <property name="ip" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="false" source="auto">
         <property name="ngrams" direction="asc"/>
         <property name="updated" direction="desc"/>
     </datastore-index>

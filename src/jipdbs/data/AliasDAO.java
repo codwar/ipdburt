@@ -6,7 +6,6 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefet
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import jipdbs.util.Functions;
@@ -24,56 +23,22 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAO {
 
-	private Entity map(Alias alias) {
-
-		Entity entity = alias.getKey() == null ? new Entity("Alias")
-				: new Entity(alias.getKey());
-
-		entity.setProperty("created", alias.getCreated());
-		entity.setProperty("updated", alias.getUpdated());
-		entity.setProperty("count", alias.getCount());
-		entity.setProperty("ip", Functions.ipToDecimal(alias.getIp()));
-		entity.setProperty("nickname", alias.getNickname());
-		if (alias.getNgrams() != null) {
-			entity.setProperty("ngrams", alias.getNgrams());
-		}
-		entity.setProperty("player", alias.getPlayer());
-
-		return entity;
-	}
-
-	private Alias map(Entity entity) {
-
-		Alias alias = new Alias();
-
-		alias.setKey(entity.getKey());
-		alias.setCreated((Date) entity.getProperty("created"));
-		alias.setUpdated((Date) entity.getProperty("updated"));
-		alias.setCount(((Long) entity.getProperty("count")).intValue());
-		alias.setIp((String) Functions.decimalToIp((Long) entity
-				.getProperty("ip")));
-		alias.setPlayer((Key) entity.getProperty("player"));
-		alias.setNickname((String) entity.getProperty("nickname"));
-		// we don't need it
-		//alias.setNgrams((Collection<String>) entity.getProperty("ngrams"));
-
-		return alias;
-	}
-
-	public void save(DatastoreService service, Alias alias) {
-		Entity entity = map(alias);
-		service.put(entity);
-		alias.setKey(entity.getKey());
-		// save to cache
+	public void cache(Alias alias) {
 		LocalCache.getInstance().put(
 				"alias-" + KeyFactory.keyToString(alias.getPlayer())
-						+ alias.getNickname() + alias.getIp(), alias);
+						+ alias.getNickname() + alias.getIp(), alias);		
+	}
+	
+	public void save(DatastoreService service, Alias alias) {
+		Entity entity = alias.toEntity();
+		service.put(entity);
+		alias.setKey(entity.getKey());
+		cache(alias);
 	}
 
 	public Alias findByPlayerAndNicknameAndIp(DatastoreService service,
 			Key player, String nickname, String ip) {
 
-		// retrieve from cache
 		Alias p = (Alias) LocalCache.getInstance().get(
 				"alias-" + KeyFactory.keyToString(player) + nickname + ip);
 		if (p != null)
@@ -82,13 +47,11 @@ public class AliasDAO {
 		Query q = new Query("Alias");
 		q.addFilter("player", FilterOperator.EQUAL, player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
-		q.addFilter("ip", FilterOperator.EQUAL, ip);
+		q.addFilter("ip", FilterOperator.EQUAL, Functions.ipToDecimal(ip));
 		PreparedQuery pq = service.prepare(q);
 		Entity entity = pq.asSingleEntity();
-
 		if (entity != null)
-			return map(entity);
-
+			return new Alias(entity);
 		return null;
 	}
 
@@ -103,7 +66,7 @@ public class AliasDAO {
 		if (list.size() == 0)
 			return null;
 
-		return map(list.get(0));
+		return new Alias(list.get(0));
 	}
 
 	public List<Alias> findByNickname(DatastoreService service, String query,
@@ -125,7 +88,7 @@ public class AliasDAO {
 		List<Alias> result = new ArrayList<Alias>();
 
 		for (Entity alias : list)
-			result.add(map(alias));
+			result.add(new Alias(alias));
 
 		return result;
 	}
@@ -150,7 +113,7 @@ public class AliasDAO {
 		List<Alias> result = new ArrayList<Alias>();
 
 		for (Entity alias : list)
-			result.add(map(alias));
+			result.add(new Alias(alias));
 
 		return result;
 	}
@@ -171,7 +134,7 @@ public class AliasDAO {
 		List<Alias> result = new ArrayList<Alias>();
 
 		for (Entity entity : list)
-			result.add(map(entity));
+			result.add(new Alias(entity));
 
 		return result;
 	}
@@ -195,7 +158,7 @@ public class AliasDAO {
 		List<Alias> result = new ArrayList<Alias>();
 
 		for (Entity entity : list)
-			result.add(map(entity));
+			result.add(new Alias(entity));
 
 		return result;
 	}
