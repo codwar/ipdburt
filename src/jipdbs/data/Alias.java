@@ -27,15 +27,16 @@ public class Alias implements Serializable {
 	public Alias() {
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Alias(Entity entity) {
 		this.setKey(entity.getKey());
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setCount(((Long) entity.getProperty("count")).intValue());
-		this.setIp((String) Functions.decimalToIp((Long) entity
-				.getProperty("ip")));
+		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
 		this.setPlayer((Key) entity.getProperty("player"));
 		this.setNickname((String) entity.getProperty("nickname"));
+		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 	}
 	
 	public Entity toEntity() {
@@ -45,9 +46,7 @@ public class Alias implements Serializable {
 		entity.setProperty("count", this.getCount());
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
-		if (this.getNgrams() != null) {
-			entity.setProperty("ngrams", this.getNgrams());
-		}
+		entity.setProperty("ngrams", this.getNgrams());
 		entity.setProperty("player", this.getPlayer());	
 		return entity;
 	}
