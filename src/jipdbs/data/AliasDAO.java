@@ -34,14 +34,13 @@ public class AliasDAO {
 		entity.setProperty("count", alias.getCount());
 		entity.setProperty("ip", Functions.ipToDecimal(alias.getIp()));
 		entity.setProperty("nickname", alias.getNickname());
-		if (alias.getNgrams() != null) {
-			entity.setProperty("ngrams", alias.getNgrams());
-		}
+		entity.setProperty("ngrams", alias.getNgrams());
 		entity.setProperty("player", alias.getPlayer());
 
 		return entity;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Alias map(Entity entity) {
 
 		Alias alias = new Alias();
@@ -54,8 +53,7 @@ public class AliasDAO {
 				.getProperty("ip")));
 		alias.setPlayer((Key) entity.getProperty("player"));
 		alias.setNickname((String) entity.getProperty("nickname"));
-		// We don't need it
-		//alias.setNgrams((Collection<String>) entity.getProperty("ngrams"));
+		alias.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 
 		return alias;
 	}
@@ -159,9 +157,8 @@ public class AliasDAO {
 			int offset, int limit, int[] count) {
 		Query q = new Query("Alias");
 		q.addFilter("player", FilterOperator.EQUAL, player);
-		//q.addSort("count", SortDirection.DESCENDING);
-		q.addSort("updated", SortDirection.DESCENDING);
-		
+		q.addSort("count", SortDirection.DESCENDING);
+
 		PreparedQuery pq = service.prepare(q);
 
 		count[0] = pq.countEntities(withPrefetchSize(limit));
