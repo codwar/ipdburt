@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
 import jipdbs.data.Player;
 import jipdbs.data.Server;
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -23,6 +28,30 @@ public class JIPDBS extends JIPDBSCore {
 	private static final int MAX_NGRAM_QUERY = 8;
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
+
+	private final String recaptchaPublicKey;
+	private final String recaptchaPrivateKey;
+
+	public JIPDBS(Properties props) {
+		recaptchaPublicKey = props.getProperty("recaptcha.public.key", "");
+		recaptchaPrivateKey = props.getProperty("recaptcha.private.key", "");
+	}
+
+	public String getNewRecaptchaCode() {
+		ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey,
+				recaptchaPrivateKey, false);
+		return c.createRecaptchaHtml(null, null);
+	}
+
+	public boolean isRecaptchaValid(String remoteAddr, String challenge,
+			String uresponse) {
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey(recaptchaPrivateKey);
+		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+				challenge, uresponse);
+
+		return reCaptchaResponse.isValid();
+	}
 
 	public void addServer(String name, String admin, String uid, String ip) {
 
@@ -44,7 +73,7 @@ public class JIPDBS extends JIPDBSCore {
 	public Server getServer(String encodedKey) throws EntityNotFoundException {
 		return getServer(KeyFactory.stringToKey(encodedKey));
 	}
-	
+
 	public Server getServer(Key key) throws EntityNotFoundException {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -173,15 +202,18 @@ public class JIPDBS extends JIPDBSCore {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	public Player getPlayer(String player) throws EntityNotFoundException {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 		return playerDAO.get(service, KeyFactory.stringToKey(player));
 	}
-	
+
 	public Alias getLastAlias(String player) {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		return aliasDAO.getLastUsedAlias(service, KeyFactory.stringToKey(player));
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+		return aliasDAO.getLastUsedAlias(service,
+				KeyFactory.stringToKey(player));
 	}
 
 	public List<AliasResult> alias(String encodedKey, int offset, int limit,
