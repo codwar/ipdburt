@@ -30,24 +30,25 @@ public class Alias implements Serializable {
 	@SuppressWarnings("unchecked")
 	public Alias(Entity entity) {
 		this.setKey(entity.getKey());
+		this.setPlayer((Key) entity.getParent());
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setCount(((Long) entity.getProperty("count")).intValue());
 		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
-		this.setPlayer((Key) entity.getProperty("player"));
+		//this.setPlayer((Key) entity.getProperty("player"));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 	}
 	
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Alias") : new Entity(this.getKey());
+		Entity entity = this.getKey() == null ? new Entity("Alias", this.getPlayer()) : new Entity(this.getKey());
 		entity.setProperty("created", this.getCreated());
 		entity.setProperty("updated", this.getUpdated());
 		entity.setProperty("count", this.getCount());
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
-		entity.setProperty("player", this.getPlayer());	
+		//entity.setProperty("player", this.getPlayer());	
 		return entity;
 	}
 	

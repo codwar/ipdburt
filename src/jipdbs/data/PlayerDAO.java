@@ -19,30 +19,19 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class PlayerDAO {
-
-	public void cache(Player player) {
-		LocalCache.getInstance().put(
-				"player-" + KeyFactory.keyToString(player.getServer())
-						+ player.getGuid(), player);
-	}
+	
 	public void save(DatastoreService service, Player player) {
 		Entity entity = player.toEntity();
 		service.put(entity);
 		player.setKey(entity.getKey());
-		cache(player);
 	}
 
 	public Player findByServerAndGuid(DatastoreService service, Key server,
 			String guid) {
 
-		// retrieve from cache
-		Player p = (Player) LocalCache.getInstance().get(
-				"player-" + KeyFactory.keyToString(server) + guid);
-		if (p != null)
-			return p;
-
 		Query q = new Query("Player");
-		q.addFilter("server", FilterOperator.EQUAL, server);
+		//q.addFilter("server", FilterOperator.EQUAL, server);
+		q.setAncestor(server);
 		q.addFilter("guid", FilterOperator.EQUAL, guid);
 		PreparedQuery pq = service.prepare(q);
 		Entity entity = pq.asSingleEntity();

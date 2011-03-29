@@ -46,7 +46,7 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 				p.setGuid(((String) player.get(2)).trim());
 				list.add(p);
 			}
-			app.insertLog(key, list, null);
+			app.updateConnect(key, list, null);
 		}
 	}
 }

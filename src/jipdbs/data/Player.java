@@ -25,20 +25,21 @@ public class Player implements Serializable {
 
 	public Player(Entity entity) {
 		this.setKey(entity.getKey());
+		this.setServer((Key) entity.getParent());
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setGuid((String) entity.getProperty("guid"));
-		this.setServer((Key) entity.getProperty("server"));
+		//this.setServer((Key) entity.getProperty("server"));
 		this.setBanInfo((String) entity.getProperty("baninfo"));
 	}
 
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Player")
+		Entity entity = this.getKey() == null ? new Entity("Player", this.getServer())
 				: new Entity(this.getKey());
 		entity.setProperty("baninfo", this.getBanInfo());
 		entity.setProperty("created", this.getCreated());
 		entity.setProperty("guid", this.getGuid());
-		entity.setProperty("server", this.getServer());
+		//entity.setProperty("server", this.getServer());
 		entity.setProperty("updated", this.getUpdated());
 		return entity;
 	}

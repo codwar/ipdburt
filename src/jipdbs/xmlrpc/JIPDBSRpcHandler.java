@@ -36,7 +36,7 @@ public class JIPDBSRpcHandler {
 
 		}
 
-		app.insertLog(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+		app.updateConnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 
 	public void updateBanInfo(String key, Object[] plist) {

@@ -89,7 +89,7 @@ public class JIPDBSCore {
 	 * @param list
 	 *            the list of currently logged in players.
 	 */
-	public void insertLog(String key, List<PlayerInfo> list, String remoteAddr) {
+	public void updateConnect(String key, List<PlayerInfo> list, String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -127,9 +127,7 @@ public class JIPDBSCore {
 					} else {
 						lastPlayerUpdate = player.getUpdated();
 						player.setUpdated(stamp);
-						/* if player is connected then clear baninfo */
 						player.setBanInfo(null);
-						playerDAO.cache(player);
 						entities.add(player.toEntity());
 					}
 
@@ -153,7 +151,6 @@ public class JIPDBSCore {
 						}
 					}
 					alias.setUpdated(stamp);
-					if (alias.getKey() != null) aliasDAO.cache(alias);
 					entities.add(alias.toEntity());
 				}
 				server.setOnlinePlayers(list.size());
@@ -169,6 +166,9 @@ public class JIPDBSCore {
 		}
 	}
 
+	public void updateDisconnect(String key, List<PlayerInfo> list, String remoteAddr) {
+		// TODO
+	}
 	/**
 	 * Bulk updates banning information for the given players.
 	 * 

@@ -23,29 +23,18 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAO {
 
-	public void cache(Alias alias) {
-		LocalCache.getInstance().put(
-				"alias-" + KeyFactory.keyToString(alias.getPlayer())
-						+ alias.getNickname() + alias.getIp(), alias);		
-	}
-	
 	public void save(DatastoreService service, Alias alias) {
 		Entity entity = alias.toEntity();
 		service.put(entity);
 		alias.setKey(entity.getKey());
-		cache(alias);
 	}
 
 	public Alias findByPlayerAndNicknameAndIp(DatastoreService service,
 			Key player, String nickname, String ip) {
 
-		Alias p = (Alias) LocalCache.getInstance().get(
-				"alias-" + KeyFactory.keyToString(player) + nickname + ip);
-		if (p != null)
-			return p;
-
 		Query q = new Query("Alias");
-		q.addFilter("player", FilterOperator.EQUAL, player);
+		//q.addFilter("player", FilterOperator.EQUAL, player);
+		q.setAncestor(player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
 		q.addFilter("ip", FilterOperator.EQUAL, Functions.ipToDecimal(ip));
 		PreparedQuery pq = service.prepare(q);
@@ -58,7 +47,8 @@ public class AliasDAO {
 	public Alias getLastUsedAlias(DatastoreService service, Key player) {
 
 		Query q = new Query("Alias");
-		q.addFilter("player", FilterOperator.EQUAL, player);
+		//q.addFilter("player", FilterOperator.EQUAL, player);
+		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
@@ -121,7 +111,8 @@ public class AliasDAO {
 	public List<Alias> findByPlayer(DatastoreService service, Key player,
 			int offset, int limit, int[] count) {
 		Query q = new Query("Alias");
-		q.addFilter("player", FilterOperator.EQUAL, player);
+		//q.addFilter("player", FilterOperator.EQUAL, player);
+		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
 		//q.addSort("count", SortDirection.DESCENDING);
 
