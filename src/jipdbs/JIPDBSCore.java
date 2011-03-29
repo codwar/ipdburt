@@ -5,19 +5,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.datanucleus.util.StringUtils;
-
 import jipdbs.data.Alias;
 import jipdbs.data.AliasDAO;
 import jipdbs.data.Player;
 import jipdbs.data.PlayerDAO;
 import jipdbs.data.Server;
 import jipdbs.data.ServerDAO;
+import jipdbs.util.LocalCache;
 import jipdbs.util.NGrams;
+
+import org.datanucleus.util.StringUtils;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Transaction;
 
 public class JIPDBSCore {
@@ -59,7 +61,8 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
+				if (remoteAddr != null
+						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
@@ -89,7 +92,8 @@ public class JIPDBSCore {
 	 * @param list
 	 *            the list of currently logged in players.
 	 */
-	public void updateConnect(String key, List<PlayerInfo> list, String remoteAddr) {
+	public void updateConnect(String key, List<PlayerInfo> list,
+			String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -100,40 +104,53 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-				
-				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
+
+				if (remoteAddr != null
+						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
 					}
 				}
-				
+
 				List<Entity> entities = new ArrayList<Entity>();
-				
+
 				for (PlayerInfo info : list) {
+					String playerKey = "player-"
+							+ KeyFactory.keyToString(server.getKey())
+							+ info.getGuid();
+					Player player = (Player) LocalCache.getInstance().get(
+							playerKey);
+					if (player == null) {
+						player = playerDAO.findByServerAndGuid(service,
+								server.getKey(), info.getGuid());
+					}
 
-					Player player = playerDAO.findByServerAndGuid(service,
-							server.getKey(), info.getGuid());
-
-					Date lastPlayerUpdate = null;
 					if (player == null) {
 						player = new Player();
 						player.setCreated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
-						player.setUpdated(stamp);
 						playerDAO.save(service, player);
+						LocalCache.getInstance().put(playerKey, player);
 					} else {
-						lastPlayerUpdate = player.getUpdated();
-						player.setUpdated(stamp);
-						player.setBanInfo(null);
-						entities.add(player.toEntity());
+						if (player.getBanInfo() != null) {
+							player.setBanInfo(null);
+							entities.add(player.toEntity());
+							LocalCache.getInstance().put(playerKey, player);
+						}
 					}
 
-					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-							service, player.getKey(), info.getName(),
-							info.getIp());
+					String aliasKey = "alias-"
+							+ KeyFactory.keyToString(player.getKey())
+							+ info.getName() + info.getIp();
+					Alias alias = (Alias) LocalCache.getInstance()
+							.get(aliasKey);
+					if (alias == null) {
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+								player.getKey(), info.getName(), info.getIp());
+					}
 
 					if (alias == null) {
 						alias = new Alias();
@@ -144,16 +161,13 @@ public class JIPDBSCore {
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 					} else {
-						if (server.getUpdated() == null
-								|| lastPlayerUpdate == null
-								|| server.getUpdated().after(lastPlayerUpdate)) {
-							alias.setCount(alias.getCount() + 1);
-						}
+						alias.setCount(alias.getCount() + 1);
 					}
 					alias.setUpdated(stamp);
+					if (alias.getKey() != null)
+						LocalCache.getInstance().put(aliasKey, alias);
 					entities.add(alias.toEntity());
 				}
-				server.setOnlinePlayers(list.size());
 				server.setUpdated(stamp);
 				serverDAO.cache(server);
 				entities.add(server.toEntity());
@@ -162,13 +176,89 @@ public class JIPDBSCore {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.severe(e.getMessage());
 		}
 	}
 
-	public void updateDisconnect(String key, List<PlayerInfo> list, String remoteAddr) {
-		// TODO
+	public void updateDisconnect(String key, List<PlayerInfo> list,
+			String remoteAddr) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		try {
+			Date stamp = new Date();
+
+			Server server = serverDAO.findByUid(service, key);
+
+			if (server != null) {
+
+				if (remoteAddr != null
+						&& StringUtils.notEmpty(server.getAddress())) {
+					if (!remoteAddr.equals(server.getAddress())) {
+						log.warning("Unauthorized update");
+						return;
+					}
+				}
+
+				List<Entity> entities = new ArrayList<Entity>();
+
+				for (PlayerInfo info : list) {
+					String playerKey = "player-"
+							+ KeyFactory.keyToString(server.getKey())
+							+ info.getGuid();
+					Player player = (Player) LocalCache.getInstance().get(
+							playerKey);
+					if (player == null) {
+						player = playerDAO.findByServerAndGuid(service,
+								server.getKey(), info.getGuid());
+					}
+
+					if (player == null) {
+						player = new Player();
+						player.setCreated(stamp);
+						player.setGuid(info.getGuid());
+						player.setServer(server.getKey());
+						player.setBanInfo(null);
+						playerDAO.save(service, player);
+						LocalCache.getInstance().put(playerKey, player);
+					}
+
+					String aliasKey = "alias-"
+							+ KeyFactory.keyToString(player.getKey())
+							+ info.getName() + info.getIp();
+					Alias alias = (Alias) LocalCache.getInstance()
+							.get(aliasKey);
+					if (alias == null) {
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+								player.getKey(), info.getName(), info.getIp());
+					}
+
+					if (alias == null) {
+						alias = new Alias();
+						alias.setCount(1);
+						alias.setCreated(stamp);
+						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.ngrams(info.getName()));
+						alias.setPlayer(player.getKey());
+						alias.setIp(info.getIp());
+						alias.setUpdated(stamp);
+						entities.add(alias.toEntity());
+					}
+				}
+				server.setUpdated(stamp);
+				serverDAO.cache(server);
+				entities.add(server.toEntity());
+				service.put(entities);
+			} else {
+				log.severe("Trying to update non existing server (" + key + ")");
+			}
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+		}
+
 	}
+
 	/**
 	 * Bulk updates banning information for the given players.
 	 * 
@@ -191,14 +281,15 @@ public class JIPDBSCore {
 			Server server = serverDAO.findByUid(service, key);
 
 			if (server != null) {
-				
-				if (remoteAddr != null && StringUtils.notEmpty(server.getAddress())) {
+
+				if (remoteAddr != null
+						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
 						log.warning("Unauthorized update");
 						return;
 					}
 				}
-				
+
 				for (BanInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
@@ -224,7 +315,7 @@ public class JIPDBSCore {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.severe(e.getMessage());
 		}
 	}
 

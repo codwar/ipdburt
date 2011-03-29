@@ -9,13 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 import jipdbs.util.Functions;
-import jipdbs.util.LocalCache;
 import jipdbs.util.NGrams;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -33,7 +31,6 @@ public class AliasDAO {
 			Key player, String nickname, String ip) {
 
 		Query q = new Query("Alias");
-		//q.addFilter("player", FilterOperator.EQUAL, player);
 		q.setAncestor(player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
 		q.addFilter("ip", FilterOperator.EQUAL, Functions.ipToDecimal(ip));
@@ -47,7 +44,6 @@ public class AliasDAO {
 	public Alias getLastUsedAlias(DatastoreService service, Key player) {
 
 		Query q = new Query("Alias");
-		//q.addFilter("player", FilterOperator.EQUAL, player);
 		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
 
@@ -111,10 +107,8 @@ public class AliasDAO {
 	public List<Alias> findByPlayer(DatastoreService service, Key player,
 			int offset, int limit, int[] count) {
 		Query q = new Query("Alias");
-		//q.addFilter("player", FilterOperator.EQUAL, player);
 		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
-		//q.addSort("count", SortDirection.DESCENDING);
 
 		PreparedQuery pq = service.prepare(q);
 

@@ -17,7 +17,6 @@ public class Alias implements Serializable {
 
 	private Key player;
 	private String nickname;
-	// transient?
 	private Collection<String> ngrams;
 	private String ip;
 	private Date created;
@@ -35,7 +34,6 @@ public class Alias implements Serializable {
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setCount(((Long) entity.getProperty("count")).intValue());
 		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
-		//this.setPlayer((Key) entity.getProperty("player"));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 	}
@@ -48,7 +46,6 @@ public class Alias implements Serializable {
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
-		//entity.setProperty("player", this.getPlayer());	
 		return entity;
 	}
 	

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.data.AliasDAO;
 import jipdbs.data.PlayerDAO;
+import jipdbs.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -31,6 +32,8 @@ public class TruncateServlet extends HttpServlet {
 		
 		aliasDAO.truncate(service);
 		playerDAO.truncate(service);
+		
+		LocalCache.getInstance().clear();
 		
 		resp.getWriter().write("Done");
 		

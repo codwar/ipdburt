@@ -8,8 +8,6 @@ import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheManager;
 
-import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
-
 public class LocalCache {
 
 	private static final Logger log = Logger.getLogger(LocalCache.class
@@ -18,11 +16,12 @@ public class LocalCache {
 	private static LocalCache localManager = null;
 	private static Cache cacheManager = null;
 
-	private final Integer CACHE_EXPIRATION = 300; // 5 minutes
+	// private final Integer CACHE_EXPIRATION = 300; // 5 minutes
 
 	private LocalCache() {
 		Map<String, Integer> props = new HashMap<String, Integer>();
-		props.put(GCacheFactory.EXPIRATION_DELTA, CACHE_EXPIRATION);
+		// never expire
+		//props.put(GCacheFactory.EXPIRATION_DELTA, CACHE_EXPIRATION);
 		try {
 			cacheManager = CacheManager.getInstance().getCacheFactory()
 					.createCache(props);
@@ -38,6 +37,11 @@ public class LocalCache {
 		return localManager;
 	}
 
+	public void clear() {
+		if (cacheManager != null) {
+			cacheManager.clear();
+		}
+	}
 	public Object get(String key) {
 		if (cacheManager == null)
 			return null;

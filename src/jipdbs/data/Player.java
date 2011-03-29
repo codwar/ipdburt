@@ -29,7 +29,6 @@ public class Player implements Serializable {
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setGuid((String) entity.getProperty("guid"));
-		//this.setServer((Key) entity.getProperty("server"));
 		this.setBanInfo((String) entity.getProperty("baninfo"));
 	}
 
@@ -39,7 +38,6 @@ public class Player implements Serializable {
 		entity.setProperty("baninfo", this.getBanInfo());
 		entity.setProperty("created", this.getCreated());
 		entity.setProperty("guid", this.getGuid());
-		//entity.setProperty("server", this.getServer());
 		entity.setProperty("updated", this.getUpdated());
 		return entity;
 	}
