@@ -22,7 +22,8 @@ public class Alias implements Serializable {
 	private Date created;
 	private Date updated;
 	private int count;
-
+	private Key server;
+	
 	public Alias() {
 	}
 	
@@ -36,6 +37,7 @@ public class Alias implements Serializable {
 		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
+		this.setServer((Key) entity.getProperty("server"));
 	}
 	
 	public Entity toEntity() {
@@ -46,6 +48,8 @@ public class Alias implements Serializable {
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
+		entity.setProperty("player", this.getPlayer());
+		entity.setProperty("server", this.getServer());
 		return entity;
 	}
 	
@@ -115,6 +119,14 @@ public class Alias implements Serializable {
 
 	public void setNgrams(Collection<String> ngrams) {
 		this.ngrams = ngrams;
+	}
+
+	public Key getServer() {
+		return server;
+	}
+
+	public void setServer(Key server) {
+		this.server = server;
 	}
 
 	@Override

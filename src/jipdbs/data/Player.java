@@ -39,6 +39,7 @@ public class Player implements Serializable {
 		entity.setProperty("created", this.getCreated());
 		entity.setProperty("guid", this.getGuid());
 		entity.setProperty("updated", this.getUpdated());
+		entity.setProperty("server", this.getServer());
 		return entity;
 	}
 

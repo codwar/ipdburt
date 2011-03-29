@@ -12,8 +12,8 @@
 <strong>Visto:</strong> <fmt:formatDate type="both"
                     timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
                     value="${player.updated}" /><br/>
-<strong>Servidor:</strong> ${player.server.name}<br/>
-<strong>IP:</strong> ${player.ip}<br/>
+<strong>Servidor:</strong> <a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a><br/>
+<strong>IP:</strong> <a href="/search.jsp?q=${player.ip}&t=ip">${player.ip}</a><br/>
 <c:if test="${not empty player.banInfo}">
 <strong>Estado:</strong> ${player.banInfo}<br/>
 </c:if>
@@ -31,8 +31,8 @@
 	<tbody>
 		<c:forEach items="${player.aliases}" var="alias">
 			<tr>
-				<td>${fn:escapeXml(alias.nickname)}</td>
-				<td>${alias.ip}</td>
+				<td><a href="/search.jsp?q=${fn:escapeXml(alias.nickname)}&t=alias">${fn:escapeXml(alias.nickname)}</a></td>
+				<td><a href="/search.jsp?q=${alias.ip}&t=ip">${alias.ip}</a></td>
 				<td><fmt:formatDate type="both"
                     timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
                     value="${alias.updated}" /></td>

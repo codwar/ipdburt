@@ -160,6 +160,7 @@ public class JIPDBSCore {
 						alias.setNgrams(NGrams.ngrams(info.getName()));
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
+						alias.setServer(server.getKey());
 					} else {
 						alias.setCount(alias.getCount() + 1);
 					}
@@ -243,6 +244,7 @@ public class JIPDBSCore {
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 						alias.setUpdated(stamp);
+						alias.setServer(server.getKey());
 						entities.add(alias.toEntity());
 					}
 				}

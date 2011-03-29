@@ -18,7 +18,7 @@
 		<c:forEach items="${servers}" var="server">
 			<tr>
 				<!-- td style="text-align: right;">${server.onlinePlayers}</td -->
-				<td>${server.name}</td>
+				<td><a href="/search.jsp?q=${server.keyString}&t=s">${server.name}</a></td>
 				<td style="text-align: right;"><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
 					value="${server.updated}" /></td>

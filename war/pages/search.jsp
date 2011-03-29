@@ -146,7 +146,7 @@
 					<fmt:formatDate value="${player.latest}" type="both"
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
 				</c:if><c:if test="${player.playing}">Conectado</c:if></td>
-				<td>${player.server}</td>
+				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 			</tr>
 			<tr style="display: none;">
 				<td colspan="4" style="padding: 20px;">

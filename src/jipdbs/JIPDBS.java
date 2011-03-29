@@ -136,7 +136,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setPlaying(false);
 				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
-				result.setServer(server.getName());
+				result.setServer(server);
 				result.setBanInfo(player.getBanInfo());
 				results.add(result);
 			}
@@ -172,6 +172,8 @@ public class JIPDBS extends JIPDBSCore {
 			} else if ("ip".equals(type)) {
 				aliasses = aliasDAO.findByIP(service, query, offset, limit,
 						count);
+			} else if ("s".equals(type)) {
+				aliasses = aliasDAO.findByServer(service, query, offset, limit, count);
 			}
 
 			for (Alias alias : aliasses) {
@@ -190,7 +192,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setPlaying(false);
 				//result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
-				result.setServer(server.getName());
+				result.setServer(server);
 				result.setBanInfo(player.getBanInfo());
 				results.add(result);
 			}

@@ -14,6 +14,7 @@ import jipdbs.util.NGrams;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -145,6 +146,28 @@ public class AliasDAO {
 		for (Entity entity : list)
 			result.add(new Alias(entity));
 
+		return result;
+	}
+	
+	public List<Alias> findByServer(DatastoreService service, String query,
+			int offset, int limit, int[] count) {
+		
+		Key server = KeyFactory.stringToKey(query);
+		Query q = new Query("Alias").setKeysOnly();
+		q.addFilter("server", FilterOperator.EQUAL, server);
+		q.addSort("updated", SortDirection.DESCENDING);
+
+		PreparedQuery pq = service.prepare(q);
+
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+
+		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
+
+		List<Alias> result = new ArrayList<Alias>();
+
+		for (Entity entity : list)
+			result.add(new Alias(entity));
+		
 		return result;
 	}
 	
