@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
 	<application>ipdburt</application>
-	<version>1</version>
+	<version>0.1</version>
 	
 	<!-- Configure java.util.logging -->
 	<system-properties>
@@ -18,12 +18,12 @@
     </inbound-services>
 
     <static-files>
-        <include path="/**.png" expiration="14d"/>
-        <include path="/**.jpg" expiration="14d"/>
-        <include path="/**.gif" expiration="14d"/>
-        <include path="/**.ico" expiration="14d"/>
-        <include path="/**.js" expiration="1h"/> <!-- AT LEAST UNTIL RELEASE -->
-        <include path="/**.css" expiration="1h"/> <!-- AT LEAST UNTIL RELEASE -->
+        <include path="/**.png" expiration="30d"/>
+        <include path="/**.jpg" expiration="30d"/>
+        <include path="/**.gif" expiration="30d"/>
+        <include path="/**.ico" expiration="30d"/>
+        <include path="/**.js" expiration="30d"/> <!-- AT LEAST UNTIL RELEASE -->
+        <include path="/**.css" expiration="1d"/> <!-- AT LEAST UNTIL RELEASE -->
     </static-files>
     	
 </appengine-web-app>
