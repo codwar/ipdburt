@@ -10,7 +10,7 @@ import jipdbs.PlayerInfo;
 public class JIPDBSRpcHandler {
 
 	private final JIPDBS app;
-
+	
 	public JIPDBSRpcHandler(JIPDBS app) {
 		this.app = app;
 	}
@@ -19,7 +19,26 @@ public class JIPDBSRpcHandler {
 		app.updateName(key, name, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 
-	public void insertLog(String key, Object[] plist) {
+	public void updateConnect(String key, Object[] plist) {
+
+		List<PlayerInfo> list = new ArrayList<PlayerInfo>();
+
+		for (Object o : plist) {
+
+			Object[] values = ((Object[]) o);
+
+			PlayerInfo p = new PlayerInfo();
+			p.setName((String) values[0]);
+			p.setIp((String) values[1]);
+			p.setGuid((String) values[2]);
+
+			list.add(p);
+
+		}
+		app.updateConnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+	}
+
+	public void updateDisconnect(String key, Object[] plist) {
 
 		List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 
@@ -36,9 +55,9 @@ public class JIPDBSRpcHandler {
 
 		}
 
-		app.insertLog(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+		app.updateDisconnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
-
+	
 	public void updateBanInfo(String key, Object[] plist) {
 
 		List<BanInfo> list = new ArrayList<BanInfo>();

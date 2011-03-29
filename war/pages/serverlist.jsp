@@ -9,7 +9,7 @@
 <table style="width: 85%; margin-left: auto; margin-right: auto;">
 	<thead>
 		<tr>
-			<th style="width: 90px;">Conectados</th>
+			<!-- th style="width: 90px;">Conectados</th -->
 			<th>Servidor</th>
 			<th style="width: 150px;">Actualizado</th>
 		</tr>
@@ -17,7 +17,7 @@
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
-				<td style="text-align: right;">${server.onlinePlayers}</td>
+				<!-- td style="text-align: right;">${server.onlinePlayers}</td -->
 				<td>${server.name}</td>
 				<td style="text-align: right;"><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"

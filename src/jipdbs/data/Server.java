@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -23,6 +24,36 @@ public class Server implements Serializable {
 	private int onlinePlayers;
 	private String address;
 	private String keyString;
+
+	public Server() {
+	}
+
+	public Server(Entity entity) {
+		this.setKey(entity.getKey());
+		this.setCreated((Date) entity.getProperty("created"));
+		this.setUpdated((Date) entity.getProperty("updated"));
+		this.setAdmin((Email) entity.getProperty("admin"));
+		this.setName((String) entity.getProperty("name"));
+		this.setUid((String) entity.getProperty("uid"));
+		this
+				.setOnlinePlayers(((Long) entity.getProperty("players"))
+						.intValue());
+		this.setAddress((String) entity.getProperty("ip"));
+	}
+
+	public Entity toEntity() {
+		Entity entity = this.getKey() == null ? new Entity("Server")
+				: new Entity(this.getKey());
+
+		entity.setProperty("name", this.getName());
+		entity.setProperty("created", this.getCreated());
+		entity.setProperty("updated", this.getUpdated());
+		entity.setProperty("admin", this.getAdmin());
+		entity.setProperty("uid", this.getUid());
+		entity.setProperty("players", this.getOnlinePlayers());
+		entity.setProperty("ip", this.getAddress());
+		return entity;
+	}
 
 	public Key getKey() {
 		return key;
@@ -96,7 +127,7 @@ public class Server implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");

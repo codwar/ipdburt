@@ -6,6 +6,7 @@ import java.util.Date;
 
 import jipdbs.util.Functions;
 
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
 public class Alias implements Serializable {
@@ -16,13 +17,38 @@ public class Alias implements Serializable {
 
 	private Key player;
 	private String nickname;
-	// transient?
 	private Collection<String> ngrams;
 	private String ip;
 	private Date created;
 	private Date updated;
 	private int count;
 
+	public Alias() {
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Alias(Entity entity) {
+		this.setKey(entity.getKey());
+		this.setPlayer((Key) entity.getParent());
+		this.setCreated((Date) entity.getProperty("created"));
+		this.setUpdated((Date) entity.getProperty("updated"));
+		this.setCount(((Long) entity.getProperty("count")).intValue());
+		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
+		this.setNickname((String) entity.getProperty("nickname"));
+		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
+	}
+	
+	public Entity toEntity() {
+		Entity entity = this.getKey() == null ? new Entity("Alias", this.getPlayer()) : new Entity(this.getKey());
+		entity.setProperty("created", this.getCreated());
+		entity.setProperty("updated", this.getUpdated());
+		entity.setProperty("count", this.getCount());
+		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
+		entity.setProperty("nickname", this.getNickname());
+		entity.setProperty("ngrams", this.getNgrams());
+		return entity;
+	}
+	
 	public Key getKey() {
 		return key;
 	}

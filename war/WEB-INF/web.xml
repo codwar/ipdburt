@@ -56,7 +56,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>mailhandler</servlet-name>
 		<url-pattern>/_ah/mail/*</url-pattern>
 	</servlet-mapping>
+    <servlet>
+        <servlet-name>httphandler</servlet-name>
+        <servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>httphandler</servlet-name>
+        <url-pattern>/app/*</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>playerinfo</servlet-name>
 		<url-pattern>/playerinfo</url-pattern>
@@ -97,6 +105,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>alias</servlet-name>
 		<url-pattern>/alias</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>alias</servlet-name>
+        <url-pattern>/alias</url-pattern>
+    </servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>
