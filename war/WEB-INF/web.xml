@@ -52,15 +52,19 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>mailhandler</servlet-name>
 		<servlet-class>jipdbs.web.MailHandlerServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>mailhandler</servlet-name>
-		<url-pattern>/_ah/mail/*</url-pattern>
-	</servlet-mapping>
     <servlet>
         <servlet-name>httphandler</servlet-name>
         <servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>keepalivehandler</servlet-name>
+        <servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
+    </servlet>
 
+	<servlet-mapping>
+		<servlet-name>mailhandler</servlet-name>
+		<url-pattern>/_ah/mail/*</url-pattern>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>httphandler</servlet-name>
         <url-pattern>/app/*</url-pattern>
@@ -109,6 +113,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <servlet-name>alias</servlet-name>
         <url-pattern>/alias</url-pattern>
     </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>keepalivehandler</servlet-name>
+		<url-pattern>/cron/keepalive</url-pattern>
+	</servlet-mapping>	
 
 	<security-constraint>
 		<web-resource-collection>
@@ -119,6 +127,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<web-resource-name>admin</web-resource-name>
 			<url-pattern>/admin/*</url-pattern>
 		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>cron</web-resource-name>
+			<url-pattern>/cron/*</url-pattern>
+		</web-resource-collection>		
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
