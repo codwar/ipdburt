@@ -3,6 +3,6 @@
   <cron>
     <url>/cron/keepalive</url>
     <description>Keep alive</description>
-    <schedule>every 1 minutes synchronized</schedule>
+    <schedule>every 1 minutes</schedule>
   </cron>
 </cronentries>

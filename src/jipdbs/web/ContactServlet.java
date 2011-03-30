@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -28,8 +29,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 public class ContactServlet extends HttpServlet {
 
 	private final String FROM_ADDR = "contact@ipdburt.appspotmail.com";
-	private final String[] CONTACT_ADDR = { "admin@ipdburt.com.ar",
-			"info@ipdburt.com.ar" };
 
 	private JIPDBS app;
 
@@ -92,10 +91,7 @@ public class ContactServlet extends HttpServlet {
 			Message msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(FROM_ADDR));
 			msg.setReplyTo(replyTo);
-			for (String to : CONTACT_ADDR) {
-				msg.addRecipient(Message.RecipientType.BCC,
-						new InternetAddress(to));
-			}
+			msg.addRecipient(RecipientType.TO, new InternetAddress("admins"));
 			msg.setSubject("Mensaje enviado desde IPDB");
 			msg.setText(text);
 			Transport.send(msg);

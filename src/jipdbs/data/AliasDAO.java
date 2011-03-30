@@ -153,21 +153,18 @@ public class AliasDAO {
 			int offset, int limit, int[] count) {
 		
 		Key server = KeyFactory.stringToKey(query);
-		Query q = new Query("Alias").setKeysOnly();
-		q.addFilter("server", FilterOperator.EQUAL, server);
+		Query q = new Query("Player").setKeysOnly();
+		q.setAncestor(server);
 		q.addSort("updated", SortDirection.DESCENDING);
-
 		PreparedQuery pq = service.prepare(q);
-
-		count[0] = pq.countEntities(withPrefetchSize(limit));
-
-		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
-
-		List<Alias> result = new ArrayList<Alias>();
-
-		for (Entity entity : list)
-			result.add(new Alias(entity));
 		
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+		
+		List<Alias> result = new ArrayList<Alias>();
+		for (Entity player : pq.asIterable(withLimit(limit).offset(offset))) {
+			Alias alias = getLastUsedAlias(service, player.getKey());
+			if (alias != null) result.add(alias);
+		}
 		return result;
 	}
 	
