@@ -35,15 +35,15 @@ public final class NGrams {
 
 	public static Collection<String> ngrams(String s) {
 
-		if (s.trim().length() < 2)
-			return Collections.emptySet();
-
 		Set<String> ngrams = new HashSet<String>();
 
+		if (s.trim().length() < 2) {
+			ngrams.add(s);
+			return ngrams;
+		}
+		
 		for (int i = 0; i < s.length() - 2; i++) {
-
 			for (int j = s.length(); j > i; j--)
-
 				ngrams.add(s.substring(i, j).toLowerCase());
 		}
 

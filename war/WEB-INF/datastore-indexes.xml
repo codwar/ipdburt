@@ -19,6 +19,6 @@
         <property name="updated" direction="desc"/>
     </datastore-index>
     <datastore-index kind="Player" ancestor="true" source="auto">
-        <property name="created" direction="desc"/>
+        <property name="updated" direction="desc"/>
     </datastore-index>
 </datastore-indexes>

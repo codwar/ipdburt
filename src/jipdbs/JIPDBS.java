@@ -132,7 +132,7 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(alias.getUpdated());
+				result.setLatest(player.getUpdated());
 				result.setPlaying(false);
 				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
@@ -188,7 +188,7 @@ public class JIPDBS extends JIPDBSCore {
 				SearchResult result = new SearchResult();
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(alias.getUpdated());
+				result.setLatest(player.getUpdated());
 				result.setPlaying(false);
 				//result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());

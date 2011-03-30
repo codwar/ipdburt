@@ -15,12 +15,9 @@
 <meta name="author" content="author"/> 
 <link rel="shortcut icon" href="/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/pag.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/table.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/inputs.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/style.css" media="screen"/>
 <script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
@@ -60,7 +57,7 @@ $(document).ready(function() {
 </div>
 
 <div class="container">	
-<div style="padding: 2px 10px 8px 10px; text-align: right">
+<div style="padding: 2px 10px 8px 10px; text-align: right;">
 <%
 	UserService userService = UserServiceFactory.getUserService();
 

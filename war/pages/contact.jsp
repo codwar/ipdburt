@@ -37,7 +37,9 @@ ${applicationScope.jipdbs.newRecaptchaCode} <input type="submit"
 <%
 	} else {
 %>
-<p>Su mensaje fue enviado.</p>
+<ul class="messages">
+<li class="success">Su mensaje fue enviado.</li>
+</ul>
 <%
 	}
 %>

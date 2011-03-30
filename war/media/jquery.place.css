@@ -1,10 +1,11 @@
 /* all this css is optional style sugar;
    it'll work fine without it. just not look pretty. */
 .place-text {
+	font-size: 14px;
     background: #FFC129;
     color: black;
-    font-weight: bold;
-    padding: 3px;
+    /*font-weight: bold;*/
+    padding: 5px;
     border-radius: 5px;
     -o-border-radius: 5px;
     -moz-border-radius: 5px;

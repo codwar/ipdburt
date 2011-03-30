@@ -1,6 +1,5 @@
 package jipdbs.web;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -26,7 +25,7 @@ public class JIPDBSContextListener implements ServletContextListener {
 		Properties props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream("jipdbs.properties"));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			context.log("Unable to load context properties: " + e.getMessage());
 		}
 

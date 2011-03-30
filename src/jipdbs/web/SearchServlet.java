@@ -58,11 +58,17 @@ public class SearchServlet extends HttpServlet {
 
 		long time = System.currentTimeMillis();
 
+		String queryValue = query;
 		if (query == null || "".equals(query)) {
 			list = app.rootQuery(offset, limit, total);
 		} else {
 			// this is to get the modified value and show it in search box
-			if ("ip".equals(type)) query = Functions.fixIp(query);
+			if ("ip".equals(type)) {
+				query = Functions.fixIp(query);
+				queryValue = query;
+			}
+			else if ("s".equals(type)) queryValue = "";
+			
 			list = app.search(query, type, offset, limit, total);
 		}
 		
@@ -71,7 +77,7 @@ public class SearchServlet extends HttpServlet {
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 
 		req.setAttribute("list", list);
-		req.setAttribute("query", query);
+		req.setAttribute("query", queryValue);
 		req.setAttribute("type", type);
 		req.setAttribute("count", total[0]);
 		req.setAttribute("time", time);

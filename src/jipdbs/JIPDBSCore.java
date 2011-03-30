@@ -132,14 +132,16 @@ public class JIPDBSCore {
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
+						player.setUpdated(stamp);
 						playerDAO.save(service, player);
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
 						if (player.getBanInfo() != null) {
 							player.setBanInfo(null);
-							entities.add(player.toEntity());
-							LocalCache.getInstance().put(playerKey, player);
 						}
+						player.setUpdated(stamp);
+						entities.add(player.toEntity());
+						LocalCache.getInstance().put(playerKey, player);
 					}
 
 					String aliasKey = "alias-"
@@ -161,12 +163,12 @@ public class JIPDBSCore {
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 						alias.setServer(server.getKey());
+						alias.setUpdated(stamp);
 					} else {
+						alias.setUpdated(stamp);
 						alias.setCount(alias.getCount() + 1);
-					}
-					alias.setUpdated(stamp);
-					if (alias.getKey() != null)
 						LocalCache.getInstance().put(aliasKey, alias);
+					}
 					entities.add(alias.toEntity());
 				}
 				server.setUpdated(stamp);
@@ -218,10 +220,15 @@ public class JIPDBSCore {
 					if (player == null) {
 						player = new Player();
 						player.setCreated(stamp);
+						player.setUpdated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
 						playerDAO.save(service, player);
+						LocalCache.getInstance().put(playerKey, player);
+					} else {
+						player.setUpdated(stamp);
+						entities.add(player.toEntity());
 						LocalCache.getInstance().put(playerKey, player);
 					}
 
@@ -246,6 +253,8 @@ public class JIPDBSCore {
 						alias.setUpdated(stamp);
 						alias.setServer(server.getKey());
 						entities.add(alias.toEntity());
+					} else {
+						LocalCache.getInstance().put(aliasKey, alias);	
 					}
 				}
 				server.setUpdated(stamp);
@@ -292,6 +301,8 @@ public class JIPDBSCore {
 					}
 				}
 
+				List<Entity> entities = new ArrayList<Entity>();
+				
 				for (BanInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
@@ -309,9 +320,11 @@ public class JIPDBSCore {
 					if (reason.isEmpty())
 						reason = null;
 
+					player.setUpdated(stamp);
 					player.setBanInfo(reason);
-					playerDAO.save(service, player);
+					entities.add(player.toEntity());
 				}
+				service.put(entities);
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
