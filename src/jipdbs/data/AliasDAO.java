@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import jipdbs.util.Functions;
 import jipdbs.util.NGrams;
@@ -16,12 +17,15 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAO {
 
+	private static final Logger log = Logger.getLogger(AliasDAO.class.getName());
+	
 	public void save(DatastoreService service, Alias alias) {
 		Entity entity = alias.toEntity();
 		service.put(entity);
@@ -36,7 +40,16 @@ public class AliasDAO {
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
 		q.addFilter("ip", FilterOperator.EQUAL, Functions.ipToDecimal(ip));
 		PreparedQuery pq = service.prepare(q);
-		Entity entity = pq.asSingleEntity();
+		Entity entity = null;
+		try {
+			entity = pq.asSingleEntity();			
+		} catch (TooManyResultsException e) {
+			log.severe("DUPLICATED:" + nickname + " with ip " + ip + " for player " + player);
+			List<Entity> list = pq.asList(withLimit(1));
+			if (list.size()>0) {
+				entity = list.get(0);
+			}
+		}
 		if (entity != null)
 			return new Alias(entity);
 		return null;
