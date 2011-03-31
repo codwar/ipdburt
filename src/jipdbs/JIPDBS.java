@@ -26,7 +26,9 @@ public class JIPDBS extends JIPDBSCore {
 
 	private static final int MIN_NGRAM_QUERY = 2;
 	private static final int MAX_NGRAM_QUERY = 8;
-
+	private static final int MAX_SINGLE_QUERY = 32;
+	private static final int MAX_ALIAS_QUERY = 20; // reject querys with no exact match
+	
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
 	private final String recaptchaPublicKey;
@@ -160,10 +162,12 @@ public class JIPDBS extends JIPDBSCore {
 			List<Alias> aliasses = new ArrayList<Alias>();
 
 			if ("alias".equals(type)) {
-				aliasses = aliasDAO.findByNickname(service, query, offset,
-						limit, count);
+				if (query.length() <= MAX_SINGLE_QUERY) {
+					aliasses = aliasDAO.findByNickname(service, query, offset,
+							limit, count);
+				}
 				// No exact match, try ngrams.
-				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY)
+				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY && query.length() <= MAX_ALIAS_QUERY)
 					aliasses = aliasDAO.findByNGrams(
 							service,
 							query.length() <= MAX_NGRAM_QUERY ? query : query
