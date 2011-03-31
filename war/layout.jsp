@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/style.css" media="screen"/>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-<!-- script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script-->
+<%-- script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script--%>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
