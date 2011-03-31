@@ -77,7 +77,8 @@ public class SearchServlet extends HttpServlet {
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 
 		req.setAttribute("list", list);
-		req.setAttribute("query", queryValue);
+		req.setAttribute("queryValue", queryValue);
+		req.setAttribute("query", query);
 		req.setAttribute("type", type);
 		req.setAttribute("count", total[0]);
 		req.setAttribute("time", time);

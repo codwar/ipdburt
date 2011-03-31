@@ -9,7 +9,7 @@
 
 <small>
 <form method="get"><input class="search" type="text" name="q"
-	value="${query}" /> <select name="t" style="width: 65px;">
+	value="${queryValue}" /> <select name="t" style="width: 65px;">
 	<option value="alias" <c:if test='${type == "alias"}'>selected</c:if>>Alias</option>
 	<option value="ip" <c:if test='${type == "ip"}'>selected</c:if>>IP</option>
 </select> <input type="submit" value="Buscar" /></form>
