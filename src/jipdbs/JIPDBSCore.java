@@ -1,5 +1,7 @@
 package jipdbs;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -180,6 +182,9 @@ public class JIPDBSCore {
 			}
 		} catch (Exception e) {
 			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 		}
 	}
 
@@ -266,6 +271,9 @@ public class JIPDBSCore {
 			}
 		} catch (Exception e) {
 			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 		}
 
 	}
@@ -331,6 +339,9 @@ public class JIPDBSCore {
 
 		} catch (Exception e) {
 			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 		}
 	}
 
