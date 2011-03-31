@@ -131,6 +131,7 @@ public class JIPDBSCore {
 								server.getKey(), info.getGuid());
 					}
 
+					Date playerLastUpdate = null;
 					if (player == null) {
 						player = new Player();
 						player.setCreated(stamp);
@@ -144,6 +145,7 @@ public class JIPDBSCore {
 						if (player.getBanInfo() != null) {
 							player.setBanInfo(null);
 						}
+						playerLastUpdate = player.getUpdated();
 						player.setUpdated(stamp);
 						entities.put(playerKey, player.toEntity());
 						LocalCache.getInstance().put(playerKey, player);
@@ -170,8 +172,12 @@ public class JIPDBSCore {
 						alias.setServer(server.getKey());
 						alias.setUpdated(stamp);
 					} else {
+						if (server.getUpdated() == null
+								|| playerLastUpdate == null
+								|| server.getUpdated().after(playerLastUpdate)) {
+								alias.setCount(alias.getCount() + 1);
+						}
 						alias.setUpdated(stamp);
-						alias.setCount(alias.getCount() + 1);
 						LocalCache.getInstance().put(aliasKey, alias);
 					}
 					entities.put(aliasKey, alias.toEntity());
