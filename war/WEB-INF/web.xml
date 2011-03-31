@@ -60,7 +60,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <servlet-name>keepalivehandler</servlet-name>
         <servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>duplication</servlet-name>
+        <servlet-class>jipdbs.web.DuplicatesServlet</servlet-class>
+    </servlet>
+    
 	<servlet-mapping>
 		<servlet-name>mailhandler</servlet-name>
 		<url-pattern>/_ah/mail/*</url-pattern>
@@ -97,6 +101,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>truncate</servlet-name>
 		<url-pattern>/admin/truncate</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>duplication</servlet-name>
+		<url-pattern>/admin/duplication</url-pattern>
+	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>

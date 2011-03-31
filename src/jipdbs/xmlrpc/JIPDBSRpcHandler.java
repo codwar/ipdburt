@@ -22,7 +22,7 @@ public class JIPDBSRpcHandler {
 	public void updateConnect(String key, Object[] plist) {
 
 		List<PlayerInfo> list = new ArrayList<PlayerInfo>();
-
+		
 		for (Object o : plist) {
 
 			Object[] values = ((Object[]) o);

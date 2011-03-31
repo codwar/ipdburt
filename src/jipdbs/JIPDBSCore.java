@@ -2,9 +2,10 @@ package jipdbs;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
@@ -115,7 +116,9 @@ public class JIPDBSCore {
 					}
 				}
 
-				List<Entity> entities = new ArrayList<Entity>();
+				log.info("Processing " + server.getName());
+				
+				Map<String, Entity> entities = new HashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
 					String playerKey = "player-"
@@ -142,7 +145,7 @@ public class JIPDBSCore {
 							player.setBanInfo(null);
 						}
 						player.setUpdated(stamp);
-						entities.add(player.toEntity());
+						entities.put(playerKey, player.toEntity());
 						LocalCache.getInstance().put(playerKey, player);
 					}
 
@@ -171,12 +174,12 @@ public class JIPDBSCore {
 						alias.setCount(alias.getCount() + 1);
 						LocalCache.getInstance().put(aliasKey, alias);
 					}
-					entities.add(alias.toEntity());
+					entities.put(aliasKey, alias.toEntity());
 				}
 				server.setUpdated(stamp);
 				serverDAO.cache(server);
-				entities.add(server.toEntity());
-				service.put(entities);
+				entities.put("server", server.toEntity());
+				service.put(entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
@@ -209,7 +212,9 @@ public class JIPDBSCore {
 					}
 				}
 
-				List<Entity> entities = new ArrayList<Entity>();
+				log.info("Processing " + server.getName());
+				
+				Map<String, Entity> entities = new HashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
 					String playerKey = "player-"
@@ -233,7 +238,7 @@ public class JIPDBSCore {
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
 						player.setUpdated(stamp);
-						entities.add(player.toEntity());
+						entities.put(playerKey, player.toEntity());
 						LocalCache.getInstance().put(playerKey, player);
 					}
 
@@ -257,15 +262,16 @@ public class JIPDBSCore {
 						alias.setIp(info.getIp());
 						alias.setUpdated(stamp);
 						alias.setServer(server.getKey());
-						entities.add(alias.toEntity());
+						entities.put(aliasKey, alias.toEntity());
 					} else {
+						alias.setUpdated(stamp);
 						LocalCache.getInstance().put(aliasKey, alias);	
 					}
 				}
 				server.setUpdated(stamp);
 				serverDAO.cache(server);
-				entities.add(server.toEntity());
-				service.put(entities);
+				entities.put("server", server.toEntity());
+				service.put(entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
@@ -309,7 +315,9 @@ public class JIPDBSCore {
 					}
 				}
 
-				List<Entity> entities = new ArrayList<Entity>();
+				log.info("Processing " + server.getName());
+				
+				Map<String, Entity> entities = new HashMap<String, Entity>();
 				
 				for (BanInfo info : list) {
 
@@ -330,9 +338,9 @@ public class JIPDBSCore {
 
 					player.setUpdated(stamp);
 					player.setBanInfo(reason);
-					entities.add(player.toEntity());
+					entities.put("player-" + player.getGuid(), player.toEntity());
 				}
-				service.put(entities);
+				service.put(entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
