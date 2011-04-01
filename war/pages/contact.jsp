@@ -7,7 +7,8 @@
 <fieldset><legend>Formulario de Contacto</legend>
 <p>Si manejas un servidor y deseas incorporarlo al servicio,
 envíanos un mensaje.</p>
-<form action="/pages/contactpost.jsp" method="post"><c:if
+<form action="/pages/contactpost.jsp" method="post">
+<label for="m">E-mail:</label><c:if
 	test="${not empty pageContext.request.userPrincipal}">
 	<input type="text" name="m"
 		value="${pageContext.request.userPrincipal.name}" />

@@ -55,9 +55,10 @@ option {
 
 label {
     font-weight: bold;
-    color: #bbb;
-    font-size: 16px;
+    color: #444;
+    font-size: 14px;
     padding-right: 5px;
+    padding-left: 5px;
 }
 
 label:hover {
