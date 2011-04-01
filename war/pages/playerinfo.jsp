@@ -13,7 +13,7 @@
 	value="${player.updated}" /><br />
 <strong>Servidor:</strong> <a
 	href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a><br />
-<strong>IP:</strong> <a href="/search.jsp?q=${player.ip}&t=ip">${player.ip}</a><br />
+<strong>IP:</strong> <a href="/search.jsp?q=${player.ip}&t=ip">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
 <c:if test="${not empty player.banInfo}">
 	<strong>Estado:</strong> ${player.banInfo}<br />
 </c:if></fieldset>
@@ -32,7 +32,7 @@
 			<tr>
 				<td><a
 					href="/search.jsp?q=${fn:escapeXml(alias.nickname)}&t=alias">${fn:escapeXml(alias.nickname)}</a></td>
-				<td><a href="/search.jsp?q=${alias.ip}&t=ip">${alias.ip}</a></td>
+				<td><a href="/search.jsp?q=${alias.ip}&t=ip">${alias.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${alias.ipZero}" title="Whois" class="icon vcard"></a></td>
 				<td><fmt:formatDate type="both" timeZone="GMT-3"
 					pattern="dd-MM-yyyy HH:mm:ss" value="${alias.updated}" /></td>
 				<td>${alias.count}</td>

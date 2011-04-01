@@ -64,5 +64,13 @@ public class PlayerInfoView implements Serializable {
 		this.key = key;
 	}
 	
+	public String getIpZero() {
+		if (ip == null)
+			return null;
+		int l = ip.lastIndexOf('.');
+		if (l < 0)
+			return null;
+		return ip.substring(0, l + 1) + "0";		
+	}	
 	
 }

@@ -497,3 +497,6 @@ ul.messages li.warning {
 .details {
     background-image: url('images/application_view_detail.png');
 }
+.vcard {
+	background-image: url('images/vcard.png');
+}
