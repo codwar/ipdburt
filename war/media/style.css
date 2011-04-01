@@ -500,3 +500,7 @@ ul.messages li.warning {
 .vcard {
 	background-image: url('images/vcard.png');
 }
+.close_button {
+    float: right;
+    cursor: pointer;
+}

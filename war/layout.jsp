@@ -26,16 +26,7 @@
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
 <script type="text/javascript" src="/media/js/jquery.loading.js"></script>
 <script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    $('body').ajaxStart(function() {
-        $.loading(true, {text: 'Cargando ...'});
-    }); 
-    $('body').ajaxStop(function() {
-        $.loading(false);      
-    });
-});
-</script>
+<script type="text/javascript" src="/media/js/base.js"></script>
 </head>
 <body>
 
