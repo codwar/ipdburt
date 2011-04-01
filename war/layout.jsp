@@ -59,6 +59,15 @@ $(document).ready(function() {
 </div>
 
 <div class="container">	
+<div style="float: left">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="YFGJRVEC364NG">
+<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/es_XC/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal. La forma rápida y segura de pagar en línea.">
+<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/en_US/i/scr/pixel.gif" width="1" height="1">
+<p class="helptext" style="float: right; padding-top: 4px;">Ayuda a mantener IPDB en funcionamiento</p>
+</form>
+</div>
 <div style="padding: 2px 10px 8px 10px; text-align: right;">
 <%
 	UserService userService = UserServiceFactory.getUserService();
@@ -75,7 +84,7 @@ $(document).ready(function() {
 	}
 %>
 </div>
-
+<div class="clearer"><span></span></div>
 	<div class="navigation">
 	    <a href="/">Inicio</a>
 	    <a href="/serverlist.jsp">Servidores</a>
@@ -86,7 +95,22 @@ $(document).ready(function() {
 
 <div class="main">
 <template:get name='flash' />
-<template:get name='content' /></div>
+<template:get name='content' />
+</div>
+
+<div style="width: 728px; height: 90px; margin: 5px auto 2px;">
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-6692965674688630";
+/* IPDB */
+google_ad_slot = "1813404437";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
 
 <div class="footer">
     
@@ -98,6 +122,7 @@ $(document).ready(function() {
     </div>
 
 </div>
+
 
 </body>
 

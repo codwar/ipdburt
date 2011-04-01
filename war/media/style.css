@@ -1,3 +1,13 @@
+.helptext {
+  font-family: sans-serif;
+  font-size: 0.75em;
+  padding-left: 2em;
+  max-width: 30em;
+  color: #666;
+  line-height: 120%;
+  margin: 0.2em 0;
+}
+
 /* Form Styling */
 input[type=text],input[type=password],textarea,select {
     /*padding: 9px;*/
