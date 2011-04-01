@@ -27,11 +27,25 @@ public class ServerSaveServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		String name = req.getParameter("name");
+		String admin = req.getParameter("admin");
+		String ip = req.getParameter("ip");
+
+		if (StringUtils.isEmpty(name) || StringUtils.isEmpty(admin)) {
+			Flash.error(req, "Falta nombre o admin del server.");
+			return;
+		}
+
+		if (StringUtils.isEmpty(ip))
+			Flash.warn(req, "Faltó dirección IP.");
+
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
-			String uid = GuidGenerator.generate(req.getParameter("name"));
-			app.addServer(req.getParameter("name"), req.getParameter("admin"), uid, req.getParameter("ip"));
+			String uid = GuidGenerator.generate(name);
+			app.addServer(name, admin, uid, ip);
+			Flash.info(req, "Server agregado.");
 		} else {
-			app.saveServer(req.getParameter("k"), req.getParameter("name"), req.getParameter("admin"), req.getParameter("ip"));
+			app.saveServer(req.getParameter("k"), name, admin, ip);
+			Flash.info(req, "Server editado.");
 		}
 	}
 }
