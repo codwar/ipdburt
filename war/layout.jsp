@@ -50,15 +50,21 @@
 </div>
 
 <div class="container">	
-<div style="float: left">
+
+<div style="float: left;">
+<div style="float: left;">
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="YFGJRVEC364NG">
 <input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/es_XC/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal. La forma rápida y segura de pagar en línea.">
 <img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/en_US/i/scr/pixel.gif" width="1" height="1">
-<p class="helptext" style="float: right; padding-top: 4px;">Ayuda a mantener IPDB en funcionamiento</p>
 </form>
 </div>
+<div style="float: left;"> 
+<span class="helptext" style="padding-top: 4px;">Ayuda a mantener IPDB en funcionamiento</span>
+</div>
+</div>
+
 <div style="padding: 2px 10px 8px 10px; text-align: right;">
 <%
 	UserService userService = UserServiceFactory.getUserService();
