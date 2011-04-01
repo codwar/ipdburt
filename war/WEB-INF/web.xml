@@ -37,8 +37,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-class>jipdbs.web.AliasServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>contactform</servlet-name>
-		<servlet-class>jipdbs.web.ContactServlet</servlet-class>
+		<servlet-name>contactpost</servlet-name>
+		<servlet-class>jipdbs.web.ContactPostServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>playerinfo</servlet-name>
@@ -52,27 +52,35 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>mailhandler</servlet-name>
 		<servlet-class>jipdbs.web.MailHandlerServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>httphandler</servlet-name>
-        <servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>keepalivehandler</servlet-name>
-        <servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>duplication</servlet-name>
-        <servlet-class>jipdbs.web.DuplicatesServlet</servlet-class>
-    </servlet>
-    
+	<servlet>
+		<servlet-name>httphandler</servlet-name>
+		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>keepalivehandler</servlet-name>
+		<servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>duplication</servlet-name>
+		<servlet-class>jipdbs.web.DuplicatesServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>flash</servlet-name>
+		<servlet-class>jipdbs.web.FlashServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>flash</servlet-name>
+		<url-pattern>/flash</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>mailhandler</servlet-name>
 		<url-pattern>/_ah/mail/*</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>httphandler</servlet-name>
-        <url-pattern>/app/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>httphandler</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>playerinfo</servlet-name>
 		<url-pattern>/playerinfo</url-pattern>
@@ -82,8 +90,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/serverlist</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>contactform</servlet-name>
-		<url-pattern>/contact</url-pattern>
+		<servlet-name>contactpost</servlet-name>
+		<url-pattern>/contactpost</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>infoservlet</servlet-name>
@@ -104,7 +112,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<servlet-mapping>
 		<servlet-name>duplication</servlet-name>
 		<url-pattern>/admin/duplication</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>
@@ -117,14 +125,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>alias</servlet-name>
 		<url-pattern>/alias</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>alias</servlet-name>
-        <url-pattern>/alias</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>alias</servlet-name>
+		<url-pattern>/alias</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>keepalivehandler</servlet-name>
 		<url-pattern>/cron/keepalive</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>
@@ -138,7 +146,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<web-resource-collection>
 			<web-resource-name>cron</web-resource-name>
 			<url-pattern>/cron/*</url-pattern>
-		</web-resource-collection>		
+		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>

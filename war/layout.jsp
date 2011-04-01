@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" isELIgnored="false"%>
+    pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.google.appengine.api.users.*"%>
 
 
@@ -83,11 +84,11 @@ $(document).ready(function() {
 		<div class="clearer"><span></span></div>
 	</div>
 
-	<div class="main">
-	   <template:get name='content'/>
-	</div>
-	
-    <div class="footer">
+<div class="main">
+<template:get name='flash' />
+<template:get name='content' /></div>
+
+<div class="footer">
     
         <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}</div>
         <div class="right"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></div>

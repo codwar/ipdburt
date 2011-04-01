@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" isELIgnored="false"%>
+	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -152,10 +152,10 @@
 				<td colspan="4" style="padding: 20px;">
 				<table>
 					<thead>
-					    <tr>
-					    <td colspan="4" style="text-align: right;">
-                        <a href="/playerinfo.jsp?id=${player.key}" class="icon details">Todo</a></td>
-					    </tr>
+						<tr>
+							<td colspan="4" style="text-align: right;"><a
+								href="/playerinfo.jsp?id=${player.key}" class="icon details">Todo</a></td>
+						</tr>
 						<tr>
 							<th>Nombre</th>
 							<th>IP</th>
@@ -164,8 +164,8 @@
 						</tr>
 					</thead>
 					<tr id="more" style="cursor: pointer;">
-						<td colspan="4" style="text-align: center;">
-						<span class="icon refresh">Más...</span></td>
+						<td colspan="4" style="text-align: center;"><span
+							class="icon refresh">Más...</span></td>
 					</tr>
 				</table>
 				</td>

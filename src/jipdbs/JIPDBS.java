@@ -1,11 +1,23 @@
 package jipdbs;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import jipdbs.data.Alias;
 import jipdbs.data.Player;
@@ -24,11 +36,13 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
 
+	private static final String FROM_ADDR = "contact@ipdburt.appspotmail.com";
 	private static final int MIN_NGRAM_QUERY = 2;
 	private static final int MAX_NGRAM_QUERY = 8;
 	private static final int MAX_SINGLE_QUERY = 32;
-	private static final int MAX_ALIAS_QUERY = 20; // reject querys with no exact match
-	
+	private static final int MAX_ALIAS_QUERY = 20; // reject querys with no
+													// exact match
+
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
 	private final String recaptchaPublicKey;
@@ -48,7 +62,9 @@ public class JIPDBS extends JIPDBSCore {
 	public boolean isRecaptchaValid(String remoteAddr, String challenge,
 			String uresponse) {
 		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+
 		reCaptcha.setPrivateKey(recaptchaPrivateKey);
+
 		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
 				challenge, uresponse);
 
@@ -167,7 +183,8 @@ public class JIPDBS extends JIPDBSCore {
 							limit, count);
 				}
 				// No exact match, try ngrams.
-				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY && query.length() <= MAX_ALIAS_QUERY)
+				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY
+						&& query.length() <= MAX_ALIAS_QUERY)
 					aliasses = aliasDAO.findByNGrams(
 							service,
 							query.length() <= MAX_NGRAM_QUERY ? query : query
@@ -177,7 +194,8 @@ public class JIPDBS extends JIPDBSCore {
 				aliasses = aliasDAO.findByIP(service, query, offset, limit,
 						count);
 			} else if ("s".equals(type)) {
-				aliasses = aliasDAO.findByServer(service, query, offset, limit, count);
+				aliasses = aliasDAO.findByServer(service, query, offset, limit,
+						count);
 			}
 
 			for (Alias alias : aliasses) {
@@ -194,7 +212,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setIp(alias.getMaskedIp());
 				result.setLatest(player.getUpdated());
 				result.setPlaying(false);
-				//result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
 				result.setServer(server);
 				result.setBanInfo(player.getBanInfo());
@@ -254,6 +272,49 @@ public class JIPDBS extends JIPDBSCore {
 			log.severe("Unable to fetch aliasses:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();
+		}
+	}
+
+	public void sendAdminMail(String realId, String from, String body) {
+		try {
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("Responder a: ");
+			builder.append(from);
+			builder.append("\r\n");
+			if (realId != null) {
+				builder.append("Identificado como: ");
+				builder.append(realId);
+				builder.append("\r\n");
+			}
+			builder.append("\r\n");
+			builder.append("------------- MENSAJE -------------\r\n\r\n");
+			builder.append(body);
+
+			Session session = Session
+					.getDefaultInstance(new Properties(), null);
+
+			Address[] replyTo = new InternetAddress[1];
+			replyTo[0] = new InternetAddress(from);
+
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(FROM_ADDR));
+			msg.setReplyTo(replyTo);
+			msg.addRecipient(RecipientType.TO, new InternetAddress("admins"));
+			msg.setSubject("Mensaje enviado desde IPDB");
+			msg.setText(builder.toString());
+			Transport.send(msg);
+
+		} catch (AddressException e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		} catch (MessagingException e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 		}
 	}
 }

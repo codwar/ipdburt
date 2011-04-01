@@ -27,9 +27,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class DuplicatesServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8523957912890704182L;
 
 	@Override
@@ -37,41 +34,43 @@ public class DuplicatesServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		ServerDAO serverDAO = new ServerDAO();
-		
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		String s = req.getParameter("s");
-		
+
 		Server server;
-		
+
 		try {
 			server = serverDAO.get(service, KeyFactory.stringToKey(s));
 		} catch (EntityNotFoundException e) {
 			resp.getWriter().write("Server not found");
 			return;
 		}
-		
+
 		Query q = new Query("Player").setKeysOnly();
 		q.setAncestor(server.getKey());
 		PreparedQuery pq = service.prepare(q);
-		
+
 		List<Key> keys = new ArrayList<Key>();
-		Entity en;
 		for (Entity entity : pq.asIterable()) {
 			Query q2 = new Query("Alias").setKeysOnly();
 			q2.setAncestor(entity.getKey());
 			q2.addSort("count", SortDirection.DESCENDING);
 			PreparedQuery pq2 = service.prepare(q2);
 			try {
-				en = pq2.asSingleEntity();
+				pq2.asSingleEntity();
 			} catch (TooManyResultsException e) {
-				for (Entity alias : pq2.asIterable(FetchOptions.Builder.withOffset(1))) {
+				for (Entity alias : pq2.asIterable(FetchOptions.Builder
+						.withOffset(1))) {
 					keys.add(alias.getKey());
 				}
 			}
 		}
 		service.delete(keys);
 		LocalCache.getInstance().clear();
-		resp.getWriter().write("Done. Removed " + Integer.toString(keys.size()));
+		resp.getWriter()
+				.write("Done. Removed " + Integer.toString(keys.size()));
 	}
 }
