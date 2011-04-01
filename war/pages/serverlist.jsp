@@ -4,6 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <jsp:include page="/serverlist" />
+<jsp:include page="/pages/flash.jsp" />
+
 <h1>Servidores Registrados</h1>
 <br />
 <table style="width: 85%; margin-left: auto; margin-right: auto;">

@@ -6,6 +6,7 @@
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
 
 <jsp:include page="/playerinfo" />
+<jsp:include page="/pages/flash.jsp" />
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
 <legend>${fn:escapeXml(player.name)}</legend> <strong>Visto:</strong> <fmt:formatDate

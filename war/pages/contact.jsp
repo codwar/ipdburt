@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<jsp:include page="/pages/flash.jsp" />
+
 <fieldset><legend>Formulario de Contacto</legend>
 <p>Si manejas un servidor y deseas incorporarlo al servicio,
 envíanos un mensaje.</p>

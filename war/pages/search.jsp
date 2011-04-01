@@ -6,6 +6,7 @@
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
 
 <jsp:include page="/search" />
+<jsp:include page="/pages/flash.jsp" />
 
 <small>
 <form method="get"><input class="search" type="text" name="q"

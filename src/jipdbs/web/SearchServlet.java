@@ -14,6 +14,8 @@ import jipdbs.PageLink;
 import jipdbs.SearchResult;
 import jipdbs.util.Functions;
 
+import org.datanucleus.util.StringUtils;
+
 public class SearchServlet extends HttpServlet {
 
 	private static final int DEFAULT_PAGE_SIZE = 20;
@@ -45,7 +47,7 @@ public class SearchServlet extends HttpServlet {
 		} catch (NumberFormatException e) {
 			// Ignore.
 		}
-		
+
 		int offset = (page - 1) * pageSize;
 		int limit = pageSize;
 
@@ -58,20 +60,32 @@ public class SearchServlet extends HttpServlet {
 
 		long time = System.currentTimeMillis();
 
+		// this is to get the modified value and show it in search box
 		String queryValue = query;
-		if (query == null || "".equals(query)) {
+
+		if (StringUtils.isEmpty(type)) {
 			list = app.rootQuery(offset, limit, total);
+		} else if ("ip".equals(type)) {
+			query = Functions.fixIp(query);
+			queryValue = query;
+			list = app.ipSearch(query, offset, limit, total);
+		} else if ("s".equals(type)) {
+			queryValue = "";
+			list = app.byServerSearch(query, offset, limit, total);
+		} else if ("alias".equals(type)) {
+			if (validPlayerNameChars(query)) {
+				boolean[] exactMatch = new boolean[1];
+				exactMatch[0] = true;
+				list = app.aliasSearch(query, offset, limit, total, exactMatch);
+				if (!exactMatch[0] && list.size() > 0)
+					Flash.info(req, "No se encontraron resultados exactos. "
+							+ "Los resultados son variaciones del nombre.");
+			} else
+				Flash.error(req, "Consulta inválida. Caracteres inválidos.");
 		} else {
-			// this is to get the modified value and show it in search box
-			if ("ip".equals(type)) {
-				query = Functions.fixIp(query);
-				queryValue = query;
-			}
-			else if ("s".equals(type)) queryValue = "";
-			
-			list = app.search(query, type, offset, limit, total);
+			Flash.warn(req, "Tipo de consulta inválido.");
 		}
-		
+
 		time = System.currentTimeMillis() - time;
 
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
@@ -83,5 +97,20 @@ public class SearchServlet extends HttpServlet {
 		req.setAttribute("count", total[0]);
 		req.setAttribute("time", time);
 		req.setAttribute("pageLink", new PageLink(page, pageSize, totalPages));
+	}
+
+	private static boolean validPlayerNameChars(String query) {
+		if (query == null)
+			return false;
+
+		for (int i = 0; i < query.length(); i++)
+			if (!validPlayerNameChar(query.charAt(i)))
+				return false;
+		return true;
+	}
+
+	private static boolean validPlayerNameChar(char c) {
+		// Continuously improve this.
+		return c < 256 && c != ' ';
 	}
 }
