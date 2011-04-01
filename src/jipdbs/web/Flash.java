@@ -1,11 +1,14 @@
 package jipdbs.web;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class Flash {
+public class Flash implements Serializable {
+
+	private static final long serialVersionUID = -1086167146182696335L;
 
 	private static final String SESSION_NAME = Flash.class.getCanonicalName()
 			+ "___flash___";
