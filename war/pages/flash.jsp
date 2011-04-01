@@ -6,16 +6,16 @@
 <c:if test="${flash.count gt 0}">
 	<ul class="messages">
 		<c:forEach items="${flash.infos}" var="info">
-			<li class="info">${info}</li>
+			<li class="info place-text">${info}</li>
 		</c:forEach>
 		<c:forEach items="${flash.oks}" var="ok">
-			<li class="success">${ok}</li>
+			<li class="success place-text">${ok}</li>
 		</c:forEach>
 		<c:forEach items="${flash.warns}" var="warn">
-			<li class="warning">${warn}</li>
+			<li class="warning place-text">${warn}</li>
 		</c:forEach>
 		<c:forEach items="${flash.errors}" var="error">
-			<li class="error">${error}</li>
+			<li class="error place-text">${error}</li>
 		</c:forEach>
 	</ul>
 </c:if>

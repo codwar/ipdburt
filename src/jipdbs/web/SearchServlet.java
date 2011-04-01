@@ -77,9 +77,14 @@ public class SearchServlet extends HttpServlet {
 				boolean[] exactMatch = new boolean[1];
 				exactMatch[0] = true;
 				list = app.aliasSearch(query, offset, limit, total, exactMatch);
-				if (!exactMatch[0] && list.size() > 0)
-					Flash.info(req, "No se encontraron resultados exactos. "
-							+ "Los resultados son variaciones del nombre.");
+				if (!exactMatch[0] && list.size() > 0) {
+					Flash.info(
+							req,
+							"No se encontraron resultados precisos. "
+									+ "Los resultados mostrados son variaciones del nombre.");
+					Flash.warn(req, "Su búsqueda arroja demasiados resultados."
+							+ " Por favor, refine su búsqueda.");
+				}
 			} else
 				Flash.error(req, "Consulta inválida. Caracteres inválidos.");
 		} else {

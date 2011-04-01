@@ -37,6 +37,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 public class JIPDBS extends JIPDBSCore {
 
 	private static final String FROM_ADDR = "contact@ipdburt.appspotmail.com";
+	private static final int NGRAMS_LIMIT = 40;
+	private static final int NGRAMS_OFFSET = 0;
 	private static final int MIN_NGRAM_QUERY = 2;
 	private static final int MAX_NGRAM_QUERY = 8;
 	private static final int MAX_SINGLE_QUERY = 32;
@@ -188,8 +190,8 @@ public class JIPDBS extends JIPDBSCore {
 				aliasses = aliasDAO.findByNGrams(
 						service,
 						query.length() <= MAX_NGRAM_QUERY ? query : query
-								.substring(0, MAX_NGRAM_QUERY), offset, limit,
-						count);
+								.substring(0, MAX_NGRAM_QUERY), NGRAMS_OFFSET,
+						NGRAMS_LIMIT, count);
 				exactMatch[0] = false;
 			}
 
