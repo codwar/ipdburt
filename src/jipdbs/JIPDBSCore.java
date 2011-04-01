@@ -330,21 +330,45 @@ public class JIPDBSCore {
 					Player player = playerDAO.findByServerAndGuid(service,
 							server.getKey(), info.getGuid());
 
+					String reason = info.getReason();
+					if (reason.isEmpty())
+						reason = null;
+
 					if (player == null) {
 						player = new Player();
 						player.setCreated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
+						//player.setUpdated(stamp);
+						player.setBanInfo(reason);
+						playerDAO.save(service, player);
+					} else {
+						//player.setUpdated(stamp);
+						player.setBanInfo(reason);
+						entities.put("player-" + player.getGuid(), player.toEntity());
 					}
-
-					String reason = info.getReason();
-
-					if (reason.isEmpty())
-						reason = null;
-
-					player.setUpdated(stamp);
-					player.setBanInfo(reason);
-					entities.put("player-" + player.getGuid(), player.toEntity());
+					
+					String aliasKey = "alias-"
+						+ KeyFactory.keyToString(player.getKey())
+						+ info.getName() + info.getIp();
+					Alias alias = (Alias) LocalCache.getInstance()
+						.get(aliasKey);
+					if (alias == null) {
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+								player.getKey(), info.getName(), info.getIp());
+					}
+					if (alias == null) {
+						alias = new Alias();
+						alias.setCount(1);
+						alias.setCreated(stamp);
+						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.ngrams(info.getName()));
+						alias.setPlayer(player.getKey());
+						alias.setIp(info.getIp());
+						//alias.setUpdated(stamp);
+						alias.setServer(server.getKey());
+						entities.put(aliasKey, alias.toEntity());
+					}
 				}
 				service.put(entities.values());
 			} else {

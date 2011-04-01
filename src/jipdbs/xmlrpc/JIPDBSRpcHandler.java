@@ -35,7 +35,7 @@ public class JIPDBSRpcHandler {
 			list.add(p);
 
 		}
-		app.updateConnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+		if (list.size() > 0) app.updateConnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 
 	public void updateDisconnect(String key, Object[] plist) {
@@ -55,7 +55,7 @@ public class JIPDBSRpcHandler {
 
 		}
 
-		app.updateDisconnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+		if (list.size() > 0) app.updateDisconnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 	
 	public void updateBanInfo(String key, Object[] plist) {
@@ -65,15 +65,17 @@ public class JIPDBSRpcHandler {
 		for (Object o : plist) {
 
 			Object[] values = ((Object[]) o);
-
-			BanInfo b = new BanInfo();
-			b.setGuid((String) values[0]);
-			b.setReason((String) values[1]);
-
-			list.add(b);
+			
+			if (values.length == 4) {
+				BanInfo b = new BanInfo();
+				b.setGuid((String) values[0]);
+				b.setReason((String) values[1]);
+				b.setName((String) values[2]);
+				b.setIp((String) values[3]);
+				list.add(b);
+			}
 
 		}
-
-		app.updateBanInfo(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
+		if (list.size() > 0) app.updateBanInfo(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
 }
