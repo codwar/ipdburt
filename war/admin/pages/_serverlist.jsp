@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <jsp:include page="/serverlist" />
+<jsp:include page="/pages/flash.jsp" />
 
 <table border="1">
     <thead>

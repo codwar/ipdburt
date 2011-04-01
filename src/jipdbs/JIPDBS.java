@@ -166,65 +166,107 @@ public class JIPDBS extends JIPDBSCore {
 		}
 	}
 
-	public List<SearchResult> search(String query, String type, int offset,
-			int limit, int[] count) {
+	public List<SearchResult> aliasSearch(String query, int offset, int limit,
+			int[] count, boolean[] exactMatch) {
 
 		try {
 			DatastoreService service = DatastoreServiceFactory
 					.getDatastoreService();
 
-			List<SearchResult> results = new ArrayList<SearchResult>();
-
 			List<Alias> aliasses = new ArrayList<Alias>();
 
-			if ("alias".equals(type)) {
-				if (query.length() <= MAX_SINGLE_QUERY) {
-					aliasses = aliasDAO.findByNickname(service, query, offset,
-							limit, count);
-				}
-				// No exact match, try ngrams.
-				if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY
-						&& query.length() <= MAX_ALIAS_QUERY)
-					aliasses = aliasDAO.findByNGrams(
-							service,
-							query.length() <= MAX_NGRAM_QUERY ? query : query
-									.substring(0, MAX_NGRAM_QUERY), offset,
-							limit, count);
-			} else if ("ip".equals(type)) {
-				aliasses = aliasDAO.findByIP(service, query, offset, limit,
-						count);
-			} else if ("s".equals(type)) {
-				aliasses = aliasDAO.findByServer(service, query, offset, limit,
-						count);
+			if (query.length() <= MAX_SINGLE_QUERY) {
+				aliasses = aliasDAO.findByNickname(service, query, offset,
+						limit, count);
 			}
 
-			for (Alias alias : aliasses) {
+			exactMatch[0] = true;
 
-				Player player = playerDAO.get(service, alias.getPlayer());
-				Server server = serverDAO.get(service, player.getServer());
-
-				// Whoops! inconsistent data.
-				if (alias == null || server == null)
-					continue;
-
-				SearchResult result = new SearchResult();
-				result.setKey(KeyFactory.keyToString(player.getKey()));
-				result.setIp(alias.getMaskedIp());
-				result.setLatest(player.getUpdated());
-				result.setPlaying(false);
-				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-				result.setName(alias.getNickname());
-				result.setServer(server);
-				result.setBanInfo(player.getBanInfo());
-				results.add(result);
+			// No exact match, try ngrams.
+			if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY
+					&& query.length() <= MAX_ALIAS_QUERY) {
+				aliasses = aliasDAO.findByNGrams(
+						service,
+						query.length() <= MAX_NGRAM_QUERY ? query : query
+								.substring(0, MAX_NGRAM_QUERY), offset, limit,
+						count);
+				exactMatch[0] = false;
 			}
-			return results;
+
+			return marshall(aliasses);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();
 		}
+	}
+
+	public List<SearchResult> ipSearch(String query, int offset, int limit,
+			int[] count) {
+
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			return marshall(aliasDAO.findByIP(service, query, offset, limit,
+					count));
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.severe("Unable to fetch players:" + e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+
+	public List<SearchResult> byServerSearch(String query, int offset,
+			int limit, int[] count) {
+
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			return marshall(aliasDAO.findByServer(service, query, offset,
+					limit, count));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.severe("Unable to fetch players:" + e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+
+	private List<SearchResult> marshall(List<Alias> aliasses)
+			throws EntityNotFoundException {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		List<SearchResult> results = new ArrayList<SearchResult>();
+
+		for (Alias alias : aliasses) {
+
+			Player player = playerDAO.get(service, alias.getPlayer());
+			Server server = serverDAO.get(service, player.getServer());
+
+			// Whoops! inconsistent data.
+			if (alias == null || server == null)
+				continue;
+
+			SearchResult result = new SearchResult();
+			result.setKey(KeyFactory.keyToString(player.getKey()));
+			result.setIp(alias.getMaskedIp());
+			result.setLatest(player.getUpdated());
+			result.setPlaying(false);
+			// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+			result.setName(alias.getNickname());
+			result.setServer(server);
+			result.setBanInfo(player.getBanInfo());
+			results.add(result);
+		}
+
+		return results;
 	}
 
 	public Player getPlayer(String player) throws EntityNotFoundException {
