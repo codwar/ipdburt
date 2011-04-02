@@ -28,7 +28,7 @@
 				var html = "";
 				html += "<tr class=\"aliasrow\">";
 				html += "<td><a href=\"/search.jsp?q=";
-				html += value.nickname;
+				html += encodeURIComponent(value.nickname);
 				html += "&t=alias\">";
 				html += value.nickname;
 				html += "</a></td>";
@@ -141,8 +141,14 @@
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
 				<span
 					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
-				<a href="/search.jsp?q=${player.name}&t=alias">${fn:escapeXml(player.name)}</a></span></td>
-				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a></td>
+				<c:url value="/search.jsp" var="url">
+					<c:param name="q" value="${player.name}" />
+					<c:param name="t" value="alias" />
+				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
+				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a>&nbsp;<a
+					target="_blank"
+					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
+					class="icon vcard"></a></td>
 				<td><c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
