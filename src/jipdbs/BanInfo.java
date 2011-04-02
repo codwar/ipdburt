@@ -1,12 +1,23 @@
 package jipdbs;
 
+import java.util.Date;
+
 public final class BanInfo {
 
 	private String reason;
 	private String guid;
 	private String name;
 	private String ip;
+	private Date updated;
 	
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
 	public String getReason() {
 		return reason;
 	}

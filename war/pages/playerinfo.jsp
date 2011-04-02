@@ -31,8 +31,12 @@
 	<tbody>
 		<c:forEach items="${player.aliases}" var="alias">
 			<tr>
-				<td><a
-					href="/search.jsp?q=${fn:escapeXml(alias.nickname)}&t=alias">${fn:escapeXml(alias.nickname)}</a></td>
+				<td>
+				<c:url value="/search.jsp" var="url">
+                    <c:param name="q" value="${alias.nickname}" />
+                    <c:param name="t" value="alias" />
+                </c:url>
+				<a href="${url}">${fn:escapeXml(alias.nickname)}</a></td>
 				<td><a href="/search.jsp?q=${alias.ip}&t=ip">${alias.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${alias.ipZero}" title="Whois" class="icon vcard"></a></td>
 				<td><fmt:formatDate type="both" timeZone="GMT-3"
 					pattern="dd-MM-yyyy HH:mm:ss" value="${alias.updated}" /></td>

@@ -1,6 +1,7 @@
 package jipdbs.xmlrpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jipdbs.BanInfo;
@@ -26,12 +27,13 @@ public class JIPDBSRpcHandler {
 		for (Object o : plist) {
 
 			Object[] values = ((Object[]) o);
-
 			PlayerInfo p = new PlayerInfo();
 			p.setName((String) values[0]);
 			p.setIp((String) values[1]);
 			p.setGuid((String) values[2]);
-
+			if (values.length == 4) {
+				p.setUpdated((Date) values[3]);
+			}
 			list.add(p);
 
 		}
@@ -66,16 +68,19 @@ public class JIPDBSRpcHandler {
 
 			Object[] values = ((Object[]) o);
 			
-			if (values.length == 4) {
+			if (values.length >= 4) {
 				BanInfo b = new BanInfo();
 				b.setGuid((String) values[0]);
 				b.setReason((String) values[1]);
 				b.setName((String) values[2]);
 				b.setIp((String) values[3]);
+				if (values.length > 4) {
+					b.setUpdated((Date) values[4]);
+				}
 				list.add(b);
 			}
 
 		}
 		if (list.size() > 0) app.updateBanInfo(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
-	}
+	}	
 }

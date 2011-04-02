@@ -138,7 +138,11 @@ public class JIPDBSCore {
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
-						player.setUpdated(stamp);
+						if (info.getUpdated() != null) {
+							player.setUpdated(info.getUpdated());
+						} else {
+							player.setUpdated(stamp);	
+						}
 						playerDAO.save(service, player);
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
@@ -170,7 +174,11 @@ public class JIPDBSCore {
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
 						alias.setServer(server.getKey());
-						alias.setUpdated(stamp);
+						if (info.getUpdated() != null) {
+							alias.setUpdated(info.getUpdated());
+						} else {
+							alias.setUpdated(stamp);	
+						}
 					} else {
 						if (server.getUpdated() == null
 								|| playerLastUpdate == null
@@ -339,11 +347,15 @@ public class JIPDBSCore {
 						player.setCreated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
-						//player.setUpdated(stamp);
+						if (info.getUpdated()!=null) {
+							player.setUpdated(info.getUpdated());
+						}
 						player.setBanInfo(reason);
 						playerDAO.save(service, player);
 					} else {
-						//player.setUpdated(stamp);
+						if (info.getUpdated()!=null) {
+							player.setUpdated(info.getUpdated());
+						}						
 						player.setBanInfo(reason);
 						entities.put("player-" + player.getGuid(), player.toEntity());
 					}
@@ -365,9 +377,16 @@ public class JIPDBSCore {
 						alias.setNgrams(NGrams.ngrams(info.getName()));
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
-						//alias.setUpdated(stamp);
+						if (info.getUpdated()!=null) {
+							alias.setUpdated(info.getUpdated());
+						}
 						alias.setServer(server.getKey());
 						entities.put(aliasKey, alias.toEntity());
+					} else {
+						if (info.getUpdated()!=null) {
+							alias.setUpdated(info.getUpdated());
+							entities.put(aliasKey, alias.toEntity());
+						}						
 					}
 				}
 				service.put(entities.values());

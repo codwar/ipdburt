@@ -1,11 +1,14 @@
 package jipdbs;
 
+import java.util.Date;
+
 public final class PlayerInfo {
 
 	private String name;
 	private String ip;
 	private String guid;
-
+	private Date updated;
+	
 	public String getName() {
 		return name;
 	}
@@ -28,6 +31,14 @@ public final class PlayerInfo {
 
 	public void setGuid(String guid) {
 		this.guid = guid;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
 	}
 
 	@Override
