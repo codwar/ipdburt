@@ -188,11 +188,15 @@
 	</tbody>
 	<tfoot>
 		<tr>
+			<c:url value="/search.jsp" var="url">
+				<c:param name="q" value="${query}" />
+				<c:param name="t" value="${type}" />
+			</c:url>
 			<td colspan="4"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator
 				totalPages="${pageLink.totalPages}"
 				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
-				url="/search.jsp?q=${query}&t=${type}" /></td>
+				url="${url}" /></td>
 		</tr>
 	</tfoot>
 </table>
