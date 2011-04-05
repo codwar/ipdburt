@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-  <cron>
-    <url>/cron/keepalive</url>
-    <description>Keep alive</description>
-    <schedule>every 1 minutes synchronized</schedule>
-  </cron>
+	<cron>
+		<url>/cron/keepalive</url>
+		<description>Keep alive</description>
+		<schedule>every 1 minutes synchronized</schedule>
+	</cron>
+	<cron>
+		<url>/_ah/sessioncleanup?clear</url>
+		<description>Clean up sessions</description>
+		<schedule>every 1 hours</schedule>
+	</cron>
 </cronentries>

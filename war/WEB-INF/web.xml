@@ -9,6 +9,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	</listener>
 
 	<servlet>
+		<servlet-name>_ah_sessioncleanup</servlet-name>
+		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>serverlist</servlet-name>
 		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
 	</servlet>
@@ -69,6 +73,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-class>jipdbs.web.FlashServlet</servlet-class>
 	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>_ah_sessioncleanup</servlet-name>
+		<url-pattern>/_ah/sessioncleanup</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>flash</servlet-name>
 		<url-pattern>/flash</url-pattern>
@@ -140,6 +148,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<url-pattern>/_ah/mail/*</url-pattern>
 		</web-resource-collection>
 		<web-resource-collection>
+			<web-resource-name>session-cleanup</web-resource-name>
+			<url-pattern>/_ah/sessioncleanup</url-pattern>
+		</web-resource-collection>
+		<web-resource-collection>
 			<web-resource-name>admin</web-resource-name>
 			<url-pattern>/admin/*</url-pattern>
 		</web-resource-collection>
@@ -164,4 +176,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<welcome-file-list>
 		<welcome-file>search.jsp</welcome-file>
 	</welcome-file-list>
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
 </web-app>
