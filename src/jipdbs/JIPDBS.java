@@ -113,7 +113,6 @@ public class JIPDBS extends JIPDBSCore {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public List<Server> getServers(int offset, int limit, int[] count) {
@@ -163,6 +162,46 @@ public class JIPDBS extends JIPDBSCore {
 			return results;
 		} catch (Exception e) {
 			log.severe("Unable to fetch root query players:" + e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+
+	public List<SearchResult> bannedQuery(int offset, int limit, int[] count) {
+
+		try {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+
+			List<Player> players = playerDAO.findBanned(service, offset, limit,
+					count);
+
+			List<SearchResult> results = new ArrayList<SearchResult>();
+
+			for (Player player : players) {
+
+				Alias alias = aliasDAO.getLastUsedAlias(service,
+						player.getKey());
+				Server server = serverDAO.get(service, player.getServer());
+
+				// Whoops! inconsistent data.
+				if (alias == null || server == null)
+					continue;
+
+				SearchResult result = new SearchResult();
+				result.setKey(KeyFactory.keyToString(player.getKey()));
+				result.setIp(alias.getMaskedIp());
+				result.setLatest(player.getUpdated());
+				result.setPlaying(false);
+				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+				result.setName(alias.getNickname());
+				result.setServer(server);
+				result.setBanInfo(player.getBanInfo());
+				results.add(result);
+			}
+			return results;
+		} catch (Exception e) {
+			log.severe("Unable to fetch banned query players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();
 		}

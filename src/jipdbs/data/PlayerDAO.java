@@ -16,7 +16,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class PlayerDAO {
-	
+
 	public void save(DatastoreService service, Player player) {
 		Entity entity = player.toEntity();
 		service.put(entity);
@@ -54,11 +54,29 @@ public class PlayerDAO {
 		return players;
 	}
 
+	public List<Player> findBanned(DatastoreService service, int offset,
+			int limit, int[] count) {
+		Query q = new Query("Player");
+		q.addFilter("baninfo", FilterOperator.GREATER_THAN, null);
+		q.addSort("baninfo", SortDirection.DESCENDING);
+		q.addSort("updated", SortDirection.DESCENDING);
+		PreparedQuery pq = service.prepare(q);
+
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+
+		List<Player> players = new ArrayList<Player>();
+
+		for (Entity entity : pq.asIterable(withOffset(offset).limit(limit)))
+			players.add(new Player(entity));
+
+		return players;
+	}
+
 	public Player get(DatastoreService service, Key player)
 			throws EntityNotFoundException {
 		return new Player(service.get(player));
 	}
-	
+
 	public void truncate(DatastoreService service) {
 		Query q = new Query("Player");
 		q.setKeysOnly();

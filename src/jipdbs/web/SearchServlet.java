@@ -72,6 +72,9 @@ public class SearchServlet extends HttpServlet {
 		} else if ("s".equals(type)) {
 			queryValue = "";
 			list = app.byServerSearch(query, offset, limit, total);
+		} else if ("ban".equals(type)) {
+			queryValue = "";
+			list = app.bannedQuery(offset, limit, total);
 		} else if ("alias".equals(type)) {
 			if (validPlayerNameChars(query)) {
 				boolean[] exactMatch = new boolean[1];
