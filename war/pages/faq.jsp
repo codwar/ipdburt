@@ -29,12 +29,18 @@
 <a name="ipdb_info_sensible" href="#ipdb_info_sensible"><h2>¿IPDB almacena informaci&oacute;n sensible de mi servidor o de los usuarios?</h2></a>
 <br/>
 <p>No. IPDB no recibe datos del servidor m&aacute;s all&aacute; del nombre. Asimismo, la IP de los usuarios se presenta codificada.</p>
-<a name="ipdb_rcon" href="#ipdb_rcon"><h2>¿Es necesario que de mi contrase&ntilde;a de RCON?</h2></a>
+<a name="rcon" href="#rcon"><h2>¿Es necesario que de mi contrase&ntilde;a de RCON?</h2></a>
 <br/>
 <p>No. El acceso RCON no es necesario y ning&uacute;n administrador se contactar&aacute; nunca para solicitar dicha informaci&oacute;n.</p>
-<a name="ipdb_restricciones" href="#ipdb_restricciones"><h2>¿Existe alguna restricci&oacute;n para agregar un servidor?</h2></a>
+<a name="restricciones" href="#restricciones"><h2>¿Existe alguna restricci&oacute;n para agregar un servidor?</h2></a>
 <br/>
 <p>No. No hay restricciones para agregar un servidor m&aacute;s all&aacute; de los requisitos mencionados.</p>
 <p>Sin embargo, se dar&aacute; prioridad a servidores localizados en Argentina.</p>
-  
-
+<br/>
+<a name="donar" href="#donar"><h2>Me parece una idea excelente. ¿Puedo colaborar?</h2></a>
+<p>Por supuesto, si quer&eacute;s ayudarnos a mantener el sistema en funcionamiento, pod&eacute;s realizar tu donaci&oacute;n mediante PayPal. Busc&aacute; el bot&oacute;n Donar en la parte superior de la p&aacute;gina.</p>
+<br/>
+<a name="donar" href="#donar"><h2>¿Es IPDB una organizaci&oacute;n con fines de lucro?</h2></a>
+<p>No. Pero agradecemos tu colaboraci&oacute;n con donaciones para mantener el sitio online.</p>
+<br/>
+<br/>
