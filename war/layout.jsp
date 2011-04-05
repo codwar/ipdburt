@@ -88,6 +88,7 @@
 	    <a href="/serverlist.jsp">Servidores</a>
         <a href="/admin/serverlist.jsp">Administrar</a>
         <a href="/contact.jsp">Contacto</a>
+        <a href="/faq.jsp">FAQ</a>
 		<div class="clearer"><span></span></div>
 	</div>
 
