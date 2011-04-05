@@ -118,6 +118,7 @@
 <table>
 	<thead>
 		<tr>
+			<th>UID</th>
 			<th>Nombre</th>
 			<th>IP</th>
 			<th>Visto</th>
@@ -135,6 +136,7 @@
 				</c:otherwise>
 			</c:choose>
 			<tr class="${rowStyle}">
+				<td><a href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
 				<td><span class="plus" id="plus-${player.key}"
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
