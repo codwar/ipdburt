@@ -158,7 +158,7 @@
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 			</tr>
 			<tr style="display: none;">
-				<td colspan="4" style="padding: 20px;">
+				<td colspan="5" style="padding: 20px;">
 				<table>
 					<thead>
 						<tr>
@@ -182,7 +182,7 @@
 		</c:forEach>
 		<c:if test="${fn:length(list) eq 0}">
 			<tr>
-				<td colspan="4"
+				<td colspan="5"
 					style="text-align: center; font-size: large; padding: 20px">La
 				búsqueda no arrojó resultados.</td>
 			</tr>
@@ -194,7 +194,7 @@
 				<c:param name="q" value="${query}" />
 				<c:param name="t" value="${type}" />
 			</c:url>
-			<td colspan="4"><span style="font-size: smaller;">Total:
+			<td colspan="5"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator
 				totalPages="${pageLink.totalPages}"
 				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
