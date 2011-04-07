@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class ServerDAO {
 
@@ -33,6 +34,8 @@ public class ServerDAO {
 			int limit, int[] count) {
 
 		Query q = new Query("Server");
+		q.addSort("name", SortDirection.ASCENDING);
+		
 		PreparedQuery pq = service.prepare(q);
 		count[0] = pq.countEntities(withPrefetchSize(limit));
 
