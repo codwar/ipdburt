@@ -7,7 +7,7 @@ import org.datanucleus.util.StringUtils;
 
 public class Functions {
 
-	private static final Integer IP_SEED = 569;
+	private static final Integer IP_SEED = 111;
 	
 	public static final String maskIpAddress(String ip) {
 		if (StringUtils.isEmpty(ip)) return "";

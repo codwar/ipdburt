@@ -1,3 +1,14 @@
+#donar {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	padding: 5px;
+	background-color: #B3C2C7;
+	align: center;
+	-webkit-box-shadow: 0 0 10px rgb(0,0,0);
+	-moz-box-shadow: 0 0 10px rgb(0,0,0);
+	box-shadow: 0 0 10px rgb(0,0,0);
+}
 .helptext {
   font-family: sans-serif;
   font-size: 0.75em;

@@ -26,7 +26,40 @@
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
 <script type="text/javascript" src="/media/js/jquery.loading.js"></script>
 <script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
-<script type="text/javascript" src="/media/js/base.js"></script>
+<script type="text/javascript" src="/media/js/jquery.floatobject-1.4.js"></script>
+<script type="text/javascript">
+$(document).ready(
+		function() {
+		    $('body').ajaxStart(function() {
+		        $.loading(true, {text: 'Cargando ...'});
+		    }); 
+		    $('body').ajaxStop(function() {
+		        $.loading(false);      
+		    });
+			$('ul.messages li').each(
+					function() {
+						$(this).append(
+								"<img class='close_button' src='/media/images/close.gif'/>");
+					});
+			$('.close_button').click(function() {
+				$(this).parent().remove();
+			});
+			$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
+});
+</script>
+<style type="text/css">
+#donar {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	padding: 5px;
+	background-color: #B3C2C7;
+	align: center;
+	-webkit-box-shadow: 0 0 10px rgb(0,0,0);
+	-moz-box-shadow: 0 0 10px rgb(0,0,0);
+	box-shadow: 0 0 10px rgb(0,0,0);
+}
+</style>
 </head>
 <body>
 
@@ -49,21 +82,37 @@
 
 </div>
 
-<div class="container">	
-
-<div style="float: left;">
-<div style="float: left;">
+<div id="donar" style="">
+<span style="padding-top: 4px;text-decoration: blink; color: red;">Consider&aacute; colaborar</span>
+<div id="paypal" style="text-align: center; padding-top: 5px;">
+<span>usando PayPal</span>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="YFGJRVEC364NG">
+<input type="hidden" name="hosted_button_id" value="L5SNT85KFQTJY">
 <input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/es_XC/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal. La forma rápida y segura de pagar en línea.">
-<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/en_US/i/scr/pixel.gif" width="1" height="1">
+<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
 </div>
-<div style="float: left;"> 
-<span class="helptext" style="padding-top: 4px;">Ayuda a mantener IPDB en funcionamiento</span>
+<div id="dineromail" style="text-align: center; padding-top: 5px;">
+<span>usando DineroMail</span>
+<form action='https://argentina.dineromail.com/Shop/Shop_Ingreso.asp' method='post'>
+<input type='hidden' name='NombreItem' value='IPDB'>
+<input type='hidden' name='TipoMoneda' value='1'>
+<input type='hidden' name='PrecioItem' value='10.00'>
+<input type='hidden' name='E_Comercio' value='1860801'>
+<input type='hidden' name='NroItem' value='IPDB'>
+<input type='hidden' name='image_url' value='http://'>
+<input type='hidden' name='DireccionExito' value='http://www.ipdburt.com.ar/thanks.jsp'>
+<input type='hidden' name='DireccionFracaso' value='http://www.ipdburt.com.ar/nok.jsp'>
+<input type='hidden' name='DireccionEnvio' value='0'>
+<input type='hidden' name='Mensaje' value='0'>
+<input type='hidden' name='MediosPago' value='4,2,7,13'>
+<input type='image'width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'>
+</form>
 </div>
 </div>
+
+<div class="container">	
 
 <div style="padding: 2px 10px 8px 10px; text-align: right;">
 <%
