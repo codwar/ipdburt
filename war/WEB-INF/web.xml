@@ -9,6 +9,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	</listener>
 
 	<servlet>
+		<display-name>Remote Api Servlet</display-name>
+		<servlet-name>RemoteApiServlet</servlet-name>
+		<servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
 		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
 	</servlet>
@@ -141,6 +147,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>keepalivehandler</servlet-name>
 		<url-pattern>/cron/keepalive</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RemoteApiServlet</servlet-name>
+		<url-pattern>/remote_api</url-pattern>
+	</servlet-mapping>
+
 
 	<security-constraint>
 		<web-resource-collection>
