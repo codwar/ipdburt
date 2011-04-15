@@ -57,9 +57,8 @@ public class PlayerDAO {
 	public List<Player> findBanned(DatastoreService service, int offset,
 			int limit, int[] count) {
 		Query q = new Query("Player");
-		q.addFilter("baninfo", FilterOperator.GREATER_THAN, null);
-		q.addSort("baninfo", SortDirection.DESCENDING);
-		q.addSort("updated", SortDirection.DESCENDING);
+		q.addFilter("baninfoupdated", FilterOperator.NOT_EQUAL, null);
+		q.addSort("baninfoupdated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
 
 		count[0] = pq.countEntities(withPrefetchSize(limit));

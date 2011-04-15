@@ -22,7 +22,6 @@
         <property name="updated" direction="desc"/>
     </datastore-index>
     <datastore-index kind="Player" ancestor="false" source="auto">
-        <property name="baninfo" direction="desc"/>
-        <property name="updated" direction="desc"/>
+        <property name="baninfoupdated" direction="desc"/>
     </datastore-index>
 </datastore-indexes>
