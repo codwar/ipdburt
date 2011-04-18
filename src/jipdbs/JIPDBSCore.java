@@ -15,6 +15,7 @@ import jipdbs.data.PlayerDAO;
 import jipdbs.data.Server;
 import jipdbs.data.ServerDAO;
 import jipdbs.util.LocalCache;
+import jipdbs.util.MailAdmin;
 import jipdbs.util.NGrams;
 
 import org.datanucleus.util.StringUtils;
@@ -67,7 +68,8 @@ public class JIPDBSCore {
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update");
+						log.warning("Unauthorized update " + key + ", " + name + ", " + remoteAddr);
+						unauthorizedUpdate(key, name, remoteAddr);
 						return;
 					}
 				}
@@ -77,7 +79,8 @@ public class JIPDBSCore {
 				tx.commit();
 			} else {
 				log.severe("Trying to update non existing server (" + key + ","
-						+ name + ")");
+						+ name + ", " + remoteAddr + ")");
+				nonExistingServer(key, name, remoteAddr);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -85,6 +88,32 @@ public class JIPDBSCore {
 			if (tx.isActive())
 				tx.rollback();
 		}
+	}
+
+	private void unauthorizedUpdate(String key, String name, String remoteAddr) {
+		StringBuilder message = new StringBuilder("Intento de actualizar desde IP no autorizada.\n");
+		message.append("Nombre: " + name);
+		message.append("\n");
+		message.append("Key: " + key);
+		message.append("\n");
+		if (remoteAddr != null) {
+			message.append("IP: " + remoteAddr);
+			message.append("\n");
+		}
+		MailAdmin.sendMail("WARN", message.toString());
+	}
+
+	private void nonExistingServer(String key, String name, String remoteAddr) {
+		StringBuilder message = new StringBuilder("Se intenta actualizar servidor no existente.\n");
+		message.append("Nombre: " + name);
+		message.append("\n");
+		message.append("Key: " + key);
+		message.append("\n");
+		if (remoteAddr != null) {
+			message.append("IP: " + remoteAddr);
+			message.append("\n");
+		}
+		MailAdmin.sendMail("ERROR", message.toString());
 	}
 
 	/**
@@ -111,7 +140,8 @@ public class JIPDBSCore {
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update");
+						log.warning("Unauthorized update " + key + ", " + server.getName() + ", " + remoteAddr);
+						//unauthorizedUpdate(key, server.getName(), remoteAddr);
 						return;
 					}
 				}
@@ -196,6 +226,7 @@ public class JIPDBSCore {
 				service.put(entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
+				//nonExistingServer(key, "-", remoteAddr);
 			}
 		} catch (Exception e) {
 			log.severe(e.getMessage());
@@ -221,7 +252,7 @@ public class JIPDBSCore {
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update");
+						log.warning("Unauthorized update " + key + ", " + server.getName() + ", " + remoteAddr);
 						return;
 					}
 				}
