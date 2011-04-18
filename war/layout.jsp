@@ -84,6 +84,7 @@ $(document).ready(
 
 <div id="donar" style="">
 <span style="padding-top: 4px;text-decoration: blink; color: red;">Consider&aacute; colaborar</span>
+<!--
 <div id="paypal" style="text-align: center; padding-top: 5px;">
 <span>usando PayPal</span>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -93,22 +94,9 @@ $(document).ready(
 <img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
 </div>
+-->
 <div id="dineromail" style="text-align: center; padding-top: 5px;">
-<span>usando DineroMail</span>
-<form action='https://argentina.dineromail.com/Shop/Shop_Ingreso.asp' method='post'>
-<input type='hidden' name='NombreItem' value='IPDB'>
-<input type='hidden' name='TipoMoneda' value='1'>
-<input type='hidden' name='PrecioItem' value='10.00'>
-<input type='hidden' name='E_Comercio' value='1860801'>
-<input type='hidden' name='NroItem' value='IPDB'>
-<input type='hidden' name='image_url' value='http://'>
-<input type='hidden' name='DireccionExito' value='http://www.ipdburt.com.ar/thanks.jsp'>
-<input type='hidden' name='DireccionFracaso' value='http://www.ipdburt.com.ar/nok.jsp'>
-<input type='hidden' name='DireccionEnvio' value='0'>
-<input type='hidden' name='Mensaje' value='0'>
-<input type='hidden' name='MediosPago' value='4,2,7,13'>
-<input type='image'width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'>
-</form>
+<a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
 </div>
 </div>
 
