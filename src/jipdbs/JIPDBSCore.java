@@ -117,7 +117,7 @@ public class JIPDBSCore {
 				}
 
 				log.info("Processing " + server.getName());
-				
+
 				Map<String, Entity> entities = new HashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
@@ -141,7 +141,7 @@ public class JIPDBSCore {
 						if (info.getUpdated() != null) {
 							player.setUpdated(info.getUpdated());
 						} else {
-							player.setUpdated(stamp);	
+							player.setUpdated(stamp);
 						}
 						playerDAO.save(service, player);
 						LocalCache.getInstance().put(playerKey, player);
@@ -177,13 +177,13 @@ public class JIPDBSCore {
 						if (info.getUpdated() != null) {
 							alias.setUpdated(info.getUpdated());
 						} else {
-							alias.setUpdated(stamp);	
+							alias.setUpdated(stamp);
 						}
 					} else {
 						if (server.getUpdated() == null
 								|| playerLastUpdate == null
 								|| server.getUpdated().after(playerLastUpdate)) {
-								alias.setCount(alias.getCount() + 1);
+							alias.setCount(alias.getCount() + 1);
 						}
 						alias.setUpdated(stamp);
 						LocalCache.getInstance().put(aliasKey, alias);
@@ -227,7 +227,7 @@ public class JIPDBSCore {
 				}
 
 				log.info("Processing " + server.getName());
-				
+
 				Map<String, Entity> entities = new HashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
@@ -279,7 +279,7 @@ public class JIPDBSCore {
 						entities.put(aliasKey, alias.toEntity());
 					} else {
 						alias.setUpdated(stamp);
-						LocalCache.getInstance().put(aliasKey, alias);	
+						LocalCache.getInstance().put(aliasKey, alias);
 					}
 				}
 				server.setUpdated(stamp);
@@ -330,15 +330,18 @@ public class JIPDBSCore {
 				}
 
 				log.info("Processing " + server.getName());
-				
+
 				Map<String, Entity> entities = new HashMap<String, Entity>();
-				
+
 				for (BanInfo info : list) {
 
 					Player player = playerDAO.findByServerAndGuid(service,
 							server.getKey(), info.getGuid());
 
 					String reason = info.getReason();
+					Date banInfoUpdated = info.getUpdated() != null ? info
+							.getUpdated() : new Date();
+
 					if (reason.isEmpty())
 						reason = null;
 
@@ -347,24 +350,27 @@ public class JIPDBSCore {
 						player.setCreated(stamp);
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
-						if (info.getUpdated()!=null) {
+						if (info.getUpdated() != null)
 							player.setUpdated(info.getUpdated());
-						}
 						player.setBanInfo(reason);
+						player.setBanInfoUpdated(reason != null ? banInfoUpdated
+								: null);
 						playerDAO.save(service, player);
 					} else {
-						if (info.getUpdated()!=null) {
+						if (info.getUpdated() != null)
 							player.setUpdated(info.getUpdated());
-						}						
 						player.setBanInfo(reason);
-						entities.put("player-" + player.getGuid(), player.toEntity());
+						player.setBanInfoUpdated(reason != null ? banInfoUpdated
+								: null);
+						entities.put("player-" + player.getGuid(),
+								player.toEntity());
 					}
-					
+
 					String aliasKey = "alias-"
-						+ KeyFactory.keyToString(player.getKey())
-						+ info.getName() + info.getIp();
+							+ KeyFactory.keyToString(player.getKey())
+							+ info.getName() + info.getIp();
 					Alias alias = (Alias) LocalCache.getInstance()
-						.get(aliasKey);
+							.get(aliasKey);
 					if (alias == null) {
 						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
 								player.getKey(), info.getName(), info.getIp());
@@ -377,16 +383,16 @@ public class JIPDBSCore {
 						alias.setNgrams(NGrams.ngrams(info.getName()));
 						alias.setPlayer(player.getKey());
 						alias.setIp(info.getIp());
-						if (info.getUpdated()!=null) {
+						if (info.getUpdated() != null) {
 							alias.setUpdated(info.getUpdated());
 						}
 						alias.setServer(server.getKey());
 						entities.put(aliasKey, alias.toEntity());
 					} else {
-						if (info.getUpdated()!=null) {
+						if (info.getUpdated() != null) {
 							alias.setUpdated(info.getUpdated());
 							entities.put(aliasKey, alias.toEntity());
-						}						
+						}
 					}
 				}
 				service.put(entities.values());
@@ -401,5 +407,4 @@ public class JIPDBSCore {
 			log.severe(w.getBuffer().toString());
 		}
 	}
-
 }

@@ -8,9 +8,6 @@ import com.google.appengine.api.datastore.Key;
 
 public class Player implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6984528322229982497L;
 
 	private Key key;
@@ -18,28 +15,31 @@ public class Player implements Serializable {
 	private String guid;
 	private Date created;
 	private Date updated;
+	private Date banInfoUpdated;
 	private String banInfo;
 
 	public Player() {
 	}
 
 	public Player(Entity entity) {
-		this.setKey(entity.getKey());
-		this.setServer((Key) entity.getParent());
-		this.setCreated((Date) entity.getProperty("created"));
-		this.setUpdated((Date) entity.getProperty("updated"));
-		this.setGuid((String) entity.getProperty("guid"));
-		this.setBanInfo((String) entity.getProperty("baninfo"));
+		key = entity.getKey();
+		server = entity.getParent();
+		created = (Date) entity.getProperty("created");
+		updated = (Date) entity.getProperty("updated");
+		guid = (String) entity.getProperty("guid");
+		banInfo = (String) entity.getProperty("baninfo");
+		banInfoUpdated = (Date) entity.getProperty("baninfoupdated");
 	}
 
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Player", this.getServer())
-				: new Entity(this.getKey());
-		entity.setProperty("baninfo", this.getBanInfo());
-		entity.setProperty("created", this.getCreated());
-		entity.setProperty("guid", this.getGuid());
-		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("server", this.getServer());
+		Entity entity = this.getKey() == null ? new Entity("Player",
+				this.getServer()) : new Entity(this.getKey());
+		entity.setProperty("baninfo", banInfo);
+		entity.setProperty("created", created);
+		entity.setProperty("guid", guid);
+		entity.setProperty("updated", updated);
+		entity.setProperty("server", server);
+		entity.setProperty("baninfoupdated", banInfoUpdated);
 		return entity;
 	}
 
@@ -89,6 +89,14 @@ public class Player implements Serializable {
 
 	public void setBanInfo(String banInfo) {
 		this.banInfo = banInfo;
+	}
+
+	public Date getBanInfoUpdated() {
+		return banInfoUpdated;
+	}
+
+	public void setBanInfoUpdated(Date banInfoUpdated) {
+		this.banInfoUpdated = banInfoUpdated;
 	}
 
 	@Override
