@@ -152,7 +152,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setId(player.getKey().getId());
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(player.getUpdated());
+				result.setLatest(alias.getUpdated());
 				result.setPlaying(false);
 				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
@@ -193,7 +193,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setId(player.getKey().getId());
 				result.setKey(KeyFactory.keyToString(player.getKey()));
 				result.setIp(alias.getMaskedIp());
-				result.setLatest(player.getUpdated());
+				result.setLatest(alias.getUpdated());
 				result.setPlaying(false);
 				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 				result.setName(alias.getNickname());
@@ -301,7 +301,7 @@ public class JIPDBS extends JIPDBSCore {
 			result.setId(player.getKey().getId());
 			result.setKey(KeyFactory.keyToString(player.getKey()));
 			result.setIp(alias.getMaskedIp());
-			result.setLatest(player.getUpdated());
+			result.setLatest(alias.getUpdated());
 			result.setPlaying(false);
 			// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 			result.setName(alias.getNickname());

@@ -6,6 +6,8 @@
 <p>Tu colaboraci&oacute;n nos ayuda a solventar el mantenimiento de IPDB. Si encontr&aacute;s &uacute;til esta herramienta, esperamos que consideres darnos una mano :)</p>
 <br/>
 <div style="padding-bottom: 10px; text-align: center;">
+<a href="/donar.jsp"><img src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
+<!--
 <div style="padding-bottom: 20px;">
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
@@ -29,6 +31,6 @@
 <input type='hidden' name='MediosPago' value='4,2,7,13'>
 <input type='image'src='https://argentina.dineromail.com/imagenes/botones/donar-medios_c.gif' border='0' name='submit' alt='Donar con DineroMail'>
 </form>
-</div>
+</div> -->
 <div class="clearer"><span></span></div>
 </div>
