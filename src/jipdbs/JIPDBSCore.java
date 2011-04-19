@@ -138,6 +138,7 @@ public class JIPDBSCore {
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
+						player.setBanInfoUpdated(null);
 						if (info.getUpdated() != null) {
 							player.setUpdated(info.getUpdated());
 						} else {
@@ -148,6 +149,7 @@ public class JIPDBSCore {
 					} else {
 						if (player.getBanInfo() != null) {
 							player.setBanInfo(null);
+							player.setBanInfoUpdated(null);
 						}
 						playerLastUpdate = player.getUpdated();
 						player.setUpdated(stamp);
@@ -248,6 +250,7 @@ public class JIPDBSCore {
 						player.setGuid(info.getGuid());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
+						player.setBanInfoUpdated(null);
 						playerDAO.save(service, player);
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
