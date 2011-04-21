@@ -56,6 +56,10 @@ public class JIPDBSCore {
 	 *            the server's new name.
 	 */
 	public void updateName(String key, String name, String remoteAddr) {
+		this.updateName(key, name, null, remoteAddr);
+	}
+	
+	public void updateName(String key, String name, String version, String remoteAddr) {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
@@ -75,6 +79,7 @@ public class JIPDBSCore {
 				}
 				server.setName(name);
 				server.setUpdated(new Date());
+				server.setPluginVersion(version);
 				serverDAO.save(service, server);
 				tx.commit();
 			} else {

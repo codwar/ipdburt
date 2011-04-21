@@ -7,7 +7,10 @@ public final class PlayerInfo {
 	private String name;
 	private String ip;
 	private String guid;
+	private String id;
 	private Date updated;
+	private String level;
+	private String baninfo;
 	
 	public String getName() {
 		return name;
@@ -44,6 +47,30 @@ public final class PlayerInfo {
 	@Override
 	public String toString() {
 		return String.format("<%s, %s, %s>", name, ip, guid);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getBaninfo() {
+		return baninfo;
+	}
+
+	public void setBaninfo(String baninfo) {
+		this.baninfo = baninfo;
 	}
 
 }

@@ -24,12 +24,14 @@ public class Server implements Serializable {
 	private int onlinePlayers;
 	private String address;
 	private String keyString;
-
+	private String pluginVersion;
+	
 	public Server() {
 	}
 
 	public Server(Entity entity) {
 		this.setKey(entity.getKey());
+		this.setPluginVersion((String) entity.getProperty("pluginversion"));
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setAdmin((Email) entity.getProperty("admin"));
@@ -52,6 +54,7 @@ public class Server implements Serializable {
 		entity.setProperty("uid", this.getUid());
 		entity.setProperty("players", this.getOnlinePlayers());
 		entity.setProperty("ip", this.getAddress());
+		entity.setProperty("pluginversion", this.getPluginVersion());
 		return entity;
 	}
 
@@ -136,5 +139,13 @@ public class Server implements Serializable {
 		b.append(uid);
 		b.append("]");
 		return b.toString();
+	}
+
+	public String getPluginVersion() {
+		return pluginVersion;
+	}
+
+	public void setPluginVersion(String pluginVersion) {
+		this.pluginVersion = pluginVersion;
 	}
 }
