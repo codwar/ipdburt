@@ -13,6 +13,7 @@ import jipdbs.util.Functions;
 import jipdbs.util.NGrams;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -24,16 +25,24 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAO {
 
-	private static final Logger log = Logger.getLogger(AliasDAO.class.getName());
-	
-	public void save(DatastoreService service, Alias alias) {
+	private static final Logger log = Logger
+			.getLogger(AliasDAO.class.getName());
+
+	public void save(Alias alias) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Entity entity = alias.toEntity();
 		service.put(entity);
 		alias.setKey(entity.getKey());
 	}
 
-	public Alias findByPlayerAndNicknameAndIp(DatastoreService service,
-			Key player, String nickname, String ip) {
+	public Alias findByPlayerAndNicknameAndIp(Key player, String nickname,
+			String ip) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Query q = new Query("Alias");
 		q.setAncestor(player);
@@ -42,11 +51,12 @@ public class AliasDAO {
 		PreparedQuery pq = service.prepare(q);
 		Entity entity = null;
 		try {
-			entity = pq.asSingleEntity();			
+			entity = pq.asSingleEntity();
 		} catch (TooManyResultsException e) {
-			log.severe("DUPLICATED:" + nickname + " with ip " + ip + " for player " + player);
+			log.severe("DUPLICATED:" + nickname + " with ip " + ip
+					+ " for player " + player);
 			List<Entity> list = pq.asList(withLimit(1));
-			if (list.size()>0) {
+			if (list.size() > 0) {
 				entity = list.get(0);
 			}
 		}
@@ -55,7 +65,10 @@ public class AliasDAO {
 		return null;
 	}
 
-	public Alias getLastUsedAlias(DatastoreService service, Key player) {
+	public Alias getLastUsedAlias(Key player) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Query q = new Query("Alias");
 		q.setAncestor(player);
@@ -69,8 +82,11 @@ public class AliasDAO {
 		return new Alias(list.get(0));
 	}
 
-	public List<Alias> findByNickname(DatastoreService service, String query,
-			int offset, int limit, int[] count) {
+	public List<Alias> findByNickname(String query, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Collection<String> ngrams = new ArrayList<String>();
 		ngrams.add(query.toLowerCase());
@@ -93,8 +109,11 @@ public class AliasDAO {
 		return result;
 	}
 
-	public List<Alias> findByNGrams(DatastoreService service, String query,
-			int offset, int limit, int[] count) {
+	public List<Alias> findByNGrams(String query, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Collection<String> ngrams = NGrams.ngrams(query);
 
@@ -118,12 +137,16 @@ public class AliasDAO {
 		return result;
 	}
 
-	public List<Alias> findByPlayer(DatastoreService service, Key player,
-			int offset, int limit, int[] count) {
+	public List<Alias> findByPlayer(Key player, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Alias");
 		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
-		
+
 		PreparedQuery pq = service.prepare(q);
 
 		count[0] = pq.countEntities(withPrefetchSize(limit));
@@ -138,8 +161,11 @@ public class AliasDAO {
 		return result;
 	}
 
-	public List<Alias> findByIP(DatastoreService service, String query,
-			int offset, int limit, int[] count) {
+	public List<Alias> findByIP(String query, int offset, int limit, int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Alias");
 
 		Long[] range = Functions.getIpRange(query);
@@ -161,27 +187,35 @@ public class AliasDAO {
 
 		return result;
 	}
-	
-	public List<Alias> findByServer(DatastoreService service, String query,
-			int offset, int limit, int[] count) {
-		
+
+	public List<Alias> findByServer(String query, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Key server = KeyFactory.stringToKey(query);
 		Query q = new Query("Player").setKeysOnly();
 		q.setAncestor(server);
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
-		
+
 		count[0] = pq.countEntities(withPrefetchSize(limit));
-		
+
 		List<Alias> result = new ArrayList<Alias>();
 		for (Entity player : pq.asIterable(withLimit(limit).offset(offset))) {
-			Alias alias = getLastUsedAlias(service, player.getKey());
-			if (alias != null) result.add(alias);
+			Alias alias = getLastUsedAlias(player.getKey());
+			if (alias != null)
+				result.add(alias);
 		}
 		return result;
 	}
-	
-	public void truncate(DatastoreService service) {
+
+	public void truncate() {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Alias");
 		q.setKeysOnly();
 		PreparedQuery pq = service.prepare(q);
@@ -191,5 +225,4 @@ public class AliasDAO {
 		}
 		service.delete(keys);
 	}
-	
 }

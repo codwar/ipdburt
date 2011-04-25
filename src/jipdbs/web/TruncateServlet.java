@@ -11,14 +11,8 @@ import jipdbs.data.AliasDAO;
 import jipdbs.data.PlayerDAO;
 import jipdbs.util.LocalCache;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
 public class TruncateServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8523957912890704182L;
 
 	@Override
@@ -28,10 +22,8 @@ public class TruncateServlet extends HttpServlet {
 		PlayerDAO playerDAO = new PlayerDAO();
 		AliasDAO aliasDAO = new AliasDAO();
 		
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		
-		aliasDAO.truncate(service);
-		playerDAO.truncate(service);
+		aliasDAO.truncate();
+		playerDAO.truncate();
 		
 		LocalCache.getInstance().clear();
 		

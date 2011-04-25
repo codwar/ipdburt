@@ -9,6 +9,7 @@ import java.util.List;
 import jipdbs.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -22,20 +23,26 @@ public class ServerDAO {
 	public void cache(Server server) {
 		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
-	
-	public void save(DatastoreService service, Server server) {
+
+	public void save(Server server) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Entity entity = server.toEntity();
 		service.put(entity);
 		server.setKey(entity.getKey());
 		cache(server);
 	}
 
-	public List<Server> findAll(DatastoreService service, int offset,
-			int limit, int[] count) {
+	public List<Server> findAll(int offset, int limit, int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Query q = new Query("Server");
 		q.addSort("name", SortDirection.ASCENDING);
-		
+
 		PreparedQuery pq = service.prepare(q);
 		count[0] = pq.countEntities(withPrefetchSize(limit));
 
@@ -47,7 +54,10 @@ public class ServerDAO {
 		return list;
 	}
 
-	public Server findByUid(DatastoreService service, String uid) {
+	public Server findByUid(String uid) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		// retrieve from cache
 		Server s = (Server) LocalCache.getInstance().get("server-" + uid);
@@ -65,9 +75,11 @@ public class ServerDAO {
 		return null;
 	}
 
-	public Server get(DatastoreService service, Key server)
-			throws EntityNotFoundException {
+	public Server get(Key server) throws EntityNotFoundException {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		return new Server(service.get(server));
 	}
-
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -17,14 +18,20 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class PlayerDAO {
 
-	public void save(DatastoreService service, Player player) {
+	public void save(Player player) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Entity entity = player.toEntity();
 		service.put(entity);
 		player.setKey(entity.getKey());
 	}
 
-	public Player findByServerAndGuid(DatastoreService service, Key server,
-			String guid) {
+	public Player findByServerAndGuid(Key server, String guid) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
 
 		Query q = new Query("Player");
 		q.setAncestor(server);
@@ -38,8 +45,11 @@ public class PlayerDAO {
 		return null;
 	}
 
-	public List<Player> findLatest(DatastoreService service, int offset,
-			int limit, int[] count) {
+	public List<Player> findLatest(int offset, int limit, int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Player");
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
@@ -54,8 +64,11 @@ public class PlayerDAO {
 		return players;
 	}
 
-	public List<Player> findBanned(DatastoreService service, int offset,
-			int limit, int[] count) {
+	public List<Player> findBanned(int offset, int limit, int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Player");
 		q.addFilter("baninfoupdated", FilterOperator.NOT_EQUAL, null);
 		q.addSort("baninfoupdated", SortDirection.DESCENDING);
@@ -71,12 +84,19 @@ public class PlayerDAO {
 		return players;
 	}
 
-	public Player get(DatastoreService service, Key player)
-			throws EntityNotFoundException {
+	public Player get(Key player) throws EntityNotFoundException {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		return new Player(service.get(player));
 	}
 
-	public void truncate(DatastoreService service) {
+	public void truncate() {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Player");
 		q.setKeysOnly();
 		PreparedQuery pq = service.prepare(q);

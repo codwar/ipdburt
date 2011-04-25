@@ -43,11 +43,13 @@ public class DuplicatesServlet extends HttpServlet {
 		Server server;
 
 		try {
-			server = serverDAO.get(service, KeyFactory.stringToKey(s));
+			server = serverDAO.get(KeyFactory.stringToKey(s));
 		} catch (EntityNotFoundException e) {
 			resp.getWriter().write("Server not found");
 			return;
 		}
+
+		// FIXME push this into PlayerDAO.
 
 		Query q = new Query("Player").setKeysOnly();
 		q.setAncestor(server.getKey());

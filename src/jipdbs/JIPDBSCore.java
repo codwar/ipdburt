@@ -20,11 +20,9 @@ import jipdbs.util.NGrams;
 
 import org.datanucleus.util.StringUtils;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Transaction;
 
 public class JIPDBSCore {
 
@@ -58,21 +56,19 @@ public class JIPDBSCore {
 	public void updateName(String key, String name, String remoteAddr) {
 		this.updateName(key, name, null, remoteAddr);
 	}
-	
-	public void updateName(String key, String name, String version, String remoteAddr) {
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
+	public void updateName(String key, String name, String version,
+			String remoteAddr) {
 
-		Transaction tx = service.beginTransaction();
 		try {
-			Server server = serverDAO.findByUid(service, key);
+			Server server = serverDAO.findByUid(key);
 
 			if (server != null) {
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update " + key + ", " + name + ", " + remoteAddr);
+						log.warning("Unauthorized update " + key + ", " + name
+								+ ", " + remoteAddr);
 						unauthorizedUpdate(key, name, remoteAddr);
 						return;
 					}
@@ -80,23 +76,23 @@ public class JIPDBSCore {
 				server.setName(name);
 				server.setUpdated(new Date());
 				server.setPluginVersion(version);
-				serverDAO.save(service, server);
-				tx.commit();
+				serverDAO.save(server);
 			} else {
 				log.severe("Trying to update non existing server (" + key + ","
 						+ name + ", " + remoteAddr + ")");
 				nonExistingServer(key, name, remoteAddr);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (tx.isActive())
-				tx.rollback();
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 		}
 	}
 
 	private void unauthorizedUpdate(String key, String name, String remoteAddr) {
-		StringBuilder message = new StringBuilder("Intento de actualizar desde IP no autorizada.\n");
+		StringBuilder message = new StringBuilder(
+				"Intento de actualizar desde IP no autorizada.\n");
 		message.append("Nombre: " + name);
 		message.append("\n");
 		message.append("Key: " + key);
@@ -109,7 +105,8 @@ public class JIPDBSCore {
 	}
 
 	private void nonExistingServer(String key, String name, String remoteAddr) {
-		StringBuilder message = new StringBuilder("Se intenta actualizar servidor no existente.\n");
+		StringBuilder message = new StringBuilder(
+				"Se intenta actualizar servidor no existente.\n");
 		message.append("Nombre: " + name);
 		message.append("\n");
 		message.append("Key: " + key);
@@ -132,21 +129,20 @@ public class JIPDBSCore {
 	public void updateConnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
 		try {
 			Date stamp = new Date();
 
-			Server server = serverDAO.findByUid(service, key);
+			Server server = serverDAO.findByUid(key);
 
 			if (server != null) {
 
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update " + key + ", " + server.getName() + ", " + remoteAddr);
-						//unauthorizedUpdate(key, server.getName(), remoteAddr);
+						log.warning("Unauthorized update " + key + ", "
+								+ server.getName() + ", " + remoteAddr);
+						// unauthorizedUpdate(key, server.getName(),
+						// remoteAddr);
 						return;
 					}
 				}
@@ -162,8 +158,8 @@ public class JIPDBSCore {
 					Player player = (Player) LocalCache.getInstance().get(
 							playerKey);
 					if (player == null) {
-						player = playerDAO.findByServerAndGuid(service,
-								server.getKey(), info.getGuid());
+						player = playerDAO.findByServerAndGuid(server.getKey(),
+								info.getGuid());
 					}
 
 					Date playerLastUpdate = null;
@@ -179,7 +175,7 @@ public class JIPDBSCore {
 						} else {
 							player.setUpdated(stamp);
 						}
-						playerDAO.save(service, player);
+						playerDAO.save(player);
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
 						if (player.getBanInfo() != null) {
@@ -198,7 +194,7 @@ public class JIPDBSCore {
 					Alias alias = (Alias) LocalCache.getInstance()
 							.get(aliasKey);
 					if (alias == null) {
-						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(
 								player.getKey(), info.getName(), info.getIp());
 					}
 
@@ -230,10 +226,12 @@ public class JIPDBSCore {
 				server.setUpdated(stamp);
 				serverDAO.cache(server);
 				entities.put("server", server.toEntity());
-				service.put(entities.values());
+
+				DatastoreServiceFactory.getDatastoreService().put(
+						entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
-				//nonExistingServer(key, "-", remoteAddr);
+				// nonExistingServer(key, "-", remoteAddr);
 			}
 		} catch (Exception e) {
 			log.severe(e.getMessage());
@@ -246,20 +244,18 @@ public class JIPDBSCore {
 	public void updateDisconnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
 		try {
 			Date stamp = new Date();
 
-			Server server = serverDAO.findByUid(service, key);
+			Server server = serverDAO.findByUid(key);
 
 			if (server != null) {
 
 				if (remoteAddr != null
 						&& StringUtils.notEmpty(server.getAddress())) {
 					if (!remoteAddr.equals(server.getAddress())) {
-						log.warning("Unauthorized update " + key + ", " + server.getName() + ", " + remoteAddr);
+						log.warning("Unauthorized update " + key + ", "
+								+ server.getName() + ", " + remoteAddr);
 						return;
 					}
 				}
@@ -274,10 +270,9 @@ public class JIPDBSCore {
 							+ info.getGuid();
 					Player player = (Player) LocalCache.getInstance().get(
 							playerKey);
-					if (player == null) {
-						player = playerDAO.findByServerAndGuid(service,
-								server.getKey(), info.getGuid());
-					}
+					if (player == null)
+						player = playerDAO.findByServerAndGuid(server.getKey(),
+								info.getGuid());
 
 					if (player == null) {
 						player = new Player();
@@ -287,7 +282,7 @@ public class JIPDBSCore {
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
 						player.setBanInfoUpdated(null);
-						playerDAO.save(service, player);
+						playerDAO.save(player);
 						LocalCache.getInstance().put(playerKey, player);
 					} else {
 						player.setUpdated(stamp);
@@ -301,7 +296,7 @@ public class JIPDBSCore {
 					Alias alias = (Alias) LocalCache.getInstance()
 							.get(aliasKey);
 					if (alias == null) {
-						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(
 								player.getKey(), info.getName(), info.getIp());
 					}
 
@@ -324,7 +319,9 @@ public class JIPDBSCore {
 				server.setUpdated(stamp);
 				serverDAO.cache(server);
 				entities.put("server", server.toEntity());
-				service.put(entities.values());
+
+				DatastoreServiceFactory.getDatastoreService().put(
+						entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
@@ -349,14 +346,11 @@ public class JIPDBSCore {
 	 */
 	public void updateBanInfo(String key, List<BanInfo> list, String remoteAddr) {
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
 		try {
 
 			Date stamp = new Date();
 
-			Server server = serverDAO.findByUid(service, key);
+			Server server = serverDAO.findByUid(key);
 
 			if (server != null) {
 
@@ -374,7 +368,7 @@ public class JIPDBSCore {
 
 				for (BanInfo info : list) {
 
-					Player player = playerDAO.findByServerAndGuid(service,
+					Player player = playerDAO.findByServerAndGuid(
 							server.getKey(), info.getGuid());
 
 					String reason = info.getReason();
@@ -394,7 +388,7 @@ public class JIPDBSCore {
 						player.setBanInfo(reason);
 						player.setBanInfoUpdated(reason != null ? banInfoUpdated
 								: null);
-						playerDAO.save(service, player);
+						playerDAO.save(player);
 					} else {
 						if (info.getUpdated() != null)
 							player.setUpdated(info.getUpdated());
@@ -411,7 +405,7 @@ public class JIPDBSCore {
 					Alias alias = (Alias) LocalCache.getInstance()
 							.get(aliasKey);
 					if (alias == null) {
-						alias = aliasDAO.findByPlayerAndNicknameAndIp(service,
+						alias = aliasDAO.findByPlayerAndNicknameAndIp(
 								player.getKey(), info.getName(), info.getIp());
 					}
 					if (alias == null) {
@@ -434,7 +428,8 @@ public class JIPDBSCore {
 						}
 					}
 				}
-				service.put(entities.values());
+				DatastoreServiceFactory.getDatastoreService().put(
+						entities.values());
 			} else {
 				log.severe("Trying to update non existing server (" + key + ")");
 			}
