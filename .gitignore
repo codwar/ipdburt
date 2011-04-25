@@ -5,3 +5,4 @@ src/jipdbs.properties
 war/WEB-INF/lib/appengine-api-1.0-sdk-*.jar
 war/WEB-INF/lib/appengine-api-labs-*.jar
 war/WEB-INF/lib/appengine-jsr107cache-*.jar
+bin
