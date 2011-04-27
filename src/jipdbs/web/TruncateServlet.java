@@ -7,8 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jipdbs.data.AliasDAOImpl;
 import jipdbs.data.AliasDAO;
 import jipdbs.data.PlayerDAO;
+import jipdbs.data.PlayerDAOImpl;
 import jipdbs.util.LocalCache;
 
 public class TruncateServlet extends HttpServlet {
@@ -19,8 +21,8 @@ public class TruncateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		PlayerDAO playerDAO = new PlayerDAO();
-		AliasDAO aliasDAO = new AliasDAO();
+		PlayerDAO playerDAO = new PlayerDAOImpl();
+		AliasDAO aliasDAO = new AliasDAOImpl();
 		
 		aliasDAO.truncate();
 		playerDAO.truncate();

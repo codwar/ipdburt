@@ -9,11 +9,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
+import jipdbs.data.AliasCachedDAO;
 import jipdbs.data.AliasDAO;
+import jipdbs.data.AliasDAOImpl;
 import jipdbs.data.Player;
+import jipdbs.data.PlayerCachedDAO;
 import jipdbs.data.PlayerDAO;
+import jipdbs.data.PlayerDAOImpl;
 import jipdbs.data.Server;
+import jipdbs.data.ServerCachedDAO;
 import jipdbs.data.ServerDAO;
+import jipdbs.data.ServerDAOImpl;
 import jipdbs.util.LocalCache;
 import jipdbs.util.MailAdmin;
 import jipdbs.util.NGrams;
@@ -29,9 +35,11 @@ public class JIPDBSCore {
 	private static final Logger log = Logger.getLogger(JIPDBSCore.class
 			.getName());
 
-	protected final ServerDAO serverDAO = new ServerDAO();
-	protected final PlayerDAO playerDAO = new PlayerDAO();
-	protected final AliasDAO aliasDAO = new AliasDAO();
+	protected final ServerDAO serverDAO = new ServerCachedDAO(
+			new ServerDAOImpl());
+	protected final PlayerDAO playerDAO = new PlayerCachedDAO(
+			new PlayerDAOImpl());
+	protected final AliasDAO aliasDAO = new AliasCachedDAO(new AliasDAOImpl());
 
 	public void start() {
 		// Reserved.
@@ -236,8 +244,7 @@ public class JIPDBSCore {
 			}
 
 			server.setUpdated(stamp);
-			serverDAO.cache(server);
-			entities.put("server", server.toEntity());
+			serverDAO.save(server);
 
 			DatastoreServiceFactory.getDatastoreService()
 					.put(entities.values());
@@ -320,8 +327,7 @@ public class JIPDBSCore {
 				}
 			}
 			server.setUpdated(stamp);
-			serverDAO.cache(server);
-			entities.put("server", server.toEntity());
+			serverDAO.save(server);
 
 			DatastoreServiceFactory.getDatastoreService()
 					.put(entities.values());

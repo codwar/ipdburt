@@ -1,109 +1,22 @@
 package jipdbs.data;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset;
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
-public class PlayerDAO {
+public interface PlayerDAO {
 
-	public void save(Player player) {
+	public abstract void save(Player player);
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
+	public abstract Player findByServerAndGuid(Key server, String guid);
 
-		Entity entity = player.toEntity();
-		service.put(entity);
-		player.setKey(entity.getKey());
-	}
+	public abstract List<Player> findLatest(int offset, int limit, int[] count);
 
-	public Player findByServerAndGuid(Key server, String guid) {
+	public abstract List<Player> findBanned(int offset, int limit, int[] count);
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
+	public abstract Player get(Key player) throws EntityNotFoundException;
 
-		Query q = new Query("Player");
-		q.setAncestor(server);
-		q.addFilter("guid", FilterOperator.EQUAL, guid);
-		PreparedQuery pq = service.prepare(q);
-		Entity entity = pq.asSingleEntity();
+	public abstract void truncate();
 
-		if (entity != null)
-			return new Player(entity);
-
-		return null;
-	}
-
-	public List<Player> findLatest(int offset, int limit, int[] count) {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query q = new Query("Player");
-		q.addSort("updated", SortDirection.DESCENDING);
-		PreparedQuery pq = service.prepare(q);
-
-		count[0] = pq.countEntities(withPrefetchSize(limit));
-
-		List<Player> players = new ArrayList<Player>();
-
-		for (Entity entity : pq.asIterable(withOffset(offset).limit(limit)))
-			players.add(new Player(entity));
-
-		return players;
-	}
-
-	public List<Player> findBanned(int offset, int limit, int[] count) {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query q = new Query("Player");
-		q.addFilter("baninfoupdated", FilterOperator.NOT_EQUAL, null);
-		q.addSort("baninfoupdated", SortDirection.DESCENDING);
-		PreparedQuery pq = service.prepare(q);
-
-		count[0] = pq.countEntities(withPrefetchSize(limit));
-
-		List<Player> players = new ArrayList<Player>();
-
-		for (Entity entity : pq.asIterable(withOffset(offset).limit(limit)))
-			players.add(new Player(entity));
-
-		return players;
-	}
-
-	public Player get(Key player) throws EntityNotFoundException {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		return new Player(service.get(player));
-	}
-
-	public void truncate() {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query q = new Query("Player");
-		q.setKeysOnly();
-		PreparedQuery pq = service.prepare(q);
-		List<Key> keys = new ArrayList<Key>();
-		for (Entity entity : pq.asIterable()) {
-			keys.add(entity.getKey());
-		}
-		service.delete(keys);
-	}
 }

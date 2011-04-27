@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.data.Server;
 import jipdbs.data.ServerDAO;
+import jipdbs.data.ServerDAOImpl;
 import jipdbs.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -33,7 +34,7 @@ public class DuplicatesServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		ServerDAO serverDAO = new ServerDAO();
+		ServerDAO serverDAO = new ServerDAOImpl();
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
