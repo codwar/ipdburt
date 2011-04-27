@@ -23,10 +23,11 @@ public class Alias implements Serializable {
 	private Date updated;
 	private int count;
 	private Key server;
-	
+
 	public Alias() {
+		// Empty.
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Alias(Entity entity) {
 		this.setKey(entity.getKey());
@@ -34,14 +35,16 @@ public class Alias implements Serializable {
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setCount(((Long) entity.getProperty("count")).intValue());
-		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
+		this.setIp((String) Functions.decimalToIp((Long) entity
+				.getProperty("ip")));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 		this.setServer((Key) entity.getProperty("server"));
 	}
-	
+
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Alias", this.getPlayer()) : new Entity(this.getKey());
+		Entity entity = this.getKey() == null ? new Entity("Alias",
+				this.getPlayer()) : new Entity(this.getKey());
 		entity.setProperty("created", this.getCreated());
 		entity.setProperty("updated", this.getUpdated());
 		entity.setProperty("count", this.getCount());
@@ -52,7 +55,7 @@ public class Alias implements Serializable {
 		entity.setProperty("server", this.getServer());
 		return entity;
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -108,7 +111,7 @@ public class Alias implements Serializable {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
-	
+
 	public String getMaskedIp() {
 		return Functions.maskIpAddress(this.ip);
 	}
@@ -127,6 +130,26 @@ public class Alias implements Serializable {
 
 	public void setServer(Key server) {
 		this.server = server;
+	}
+
+	@Override
+	public int hashCode() {
+		return player.hashCode() ^ ip.hashCode() ^ nickname.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (!(obj instanceof Alias))
+			return false;
+
+		if (obj == this)
+			return true;
+
+		Alias other = (Alias) obj;
+
+		return player.equals(other.getPlayer()) && ip.equals(other.ip)
+				&& nickname.equals(other.getNickname());
 	}
 
 	@Override

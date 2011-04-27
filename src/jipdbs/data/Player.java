@@ -100,6 +100,25 @@ public class Player implements Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		return server.hashCode() ^ guid.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (!(obj instanceof Player))
+			return false;
+
+		if (obj == this)
+			return true;
+
+		Player other = (Player) obj;
+
+		return server.equals(other.getServer()) && guid.equals(other.getGuid());
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");
 		b.append(server);

@@ -1,12 +1,11 @@
 package jipdbs.data;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
 
 public interface AliasDAO {
-
-	public abstract void save(Alias alias);
 
 	public abstract Alias findByPlayerAndNicknameAndIp(Key player,
 			String nickname, String ip);
@@ -29,5 +28,9 @@ public interface AliasDAO {
 			int limit, int[] count);
 
 	public abstract void truncate();
+
+	public abstract void save(Alias alias);
+
+	public abstract void save(Collection<Alias> aliasses);
 
 }

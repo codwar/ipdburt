@@ -50,7 +50,7 @@ public class DuplicatesServlet extends HttpServlet {
 			return;
 		}
 
-		// FIXME push this into PlayerDAO.
+		// FIXME push this into the core class.
 
 		Query q = new Query("Player").setKeysOnly();
 		q.setAncestor(server.getKey());

@@ -25,8 +25,8 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class AliasDAOImpl implements AliasDAO {
 
-	private static final Logger log = Logger
-			.getLogger(AliasDAOImpl.class.getName());
+	private static final Logger log = Logger.getLogger(AliasDAOImpl.class
+			.getName());
 
 	@Override
 	public void save(Alias alias) {
@@ -233,5 +233,11 @@ public class AliasDAOImpl implements AliasDAO {
 			keys.add(entity.getKey());
 		}
 		service.delete(keys);
+	}
+
+	@Override
+	public void save(Collection<Alias> aliasses) {
+		for (Alias alias : aliasses)
+			save(alias);
 	}
 }

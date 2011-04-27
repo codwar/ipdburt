@@ -3,9 +3,9 @@ package jipdbs;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
@@ -20,15 +20,10 @@ import jipdbs.data.Server;
 import jipdbs.data.ServerCachedDAO;
 import jipdbs.data.ServerDAO;
 import jipdbs.data.ServerDAOImpl;
-import jipdbs.util.LocalCache;
 import jipdbs.util.MailAdmin;
 import jipdbs.util.NGrams;
 
 import org.datanucleus.util.StringUtils;
-
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBSCore {
 
@@ -170,18 +165,12 @@ public class JIPDBSCore {
 
 			Date stamp = new Date();
 
-			Map<String, Entity> entities = new HashMap<String, Entity>();
+			Set<Alias> aliasses = new HashSet<Alias>();
+			Set<Player> players = new HashSet<Player>();
 
 			for (PlayerInfo info : list) {
-				String playerKey = "player-"
-						+ KeyFactory.keyToString(server.getKey())
-						+ info.getGuid();
-				Player player = (Player) LocalCache.getInstance()
-						.get(playerKey);
-				if (player == null) {
-					player = playerDAO.findByServerAndGuid(server.getKey(),
-							info.getGuid());
-				}
+				Player player = playerDAO.findByServerAndGuid(server.getKey(),
+						info.getGuid());
 
 				Date playerLastUpdate = null;
 				if (player == null) {
@@ -197,7 +186,6 @@ public class JIPDBSCore {
 						player.setUpdated(stamp);
 					}
 					playerDAO.save(player);
-					LocalCache.getInstance().put(playerKey, player);
 				} else {
 					if (player.getBanInfo() != null) {
 						player.setBanInfo(null);
@@ -205,18 +193,12 @@ public class JIPDBSCore {
 					}
 					playerLastUpdate = player.getUpdated();
 					player.setUpdated(stamp);
-					entities.put(playerKey, player.toEntity());
-					LocalCache.getInstance().put(playerKey, player);
 				}
 
-				String aliasKey = "alias-"
-						+ KeyFactory.keyToString(player.getKey())
-						+ info.getName() + info.getIp();
-				Alias alias = (Alias) LocalCache.getInstance().get(aliasKey);
-				if (alias == null) {
-					alias = aliasDAO.findByPlayerAndNicknameAndIp(
-							player.getKey(), info.getName(), info.getIp());
-				}
+				players.add(player);
+
+				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+						player.getKey(), info.getName(), info.getIp());
 
 				if (alias == null) {
 					alias = new Alias();
@@ -232,22 +214,23 @@ public class JIPDBSCore {
 					} else {
 						alias.setUpdated(stamp);
 					}
+					aliasDAO.save(alias);
 				} else {
 					if (server.getUpdated() == null || playerLastUpdate == null
 							|| server.getUpdated().after(playerLastUpdate)) {
 						alias.setCount(alias.getCount() + 1);
 					}
 					alias.setUpdated(stamp);
-					LocalCache.getInstance().put(aliasKey, alias);
 				}
-				entities.put(aliasKey, alias.toEntity());
+
+				aliasses.add(alias);
 			}
 
 			server.setUpdated(stamp);
 			serverDAO.save(server);
 
-			DatastoreServiceFactory.getDatastoreService()
-					.put(entities.values());
+			playerDAO.save(players);
+			aliasDAO.save(aliasses);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
@@ -273,17 +256,12 @@ public class JIPDBSCore {
 
 			log.info("Processing " + server.getName());
 
-			Map<String, Entity> entities = new HashMap<String, Entity>();
+			Set<Alias> aliasses = new HashSet<Alias>();
+			Set<Player> players = new HashSet<Player>();
 
 			for (PlayerInfo info : list) {
-				String playerKey = "player-"
-						+ KeyFactory.keyToString(server.getKey())
-						+ info.getGuid();
-				Player player = (Player) LocalCache.getInstance()
-						.get(playerKey);
-				if (player == null)
-					player = playerDAO.findByServerAndGuid(server.getKey(),
-							info.getGuid());
+				Player player = playerDAO.findByServerAndGuid(server.getKey(),
+						info.getGuid());
 
 				if (player == null) {
 					player = new Player();
@@ -294,21 +272,14 @@ public class JIPDBSCore {
 					player.setBanInfo(null);
 					player.setBanInfoUpdated(null);
 					playerDAO.save(player);
-					LocalCache.getInstance().put(playerKey, player);
 				} else {
 					player.setUpdated(stamp);
-					entities.put(playerKey, player.toEntity());
-					LocalCache.getInstance().put(playerKey, player);
 				}
 
-				String aliasKey = "alias-"
-						+ KeyFactory.keyToString(player.getKey())
-						+ info.getName() + info.getIp();
-				Alias alias = (Alias) LocalCache.getInstance().get(aliasKey);
-				if (alias == null) {
-					alias = aliasDAO.findByPlayerAndNicknameAndIp(
-							player.getKey(), info.getName(), info.getIp());
-				}
+				players.add(player);
+
+				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+						player.getKey(), info.getName(), info.getIp());
 
 				if (alias == null) {
 					alias = new Alias();
@@ -320,17 +291,19 @@ public class JIPDBSCore {
 					alias.setIp(info.getIp());
 					alias.setUpdated(stamp);
 					alias.setServer(server.getKey());
-					entities.put(aliasKey, alias.toEntity());
+					aliasDAO.save(alias);
 				} else {
 					alias.setUpdated(stamp);
-					LocalCache.getInstance().put(aliasKey, alias);
 				}
+
+				aliasses.add(alias);
+
 			}
 			server.setUpdated(stamp);
 			serverDAO.save(server);
 
-			DatastoreServiceFactory.getDatastoreService()
-					.put(entities.values());
+			playerDAO.save(players);
+			aliasDAO.save(aliasses);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
@@ -366,7 +339,8 @@ public class JIPDBSCore {
 
 			log.info("Processing " + server.getName());
 
-			Map<String, Entity> entities = new HashMap<String, Entity>();
+			Set<Alias> aliasses = new HashSet<Alias>();
+			Set<Player> players = new HashSet<Player>();
 
 			for (BanInfo info : list) {
 
@@ -390,6 +364,7 @@ public class JIPDBSCore {
 					player.setBanInfo(reason);
 					player.setBanInfoUpdated(reason != null ? banInfoUpdated
 							: null);
+					players.add(player);
 					playerDAO.save(player);
 				} else {
 					if (info.getUpdated() != null)
@@ -397,18 +372,12 @@ public class JIPDBSCore {
 					player.setBanInfo(reason);
 					player.setBanInfoUpdated(reason != null ? banInfoUpdated
 							: null);
-					entities.put("player-" + player.getGuid(),
-							player.toEntity());
 				}
 
-				String aliasKey = "alias-"
-						+ KeyFactory.keyToString(player.getKey())
-						+ info.getName() + info.getIp();
-				Alias alias = (Alias) LocalCache.getInstance().get(aliasKey);
-				if (alias == null) {
-					alias = aliasDAO.findByPlayerAndNicknameAndIp(
-							player.getKey(), info.getName(), info.getIp());
-				}
+				players.add(player);
+
+				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+						player.getKey(), info.getName(), info.getIp());
 				if (alias == null) {
 					alias = new Alias();
 					alias.setCount(1);
@@ -421,16 +390,19 @@ public class JIPDBSCore {
 						alias.setUpdated(info.getUpdated());
 					}
 					alias.setServer(server.getKey());
-					entities.put(aliasKey, alias.toEntity());
+					aliasDAO.save(alias);
 				} else {
-					if (info.getUpdated() != null) {
+					if (info.getUpdated() != null)
 						alias.setUpdated(info.getUpdated());
-						entities.put(aliasKey, alias.toEntity());
-					}
 				}
+				aliasses.add(alias);
 			}
-			DatastoreServiceFactory.getDatastoreService()
-					.put(entities.values());
+
+			server.setUpdated(stamp);
+			serverDAO.save(server);
+
+			playerDAO.save(players);
+			aliasDAO.save(aliasses);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());

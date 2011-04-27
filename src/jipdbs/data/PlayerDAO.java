@@ -1,13 +1,12 @@
 package jipdbs.data;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 
 public interface PlayerDAO {
-
-	public abstract void save(Player player);
 
 	public abstract Player findByServerAndGuid(Key server, String guid);
 
@@ -18,5 +17,9 @@ public interface PlayerDAO {
 	public abstract Player get(Key player) throws EntityNotFoundException;
 
 	public abstract void truncate();
+
+	public abstract void save(Player player);
+
+	public abstract void save(Collection<Player> players);
 
 }

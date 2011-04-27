@@ -14,7 +14,7 @@ public class Functions {
 	static {
 		// A cheap way to obtain a seed with a per deployed version lifecycle.
 		try {
-			IP_SEED = SystemProperty.applicationVersion.get().hashCode();
+			IP_SEED = SystemProperty.applicationVersion.get().hashCode() % 1000;
 		} catch (Exception e) {
 			// Swallow, will keep 111.
 		}

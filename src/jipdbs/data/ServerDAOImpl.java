@@ -6,8 +6,6 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefet
 import java.util.ArrayList;
 import java.util.List;
 
-import jipdbs.util.LocalCache;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -29,7 +27,6 @@ public class ServerDAOImpl implements ServerDAO {
 		Entity entity = server.toEntity();
 		service.put(entity);
 		server.setKey(entity.getKey());
-		LocalCache.getInstance().put("server-" + server.getUid(), server);
 	}
 
 	@Override
@@ -58,21 +55,13 @@ public class ServerDAOImpl implements ServerDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		// retrieve from cache
-		Server s = (Server) LocalCache.getInstance().get("server-" + uid);
-		if (s != null)
-			return s;
-
 		Query q = new Query("Server");
 		q.addFilter("uid", FilterOperator.EQUAL, uid);
 		PreparedQuery pq = service.prepare(q);
 		Entity entity = pq.asSingleEntity();
 
-		if (entity != null) {
-			s = new Server(entity);
-			LocalCache.getInstance().put("server-" + uid, s);
-			return s;
-		}
+		if (entity != null)
+			return new Server(entity);
 
 		return null;
 	}

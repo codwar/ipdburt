@@ -4,6 +4,7 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -111,5 +112,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			keys.add(entity.getKey());
 		}
 		service.delete(keys);
+	}
+
+	@Override
+	public void save(Collection<Player> players) {
+		for (Player player : players)
+			save(player);
 	}
 }

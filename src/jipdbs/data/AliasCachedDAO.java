@@ -1,10 +1,16 @@
 package jipdbs.data;
 
+import java.util.Collection;
 import java.util.List;
 
+import jipdbs.util.LocalCache;
+
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class AliasCachedDAO implements AliasDAO {
+
+	private static final LocalCache cache = LocalCache.getInstance();
 
 	private final AliasDAO impl;
 
@@ -15,12 +21,27 @@ public class AliasCachedDAO implements AliasDAO {
 	@Override
 	public void save(Alias alias) {
 		impl.save(alias);
+		cache.put(
+				cacheKey(alias.getPlayer(), alias.getNickname(), alias.getIp()),
+				alias);
 	}
 
 	@Override
 	public Alias findByPlayerAndNicknameAndIp(Key player, String nickname,
 			String ip) {
-		return impl.findByPlayerAndNicknameAndIp(player, nickname, ip);
+		Alias alias = (Alias) cache.get(cacheKey(player, nickname, ip));
+
+		if (alias != null)
+			return alias;
+
+		alias = impl.findByPlayerAndNicknameAndIp(player, nickname, ip);
+
+		if (alias != null)
+			cache.put(
+					cacheKey(alias.getPlayer(), alias.getNickname(),
+							alias.getIp()), alias);
+
+		return alias;
 	}
 
 	@Override
@@ -59,6 +80,17 @@ public class AliasCachedDAO implements AliasDAO {
 
 	@Override
 	public void truncate() {
+		cache.clear();
 		impl.truncate();
+	}
+
+	private String cacheKey(Key player, String nickname, String ip) {
+		return "alias-" + KeyFactory.keyToString(player) + nickname + ip;
+	}
+
+	@Override
+	public void save(Collection<Alias> aliasses) {
+		for (Alias alias : aliasses)
+			save(alias);
 	}
 }
