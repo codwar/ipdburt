@@ -7,9 +7,9 @@ public final class PlayerInfo {
 	private String name;
 	private String ip;
 	private String guid;
-	private String id;
+	private Integer id;
 	private Date updated;
-	private String level;
+	private Integer level;
 	private String baninfo;
 	
 	public String getName() {
@@ -49,19 +49,19 @@ public final class PlayerInfo {
 		return String.format("<%s, %s, %s>", name, ip, guid);
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public String getLevel() {
+	public Integer getLevel() {
 		return level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 

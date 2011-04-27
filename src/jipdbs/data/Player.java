@@ -17,6 +17,8 @@ public class Player implements Serializable {
 	private Date updated;
 	private Date banInfoUpdated;
 	private String banInfo;
+	private Integer id;
+	private Integer level;
 
 	public Player() {
 	}
@@ -29,6 +31,8 @@ public class Player implements Serializable {
 		guid = (String) entity.getProperty("guid");
 		banInfo = (String) entity.getProperty("baninfo");
 		banInfoUpdated = (Date) entity.getProperty("baninfoupdated");
+		level = (Integer) entity.getProperty("level");
+		id = (Integer) entity.getProperty("id");
 	}
 
 	public Entity toEntity() {
@@ -40,6 +44,8 @@ public class Player implements Serializable {
 		entity.setProperty("updated", updated);
 		entity.setProperty("server", server);
 		entity.setProperty("baninfoupdated", banInfoUpdated);
+		entity.setProperty("level", level);
+		entity.setProperty("id", id);
 		return entity;
 	}
 
@@ -97,6 +103,22 @@ public class Player implements Serializable {
 
 	public void setBanInfoUpdated(Date banInfoUpdated) {
 		this.banInfoUpdated = banInfoUpdated;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	@Override

@@ -3,9 +3,7 @@ package jipdbs;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import jipdbs.data.Alias;
@@ -75,6 +73,7 @@ public class JIPDBSCore {
 	 *            the server's remote address.
 	 * @param version
 	 *            the server's B3 plugin version. Can be null.
+	 * @since 0.1
 	 */
 	public void updateName(String key, String name, String version,
 			String remoteAddr) {
@@ -101,7 +100,7 @@ public class JIPDBSCore {
 		}
 	}
 
-	private Server getAuthorizedServer(String key, String remoteAddress)
+	public Server getAuthorizedServer(String key, String remoteAddress)
 			throws UnauthorizedUpdateException {
 		return getAuthorizedServer(key, remoteAddress, null);
 	}
@@ -154,6 +153,7 @@ public class JIPDBSCore {
 	 *            the server key.
 	 * @param list
 	 *            the list of currently logged in players.
+	 * @since 0.1
 	 */
 	public void updateConnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
@@ -163,74 +163,62 @@ public class JIPDBSCore {
 
 			log.info("Processing " + server.getName());
 
-			Date stamp = new Date();
-
-			Set<Alias> aliasses = new HashSet<Alias>();
-			Set<Player> players = new HashSet<Player>();
-
 			for (PlayerInfo info : list) {
 				Player player = playerDAO.findByServerAndGuid(server.getKey(),
 						info.getGuid());
 
-				Date playerLastUpdate = null;
+				Date updated = new Date();
+				if (info.getUpdated() != null)
+					updated = info.getUpdated();
+
+				Date playerLastUpdate = updated;
+
 				if (player == null) {
 					player = new Player();
-					player.setCreated(stamp);
+					player.setCreated(updated);
 					player.setGuid(info.getGuid());
 					player.setServer(server.getKey());
 					player.setBanInfo(null);
 					player.setBanInfoUpdated(null);
-					if (info.getUpdated() != null) {
-						player.setUpdated(info.getUpdated());
-					} else {
-						player.setUpdated(stamp);
-					}
-					playerDAO.save(player);
 				} else {
 					if (player.getBanInfo() != null) {
 						player.setBanInfo(null);
 						player.setBanInfoUpdated(null);
 					}
 					playerLastUpdate = player.getUpdated();
-					player.setUpdated(stamp);
 				}
 
-				players.add(player);
+				player.setUpdated(updated);
+				playerDAO.save(player);
 
 				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
 						player.getKey(), info.getName(), info.getIp());
 
 				if (alias == null) {
+
 					alias = new Alias();
+
 					alias.setCount(1);
-					alias.setCreated(stamp);
+					alias.setCreated(updated);
 					alias.setNickname(info.getName());
 					alias.setNgrams(NGrams.ngrams(info.getName()));
 					alias.setPlayer(player.getKey());
 					alias.setIp(info.getIp());
 					alias.setServer(server.getKey());
-					if (info.getUpdated() != null) {
-						alias.setUpdated(info.getUpdated());
-					} else {
-						alias.setUpdated(stamp);
-					}
-					aliasDAO.save(alias);
+
 				} else {
-					if (server.getUpdated() == null || playerLastUpdate == null
+					if (server.getUpdated() == null
 							|| server.getUpdated().after(playerLastUpdate)) {
 						alias.setCount(alias.getCount() + 1);
 					}
-					alias.setUpdated(stamp);
 				}
 
-				aliasses.add(alias);
+				alias.setUpdated(updated);
+				aliasDAO.save(alias);
 			}
 
-			server.setUpdated(stamp);
+			server.setUpdated(new Date());
 			serverDAO.save(server);
-
-			playerDAO.save(players);
-			aliasDAO.save(aliasses);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
@@ -246,37 +234,43 @@ public class JIPDBSCore {
 		}
 	}
 
+	/**
+	 * @since 0.2
+	 */
 	public void updateDisconnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
 
 		try {
 			Server server = getAuthorizedServer(key, remoteAddr);
 
-			Date stamp = new Date();
-
 			log.info("Processing " + server.getName());
 
-			Set<Alias> aliasses = new HashSet<Alias>();
-			Set<Player> players = new HashSet<Player>();
-
 			for (PlayerInfo info : list) {
+
+				Date updated = new Date();
+				if (info.getUpdated() != null)
+					updated = info.getUpdated();
+
+				Date playerLastUpdate = updated;
+
 				Player player = playerDAO.findByServerAndGuid(server.getKey(),
 						info.getGuid());
 
 				if (player == null) {
+
 					player = new Player();
-					player.setCreated(stamp);
-					player.setUpdated(stamp);
+					player.setCreated(updated);
 					player.setGuid(info.getGuid());
 					player.setServer(server.getKey());
 					player.setBanInfo(null);
 					player.setBanInfoUpdated(null);
-					playerDAO.save(player);
+
 				} else {
-					player.setUpdated(stamp);
+					playerLastUpdate = player.getUpdated();
 				}
 
-				players.add(player);
+				player.setUpdated(updated);
+				playerDAO.save(player);
 
 				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
 						player.getKey(), info.getName(), info.getIp());
@@ -284,26 +278,26 @@ public class JIPDBSCore {
 				if (alias == null) {
 					alias = new Alias();
 					alias.setCount(1);
-					alias.setCreated(stamp);
+					alias.setCreated(updated);
 					alias.setNickname(info.getName());
 					alias.setNgrams(NGrams.ngrams(info.getName()));
 					alias.setPlayer(player.getKey());
 					alias.setIp(info.getIp());
-					alias.setUpdated(stamp);
 					alias.setServer(server.getKey());
-					aliasDAO.save(alias);
 				} else {
-					alias.setUpdated(stamp);
+					if (server.getUpdated() == null
+							|| server.getUpdated().after(playerLastUpdate)) {
+						alias.setCount(alias.getCount() + 1);
+					}
 				}
 
-				aliasses.add(alias);
+				alias.setUpdated(updated);
+				aliasDAO.save(alias);
 
 			}
-			server.setUpdated(stamp);
-			serverDAO.save(server);
 
-			playerDAO.save(players);
-			aliasDAO.save(aliasses);
+			server.setUpdated(new Date());
+			serverDAO.save(server);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
@@ -328,6 +322,7 @@ public class JIPDBSCore {
 	 *            the ban information list. If {@link BanInfo#getReason()} is
 	 *            null or empty, stores <code>null</code> y the datastore.
 	 *            That's in order to unban a player.
+	 * @since 0.1
 	 */
 	public void updateBanInfo(String key, List<BanInfo> list, String remoteAddr) {
 
@@ -335,74 +330,64 @@ public class JIPDBSCore {
 
 			Server server = getAuthorizedServer(key, remoteAddr);
 
-			Date stamp = new Date();
-
 			log.info("Processing " + server.getName());
 
-			Set<Alias> aliasses = new HashSet<Alias>();
-			Set<Player> players = new HashSet<Player>();
-
 			for (BanInfo info : list) {
+
+				Date updated = new Date();
+				if (info.getUpdated() != null)
+					updated = info.getUpdated();
+
+				Date playerLastUpdate = updated;
 
 				Player player = playerDAO.findByServerAndGuid(server.getKey(),
 						info.getGuid());
 
 				String reason = info.getReason();
-				Date banInfoUpdated = info.getUpdated() != null ? info
-						.getUpdated() : new Date();
 
 				if (reason.isEmpty())
 					reason = null;
 
 				if (player == null) {
 					player = new Player();
-					player.setCreated(stamp);
+					player.setCreated(updated);
 					player.setGuid(info.getGuid());
 					player.setServer(server.getKey());
-					if (info.getUpdated() != null)
-						player.setUpdated(info.getUpdated());
-					player.setBanInfo(reason);
-					player.setBanInfoUpdated(reason != null ? banInfoUpdated
-							: null);
-					players.add(player);
-					playerDAO.save(player);
-				} else {
-					if (info.getUpdated() != null)
-						player.setUpdated(info.getUpdated());
-					player.setBanInfo(reason);
-					player.setBanInfoUpdated(reason != null ? banInfoUpdated
-							: null);
 				}
 
-				players.add(player);
+				player.setBanInfo(reason);
+				player.setBanInfoUpdated(reason != null ? updated : null);
+
+				player.setUpdated(updated);
+				playerDAO.save(player);
+
+				// Save the last alias.
 
 				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
 						player.getKey(), info.getName(), info.getIp());
+
 				if (alias == null) {
 					alias = new Alias();
 					alias.setCount(1);
-					alias.setCreated(stamp);
+					alias.setCreated(updated);
 					alias.setNickname(info.getName());
 					alias.setNgrams(NGrams.ngrams(info.getName()));
 					alias.setPlayer(player.getKey());
 					alias.setIp(info.getIp());
-					if (info.getUpdated() != null) {
-						alias.setUpdated(info.getUpdated());
-					}
 					alias.setServer(server.getKey());
-					aliasDAO.save(alias);
 				} else {
-					if (info.getUpdated() != null)
-						alias.setUpdated(info.getUpdated());
+					if (server.getUpdated() == null
+							|| server.getUpdated().after(playerLastUpdate)) {
+						alias.setCount(alias.getCount() + 1);
+					}
 				}
-				aliasses.add(alias);
+
+				alias.setUpdated(updated);
+				aliasDAO.save(alias);
 			}
 
-			server.setUpdated(stamp);
+			server.setUpdated(new Date());
 			serverDAO.save(server);
-
-			playerDAO.save(players);
-			aliasDAO.save(aliasses);
 
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
@@ -410,6 +395,383 @@ public class JIPDBSCore {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.getBuffer().toString());
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
+	}
+
+	/**
+	 * @since 0.5
+	 */
+	public void playerConnected(Server server, String nickname, String ip,
+			String guid, Date updated, Integer id, Integer level) {
+
+		try {
+
+			if (updated == null)
+				updated = new Date();
+			Date playerLastUpdate = updated;
+
+			Player player = playerDAO
+					.findByServerAndGuid(server.getKey(), guid);
+
+			// New player.
+			if (player == null) {
+
+				player = new Player();
+
+				player.setCreated(updated);
+				player.setGuid(guid);
+				player.setServer(server.getKey());
+				player.setBanInfo(null);
+				player.setBanInfoUpdated(null);
+				player.setId(id);
+
+			}
+			// Known player.
+			else {
+
+				// Player was allowed to connect by the server, that means that
+				// the ban has gone.
+				if (player.getBanInfo() != null) {
+					player.setBanInfo(null);
+					player.setBanInfoUpdated(null);
+				}
+
+				playerLastUpdate = player.getUpdated();
+			}
+
+			// Level might be changed.
+			player.setLevel(level);
+			player.setUpdated(updated);
+			playerDAO.save(player);
+
+			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+					player.getKey(), nickname, ip);
+
+			if (alias == null) {
+				alias = new Alias();
+				alias.setCount(1);
+				alias.setCreated(updated);
+				alias.setNickname(nickname);
+				alias.setNgrams(NGrams.ngrams(nickname));
+				alias.setPlayer(player.getKey());
+				alias.setIp(ip);
+				alias.setServer(server.getKey());
+			} else {
+				if (server.getUpdated() == null
+						|| server.getUpdated().after(playerLastUpdate)) {
+					alias.setCount(alias.getCount() + 1);
+				}
+			}
+
+			alias.setUpdated(updated);
+			aliasDAO.save(alias);
+
+			server.setUpdated(updated);
+			serverDAO.save(server);
+
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
+	}
+
+	/**
+	 * @since 0.5
+	 */
+	public void playerUpdated(Server server, String nickname, String ip,
+			String guid, Date updated, Integer id, Integer level) {
+
+		try {
+
+			if (updated == null)
+				updated = new Date();
+			Date playerLastUpdate = updated;
+
+			Player player = playerDAO
+					.findByServerAndGuid(server.getKey(), guid);
+
+			// New player. Possibly the connected event was missed.
+			if (player == null) {
+
+				player = new Player();
+
+				player.setCreated(updated);
+				player.setGuid(guid);
+				player.setServer(server.getKey());
+				player.setBanInfo(null);
+				player.setBanInfoUpdated(null);
+				player.setId(id);
+
+			}
+			// Known player.
+			else {
+
+				// Player was allowed to connect by the server, that means that
+				// the ban has gone.
+				if (player.getBanInfo() != null) {
+					player.setBanInfo(null);
+					player.setBanInfoUpdated(null);
+				}
+				playerLastUpdate = player.getUpdated();
+			}
+
+			// Level might be changed.
+			player.setLevel(level);
+			player.setUpdated(updated);
+			playerDAO.save(player);
+
+			// Save the new alias.
+
+			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+					player.getKey(), nickname, ip);
+
+			if (alias == null) {
+				alias = new Alias();
+				alias.setCount(1);
+				alias.setCreated(updated);
+				alias.setNickname(nickname);
+				alias.setNgrams(NGrams.ngrams(nickname));
+				alias.setPlayer(player.getKey());
+				alias.setIp(ip);
+				alias.setServer(server.getKey());
+			} else {
+				if (server.getUpdated() == null
+						|| server.getUpdated().after(playerLastUpdate)) {
+					alias.setCount(alias.getCount() + 1);
+				}
+			}
+
+			alias.setUpdated(updated);
+			aliasDAO.save(alias);
+
+			server.setUpdated(updated);
+			serverDAO.save(server);
+
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
+	}
+
+	/**
+	 * @since 0.5
+	 */
+	public void playerDisconnected(Server server, String nickname, String ip,
+			String guid, Date updated, Integer id, Integer level) {
+
+		try {
+
+			if (updated == null)
+				updated = new Date();
+			Date playerLastUpdate = updated;
+
+			Player player = playerDAO
+					.findByServerAndGuid(server.getKey(), guid);
+
+			// New player. Possibly the connected event was missed.
+			if (player == null) {
+
+				player = new Player();
+
+				player.setCreated(updated);
+				player.setGuid(guid);
+				player.setServer(server.getKey());
+				player.setBanInfo(null);
+				player.setBanInfoUpdated(null);
+				player.setId(id);
+
+			} else {
+				playerLastUpdate = player.getUpdated();
+			}
+
+			// Level might be changed.
+			player.setLevel(level);
+			player.setUpdated(updated);
+			playerDAO.save(player);
+
+			// Alias might be missing. Save.
+
+			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+					player.getKey(), nickname, ip);
+
+			if (alias == null) {
+				alias = new Alias();
+				alias.setCount(1);
+				alias.setCreated(updated);
+				alias.setNickname(nickname);
+				alias.setNgrams(NGrams.ngrams(nickname));
+				alias.setPlayer(player.getKey());
+				alias.setIp(ip);
+				alias.setServer(server.getKey());
+			} else {
+				if (server.getUpdated() == null
+						|| server.getUpdated().after(playerLastUpdate)) {
+					alias.setCount(alias.getCount() + 1);
+				}
+			}
+
+			alias.setUpdated(updated);
+			aliasDAO.save(alias);
+
+			server.setUpdated(updated);
+			serverDAO.save(server);
+
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
+	}
+
+	/**
+	 * @since 0.5
+	 */
+	public void playerBanned(Server server, String nickname, String ip,
+			String guid, Date updated, Integer id, Integer level, String baninfo) {
+
+		try {
+
+			if (updated == null)
+				updated = new Date();
+			Date playerLastUpdate = updated;
+
+			Player player = playerDAO
+					.findByServerAndGuid(server.getKey(), guid);
+
+			// New player. Possibly the connected event was missed.
+			if (player == null) {
+
+				player = new Player();
+
+				player.setCreated(updated);
+				player.setGuid(guid);
+				player.setServer(server.getKey());
+				player.setBanInfo(null);
+				player.setBanInfoUpdated(null);
+				player.setId(id);
+
+			} else {
+				playerLastUpdate = player.getUpdated();
+			}
+
+			player.setBanInfo(baninfo);
+			player.setBanInfoUpdated(updated);
+			// Level might be changed.
+			player.setLevel(level);
+			player.setUpdated(updated);
+			playerDAO.save(player);
+
+			// Alias might be missing. Save.
+
+			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+					player.getKey(), nickname, ip);
+
+			if (alias == null) {
+				alias = new Alias();
+				alias.setCount(1);
+				alias.setCreated(updated);
+				alias.setNickname(nickname);
+				alias.setNgrams(NGrams.ngrams(nickname));
+				alias.setPlayer(player.getKey());
+				alias.setIp(ip);
+				alias.setServer(server.getKey());
+			} else {
+				if (server.getUpdated() == null
+						|| server.getUpdated().after(playerLastUpdate)) {
+					alias.setCount(alias.getCount() + 1);
+				}
+			}
+
+			alias.setUpdated(updated);
+			aliasDAO.save(alias);
+
+			server.setUpdated(updated);
+			serverDAO.save(server);
+
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
+	}
+
+	/**
+	 * @since 0.5
+	 */
+	public void playerUnbanned(Server server, String nickname, String ip,
+			String guid, Date updated, Integer id, Integer level) {
+
+		try {
+
+			if (updated == null)
+				updated = new Date();
+			Date playerLastUpdate = updated;
+
+			Player player = playerDAO
+					.findByServerAndGuid(server.getKey(), guid);
+
+			// New player. Possibly the connected event was missed.
+			if (player == null) {
+
+				player = new Player();
+
+				player.setCreated(updated);
+				player.setGuid(guid);
+				player.setServer(server.getKey());
+				player.setBanInfo(null);
+				player.setBanInfoUpdated(null);
+				player.setId(id);
+
+			} else {
+				playerLastUpdate = updated;
+			}
+
+			player.setBanInfo(null);
+			player.setBanInfoUpdated(null);
+
+			// Level might be changed.
+			player.setLevel(level);
+			player.setUpdated(updated);
+			playerDAO.save(player);
+
+			// Alias might be missing. Save.
+
+			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
+					player.getKey(), nickname, ip);
+
+			if (alias == null) {
+				alias = new Alias();
+				alias.setCount(1);
+				alias.setCreated(updated);
+				alias.setNickname(nickname);
+				alias.setNgrams(NGrams.ngrams(nickname));
+				alias.setPlayer(player.getKey());
+				alias.setIp(ip);
+				alias.setServer(server.getKey());
+			} else {
+				if (server.getUpdated() == null
+						|| server.getUpdated().after(playerLastUpdate)) {
+					alias.setCount(alias.getCount() + 1);
+				}
+			}
+
+			alias.setUpdated(updated);
+			aliasDAO.save(alias);
+
+			server.setUpdated(updated);
+			serverDAO.save(server);
+
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
