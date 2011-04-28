@@ -33,4 +33,8 @@ public interface AliasDAO {
 
 	public abstract void save(Collection<Alias> aliasses);
 
+	public abstract void save(Alias alias, boolean commit);
+
+	public abstract void save(Collection<Alias> aliasses, boolean commit);
+
 }

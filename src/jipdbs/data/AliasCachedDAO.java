@@ -19,8 +19,8 @@ public class AliasCachedDAO implements AliasDAO {
 	}
 
 	@Override
-	public void save(Alias alias) {
-		impl.save(alias);
+	public void save(Alias alias, boolean commit) {
+		impl.save(alias, commit);
 		cache.put(
 				cacheKey(alias.getPlayer(), alias.getNickname(), alias.getIp()),
 				alias);
@@ -89,8 +89,18 @@ public class AliasCachedDAO implements AliasDAO {
 	}
 
 	@Override
-	public void save(Collection<Alias> aliasses) {
+	public void save(Collection<Alias> aliasses, boolean commit) {
 		for (Alias alias : aliasses)
-			save(alias);
+			save(alias, commit);
+	}
+
+	@Override
+	public void save(Alias alias) {
+		save(alias, true);
+	}
+
+	@Override
+	public void save(Collection<Alias> aliasses) {
+		save(aliasses, true);
 	}
 }

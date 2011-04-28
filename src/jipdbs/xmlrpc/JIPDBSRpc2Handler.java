@@ -2,11 +2,14 @@ package jipdbs.xmlrpc;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import jipdbs.JIPDBS;
 import jipdbs.UnauthorizedUpdateException;
+import jipdbs.bean.PlayerInfo;
 import jipdbs.data.Server;
 import jipdbs.util.MailAdmin;
 
@@ -32,51 +35,18 @@ public class JIPDBSRpc2Handler {
 			Server server = app.getAuthorizedServer(key,
 					JIPDBSXmlRpc2Servlet.getClientIpAddress());
 
+			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
-				String event = (String) values[0];
-				String name = (String) values[1];
-				String guid = (String) values[2];
-				Integer id = parseInteger((String) values[3]);
-				String ip = (String) values[4];
-				Integer level = parseInteger((String) values[5]);
-
-				Date updated = new Date();
-
+				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseInteger((String) values[3]), (String) values[4], parseInteger((String) values[5]));
 				if (values.length > 6)
-					updated = (Date) values[6];
-
-				String baninfo = null;
-
+					playerInfo.setUpdated((Date) values[6]);
 				if (values.length > 7)
-					baninfo = (String) values[7];
-
-				if ("connect".equalsIgnoreCase(event)) {
-
-					app.playerConnected(server, name, ip, guid, updated, id,
-							level);
-
-				} else if ("update".equalsIgnoreCase(event)) {
-
-					app.playerUpdated(server, name, ip, guid, updated, id,
-							level);
-
-				} else if ("disconnect".equalsIgnoreCase(event)) {
-
-					app.playerDisconnected(server, name, ip, guid, updated, id,
-							level);
-
-				} else if ("banned".equalsIgnoreCase(event)) {
-
-					app.playerBanned(server, name, ip, guid, updated, id,
-							level, baninfo);
-				} else if ("unbanned".equalsIgnoreCase(event)) {
-
-					app.playerUnbanned(server, name, ip, guid, updated, id,
-							level);
-				}
+					playerInfo.setExtra((String) values[7]);
+				list.add(playerInfo);
 			}
-
+			app.updatePlayer(server, list);
+			
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
 			log.severe(e.getMessage());

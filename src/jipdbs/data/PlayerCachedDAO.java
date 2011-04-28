@@ -20,8 +20,8 @@ public class PlayerCachedDAO implements PlayerDAO {
 	}
 
 	@Override
-	public void save(Player player) {
-		impl.save(player);
+	public void save(Player player, boolean commit) {
+		impl.save(player, commit);
 		cache.put(cacheKey(player.getServer(), player.getGuid()), player);
 	}
 
@@ -67,8 +67,18 @@ public class PlayerCachedDAO implements PlayerDAO {
 	}
 
 	@Override
-	public void save(Collection<Player> players) {
+	public void save(Collection<Player> players, boolean commit) {
 		for (Player player : players)
-			save(player);
+			save(player, commit);
+	}
+
+	@Override
+	public void save(Player player) {
+		save(player, true);
+	}
+
+	@Override
+	public void save(Collection<Player> players) {
+		save(players, true);
 	}
 }

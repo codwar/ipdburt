@@ -29,14 +29,15 @@ public class AliasDAOImpl implements AliasDAO {
 			.getName());
 
 	@Override
-	public void save(Alias alias) {
+	public void save(Alias alias, boolean commit) {
+		if (commit) {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Entity entity = alias.toEntity();
-		service.put(entity);
-		alias.setKey(entity.getKey());
+			Entity entity = alias.toEntity();
+			service.put(entity);
+			alias.setKey(entity.getKey());
+		}
 	}
 
 	@Override
@@ -236,8 +237,18 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	@Override
-	public void save(Collection<Alias> aliasses) {
+	public void save(Collection<Alias> aliasses, boolean commit) {
 		for (Alias alias : aliasses)
-			save(alias);
+			save(alias, commit);
+	}
+
+	@Override
+	public void save(Alias alias) {
+		save(alias, true);
+	}
+
+	@Override
+	public void save(Collection<Alias> aliasses) {
+		save(aliasses, true);
 	}
 }

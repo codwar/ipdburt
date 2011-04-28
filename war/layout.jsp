@@ -15,12 +15,12 @@
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
 <link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/reset-fonts-grids/reset-fonts-grids.css"/>
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/style.css" media="screen"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-<%-- script type="text/javascript" src="/media/js/jquery-1.5.1.min.js"></script--%>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>

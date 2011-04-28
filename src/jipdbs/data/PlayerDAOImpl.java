@@ -20,14 +20,14 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 public class PlayerDAOImpl implements PlayerDAO {
 
 	@Override
-	public void save(Player player) {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Entity entity = player.toEntity();
-		service.put(entity);
-		player.setKey(entity.getKey());
+	public void save(Player player, boolean commit) {
+		if (commit) {
+			DatastoreService service = DatastoreServiceFactory
+					.getDatastoreService();
+			Entity entity = player.toEntity();
+			service.put(entity);
+			player.setKey(entity.getKey());
+		}
 	}
 
 	@Override
@@ -115,8 +115,18 @@ public class PlayerDAOImpl implements PlayerDAO {
 	}
 
 	@Override
-	public void save(Collection<Player> players) {
+	public void save(Collection<Player> players, boolean commit) {
 		for (Player player : players)
-			save(player);
+			save(player, commit);
+	}
+
+	@Override
+	public void save(Player player) {
+		save(player, true);
+	}
+
+	@Override
+	public void save(Collection<Player> players) {
+		save(players, true);
 	}
 }

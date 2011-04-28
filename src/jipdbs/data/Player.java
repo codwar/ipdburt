@@ -17,10 +17,11 @@ public class Player implements Serializable {
 	private Date updated;
 	private Date banInfoUpdated;
 	private String banInfo;
-	private Integer id;
+	private Integer clientId;
 	private Integer level;
 
 	public Player() {
+		this.key = null;
 	}
 
 	public Player(Entity entity) {
@@ -32,7 +33,7 @@ public class Player implements Serializable {
 		banInfo = (String) entity.getProperty("baninfo");
 		banInfoUpdated = (Date) entity.getProperty("baninfoupdated");
 		level = (Integer) entity.getProperty("level");
-		id = (Integer) entity.getProperty("id");
+		clientId = (Integer) entity.getProperty("clientId");
 	}
 
 	public Entity toEntity() {
@@ -45,7 +46,7 @@ public class Player implements Serializable {
 		entity.setProperty("server", server);
 		entity.setProperty("baninfoupdated", banInfoUpdated);
 		entity.setProperty("level", level);
-		entity.setProperty("id", id);
+		entity.setProperty("clientId", clientId);
 		return entity;
 	}
 
@@ -105,19 +106,19 @@ public class Player implements Serializable {
 		this.banInfoUpdated = banInfoUpdated;
 	}
 	
-	public int getId() {
-		return id;
+	public Integer getClientId() {
+		return clientId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setClientId(Integer id) {
+		this.clientId = id;
 	}
 
-	public int getLevel() {
+	public Integer getLevel() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 

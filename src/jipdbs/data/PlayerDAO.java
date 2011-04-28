@@ -21,5 +21,9 @@ public interface PlayerDAO {
 	public abstract void save(Player player);
 
 	public abstract void save(Collection<Player> players);
+	
+	public abstract void save(Player player, boolean commit);
+
+	public abstract void save(Collection<Player> players, boolean commit);
 
 }
