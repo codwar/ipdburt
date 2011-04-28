@@ -78,7 +78,7 @@
 						more.show();
 						more.unbind();
 						more.click(function() {
-							getHTML(key, offset + 20, updateFun);
+							getHTML(key, offset + 10, updateFun);
 						});
 					} else
 						more.hide();
