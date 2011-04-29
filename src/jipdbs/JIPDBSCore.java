@@ -2,9 +2,10 @@ package jipdbs;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import jipdbs.bean.PlayerEvent;
@@ -794,91 +795,101 @@ public class JIPDBSCore {
 			log.severe(w.getBuffer().toString());
 		}
 	}
-	
+
+	/**
+	 * updatePlayer
+	 * @param server
+	 * @param list
+	 */
 	public void updatePlayer(Server server, List<PlayerInfo> list) {
-		List<Entity> entities = new ArrayList<Entity>();
+		Map<String, Entity> entities = new HashMap<String, Entity>(15);
 		for (PlayerInfo playerInfo : list) {
-			entities.addAll(updatePlayer(server, playerInfo));
+			try {
+				Date playerLastUpdate;
+				Player player = playerDAO.findByServerAndGuid(server.getKey(),
+						playerInfo.getGuid());
+				if (player == null) {
+					player = new Player();
+					player.setCreated(playerInfo.getUpdated());
+					player.setGuid(playerInfo.getGuid());
+					player.setLevel(playerInfo.getLevel());
+					player.setClientId(playerInfo.getClientId());
+					player.setServer(server.getKey());
+					player.setBanInfo(null);
+					player.setBanInfoUpdated(null);
+					playerLastUpdate = playerInfo.getUpdated();
+				} else {
+					player.setLevel(playerInfo.getLevel());
+					if (player.getClientId() == null) {
+						player.setClientId(playerInfo.getClientId());
+					}
+					playerLastUpdate = player.getUpdated();
+				}
+
+				if (PlayerEvent.BAN.equals(playerInfo.getEvent())) {
+					player.setBanInfo(playerInfo.getExtra());
+					player.setBanInfoUpdated(playerInfo.getUpdated());
+				} else if (PlayerEvent.CONNECT.equals(playerInfo.getEvent())
+						|| PlayerEvent.DISCONNECT.equals(playerInfo.getEvent())
+						|| PlayerEvent.UNBAN.equals(playerInfo.getEvent())
+						|| PlayerEvent.UPDATE.equals(playerInfo.getEvent())) {
+					player.setBanInfo(null);
+					player.setBanInfoUpdated(null);
+				} else if (PlayerEvent.ADDNOTE.equals(playerInfo.getEvent())) {
+					player.setNote(playerInfo.getExtra());
+				} else if (PlayerEvent.DELNOTE.equals(playerInfo.getEvent())) {
+					player.setNote(null);
+				}
+				player.setUpdated(playerInfo.getUpdated());
+
+				playerDAO.save(player, player.getKey() == null);
+				entities.put("player-" + player.getGuid(), player.toEntity());
+
+				String aliasKey = "alias-" + player.getGuid() + playerInfo.getName() + playerInfo.getIp();
+				
+				Entity aliasEntity = entities.get(aliasKey);
+				Alias alias; 
+				if (aliasEntity != null) {
+					alias = new Alias(aliasEntity);
+				} else {
+					alias = aliasDAO.findByPlayerAndNicknameAndIp(
+							player.getKey(), playerInfo.getName(),
+							playerInfo.getIp());
+				}
+
+				if (alias == null) {
+					alias = new Alias();
+					alias.setCount(1);
+					alias.setCreated(playerInfo.getUpdated());
+					alias.setNickname(playerInfo.getName());
+					alias.setNgrams(NGrams.ngrams(playerInfo.getName()));
+					alias.setPlayer(player.getKey());
+					alias.setIp(playerInfo.getIp());
+					alias.setServer(server.getKey());
+					alias.setUpdated(playerInfo.getUpdated());
+				} else {
+					if (PlayerEvent.CONNECT.equals(playerInfo.getEvent())) {
+						if (server.getUpdated() == null
+								|| server.getUpdated().after(playerLastUpdate)) {
+							alias.setCount(alias.getCount() + 1);
+						}
+					}
+					alias.setUpdated(playerInfo.getUpdated());
+				}
+				aliasDAO.save(alias, false);
+				entities.put(aliasKey, alias.toEntity());
+			} catch (Exception e) {
+				log.severe(e.getMessage());
+				StringWriter w = new StringWriter();
+				e.printStackTrace(new PrintWriter(w));
+				log.severe(w.getBuffer().toString());
+			}
 		}
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		service.put(entities);
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+		service.put(entities.values());
 		server.setUpdated(new Date());
 		serverDAO.save(server);
 	}
-	
-	/**
-	 * 
-	 * @param server
-	 * @param playerInfo
-	 */
-	public List<Entity> updatePlayer(Server server, PlayerInfo playerInfo) {
-		List<Entity> commitList = new ArrayList<Entity>();
-		try {
-			Date playerLastUpdate;
-			Player player = playerDAO.findByServerAndGuid(server.getKey(), playerInfo.getGuid());
-			if (player == null) {
-				player = new Player();
-				player.setCreated(playerInfo.getUpdated());
-				player.setGuid(playerInfo.getGuid());
-				player.setLevel(playerInfo.getLevel());
-				player.setClientId(playerInfo.getClientId());
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				playerLastUpdate = playerInfo.getUpdated();
-			} else {
-				player.setLevel(playerInfo.getLevel());
-				if (player.getClientId() == null ) {
-					player.setClientId(playerInfo.getClientId());
-				}
-				playerLastUpdate = player.getUpdated();
-			}
-			
-			if (PlayerEvent.BAN.equals(playerInfo.getEvent())) {
-				player.setBanInfo(playerInfo.getExtra());
-				player.setBanInfoUpdated(playerInfo.getUpdated());
-			} else if (PlayerEvent.CONNECT.equals(playerInfo.getEvent()) || 
-						PlayerEvent.DISCONNECT.equals(playerInfo.getEvent()) ||
-						PlayerEvent.UNBAN.equals(playerInfo.getEvent()) ||
-						PlayerEvent.UPDATE.equals(playerInfo.getEvent())) {
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-			} // TODO addnote delnote
-			player.setUpdated(playerInfo.getUpdated());
 
-			playerDAO.save(player, player.getKey() == null);
-			commitList.add(player.toEntity());
-			
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(player.getKey(), playerInfo.getName(), playerInfo.getIp());
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(playerInfo.getUpdated());
-				alias.setNickname(playerInfo.getName());
-				alias.setNgrams(NGrams.ngrams(playerInfo.getName()));
-				alias.setPlayer(player.getKey());
-				alias.setIp(playerInfo.getIp());
-				alias.setServer(server.getKey());
-				alias.setUpdated(playerInfo.getUpdated());
-			} else {
-				if (PlayerEvent.CONNECT.equals(playerInfo.getEvent())) {
-					if (server.getUpdated() == null
-							|| server.getUpdated().after(playerLastUpdate)) {
-						alias.setCount(alias.getCount() + 1);
-					}
-				}
-				alias.setUpdated(playerInfo.getUpdated());
-			}
-			aliasDAO.save(alias, false);
-			commitList.add(alias.toEntity());
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-		return commitList;
-	}
-	
 }
