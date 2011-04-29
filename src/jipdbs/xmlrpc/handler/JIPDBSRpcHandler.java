@@ -1,4 +1,4 @@
-package jipdbs.xmlrpc;
+package jipdbs.xmlrpc.handler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,7 +6,9 @@ import java.util.List;
 
 import jipdbs.BanInfo;
 import jipdbs.JIPDBS;
-import jipdbs.PlayerInfo;
+import jipdbs.api.Events;
+import jipdbs.bean.PlayerInfo;
+import jipdbs.xmlrpc.JIPDBSXmlRpcServlet;
 
 public class JIPDBSRpcHandler {
 
@@ -27,15 +29,11 @@ public class JIPDBSRpcHandler {
 		for (Object o : plist) {
 
 			Object[] values = ((Object[]) o);
-			PlayerInfo p = new PlayerInfo();
-			p.setName((String) values[0]);
-			p.setIp((String) values[1]);
-			p.setGuid((String) values[2]);
+			PlayerInfo p = new PlayerInfo(Events.CONNECT, (String) values[0], (String) values[2], null, (String) values[1], null);
 			if (values.length == 4) {
 				p.setUpdated((Date) values[3]);
 			}
 			list.add(p);
-
 		}
 		if (list.size() > 0) app.updateConnect(key, list, JIPDBSXmlRpcServlet.getClientIpAddress());
 	}
@@ -47,8 +45,7 @@ public class JIPDBSRpcHandler {
 		for (Object o : plist) {
 
 			Object[] values = ((Object[]) o);
-
-			PlayerInfo p = new PlayerInfo();
+			PlayerInfo p = new PlayerInfo(Events.CONNECT, (String) values[0], (String) values[2], null, (String) values[1], null);
 			p.setName((String) values[0]);
 			p.setIp((String) values[1]);
 			p.setGuid((String) values[2]);

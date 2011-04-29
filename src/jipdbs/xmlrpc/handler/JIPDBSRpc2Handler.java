@@ -1,4 +1,4 @@
-package jipdbs.xmlrpc;
+package jipdbs.xmlrpc.handler;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import jipdbs.JIPDBS;
-import jipdbs.UnauthorizedUpdateException;
+import jipdbs.api.ServerManager;
+import jipdbs.api.v2.Update;
 import jipdbs.bean.PlayerInfo;
 import jipdbs.data.Server;
+import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.util.MailAdmin;
+import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;
 
 public class JIPDBSRpc2Handler {
 
@@ -19,20 +22,22 @@ public class JIPDBSRpc2Handler {
 			.getName());
 
 	private final JIPDBS app;
-
+	private final Update updateApi;
+	
 	public JIPDBSRpc2Handler(JIPDBS app) {
 		this.app = app;
+		this.updateApi = new Update();
 	}
 
 	public void updateName(String key, String name, String version) {
-		app.updateName(key, name, version,
-				JIPDBSXmlRpc2Servlet.getClientIpAddress());
+		this.updateApi.updateName(key, name, version, JIPDBSXmlRpc2Servlet.getClientIpAddress());
 	}
 
 	public void update(String key, Object[] plist) {
 
 		try {
-			Server server = app.getAuthorizedServer(key,
+			ServerManager serverManager = new ServerManager();
+			Server server = serverManager.getAuthorizedServer(key,
 					JIPDBSXmlRpc2Servlet.getClientIpAddress());
 
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
@@ -45,7 +50,7 @@ public class JIPDBSRpc2Handler {
 					playerInfo.setExtra((String) values[7]);
 				list.add(playerInfo);
 			}
-			app.updatePlayer(server, list);
+			updateApi.updatePlayer(server, list);
 			
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());

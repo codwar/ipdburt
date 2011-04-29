@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.AliasResult;
 import jipdbs.JIPDBS;
 import jipdbs.PageLink;
-import jipdbs.PlayerInfoView;
+import jipdbs.bean.AliasResult;
+import jipdbs.bean.PlayerInfoView;
 import jipdbs.data.Alias;
 import jipdbs.data.Player;
 import jipdbs.data.Server;

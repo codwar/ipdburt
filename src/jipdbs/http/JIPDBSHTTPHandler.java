@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
-import jipdbs.PlayerInfo;
+import jipdbs.api.Events;
+import jipdbs.bean.PlayerInfo;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
@@ -40,10 +41,7 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 			PlayerInfo p;
 			for (Object obPlayer : players) {
 				JSONArray player = (JSONArray) obPlayer;
-				p = new PlayerInfo();
-				p.setName(((String) player.get(0)).trim());
-				p.setIp(((String) player.get(1)).trim());
-				p.setGuid(((String) player.get(2)).trim());
+				p = new PlayerInfo(Events.UPDATE, ((String) player.get(0)).trim(), ((String) player.get(2)).trim(), null, ((String) player.get(1)).trim(), null);
 				list.add(p);
 			}
 			app.updateConnect(key, list, null);

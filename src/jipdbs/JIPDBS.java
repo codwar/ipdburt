@@ -19,6 +19,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import jipdbs.bean.AliasResult;
+import jipdbs.bean.SearchResult;
 import jipdbs.data.Alias;
 import jipdbs.data.Player;
 import jipdbs.data.Server;

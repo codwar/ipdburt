@@ -1,4 +1,4 @@
-package jipdbs;
+package jipdbs.bean;
 
 import java.io.Serializable;
 import java.util.Collection;

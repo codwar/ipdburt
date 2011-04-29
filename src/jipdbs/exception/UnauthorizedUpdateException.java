@@ -1,4 +1,4 @@
-package jipdbs;
+package jipdbs.exception;
 
 public class UnauthorizedUpdateException extends Exception {
 

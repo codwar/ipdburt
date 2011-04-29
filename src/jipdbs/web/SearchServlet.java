@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
 import jipdbs.PageLink;
-import jipdbs.SearchResult;
+import jipdbs.bean.SearchResult;
 import jipdbs.util.Functions;
 
 import org.datanucleus.util.StringUtils;

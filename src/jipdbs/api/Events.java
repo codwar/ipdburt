@@ -1,6 +1,6 @@
-package jipdbs.bean;
+package jipdbs.api;
 
-public interface PlayerEvent {
+public interface Events {
 
 	public static final String CONNECT = "connect";
 	public static final String UPDATE = "update";

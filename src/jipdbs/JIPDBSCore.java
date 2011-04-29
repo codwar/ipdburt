@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jipdbs.bean.PlayerEvent;
+import jipdbs.api.ServerManager;
+import jipdbs.api.v2.Update;
 import jipdbs.bean.PlayerInfo;
 import jipdbs.data.Alias;
 import jipdbs.data.AliasCachedDAO;
@@ -22,10 +23,8 @@ import jipdbs.data.Server;
 import jipdbs.data.ServerCachedDAO;
 import jipdbs.data.ServerDAO;
 import jipdbs.data.ServerDAOImpl;
-import jipdbs.util.MailAdmin;
+import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.util.NGrams;
-
-import org.datanucleus.util.StringUtils;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -65,93 +64,8 @@ public class JIPDBSCore {
 	 */
 	@Deprecated
 	public void updateName(String key, String name, String remoteAddr) {
-		this.updateName(key, name, null, remoteAddr);
-	}
-
-	/**
-	 * Updates the name of a server given its uid.
-	 * <p>
-	 * Invoked by the servers when they change their public server name.
-	 * 
-	 * @param key
-	 *            the server uid.
-	 * @param name
-	 *            the server's new name.
-	 * @param remoteAddr
-	 *            the server's remote address.
-	 * @param version
-	 *            the server's B3 plugin version. Can be null.
-	 * @since 0.1
-	 */
-	public void updateName(String key, String name, String version,
-			String remoteAddr) {
-
-		try {
-
-			Server server = getAuthorizedServer(key, remoteAddr, name);
-			server.setName(name);
-			server.setUpdated(new Date());
-			server.setPluginVersion(version);
-			serverDAO.save(server);
-
-		} catch (UnauthorizedUpdateException e) {
-			MailAdmin.sendMail("WARN", e.getMessage());
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	public Server getAuthorizedServer(String key, String remoteAddress)
-			throws UnauthorizedUpdateException {
-		return getAuthorizedServer(key, remoteAddress, null);
-	}
-
-	private Server getAuthorizedServer(String key, String remoteAddress,
-			String serverName) throws UnauthorizedUpdateException {
-
-		Server server = serverDAO.findByUid(key);
-
-		if (server == null) {
-
-			// Compose.
-			StringBuilder builder = new StringBuilder(
-					"Se intenta actualizar servidor no existente.\n");
-			builder.append("Key: " + key).append("\n");
-			if (serverName != null)
-				builder.append("Nombre: " + serverName).append("\n");
-			if (remoteAddress != null)
-				builder.append("IP: " + remoteAddress).append("\n");
-			String message = builder.toString();
-
-			// Throw.
-			throw new UnauthorizedUpdateException(message);
-		}
-
-		if (remoteAddress != null && StringUtils.notEmpty(server.getAddress())
-				&& !remoteAddress.equals(server.getAddress())) {
-
-			// Compose.
-			StringBuilder builder = new StringBuilder(
-					"Intento de actualizar desde IP no autorizada.\n");
-			builder.append("Key: " + key).append("\n");
-			if (serverName != null)
-				builder.append("Nombre: " + serverName).append("\n");
-			if (remoteAddress != null)
-				builder.append("IP: " + remoteAddress).append("\n");
-			String message = builder.toString();
-
-			// Throw.
-			throw new UnauthorizedUpdateException(message);
-		}
-
-		return server;
+		Update newApi = new Update();
+		newApi.updateName(key, name, null, remoteAddr);
 	}
 
 	/**
@@ -167,74 +81,86 @@ public class JIPDBSCore {
 	public void updateConnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
 
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+		ServerManager serverManager = new ServerManager();
+		
 		try {
-			Server server = getAuthorizedServer(key, remoteAddr);
+			Date stamp = new Date();
 
-			log.info("Processing " + server.getName());
+			Server server = serverManager.getAuthorizedServer(key, remoteAddr);
 
-			for (PlayerInfo info : list) {
-				Player player = playerDAO.findByServerAndGuid(server.getKey(),
-						info.getGuid());
+				log.info("Processing " + server.getName());
 
-				Date updated = new Date();
-				if (info.getUpdated() != null)
-					updated = info.getUpdated();
+				Map<String, Entity> entities = new HashMap<String, Entity>();
 
-				Date playerLastUpdate = updated;
+				for (PlayerInfo info : list) {
+					String playerKey = "player-" + key + info.getGuid();
 
-				if (player == null) {
-					player = new Player();
-					player.setCreated(updated);
-					player.setGuid(info.getGuid());
-					player.setServer(server.getKey());
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-				} else {
-					if (player.getBanInfo() != null) {
+					Player player = playerDAO.findByServerAndGuid(server.getKey(), info.getGuid());
+
+					Date playerLastUpdate = null;
+					if (player == null) {
+						player = new Player();
+						player.setCreated(stamp);
+						player.setGuid(info.getGuid());
+						player.setServer(server.getKey());
 						player.setBanInfo(null);
 						player.setBanInfoUpdated(null);
+						if (info.getUpdated() != null) {
+							player.setUpdated(info.getUpdated());
+						} else {
+							player.setUpdated(stamp);
+						}
+						playerDAO.save(player);
+					} else {
+						if (player.getBanInfo() != null) {
+							player.setBanInfo(null);
+							player.setBanInfoUpdated(null);
+						}
+						playerLastUpdate = player.getUpdated();
+						player.setUpdated(stamp);
+						playerDAO.save(player, false);
+						entities.put(playerKey, player.toEntity());
 					}
-					playerLastUpdate = player.getUpdated();
-				}
 
-				player.setUpdated(updated);
-				playerDAO.save(player);
+					String aliasKey = "alias-" + player.getGuid() + info.getName() + info.getIp();
 
-				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-						player.getKey(), info.getName(), info.getIp());
+					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(player.getKey(), info.getName(), info.getIp());
 
-				if (alias == null) {
-
-					alias = new Alias();
-
-					alias.setCount(1);
-					alias.setCreated(updated);
-					alias.setNickname(info.getName());
-					alias.setNgrams(NGrams.ngrams(info.getName()));
-					alias.setPlayer(player.getKey());
-					alias.setIp(info.getIp());
-					alias.setServer(server.getKey());
-
-				} else {
-					if (server.getUpdated() == null
-							|| server.getUpdated().after(playerLastUpdate)) {
-						alias.setCount(alias.getCount() + 1);
+					if (alias == null) {
+						alias = new Alias();
+						alias.setCount(1);
+						alias.setCreated(stamp);
+						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.ngrams(info.getName()));
+						alias.setPlayer(player.getKey());
+						alias.setIp(info.getIp());
+						alias.setServer(server.getKey());
+						if (info.getUpdated() != null) {
+							alias.setUpdated(info.getUpdated());
+						} else {
+							alias.setUpdated(stamp);
+						}
+					} else {
+						if (server.getUpdated() == null
+								|| playerLastUpdate == null
+								|| server.getUpdated().after(playerLastUpdate)) {
+							alias.setCount(alias.getCount() + 1);
+						}
+						alias.setUpdated(stamp);
+						aliasDAO.save(alias, false);
 					}
+					entities.put(aliasKey, alias.toEntity());
 				}
-
-				alias.setUpdated(updated);
-				aliasDAO.save(alias);
-			}
-
-			server.setUpdated(new Date());
-			serverDAO.save(server);
-
+				server.setUpdated(stamp);
+				service.put(entities.values());
+				serverDAO.save(server);
 		} catch (UnauthorizedUpdateException e) {
-			MailAdmin.sendMail("WARN", e.getMessage());
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
+			log.severe(w.getBuffer().toString());				
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
@@ -250,77 +176,71 @@ public class JIPDBSCore {
 	public void updateDisconnect(String key, List<PlayerInfo> list,
 			String remoteAddr) {
 
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+		ServerManager serverManager = new ServerManager();
 		try {
-			Server server = getAuthorizedServer(key, remoteAddr);
+			Date stamp = new Date();
 
-			log.info("Processing " + server.getName());
+			Server server = serverManager.getAuthorizedServer(key, remoteAddr);
 
-			for (PlayerInfo info : list) {
+				log.info("Processing " + server.getName());
 
-				Date updated = new Date();
-				if (info.getUpdated() != null)
-					updated = info.getUpdated();
+				Map<String, Entity> entities = new HashMap<String, Entity>();
 
-				Date playerLastUpdate = updated;
+				for (PlayerInfo info : list) {
+					String playerKey = "player-" + key + info.getGuid();
+					Player player = playerDAO.findByServerAndGuid(server.getKey(), info.getGuid());
 
-				Player player = playerDAO.findByServerAndGuid(server.getKey(),
-						info.getGuid());
+					if (player == null) {
+						player = new Player();
+						player.setCreated(stamp);
+						player.setUpdated(stamp);
+						player.setGuid(info.getGuid());
+						player.setServer(server.getKey());
+						player.setBanInfo(null);
+						player.setBanInfoUpdated(null);
+						playerDAO.save(player);
+					} else {
+						player.setUpdated(stamp);
+						playerDAO.save(player, false);
+						entities.put(playerKey, player.toEntity());
+					}
 
-				if (player == null) {
+					String aliasKey = "alias-" + player.getGuid() + info.getName() + info.getIp();
+					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(player.getKey(), info.getName(), info.getIp());
 
-					player = new Player();
-					player.setCreated(updated);
-					player.setGuid(info.getGuid());
-					player.setServer(server.getKey());
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-
-				} else {
-					playerLastUpdate = player.getUpdated();
-				}
-
-				player.setUpdated(updated);
-				playerDAO.save(player);
-
-				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-						player.getKey(), info.getName(), info.getIp());
-
-				if (alias == null) {
-					alias = new Alias();
-					alias.setCount(1);
-					alias.setCreated(updated);
-					alias.setNickname(info.getName());
-					alias.setNgrams(NGrams.ngrams(info.getName()));
-					alias.setPlayer(player.getKey());
-					alias.setIp(info.getIp());
-					alias.setServer(server.getKey());
-				} else {
-					if (server.getUpdated() == null
-							|| server.getUpdated().after(playerLastUpdate)) {
-						alias.setCount(alias.getCount() + 1);
+					if (alias == null) {
+						alias = new Alias();
+						alias.setCount(1);
+						alias.setCreated(stamp);
+						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.ngrams(info.getName()));
+						alias.setPlayer(player.getKey());
+						alias.setIp(info.getIp());
+						alias.setUpdated(stamp);
+						alias.setServer(server.getKey());
+						entities.put(aliasKey, alias.toEntity());
+					} else {
+						alias.setUpdated(stamp);
+						aliasDAO.save(alias, false);
 					}
 				}
-
-				alias.setUpdated(updated);
-				aliasDAO.save(alias);
-
-			}
-
-			server.setUpdated(new Date());
-			serverDAO.save(server);
-
+				server.setUpdated(stamp);
+				service.put(entities.values());
+				serverDAO.save(server);
 		} catch (UnauthorizedUpdateException e) {
-			MailAdmin.sendMail("WARN", e.getMessage());
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
+			log.severe(w.getBuffer().toString());				
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.getBuffer().toString());
 		}
+
 	}
 
 	/**
@@ -337,559 +257,89 @@ public class JIPDBSCore {
 	@Deprecated
 	public void updateBanInfo(String key, List<BanInfo> list, String remoteAddr) {
 
-		try {
-
-			Server server = getAuthorizedServer(key, remoteAddr);
-
-			log.info("Processing " + server.getName());
-
-			for (BanInfo info : list) {
-
-				Date updated = new Date();
-				if (info.getUpdated() != null)
-					updated = info.getUpdated();
-
-				Date playerLastUpdate = updated;
-
-				Player player = playerDAO.findByServerAndGuid(server.getKey(),
-						info.getGuid());
-
-				String reason = info.getReason();
-
-				if (reason.isEmpty())
-					reason = null;
-
-				if (player == null) {
-					player = new Player();
-					player.setCreated(updated);
-					player.setGuid(info.getGuid());
-					player.setServer(server.getKey());
-				}
-
-				player.setBanInfo(reason);
-				player.setBanInfoUpdated(reason != null ? updated : null);
-
-				player.setUpdated(updated);
-				playerDAO.save(player);
-
-				// Save the last alias.
-
-				Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-						player.getKey(), info.getName(), info.getIp());
-
-				if (alias == null) {
-					alias = new Alias();
-					alias.setCount(1);
-					alias.setCreated(updated);
-					alias.setNickname(info.getName());
-					alias.setNgrams(NGrams.ngrams(info.getName()));
-					alias.setPlayer(player.getKey());
-					alias.setIp(info.getIp());
-					alias.setServer(server.getKey());
-				} else {
-					if (server.getUpdated() == null
-							|| server.getUpdated().after(playerLastUpdate)) {
-						alias.setCount(alias.getCount() + 1);
-					}
-				}
-
-				alias.setUpdated(updated);
-				aliasDAO.save(alias);
-			}
-
-			server.setUpdated(new Date());
-			serverDAO.save(server);
-
-		} catch (UnauthorizedUpdateException e) {
-			MailAdmin.sendMail("WARN", e.getMessage());
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * @since 0.5
-	 */
-	@Deprecated
-	public void playerConnected(Server server, String nickname, String ip,
-			String guid, Date updated, Integer id, Integer level) {
-
-		try {
-
-			if (updated == null)
-				updated = new Date();
-			Date playerLastUpdate = updated;
-
-			Player player = playerDAO
-					.findByServerAndGuid(server.getKey(), guid);
-
-			// New player.
-			if (player == null) {
-
-				player = new Player();
-
-				player.setCreated(updated);
-				player.setGuid(guid);
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				player.setClientId(id);
-
-			}
-			// Known player.
-			else {
-
-				// Player was allowed to connect by the server, that means that
-				// the ban has gone.
-				if (player.getBanInfo() != null) {
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-				}
-
-				playerLastUpdate = player.getUpdated();
-			}
-
-			// Level might be changed.
-			player.setLevel(level);
-			player.setUpdated(updated);
-			playerDAO.save(player);
-
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-					player.getKey(), nickname, ip);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(updated);
-				alias.setNickname(nickname);
-				alias.setNgrams(NGrams.ngrams(nickname));
-				alias.setPlayer(player.getKey());
-				alias.setIp(ip);
-				alias.setServer(server.getKey());
-			} else {
-				if (server.getUpdated() == null
-						|| server.getUpdated().after(playerLastUpdate)) {
-					alias.setCount(alias.getCount() + 1);
-				}
-			}
-
-			alias.setUpdated(updated);
-			aliasDAO.save(alias);
-
-			server.setUpdated(updated);
-			serverDAO.save(server);
-
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * @since 0.5
-	 */
-	@Deprecated
-	public void playerUpdated(Server server, String nickname, String ip,
-			String guid, Date updated, Integer id, Integer level) {
-
-		try {
-
-			if (updated == null)
-				updated = new Date();
-			Date playerLastUpdate = updated;
-
-			Player player = playerDAO
-					.findByServerAndGuid(server.getKey(), guid);
-
-			// New player. Possibly the connected event was missed.
-			if (player == null) {
-
-				player = new Player();
-
-				player.setCreated(updated);
-				player.setGuid(guid);
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				player.setClientId(id);
-
-			}
-			// Known player.
-			else {
-
-				// Player was allowed to connect by the server, that means that
-				// the ban has gone.
-				if (player.getBanInfo() != null) {
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-				}
-				playerLastUpdate = player.getUpdated();
-			}
-
-			// Level might be changed.
-			player.setLevel(level);
-			player.setUpdated(updated);
-			playerDAO.save(player);
-
-			// Save the new alias.
-
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-					player.getKey(), nickname, ip);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(updated);
-				alias.setNickname(nickname);
-				alias.setNgrams(NGrams.ngrams(nickname));
-				alias.setPlayer(player.getKey());
-				alias.setIp(ip);
-				alias.setServer(server.getKey());
-			} else {
-				if (server.getUpdated() == null
-						|| server.getUpdated().after(playerLastUpdate)) {
-					alias.setCount(alias.getCount() + 1);
-				}
-			}
-
-			alias.setUpdated(updated);
-			aliasDAO.save(alias);
-
-			server.setUpdated(updated);
-			serverDAO.save(server);
-
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * @since 0.5
-	 */
-	@Deprecated
-	public void playerDisconnected(Server server, String nickname, String ip,
-			String guid, Date updated, Integer id, Integer level) {
-
-		try {
-
-			if (updated == null)
-				updated = new Date();
-			Date playerLastUpdate = updated;
-
-			Player player = playerDAO
-					.findByServerAndGuid(server.getKey(), guid);
-
-			// New player. Possibly the connected event was missed.
-			if (player == null) {
-
-				player = new Player();
-
-				player.setCreated(updated);
-				player.setGuid(guid);
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				player.setClientId(id);
-
-			} else {
-				playerLastUpdate = player.getUpdated();
-			}
-
-			// Level might be changed.
-			player.setLevel(level);
-			player.setUpdated(updated);
-			playerDAO.save(player);
-
-			// Alias might be missing. Save.
-
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-					player.getKey(), nickname, ip);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(updated);
-				alias.setNickname(nickname);
-				alias.setNgrams(NGrams.ngrams(nickname));
-				alias.setPlayer(player.getKey());
-				alias.setIp(ip);
-				alias.setServer(server.getKey());
-			} else {
-				if (server.getUpdated() == null
-						|| server.getUpdated().after(playerLastUpdate)) {
-					alias.setCount(alias.getCount() + 1);
-				}
-			}
-
-			alias.setUpdated(updated);
-			aliasDAO.save(alias);
-
-			server.setUpdated(updated);
-			serverDAO.save(server);
-
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * @since 0.5
-	 */
-	@Deprecated
-	public void playerBanned(Server server, String nickname, String ip,
-			String guid, Date updated, Integer id, Integer level, String baninfo) {
-
-		try {
-
-			if (updated == null)
-				updated = new Date();
-			Date playerLastUpdate = updated;
-
-			Player player = playerDAO
-					.findByServerAndGuid(server.getKey(), guid);
-
-			// New player. Possibly the connected event was missed.
-			if (player == null) {
-
-				player = new Player();
-
-				player.setCreated(updated);
-				player.setGuid(guid);
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				player.setClientId(id);
-
-			} else {
-				playerLastUpdate = player.getUpdated();
-			}
-
-			player.setBanInfo(baninfo);
-			player.setBanInfoUpdated(updated);
-			// Level might be changed.
-			player.setLevel(level);
-			player.setUpdated(updated);
-			playerDAO.save(player);
-
-			// Alias might be missing. Save.
-
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-					player.getKey(), nickname, ip);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(updated);
-				alias.setNickname(nickname);
-				alias.setNgrams(NGrams.ngrams(nickname));
-				alias.setPlayer(player.getKey());
-				alias.setIp(ip);
-				alias.setServer(server.getKey());
-			} else {
-				if (server.getUpdated() == null
-						|| server.getUpdated().after(playerLastUpdate)) {
-					alias.setCount(alias.getCount() + 1);
-				}
-			}
-
-			alias.setUpdated(updated);
-			aliasDAO.save(alias);
-
-			server.setUpdated(updated);
-			serverDAO.save(server);
-
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * @since 0.5
-	 */
-	@Deprecated
-	public void playerUnbanned(Server server, String nickname, String ip,
-			String guid, Date updated, Integer id, Integer level) {
-
-		try {
-
-			if (updated == null)
-				updated = new Date();
-			Date playerLastUpdate = updated;
-
-			Player player = playerDAO
-					.findByServerAndGuid(server.getKey(), guid);
-
-			// New player. Possibly the connected event was missed.
-			if (player == null) {
-
-				player = new Player();
-
-				player.setCreated(updated);
-				player.setGuid(guid);
-				player.setServer(server.getKey());
-				player.setBanInfo(null);
-				player.setBanInfoUpdated(null);
-				player.setClientId(id);
-
-			} else {
-				playerLastUpdate = updated;
-			}
-
-			player.setBanInfo(null);
-			player.setBanInfoUpdated(null);
-
-			// Level might be changed.
-			player.setLevel(level);
-			player.setUpdated(updated);
-			playerDAO.save(player);
-
-			// Alias might be missing. Save.
-
-			Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(
-					player.getKey(), nickname, ip);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setCount(1);
-				alias.setCreated(updated);
-				alias.setNickname(nickname);
-				alias.setNgrams(NGrams.ngrams(nickname));
-				alias.setPlayer(player.getKey());
-				alias.setIp(ip);
-				alias.setServer(server.getKey());
-			} else {
-				if (server.getUpdated() == null
-						|| server.getUpdated().after(playerLastUpdate)) {
-					alias.setCount(alias.getCount() + 1);
-				}
-			}
-
-			alias.setUpdated(updated);
-			aliasDAO.save(alias);
-
-			server.setUpdated(updated);
-			serverDAO.save(server);
-
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
-		}
-	}
-
-	/**
-	 * updatePlayer
-	 * @param server
-	 * @param list
-	 */
-	public void updatePlayer(Server server, List<PlayerInfo> list) {
-		Map<String, Entity> entities = new HashMap<String, Entity>(15);
-		for (PlayerInfo playerInfo : list) {
-			try {
-				Date playerLastUpdate;
-				Player player = playerDAO.findByServerAndGuid(server.getKey(),
-						playerInfo.getGuid());
-				if (player == null) {
-					player = new Player();
-					player.setCreated(playerInfo.getUpdated());
-					player.setGuid(playerInfo.getGuid());
-					player.setLevel(playerInfo.getLevel());
-					player.setClientId(playerInfo.getClientId());
-					player.setServer(server.getKey());
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-					playerLastUpdate = playerInfo.getUpdated();
-				} else {
-					player.setLevel(playerInfo.getLevel());
-					if (player.getClientId() == null) {
-						player.setClientId(playerInfo.getClientId());
-					}
-					playerLastUpdate = player.getUpdated();
-				}
-
-				if (PlayerEvent.BAN.equals(playerInfo.getEvent())) {
-					player.setBanInfo(playerInfo.getExtra());
-					player.setBanInfoUpdated(playerInfo.getUpdated());
-				} else if (PlayerEvent.CONNECT.equals(playerInfo.getEvent())
-						|| PlayerEvent.DISCONNECT.equals(playerInfo.getEvent())
-						|| PlayerEvent.UNBAN.equals(playerInfo.getEvent())
-						|| PlayerEvent.UPDATE.equals(playerInfo.getEvent())) {
-					player.setBanInfo(null);
-					player.setBanInfoUpdated(null);
-				} else if (PlayerEvent.ADDNOTE.equals(playerInfo.getEvent())) {
-					player.setNote(playerInfo.getExtra());
-				} else if (PlayerEvent.DELNOTE.equals(playerInfo.getEvent())) {
-					player.setNote(null);
-				}
-				player.setUpdated(playerInfo.getUpdated());
-
-				playerDAO.save(player, player.getKey() == null);
-				entities.put("player-" + player.getGuid(), player.toEntity());
-
-				String aliasKey = "alias-" + player.getGuid() + playerInfo.getName() + playerInfo.getIp();
-				
-				Entity aliasEntity = entities.get(aliasKey);
-				Alias alias; 
-				if (aliasEntity != null) {
-					alias = new Alias(aliasEntity);
-				} else {
-					alias = aliasDAO.findByPlayerAndNicknameAndIp(
-							player.getKey(), playerInfo.getName(),
-							playerInfo.getIp());
-				}
-
-				if (alias == null) {
-					alias = new Alias();
-					alias.setCount(1);
-					alias.setCreated(playerInfo.getUpdated());
-					alias.setNickname(playerInfo.getName());
-					alias.setNgrams(NGrams.ngrams(playerInfo.getName()));
-					alias.setPlayer(player.getKey());
-					alias.setIp(playerInfo.getIp());
-					alias.setServer(server.getKey());
-					alias.setUpdated(playerInfo.getUpdated());
-				} else {
-					if (PlayerEvent.CONNECT.equals(playerInfo.getEvent())) {
-						if (server.getUpdated() == null
-								|| server.getUpdated().after(playerLastUpdate)) {
-							alias.setCount(alias.getCount() + 1);
-						}
-					}
-					alias.setUpdated(playerInfo.getUpdated());
-				}
-				aliasDAO.save(alias, false);
-				entities.put(aliasKey, alias.toEntity());
-			} catch (Exception e) {
-				log.severe(e.getMessage());
-				StringWriter w = new StringWriter();
-				e.printStackTrace(new PrintWriter(w));
-				log.severe(w.getBuffer().toString());
-			}
-		}
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-		service.put(entities.values());
-		server.setUpdated(new Date());
-		serverDAO.save(server);
+		ServerManager serverManager = new ServerManager();
+		try {
+
+			Date stamp = new Date();
+
+			Server server = serverManager.getAuthorizedServer(key, remoteAddr);
+
+				log.info("Processing " + server.getName());
+
+				Map<String, Entity> entities = new HashMap<String, Entity>();
+
+				for (BanInfo info : list) {
+
+					Player player = playerDAO.findByServerAndGuid(server.getKey(), info.getGuid());
+
+					String reason = info.getReason();
+					Date banInfoUpdated = info.getUpdated() != null ? info
+							.getUpdated() : new Date();
+
+					if (reason.isEmpty())
+						reason = null;
+
+					if (player == null) {
+						player = new Player();
+						player.setCreated(stamp);
+						player.setGuid(info.getGuid());
+						player.setServer(server.getKey());
+						if (info.getUpdated() != null)
+							player.setUpdated(info.getUpdated());
+						player.setBanInfo(reason);
+						player.setBanInfoUpdated(reason != null ? banInfoUpdated
+								: null);
+						playerDAO.save(player);
+					} else {
+						if (info.getUpdated() != null)
+							player.setUpdated(info.getUpdated());
+						player.setBanInfo(reason);
+						player.setBanInfoUpdated(reason != null ? banInfoUpdated
+								: null);
+						entities.put("player-" + player.getGuid(),
+								player.toEntity());
+						playerDAO.save(player, false);
+					}
+
+					String aliasKey = "alias-" + player.getGuid()+ info.getName() + info.getIp();
+					Alias alias = aliasDAO.findByPlayerAndNicknameAndIp(player.getKey(), info.getName(), info.getIp());
+					
+					if (alias == null) {
+						alias = new Alias();
+						alias.setCount(1);
+						alias.setCreated(stamp);
+						alias.setNickname(info.getName());
+						alias.setNgrams(NGrams.ngrams(info.getName()));
+						alias.setPlayer(player.getKey());
+						alias.setIp(info.getIp());
+						if (info.getUpdated() != null) {
+							alias.setUpdated(info.getUpdated());
+						}
+						alias.setServer(server.getKey());
+						entities.put(aliasKey, alias.toEntity());
+					} else {
+						if (info.getUpdated() != null) {
+							alias.setUpdated(info.getUpdated());
+							entities.put(aliasKey, alias.toEntity());
+						}
+						aliasDAO.save(alias, false);
+					}
+				}
+				service.put(entities.values());
+				
+		} catch (UnauthorizedUpdateException e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());				
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+		}
 	}
 
 }
