@@ -14,6 +14,8 @@
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
+<link rel="search" type="application/opensearchdescription+xml" title="Buscar Alias" href="http://www.ipdburt.com.ar/searchbyalias.xml"/>
+<url type="application/opensearchdescription+xml" rel="self" template="http://www.ipdburt.com.ar/searchbyalias.xml"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/reset-fonts-grids/reset-fonts-grids.css"/>
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
