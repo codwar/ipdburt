@@ -4,7 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.google.appengine.api.users.*"%>
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -17,7 +16,6 @@
 <link rel="search" type="application/opensearchdescription+xml" title="Buscar Alias" href="http://www.ipdburt.com.ar/searchbyalias.xml"/>
 <url type="application/opensearchdescription+xml" rel="self" template="http://www.ipdburt.com.ar/searchbyalias.xml"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/reset-fonts-grids/reset-fonts-grids.css"/>
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
