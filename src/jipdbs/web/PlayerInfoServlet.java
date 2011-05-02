@@ -84,8 +84,12 @@ public class PlayerInfoServlet extends HttpServlet {
 		infoView.setServer(server);
 		infoView.setBanInfo(player.getBanInfo());
 		infoView.setAliases(list);
-		
-		time = System.currentTimeMillis() - time;
+		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+		if (player.getLevel() != null && player.getLevel() > 0 && player.getLevel() <= server.getMaxLevel()) {
+			infoView.setLevel(player.getLevel().toString());
+		} else {
+			infoView.setLevel("-");
+		}
 		
 		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 		

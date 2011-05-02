@@ -20,6 +20,8 @@ public class PlayerInfoView implements Serializable {
 	private Date updated;
 	private String banInfo;
 	private Collection<AliasResult> aliases;
+	private String level;
+	private String clientId;
 	
 	public String getName() {
 		return name;
@@ -71,6 +73,18 @@ public class PlayerInfoView implements Serializable {
 		if (l < 0)
 			return null;
 		return ip.substring(0, l + 1) + "0";		
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getClientId() {
+		return clientId;
+	}
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}	
 	
 }

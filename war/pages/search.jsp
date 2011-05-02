@@ -10,10 +10,11 @@
 
 <small>
 <form method="get"><input class="search" type="text" name="q"
-	value="${queryValue}" /> <select name="t" style="width: 65px;">
+	value="${queryValue}" /> 
+	<!-- <select name="t" style="width: 65px;">
 	<option value="alias" <c:if test='${type == "alias"}'>selected</c:if>>Alias</option>
 	<option value="ip" <c:if test='${type == "ip"}'>selected</c:if>>IP</option>
-</select> <input type="submit" value="Buscar" /></form>
+</select>--> <input type="submit" value="Buscar" /></form>
 </small>
 
 <script language="javascript">
@@ -119,6 +120,7 @@
 	<thead>
 		<tr>
 			<th>UID</th>
+			<th>Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
 			<th>Visto</th>
@@ -137,6 +139,7 @@
 			</c:choose>
 			<tr class="${rowStyle}">
 				<td><a href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
+				<td>${player.clientId}</td>
 				<td><span class="plus" id="plus-${player.key}"
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
@@ -158,7 +161,7 @@
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 			</tr>
 			<tr style="display: none;">
-				<td colspan="5" style="padding: 20px;">
+				<td colspan="6" style="padding: 20px;">
 				<table>
 					<thead>
 						<tr>
@@ -182,7 +185,7 @@
 		</c:forEach>
 		<c:if test="${fn:length(list) eq 0}">
 			<tr>
-				<td colspan="5"
+				<td colspan="6"
 					style="text-align: center; font-size: large; padding: 20px">La
 				búsqueda no arrojó resultados.</td>
 			</tr>
@@ -194,7 +197,7 @@
 				<c:param name="q" value="${query}" />
 				<c:param name="t" value="${type}" />
 			</c:url>
-			<td colspan="5"><span style="font-size: smaller;">Total:
+			<td colspan="6"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator
 				totalPages="${pageLink.totalPages}"
 				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"

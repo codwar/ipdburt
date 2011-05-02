@@ -43,7 +43,7 @@ public class JIPDBSRpc2Handler {
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
-				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseInteger((String) values[3]), (String) values[4], parseInteger((String) values[5]));
+				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong((String) values[3]), (String) values[4], parseLong((String) values[5]));
 				if (values.length > 6)
 					playerInfo.setUpdated((Date) values[6]);
 				if (values.length > 7)
@@ -61,9 +61,9 @@ public class JIPDBSRpc2Handler {
 		}
 	}
 
-	private Integer parseInteger(String s) {
+	private Long parseLong(String s) {
 		try {
-			return Integer.parseInt(s);
+			return Long.parseLong(s);
 		} catch (NumberFormatException e) {
 			return null;
 		}

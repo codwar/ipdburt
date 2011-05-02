@@ -25,6 +25,7 @@ public class Server implements Serializable {
 	private String address;
 	private String keyString;
 	private String pluginVersion;
+	private Long maxLevel;
 	
 	public Server() {
 	}
@@ -41,6 +42,11 @@ public class Server implements Serializable {
 				.setOnlinePlayers(((Long) entity.getProperty("players"))
 						.intValue());
 		this.setAddress((String) entity.getProperty("ip"));
+		try {
+			this.setMaxLevel((Long) entity.getProperty("maxlevel"));			
+		} catch (Exception e) {
+			this.setMaxLevel(new Long(2));
+		}
 	}
 
 	public Entity toEntity() {
@@ -55,6 +61,7 @@ public class Server implements Serializable {
 		entity.setProperty("players", this.getOnlinePlayers());
 		entity.setProperty("ip", this.getAddress());
 		entity.setProperty("pluginversion", this.getPluginVersion());
+		entity.setProperty("maxlevel", this.getMaxLevel());
 		return entity;
 	}
 
@@ -147,5 +154,13 @@ public class Server implements Serializable {
 
 	public void setPluginVersion(String pluginVersion) {
 		this.pluginVersion = pluginVersion;
+	}
+
+	public Long getMaxLevel() {
+		return maxLevel;
+	}
+
+	public void setMaxLevel(Long maxLevel) {
+		this.maxLevel = maxLevel;
 	}
 }

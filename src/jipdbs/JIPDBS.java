@@ -144,6 +144,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setName(alias.getNickname());
 				result.setServer(server);
 				result.setBanInfo(player.getBanInfo());
+				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 				results.add(result);
 			}
 			return results;
@@ -180,6 +181,7 @@ public class JIPDBS extends JIPDBSCore {
 				result.setName(alias.getNickname());
 				result.setServer(server);
 				result.setBanInfo(player.getBanInfo());
+				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 				results.add(result);
 			}
 			return results;
@@ -271,6 +273,7 @@ public class JIPDBS extends JIPDBSCore {
 			result.setName(alias.getNickname());
 			result.setServer(server);
 			result.setBanInfo(player.getBanInfo());
+			result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 			results.add(result);
 		}
 

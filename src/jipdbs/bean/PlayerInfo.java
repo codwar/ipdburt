@@ -12,15 +12,15 @@ public class PlayerInfo implements Serializable {
 
 	private String name;
 	private String guid;
-	private Integer clientId;
+	private Long clientId;
 	private String ip;
-	private Integer level;
+	private Long level;
 	private Date updated = new Date();
 	private String extra = null;
 	
 	private String event;
 	
-	public PlayerInfo(String event, String name, String guid, Integer id, String ip, Integer level) {
+	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level) {
 		setEvent(event.toLowerCase());
 		setName(name);
 		setGuid(guid);
@@ -45,11 +45,11 @@ public class PlayerInfo implements Serializable {
 		this.guid = guid;
 	}
 
-	public Integer getClientId() {
+	public Long getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(Integer clientId) {
+	public void setClientId(Long clientId) {
 		this.clientId = clientId;
 	}
 
@@ -61,11 +61,11 @@ public class PlayerInfo implements Serializable {
 		this.ip = ip;
 	}
 
-	public Integer getLevel() {
+	public Long getLevel() {
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public void setLevel(Long level) {
 		this.level = level;
 	}
 

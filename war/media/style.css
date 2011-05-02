@@ -1,3 +1,9 @@
+.header, .container {
+	width: 850px !important;
+}
+.header .left {
+    width: 648px !important;
+}
 #donar {
 	position: absolute;
 	top: 5px;

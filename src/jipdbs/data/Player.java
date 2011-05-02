@@ -17,8 +17,8 @@ public class Player implements Serializable {
 	private Date updated;
 	private Date banInfoUpdated;
 	private String banInfo;
-	private Integer clientId;
-	private Integer level;
+	private Long clientId;
+	private Long level;
 	private String note;
 	
 	public Player() {
@@ -33,8 +33,16 @@ public class Player implements Serializable {
 		guid = (String) entity.getProperty("guid");
 		banInfo = (String) entity.getProperty("baninfo");
 		banInfoUpdated = (Date) entity.getProperty("baninfoupdated");
-		level = (Integer) entity.getProperty("level");
-		clientId = (Integer) entity.getProperty("clientId");
+		try {
+			level = (Long) entity.getProperty("level");			
+		} catch (Exception e) {
+			level = null;
+		}
+		try {
+			clientId = (Long) entity.getProperty("clientId");
+		} catch (Exception e) {
+			clientId = null;
+		}
 		note = (String) entity.getProperty("note");
 	}
 
@@ -109,19 +117,19 @@ public class Player implements Serializable {
 		this.banInfoUpdated = banInfoUpdated;
 	}
 	
-	public Integer getClientId() {
+	public Long getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(Integer id) {
+	public void setClientId(Long id) {
 		this.clientId = id;
 	}
 
-	public Integer getLevel() {
+	public Long getLevel() {
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public void setLevel(Long level) {
 		this.level = level;
 	}
 

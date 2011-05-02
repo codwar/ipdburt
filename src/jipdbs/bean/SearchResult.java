@@ -28,6 +28,8 @@ public class SearchResult {
 
 	private long id;
 	
+	private String clientId;
+	
 	public long getId() {
 		return id;
 	}
@@ -109,6 +111,14 @@ public class SearchResult {
 		if (l < 0)
 			return null;
 		return ip.substring(0, l + 1) + "0";		
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 	
 }

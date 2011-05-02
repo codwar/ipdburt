@@ -9,14 +9,18 @@
 <jsp:include page="/pages/flash.jsp" />
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
-<legend>${fn:escapeXml(player.name)}</legend> <strong>Visto:</strong> <fmt:formatDate
+<legend>${fn:escapeXml(player.name)}</legend>
+	<strong>Id:</strong> ${player.clientId}<br />
+	<strong>Visto:</strong> <fmt:formatDate
 	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
 	value="${player.updated}" /><br />
 <strong>Servidor:</strong> <a
 	href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a><br />
 <strong>IP:</strong> <a href="/search.jsp?q=${player.ip}&t=ip">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
 <c:if test="${not empty player.banInfo}">
+	<strong>Nivel:</strong> ${player.level}<br />
 	<strong>Estado:</strong> ${player.banInfo}<br />
+	
 </c:if></fieldset>
 <br />
 <table>
