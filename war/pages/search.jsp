@@ -12,16 +12,6 @@
 $("[name=q]").val("<c:out value="${queryValue}"/>");
 //-->
 </script>
-<!-- 
-<small>
-<form method="get"><input class="search" type="text" name="q"
-	value="${queryValue}" /> 
-	<!- <select name="t" style="width: 65px;">
-	<option value="alias" <c:if test='${type == "alias"}'>selected</c:if>>Alias</option>
-	<option value="ip" <c:if test='${type == "ip"}'>selected</c:if>>IP</option>
-</select>-> <input type="submit" value="Buscar" /></form>
-</small>
- -->
 
 <script language="javascript">
 	function getHTML(key, offset, callback) {
@@ -36,12 +26,12 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				html += "<tr class=\"aliasrow\">";
 				html += "<td><a href=\"/search.jsp?q=";
 				html += encodeURIComponent(value.nickname);
-				html += "&t=alias\">";
+				html += "\">";
 				html += value.nickname;
 				html += "</a></td>";
 				html += "<td><a href=\"/search.jsp?q=";
 				html += value.ipSearch;
-				html += "&t=ip\">";
+				html += "\">";
 				html += value.ip;
 				html += "</td>";
 				html += "<td>";
@@ -154,9 +144,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
 				<c:url value="/search.jsp" var="url">
 					<c:param name="q" value="${player.name}" />
-					<c:param name="t" value="alias" />
 				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
-				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a>&nbsp;<a
+				<td><a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
@@ -201,7 +190,6 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 		<tr>
 			<c:url value="/search.jsp" var="url">
 				<c:param name="q" value="${query}" />
-				<c:param name="t" value="${type}" />
 			</c:url>
 			<td colspan="6"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator
