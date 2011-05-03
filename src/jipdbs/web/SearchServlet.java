@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.JIPDBS;
 import jipdbs.PageLink;
+import jipdbs.Parameters;
 import jipdbs.bean.SearchResult;
 import jipdbs.util.Functions;
 
@@ -104,8 +105,10 @@ public class SearchServlet extends HttpServlet {
 								req,
 								"No se encontraron resultados precisos. "
 										+ "Los resultados mostrados son variaciones del nombre.");
-						Flash.warn(req, "Su búsqueda arroja demasiados resultados."
-								+ " Por favor, refine su búsqueda.");
+						if (total[0] > Parameters.MAX_NGRAM_QUERY / 2) {
+							Flash.warn(req, "Su búsqueda arroja demasiados resultados."
+									+ " Por favor, sea más específico.");
+						}
 					}
 				} else
 					Flash.error(req, "Consulta inválida. Caracteres inválidos.");					

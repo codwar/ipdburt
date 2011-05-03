@@ -36,15 +36,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBS extends JIPDBSCore {
 
-	private static final String FROM_ADDR = "contact@ipdburt.appspotmail.com";
-	private static final int NGRAMS_LIMIT = 40;
-	private static final int NGRAMS_OFFSET = 0;
-	private static final int MIN_NGRAM_QUERY = 2;
-	private static final int MAX_NGRAM_QUERY = 8;
-	private static final int MAX_SINGLE_QUERY = 32;
-	private static final int MAX_ALIAS_QUERY = 20; // reject querys with no
-													// exact match
-
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
 	private final String recaptchaPublicKey;
@@ -103,8 +94,7 @@ public class JIPDBS extends JIPDBSCore {
 			server.setAddress(ip);
 			serverDAO.save(server);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.severe(e.toString());
 		}
 	}
 
@@ -198,18 +188,18 @@ public class JIPDBS extends JIPDBSCore {
 		try {
 			List<Alias> aliasses = new ArrayList<Alias>();
 
-			if (query.length() <= MAX_SINGLE_QUERY)
+			if (query.length() <= Parameters.MAX_SINGLE_QUERY)
 				aliasses = aliasDAO.findByNickname(query, offset, limit, count);
 
 			exactMatch[0] = true;
 
 			// No exact match, try ngrams.
-			if (aliasses.size() == 0 && query.length() >= MIN_NGRAM_QUERY
-					&& query.length() <= MAX_ALIAS_QUERY) {
+			if (aliasses.size() == 0 && query.length() >= Parameters.MIN_NGRAM_QUERY
+					&& query.length() <= Parameters.MAX_ALIAS_QUERY) {
 				aliasses = aliasDAO.findByNGrams(
-						query.length() <= MAX_NGRAM_QUERY ? query : query
-								.substring(0, MAX_NGRAM_QUERY), NGRAMS_OFFSET,
-						NGRAMS_LIMIT, count);
+						query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query
+								.substring(0, Parameters.MAX_NGRAM_QUERY), Parameters.NGRAMS_OFFSET,
+								Parameters.NGRAMS_LIMIT, count);
 				exactMatch[0] = false;
 			}
 
@@ -342,7 +332,7 @@ public class JIPDBS extends JIPDBSCore {
 			replyTo[0] = new InternetAddress(from);
 
 			Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(FROM_ADDR));
+			msg.setFrom(new InternetAddress(Parameters.FROM_ADDR));
 			msg.setReplyTo(replyTo);
 			msg.addRecipient(RecipientType.TO, new InternetAddress("admins"));
 			msg.setSubject("Mensaje enviado desde IPDB");

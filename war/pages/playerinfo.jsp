@@ -17,10 +17,9 @@
 <strong>Servidor:</strong> <a
 	href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a><br />
 <strong>IP:</strong> <a href="/search.jsp?q=${player.ip}">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
+    <strong>Nivel:</strong> ${player.level}<br />
 <c:if test="${not empty player.banInfo}">
-	<strong>Nivel:</strong> ${player.level}<br />
 	<strong>Estado:</strong> ${player.banInfo}<br />
-	
 </c:if></fieldset>
 <br />
 <table>

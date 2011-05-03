@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.datanucleus.util.StringUtils;
+
 import jipdbs.api.ServerManager;
 import jipdbs.api.v2.Update;
 import jipdbs.bean.PlayerInfo;
@@ -278,7 +280,7 @@ public class JIPDBSCore {
 					Date banInfoUpdated = info.getUpdated() != null ? info
 							.getUpdated() : new Date();
 
-					if (reason.isEmpty())
+					if (StringUtils.isEmpty(reason))
 						reason = null;
 
 					if (player == null) {

@@ -1,7 +1,7 @@
 import xmlrpclib
 import time
 
-KEY = "3b80a782e7a402c21a6a316a08cd9e9a81f6c222"
+key = "d87eca9fac12710a1aadab89d5f69ed8b3f31d05"
 proxy = xmlrpclib.ServerProxy("http://localhost:8888/xmlrpc")
 
 print "Update Name"
@@ -21,16 +21,13 @@ players2 = [('Player1-alias','127.0.0.1','guid1'),
 players3 = [('Player4-alias','127.0.0.1','guid4'),
             ('Player6-alias','127.0.0.2','guid6')]
 
-banplayers = [('guid1','baneado1'),('guid2','baneado1')]                        
+banplayers = [('guid1','baneado1','player1','127.0.0.50'),('guid6','baneado1','player2','127.0.0.50')]                        
 print "Update logs"
 
 proxy.updateConnect(key,players)
 proxy.updateConnect(key,players2)
 proxy.updateDisconnect(key,players3)
-
 print "Update ban info"
 proxy.updateBanInfo(key,banplayers)
 print "Update connected again"
-proxy.updateConnect(key,players)
-
-
+proxy.updateConnect(key,players2)
