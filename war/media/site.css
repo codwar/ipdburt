@@ -519,8 +519,12 @@ body, .container {
 .main {
     border: none;
     background-color: #fff;
+    -moz-box-shadow: 10px 10px 5px #888;
+    -webkit-box-shadow: 10px 10px 5px #888;
     box-shadow: 10px 10px 5px #888;
     padding: 15px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     border-radius: 10px;
     width: 80%;
     margin-left: auto;
