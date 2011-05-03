@@ -91,8 +91,14 @@ $(document).ready(
         <small><input class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
         </form>
         </li>
-        <li><a href="/contact.jsp">Contacto</a></li>
-        <li><a href="/faq.jsp">FAQ</a></li>
+        <li>  
+            <span class="subnav">Ayuda</span>
+            <ul class="subnav">
+            	<li><a href="/contact.jsp">Contacto</a></li>
+            	<li><a href="/faq.jsp">FAQ</a></li>
+            	<li><a target="_blank" href="http://arg.urbanterror.com.ar">Libro de quejas</a></li>
+            </ul>  
+        </li>
         <li style="float: right; margin-right: 230px;">
             <div id="session">
             <%
