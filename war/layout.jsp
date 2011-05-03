@@ -19,14 +19,16 @@
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/style.css" media="screen"/>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
+<link rel="stylesheet" type="text/css" href="/media/styles/menu.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
 <script type="text/javascript" src="/media/js/jquery.loading.js"></script>
 <script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.floatobject-1.4.js"></script>
+<script type="text/javascript" src="/media/styles/menu.js"></script>
 <script type="text/javascript">
 $(document).ready(
 		function() {
@@ -45,12 +47,18 @@ $(document).ready(
 				$(this).parent().remove();
 			});
 			$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
+			$(".focus").each(
+					function() {
+						$(this).focus();
+						$(this).select();
+					}
+			);
 });
 </script>
 <style type="text/css">
 #donar {
 	position: absolute;
-	top: 5px;
+	top: 70px;
 	left: 5px;
 	padding: 5px;
 	background-color: #B3C2C7;
@@ -65,36 +73,56 @@ $(document).ready(
 
 <jsp:include page="/infoservlet" />
 
+
+<div id="topnavigation">
+    <ul class="topnav">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/search.jsp?t=ban">Baneados</a></li>
+        <li><a href="/serverlist.jsp">Servidores</a></li>
+        <%
+            UserService userService = UserServiceFactory.getUserService();
+            if (request.getUserPrincipal() != null) {
+        %>
+        <li><a href="/admin/serverlist.jsp">Administrar</a></li>
+        <%      
+            }
+        %>
+        <li><form method="get">
+        <small><input class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
+        </form>
+        </li>
+        <li><a href="/contact.jsp">Contacto</a></li>
+        <li><a href="/faq.jsp">FAQ</a></li>
+        <li style="float: right; margin-right: 230px;">
+            <div id="session">
+            <%
+            if (request.getUserPrincipal() != null) {
+                out.write("<a href=\""+userService.createLogoutURL(request.getRequestURI())+"\" id=\"signin-link\"><em>"+request.getUserPrincipal().getName()+"</em><strong>Sign out</strong><i class=\"signout\"></i></a>");
+            } else {
+                out.write("<a href=\""+userService.createLoginURL(request.getRequestURI())+"\" id=\"signin-link\"><em>Have an account?</em><strong>Sign in</strong><i></i></a>");
+            }
+            %>
+            </div>                
+        </li>
+    </div>
+<!-- 
+        <li>  
+            <span class="subnav">Tutorials</span>
+            <ul class="subnav">
+                <li><a href="#">Sub Nav Link</a></li>  
+                <li><a href="#">Sub Nav Link</a></li>  
+            </ul>  
+        </li>  
+ -->        
+    </ul>
+</div>
+
 <div class="beta">
 	<img src="/media/images/bimage.png" width="211" height="215"/>
-</div>
-<div class="top">
-				
-	<div class="header">
-		<div class="left">
-			<a href="/">IPDB Sudamericana</a>
-		</div>
-		 		
-		<div class="right">
- 		</div>
-
-	</div>	
-
 </div>
 
 <div id="donar" style="">
 <span style="padding-top: 4px;text-decoration: blink; color: red;">Consider&aacute; colaborar</span>
-<!--
-<div id="paypal" style="text-align: center; padding-top: 5px;">
-<span>usando PayPal</span>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="L5SNT85KFQTJY">
-<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/es_XC/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal. La forma rápida y segura de pagar en línea.">
-<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-</div>
--->
 <div id="dineromail" style="text-align: center; padding-top: 5px;">
 <a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
 </div>
@@ -102,39 +130,19 @@ $(document).ready(
 
 <div class="container">	
 
-<div style="padding: 2px 10px 8px 10px; text-align: right;">
-<%
-	UserService userService = UserServiceFactory.getUserService();
-
-	if (request.getUserPrincipal() != null) {
-		out.write(request.getUserPrincipal().getName());
-		out.write(" | <a href=\"");
-		out.write(userService.createLogoutURL(request.getRequestURI()));
-		out.write("\">logout</a>");
-	} else {
-		out.write("<a href=\"");
-		out.write(userService.createLoginURL(request.getRequestURI()));
-		out.write("\">login</a>");
-	}
-%>
-</div>
 <div class="clearer"><span></span></div>
-	<div class="navigation">
-	    <a href="/">Inicio</a>
-	    <a href="/search.jsp?t=ban">Baneados</a>
-	    <a href="/serverlist.jsp">Servidores</a>
-        <a href="/admin/serverlist.jsp">Administrar</a>
-        <a href="/contact.jsp">Contacto</a>
-        <a href="/faq.jsp">FAQ</a>
-		<div class="clearer"><span></span></div>
-	</div>
 
 <div class="main">
 <template:get name='flash' />
 <template:get name='content' />
+
+ <div class="footer">
+     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}</div>
+     <div class="clearer"><span></span></div>
+ </div>
 </div>
 
-<div style="width: 728px; height: 90px; margin: 5px auto 2px;">
+<div style="width: 728px; height: 90px; margin: 25px auto 2px;">
 <script type="text/javascript"><!--
 google_ad_client = "ca-pub-6692965674688630";
 /* IPDB */
@@ -147,18 +155,7 @@ google_ad_height = 90;
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
-
-<div class="footer">
-    
-        <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}</div>
-        <div class="right"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></div>
-
-        <div class="clearer"><span></span></div>
-
-    </div>
-
 </div>
-
 
 </body>
 

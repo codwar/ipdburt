@@ -1,12 +1,6 @@
-.header, .container {
-	width: 850px !important;
-}
-.header .left {
-    width: 648px !important;
-}
 #donar {
 	position: absolute;
-	top: 5px;
+	top: 70px;
 	left: 5px;
 	padding: 5px;
 	background-color: #B3C2C7;
@@ -256,7 +250,7 @@ fieldset.wide input {
 
 .search {
     padding-left: 18px !important;
-    background: url("images/magnifier.png") no-repeat 2px 50% !important;
+    background: #fff url("images/magnifier.png") no-repeat 2px 50% !important;
 }
 
 small select, small input {
@@ -516,3 +510,63 @@ ul.messages li.warning {
     float: right;
     cursor: pointer;
 }
+body, .container {
+    background-color: #F0F0F0; 
+}
+.container {
+	width: 80%;
+}
+.main {
+    border: none;
+    background-color: #fff;
+    box-shadow: 10px 10px 5px #888;
+    padding: 15px;
+    border-radius: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+}
+#session {
+  cursor: pointer;
+  display: inline-block;
+  height: 20px;
+  vertical-align: top;
+}
+a#signin-link {
+  color: #BABABA;
+  position: relative;
+}
+a#signin-link em {
+  font-size: 10px;
+  font-style: normal;
+  margin-right: 4px;
+}
+a#signin-link strong {
+  color: #FFFFFF;
+}
+a#signin-link i {
+  background: url('images/login.png') no-repeat scroll 0 0 transparent;
+  display: inline-block;
+  height: 13px;
+  left: 4px;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  width: 13px;
+}
+.signout {
+  background-image: url('images/logout.png') !important;
+}
+.footer {
+    background: none;
+    color: #666666;
+}
+/*
+.header, .container {
+	width: 850px !important;
+}
+.header .left {
+    width: 648px !important;
+}
+*/
