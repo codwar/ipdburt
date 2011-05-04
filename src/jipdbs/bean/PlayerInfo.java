@@ -92,5 +92,9 @@ public class PlayerInfo implements Serializable {
 	public void setExtra(String extra) {
 		this.extra = extra;
 	}
+	
+	public BanInfo getBanInfo() {
+		return new BanInfo(this.extra);
+	}
 
 }
