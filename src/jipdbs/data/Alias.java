@@ -21,7 +21,7 @@ public class Alias implements Serializable {
 	private String ip;
 	private Date created;
 	private Date updated;
-	private int count;
+	private Long count;
 	private Key server;
 
 	public Alias() {
@@ -34,7 +34,7 @@ public class Alias implements Serializable {
 		this.setPlayer((Key) entity.getParent());
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
-		this.setCount(((Long) entity.getProperty("count")).intValue());
+		this.setCount((Long) entity.getProperty("count"));
 		this.setIp((String) Functions.decimalToIp((Long) entity
 				.getProperty("ip")));
 		this.setNickname((String) entity.getProperty("nickname"));
@@ -45,14 +45,14 @@ public class Alias implements Serializable {
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Alias",
 				this.getPlayer()) : new Entity(this.getKey());
-		entity.setProperty("created", this.getCreated());
 		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("count", this.getCount());
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
 		entity.setProperty("player", this.getPlayer());
 		entity.setProperty("server", this.getServer());
+		entity.setUnindexedProperty("created", this.getCreated());
+		entity.setUnindexedProperty("count", this.getCount());
 		return entity;
 	}
 
@@ -96,11 +96,11 @@ public class Alias implements Serializable {
 		this.created = created;
 	}
 
-	public int getCount() {
+	public Long getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 

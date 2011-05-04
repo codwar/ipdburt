@@ -42,26 +42,24 @@ public class Server implements Serializable {
 				.setOnlinePlayers(((Long) entity.getProperty("players"))
 						.intValue());
 		this.setAddress((String) entity.getProperty("ip"));
-		try {
-			this.setMaxLevel((Long) entity.getProperty("maxlevel"));			
-		} catch (Exception e) {
-			this.setMaxLevel(new Long(2));
+		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
+		if (this.getMaxLevel()==null) {
+			this.setMaxLevel(2L);
 		}
 	}
 
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Server")
 				: new Entity(this.getKey());
-
 		entity.setProperty("name", this.getName());
-		entity.setProperty("created", this.getCreated());
 		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("admin", this.getAdmin());
 		entity.setProperty("uid", this.getUid());
-		entity.setProperty("players", this.getOnlinePlayers());
 		entity.setProperty("ip", this.getAddress());
-		entity.setProperty("pluginversion", this.getPluginVersion());
-		entity.setProperty("maxlevel", this.getMaxLevel());
+		entity.setUnindexedProperty("created", this.getCreated());
+		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
+		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
+		entity.setUnindexedProperty("players", this.getOnlinePlayers());
+		entity.setUnindexedProperty("admin", this.getAdmin());
 		return entity;
 	}
 

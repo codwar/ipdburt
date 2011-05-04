@@ -132,7 +132,7 @@ public class JIPDBSCore {
 
 					if (alias == null) {
 						alias = new Alias();
-						alias.setCount(1);
+						alias.setCount(1L);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
 						alias.setNgrams(NGrams.ngrams(info.getName()));
@@ -214,7 +214,7 @@ public class JIPDBSCore {
 
 					if (alias == null) {
 						alias = new Alias();
-						alias.setCount(1);
+						alias.setCount(1L);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
 						alias.setNgrams(NGrams.ngrams(info.getName()));
@@ -310,7 +310,7 @@ public class JIPDBSCore {
 					
 					if (alias == null) {
 						alias = new Alias();
-						alias.setCount(1);
+						alias.setCount(1L);
 						alias.setCreated(stamp);
 						alias.setNickname(info.getName());
 						alias.setNgrams(NGrams.ngrams(info.getName()));

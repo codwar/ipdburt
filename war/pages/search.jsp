@@ -134,7 +134,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				</c:otherwise>
 			</c:choose>
 			<tr class="${rowStyle}">
-				<td><a href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
+				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
 				<td>${player.clientId}</td>
 				<td><span class="plus" id="plus-${player.key}"
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span

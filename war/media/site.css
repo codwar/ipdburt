@@ -574,3 +574,31 @@ a#signin-link i {
     width: 648px !important;
 }
 */
+#search-form span.glass {
+  cursor: pointer;
+  display: block;
+  padding: 7px 8px 5px;
+  position: absolute;
+  right: 0;
+}
+#search-form span.glass i {
+  background-image: url('images/magnifier.png');
+  display: block;
+  font-size: 0;
+}
+#logo {
+  float: left;
+}
+#logo a {
+  background: url('images/logo.png') no-repeat scroll 20px 9px transparent;
+  color: #FFFFFF;
+  display: block;
+  height: 40px;
+  margin-right: 5px;
+  outline: medium none;
+  text-indent: -9999px;
+  width: 140px;
+}
+ul.topnav {
+    padding: 0 70px !important;
+}

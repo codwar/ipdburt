@@ -76,6 +76,13 @@ $(document).ready(
 
 <div id="topnavigation">
     <ul class="topnav">
+    <div id="logo">
+    <a href="/">IPDB</a>
+    </div>
+        <li><form id="search-form" method="get">
+        <small><!-- span class="glass"><i></i></span--><input placeholder="Ingrese alias o IP a buscar" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
+        </form>
+        </li>    
         <li><a href="/">Inicio</a></li>
         <li><a href="/search.jsp?t=ban">Baneados</a></li>
         <li><a href="/serverlist.jsp">Servidores</a></li>
@@ -87,10 +94,6 @@ $(document).ready(
         <%      
             }
         %>
-        <li><form method="get">
-        <small><input class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
-        </form>
-        </li>
         <li>  
             <span class="subnav">Ayuda</span>
             <ul class="subnav">
@@ -99,7 +102,7 @@ $(document).ready(
             	<li><a target="_blank" href="http://arg.urbanterror.com.ar">Libro de quejas</a></li>
             </ul>  
         </li>
-        <li style="float: right; margin-right: 230px;">
+        <li style="float: right; margin-right: 300px;">
             <div id="session">
             <%
             if (request.getUserPrincipal() != null) {

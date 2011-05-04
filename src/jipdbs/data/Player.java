@@ -20,6 +20,7 @@ public class Player implements Serializable {
 	private Long clientId;
 	private Long level;
 	private String note;
+	private Boolean connected;
 	
 	public Player() {
 		this.key = null;
@@ -44,20 +45,23 @@ public class Player implements Serializable {
 			clientId = null;
 		}
 		note = (String) entity.getProperty("note");
+		connected = (Boolean) entity.getProperty("connected");
+		if (connected == null) connected = false;
 	}
 
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Player",
 				this.getServer()) : new Entity(this.getKey());
-		entity.setProperty("baninfo", banInfo);
-		entity.setProperty("created", created);
 		entity.setProperty("guid", guid);
 		entity.setProperty("updated", updated);
 		entity.setProperty("server", server);
 		entity.setProperty("baninfoupdated", banInfoUpdated);
 		entity.setProperty("clientId", clientId);
+		entity.setProperty("connected", connected);
 		entity.setUnindexedProperty("level", level);
 		entity.setUnindexedProperty("note", note);
+		entity.setUnindexedProperty("baninfo", banInfo);
+		entity.setUnindexedProperty("created", created);
 		return entity;
 	}
 
@@ -168,5 +172,13 @@ public class Player implements Serializable {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
 	}
 }

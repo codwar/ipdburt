@@ -293,7 +293,7 @@ public class JIPDBS extends JIPDBSCore {
 				for (Alias alias : aliasses) {
 
 					AliasResult item = new AliasResult();
-					item.setCount(alias.getCount());
+					item.setCount(alias.getCount().intValue());
 					item.setIp(alias.getMaskedIp());
 					item.setNickname(alias.getNickname());
 					item.setUpdated(alias.getUpdated());
