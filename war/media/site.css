@@ -600,5 +600,11 @@ a#signin-link i {
   width: 140px;
 }
 ul.topnav {
-    padding: 0 70px !important;
+    padding: 0 20px !important;
+}
+input.search {
+	width: 160px;
+}
+.beta {
+	top: 40px !important;
 }

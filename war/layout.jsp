@@ -102,7 +102,7 @@ $(document).ready(
             	<li><a target="_blank" href="http://arg.urbanterror.com.ar">Libro de quejas</a></li>
             </ul>  
         </li>
-        <li style="float: right; margin-right: 300px;">
+        <li style="float: right; margin-right: 20px;">
             <div id="session">
             <%
             if (request.getUserPrincipal() != null) {
