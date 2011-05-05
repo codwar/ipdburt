@@ -1,7 +1,11 @@
 package jipdbs.bean;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.datanucleus.util.StringUtils;
 
@@ -22,10 +26,10 @@ public class BanInfo implements Serializable {
 	
 	public BanInfo(String data) {
 		String[] parts = StringUtils.split(data, "::");
-		type = parts[0];
-		created = new Date(Long.parseLong(parts[1]) * 1000L);
-		duration = Long.parseLong(parts[2]);
-		reason = parts[3];
+		setType(parts[0]);
+		setCreated(new Date(Long.parseLong(parts[1]) * 1000L));
+		setDuration(Long.parseLong(parts[2]));
+		setReason(parts[3]);
 	}
 	
 	public Date getCreated() {
@@ -52,6 +56,23 @@ public class BanInfo implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public Date getExpires() {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(this.created);
+		calendar.add(Calendar.MINUTE, this.getDuration().intValue());
+		return calendar.getTime();
+	}
 	
+	@Override
+	public String toString() {
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat format2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String s = "Baneado el " + format.format(this.getCreated()) + " por " + this.getReason();
+		if ("tb".equals(this.getType())) {
+			s = s + " hasta el " + format2.format(this.getExpires());
+		}
+		return s;
+	}
 	
 }

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import jipdbs.api.Events;
 import jipdbs.api.ServerManager;
+import jipdbs.bean.BanInfo;
 import jipdbs.bean.PlayerInfo;
 import jipdbs.data.Alias;
 import jipdbs.data.AliasCachedDAO;
@@ -120,7 +121,8 @@ public class Update {
 					}
 
 					if (Events.BAN.equals(playerInfo.getEvent())) {
-						player.setBanInfo(playerInfo.getExtra());
+						BanInfo banInfo = new BanInfo(playerInfo.getExtra());
+						player.setBanInfo(banInfo.toString());
 						player.setBanInfoUpdated(playerInfo.getUpdated());
 						player.setConnected(false);
 						connected += -1;
