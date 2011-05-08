@@ -76,10 +76,7 @@ public class SearchServlet extends HttpServlet {
 		// this is to get the modified value and show it in search box
 		String queryValue = query;
 
-		if (StringUtils.isEmpty(query)) {
-			log.fine("Empty");
-			list = app.rootQuery(offset, limit, total);
-		} else if ("s".equals(type)) {
+		if ("s".equals(type)) {
 			log.finest("Buscando SERVER");
 			queryValue = "";
 			list = app.byServerSearch(query, offset, limit, total);
@@ -87,7 +84,7 @@ public class SearchServlet extends HttpServlet {
 			log.finest("Buscando BAN");
 			queryValue = "";
 			list = app.bannedQuery(offset, limit, total);
-		} else {
+		} else if (StringUtils.notEmpty(query)) {
 			Matcher matcher = IP_VALIDATOR.matcher(query);
 			if (matcher.matches()) {
 				log.finest("Buscando IP " + query);
@@ -113,6 +110,9 @@ public class SearchServlet extends HttpServlet {
 				} else
 					Flash.error(req, "Consulta inválida. Caracteres inválidos.");					
 			}
+		} else {
+			log.fine("Empty");
+			list = app.rootQuery(offset, limit, total);
 		}
 
 		time = System.currentTimeMillis() - time;
