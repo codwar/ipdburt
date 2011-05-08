@@ -83,6 +83,12 @@ public class Update {
 		}
 	}
 
+	public void cleanServer(Server server) {
+		playerDAO.cleanConnected(server.getKey());
+		server.setOnlinePlayers(0);
+		serverDAO.save(server);
+	}
+	
 	/**
 	 * Update player info
 	 * 

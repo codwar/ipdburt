@@ -124,17 +124,18 @@ public class JIPDBS extends JIPDBSCore {
 				if (alias == null || server == null)
 					continue;
 
-				SearchResult result = new SearchResult();
-				result.setId(player.getKey().getId());
-				result.setKey(KeyFactory.keyToString(player.getKey()));
-				result.setIp(alias.getMaskedIp());
-				result.setLatest(alias.getUpdated());
-				result.setPlaying(false);
-				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-				result.setName(alias.getNickname());
-				result.setServer(server);
-				result.setBanInfo(player.getBanInfo());
-				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+//				SearchResult result = new SearchResult();
+//				result.setId(player.getKey().getId());
+//				result.setKey(KeyFactory.keyToString(player.getKey()));
+//				result.setIp(alias.getMaskedIp());
+//				result.setLatest(alias.getUpdated());
+//				result.setPlaying(false);
+//				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+//				result.setName(alias.getNickname());
+//				result.setServer(server);
+//				result.setBanInfo(player.getBanInfo());
+//				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+				SearchResult result = marshall(alias, player, server);
 				results.add(result);
 			}
 			return results;
@@ -161,17 +162,18 @@ public class JIPDBS extends JIPDBSCore {
 				if (alias == null || server == null)
 					continue;
 
-				SearchResult result = new SearchResult();
-				result.setId(player.getKey().getId());
-				result.setKey(KeyFactory.keyToString(player.getKey()));
-				result.setIp(alias.getMaskedIp());
-				result.setLatest(alias.getUpdated());
-				result.setPlaying(false);
-				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-				result.setName(alias.getNickname());
-				result.setServer(server);
-				result.setBanInfo(player.getBanInfo());
-				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+//				SearchResult result = new SearchResult();
+//				result.setId(player.getKey().getId());
+//				result.setKey(KeyFactory.keyToString(player.getKey()));
+//				result.setIp(alias.getMaskedIp());
+//				result.setLatest(alias.getUpdated());
+//				result.setPlaying(false);
+//				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+//				result.setName(alias.getNickname());
+//				result.setServer(server);
+//				result.setBanInfo(player.getBanInfo());
+//				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+				SearchResult result = marshall(alias, player, server);
 				results.add(result);
 			}
 			return results;
@@ -253,23 +255,28 @@ public class JIPDBS extends JIPDBSCore {
 			if (alias == null || server == null)
 				continue;
 
-			SearchResult result = new SearchResult();
-			result.setId(player.getKey().getId());
-			result.setKey(KeyFactory.keyToString(player.getKey()));
-			result.setIp(alias.getMaskedIp());
-			result.setLatest(alias.getUpdated());
-			result.setPlaying(false);
-			// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-			result.setName(alias.getNickname());
-			result.setServer(server);
-			result.setBanInfo(player.getBanInfo());
-			result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+			SearchResult result = marshall(alias, player, server);
 			results.add(result);
 		}
 
 		return results;
 	}
 
+	private SearchResult marshall(Alias alias, Player player, Server server) {
+		SearchResult result = new SearchResult();
+		result.setId(player.getKey().getId());
+		result.setKey(KeyFactory.keyToString(player.getKey()));
+		result.setIp(alias.getMaskedIp());
+		result.setLatest(alias.getUpdated());
+		result.setPlaying(player.isConnected());
+		// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
+		result.setName(alias.getNickname());
+		result.setServer(server);
+		result.setBanInfo(player.getBanInfo());
+		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+		return result;
+	}
+	
 	public Player getPlayer(String player) throws EntityNotFoundException {
 		return playerDAO.get(KeyFactory.stringToKey(player));
 	}

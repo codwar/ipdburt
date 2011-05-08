@@ -26,4 +26,6 @@ public interface PlayerDAO {
 
 	public abstract void save(Collection<Player> players, boolean commit);
 
+	public abstract void cleanConnected(Key server);
+
 }

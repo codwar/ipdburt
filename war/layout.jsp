@@ -121,7 +121,7 @@ $(document).ready(
 <div class="clearer"><span></span></div>
 <div id="context-loader" class="context-loader">Cargando&hellip;</div>
 <div id="main" class="main" style="display: none;">
-<!-- template:get name='flash' /-->
+
 <template:get name='content' />
 
 <div class="footer">

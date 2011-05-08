@@ -136,7 +136,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			<tr class="${rowStyle}">
 				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
 				<td>${player.clientId}</td>
-				<td><span class="plus" id="plus-${player.key}"
+				<td class="icon offline <c:if test="${player.playing}">online</c:if>"><span class="plus" id="plus-${player.key}"
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
@@ -149,10 +149,14 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
-				<td><c:if test="${not player.playing }">
+				<td>
+				<fmt:formatDate value="${player.latest}" type="both"
+                        timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
+				<%--  
+				<c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
-				</c:if><c:if test="${player.playing}">Conectado</c:if></td>
+				</c:if><c:if test="${player.playing}">Conectado</c:if>--%></td>
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 			</tr>
 			<tr style="display: none;">

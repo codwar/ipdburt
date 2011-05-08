@@ -115,6 +115,26 @@ public class PlayerDAOImpl implements PlayerDAO {
 	}
 
 	@Override
+	public void cleanConnected(Key server) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query q = new Query("Player");
+		q.setAncestor(server);
+		q.addFilter("connected", FilterOperator.EQUAL, new Boolean(true));
+		PreparedQuery pq = service.prepare(q);
+
+		List<Entity> commit = new ArrayList<Entity>();
+		for (Entity entity : pq.asIterable()) {
+			entity.setProperty("connected", new Boolean(false));
+			commit.add(entity);
+		}
+		if (commit.size()>0) service.put(commit);
+
+	}
+
+	@Override
 	public void save(Collection<Player> players, boolean commit) {
 		for (Player player : players)
 			save(player, commit);

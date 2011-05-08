@@ -491,6 +491,12 @@ ul.messages li.warning {
 	padding-left: 0px !important;
     padding-right: 24px !important;	
 }
+.offline {
+    background-image: url('images/status_offline.png');
+}
+.online {
+    background-image: url('images/status_online.png') !important;
+}
 .edit {
     background-image: url('images/pencil.png');
 }

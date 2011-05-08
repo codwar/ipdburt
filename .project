@@ -34,5 +34,6 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>com.google.appengine.eclipse.core.gaeNature</nature>
+		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 </projectDescription>

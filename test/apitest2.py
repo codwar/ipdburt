@@ -22,3 +22,4 @@ players = [('connect', 'Player1-1','guid1', '1', '127.0.0.1', '0'),
 
 print "Update logs"
 proxy.update(key,players)
+#proxy.update(key,[])

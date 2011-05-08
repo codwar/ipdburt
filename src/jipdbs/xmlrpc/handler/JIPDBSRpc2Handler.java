@@ -13,7 +13,6 @@ import jipdbs.api.v2.Update;
 import jipdbs.bean.PlayerInfo;
 import jipdbs.data.Server;
 import jipdbs.exception.UnauthorizedUpdateException;
-import jipdbs.util.MailAdmin;
 import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;
 
 public class JIPDBSRpc2Handler {
@@ -43,9 +42,6 @@ public class JIPDBSRpc2Handler {
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
-				for (Object v : values) {
-					System.out.println(v);
-				}
 				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong(values[3]), (String) values[4], parseLong(values[5]));
 				if (values.length > 6)
 					playerInfo.setUpdated((Date) values[6]);
@@ -53,8 +49,14 @@ public class JIPDBSRpc2Handler {
 					playerInfo.setExtra((String) values[7]);
 				list.add(playerInfo);
 			}
-			updateApi.updatePlayer(server, list);
-			
+			if (list.size()>0) {
+				updateApi.updatePlayer(server, list);	
+			} else {
+				if (server.getOnlinePlayers()>0) {
+					log.fine("Cleaning server " + server.getName());
+					updateApi.cleanServer(server);
+				}
+			}
 		} catch (UnauthorizedUpdateException e) {
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();

@@ -174,11 +174,11 @@ public class Player implements Serializable {
 		this.note = note;
 	}
 
-	public boolean isConnected() {
+	public Boolean isConnected() {
 		return connected;
 	}
 
-	public void setConnected(boolean connected) {
+	public void setConnected(Boolean connected) {
 		this.connected = connected;
 	}
 }

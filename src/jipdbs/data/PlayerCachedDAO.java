@@ -81,4 +81,9 @@ public class PlayerCachedDAO implements PlayerDAO {
 	public void save(Collection<Player> players) {
 		save(players, true);
 	}
+
+	@Override
+	public void cleanConnected(Key server) {
+		impl.cleanConnected(server);
+	}
 }
