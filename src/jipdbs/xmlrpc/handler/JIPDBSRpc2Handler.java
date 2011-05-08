@@ -33,7 +33,7 @@ public class JIPDBSRpc2Handler {
 		this.updateApi.updateName(key, name, version, JIPDBSXmlRpc2Servlet.getClientIpAddress());
 	}
 
-	public void update(String key, Object[] plist) {
+	public void update(String key, Object[] plist) throws Exception {
 
 		try {
 			ServerManager serverManager = new ServerManager();
@@ -43,7 +43,10 @@ public class JIPDBSRpc2Handler {
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
-				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong((String) values[3]), (String) values[4], parseLong((String) values[5]));
+				for (Object v : values) {
+					System.out.println(v);
+				}
+				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong(values[3]), (String) values[4], parseLong(values[5]));
 				if (values.length > 6)
 					playerInfo.setUpdated((Date) values[6]);
 				if (values.length > 7)
@@ -53,17 +56,27 @@ public class JIPDBSRpc2Handler {
 			updateApi.updatePlayer(server, list);
 			
 		} catch (UnauthorizedUpdateException e) {
-			MailAdmin.sendMail("WARN", e.getMessage());
 			log.severe(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.getBuffer().toString());
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
+			throw e;
 		}
 	}
 
-	private Long parseLong(String s) {
+	private Long parseLong(Object s) {
 		try {
-			return Long.parseLong(s);
+			if (s instanceof String) {
+				return Long.parseLong((String) s);
+			} else if (s instanceof Number) {
+				return ((Number) s).longValue();
+			}
+			return null;
 		} catch (NumberFormatException e) {
 			return null;
 		}

@@ -77,7 +77,7 @@ public class SearchServlet extends HttpServlet {
 		String queryValue = query;
 
 		if (StringUtils.isEmpty(query)) {
-			log.fine("hhhhhhhhhhhhhhhhhhhhhhh");
+			log.fine("Empty");
 			list = app.rootQuery(offset, limit, total);
 		} else if ("s".equals(type)) {
 			log.finest("Buscando SERVER");
