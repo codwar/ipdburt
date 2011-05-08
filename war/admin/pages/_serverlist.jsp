@@ -12,6 +12,7 @@
             <th>Clave</th>
             <th>Contacto</th>
             <th>IP</th>
+            <th>Versi&oacute;n</th>
             <th></th>
         </tr>
     </thead>
@@ -22,6 +23,7 @@
     			<td>${server.uid}</td>
     			<td>${server.admin.email}</td>
     			<td>${server.address}</td>
+    			<td>${server.pluginVersion}</td>
     			<td><a href="serveredit.jsp?k=${server.keyString}" class="icon edit"></a></td>
     		</tr>
     	</c:forEach>
