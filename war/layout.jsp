@@ -17,7 +17,8 @@
 <url type="application/opensearchdescription+xml" rel="self" template="http://www.ipdburt.com.ar/searchbyalias.xml"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="/media/default.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/>
+<!-- link rel="stylesheet" type="text/css" href="/media/jquery.place.css" media="screen"/-->
+<link rel="stylesheet" type="text/css" href="/media/message.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/styles/menu.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
@@ -33,7 +34,7 @@
 $(document).ready(
 		function() {
 		    $('body').ajaxStart(function() {
-		        $.loading(true, {text: 'Cargando ...'});
+		        $.loading(true, {text: 'Enviando solicitud...', pulse: false, loadingClass: 'context-loader', update: {texts: ['Por favor, aguarde...', 'Por favor reintente.']}});
 		    }); 
 		    $('body').ajaxStop(function() {
 		        $.loading(false);      
@@ -55,25 +56,12 @@ $(document).ready(
 			);
 });
 </script>
-<style type="text/css">
-#donar {
-	position: absolute;
-	top: 70px;
-	left: 5px;
-	padding: 5px;
-	background-color: #B3C2C7;
-	align: center;
-	-webkit-box-shadow: 0 0 10px rgb(0,0,0);
-	-moz-box-shadow: 0 0 10px rgb(0,0,0);
-	box-shadow: 0 0 10px rgb(0,0,0);
-}
-</style>
 </head>
 <body>
-
-<jsp:include page="/infoservlet" />
-
-
+<div style="display: none;">
+<!-- preload image -->
+<img src='/media/images/metabox_loader.gif'/>
+</div>
 <div id="topnavigation">
     <ul class="topnav">
     <div id="logo">
@@ -114,15 +102,6 @@ $(document).ready(
             </div>                
         </li>
     </div>
-<!-- 
-        <li>  
-            <span class="subnav">Tutorials</span>
-            <ul class="subnav">
-                <li><a href="#">Sub Nav Link</a></li>  
-                <li><a href="#">Sub Nav Link</a></li>  
-            </ul>  
-        </li>  
- -->        
     </ul>
 </div>
 
@@ -140,12 +119,13 @@ $(document).ready(
 <div class="container">	
 
 <div class="clearer"><span></span></div>
-
-<div class="main">
-<template:get name='flash' />
+<div id="context-loader" class="context-loader">Cargando&hellip;</div>
+<div id="main" class="main" style="display: none;">
+<!-- template:get name='flash' /-->
 <template:get name='content' />
 
- <div class="footer">
+<div class="footer">
+     <jsp:include page="/infoservlet" />
      <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}</div>
      <div class="clearer"><span></span></div>
  </div>
@@ -165,7 +145,10 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
 </div>
-
+<script type="text/javascript">
+$("#context-loader").hide();
+$("#main").fadeIn("slow");
+</script>
 </body>
 
 </html>
