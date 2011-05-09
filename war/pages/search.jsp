@@ -194,6 +194,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 		<tr>
 			<c:url value="/search.jsp" var="url">
 				<c:param name="q" value="${query}" />
+				<c:param name="t" value="${type}" />
 			</c:url>
 			<td colspan="6"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator

@@ -21,9 +21,9 @@ public class AliasCachedDAO implements AliasDAO {
 	@Override
 	public void save(Alias alias, boolean commit) {
 		impl.save(alias, commit);
-		cache.put(
-				cacheKey(alias.getPlayer(), alias.getNickname(), alias.getIp()),
-				alias);
+		if (alias.getKey() != null) {
+			cache.put(cacheKey(alias.getPlayer(), alias.getNickname(), alias.getIp()),alias);
+		}
 	}
 
 	@Override

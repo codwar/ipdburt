@@ -21,4 +21,8 @@
     <datastore-index kind="Player" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
+    <datastore-index kind="Player" ancestor="false" source="auto">
+        <property name="connected" direction="desc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>    
 </datastore-indexes>

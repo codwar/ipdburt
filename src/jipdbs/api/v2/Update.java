@@ -3,10 +3,7 @@ package jipdbs.api.v2;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import jipdbs.api.Events;
@@ -28,10 +25,6 @@ import jipdbs.data.ServerDAOImpl;
 import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.util.MailAdmin;
 import jipdbs.util.NGrams;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 
 public class Update {
 
@@ -103,7 +96,7 @@ public class Update {
 		
 		try {
 			// keep the map ordered
-			Map<String, Entity> entities = new LinkedHashMap<String, Entity>(15);
+			//Map<String, Entity> entities = new LinkedHashMap<String, Entity>(15);
 			int connected = server.getOnlinePlayers();
 			for (PlayerInfo playerInfo : list) {
 				try {
@@ -156,21 +149,21 @@ public class Update {
 					}
 					player.setUpdated(playerInfo.getUpdated());
 
-					playerDAO.save(player, player.getKey() == null);
-					entities.put("player-" + player.getGuid(), player.toEntity());
+					//playerDAO.save(player, player.getKey() == null);
+					playerDAO.save(player);
+//					entities.put("player-" + player.getGuid(), player.toEntity());
 
-					String aliasKey = "alias-" + player.getGuid()
-							+ playerInfo.getName() + playerInfo.getIp();
+//					String aliasKey = "alias-" + player.getGuid() + playerInfo.getName() + playerInfo.getIp();
 
-					Entity aliasEntity = entities.get(aliasKey);
+					//Entity aliasEntity = entities.get(aliasKey);
 					Alias alias;
-					if (aliasEntity != null) {
-						alias = new Alias(aliasEntity);
-					} else {
+//					if (aliasEntity != null) {
+//						alias = new Alias(aliasEntity);
+//					} else {
 						alias = aliasDAO.findByPlayerAndNicknameAndIp(
 								player.getKey(), playerInfo.getName(),
 								playerInfo.getIp());
-					}
+//					}
 
 					if (alias == null) {
 						alias = new Alias();
@@ -191,8 +184,8 @@ public class Update {
 						}
 						alias.setUpdated(playerInfo.getUpdated());
 					}
-					aliasDAO.save(alias, false);
-					entities.put(aliasKey, alias.toEntity());
+					aliasDAO.save(alias, true);
+					//entities.put(aliasKey, alias.toEntity());
 				} catch (Exception e) {
 					log.severe(e.getMessage());
 					StringWriter w = new StringWriter();
@@ -200,9 +193,9 @@ public class Update {
 					log.severe(w.getBuffer().toString());
 				}
 			}
-			DatastoreService service = DatastoreServiceFactory
-					.getDatastoreService();
-			service.put(entities.values());
+//			DatastoreService service = DatastoreServiceFactory
+//					.getDatastoreService();
+			//service.put(entities.values());
 			server.setUpdated(new Date());
 			if (connected < 0) connected = 0; // just in case
 			server.setOnlinePlayers(connected);

@@ -55,6 +55,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 				.getDatastoreService();
 
 		Query q = new Query("Player");
+		q.addSort("connected", SortDirection.DESCENDING);
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
 

@@ -3,12 +3,10 @@ package jipdbs;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.datanucleus.util.StringUtils;
 
 import jipdbs.api.ServerManager;
 import jipdbs.api.v2.Update;
@@ -27,6 +25,8 @@ import jipdbs.data.ServerDAO;
 import jipdbs.data.ServerDAOImpl;
 import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.util.NGrams;
+
+import org.datanucleus.util.StringUtils;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -94,7 +94,7 @@ public class JIPDBSCore {
 
 				log.info("Processing " + server.getName());
 
-				Map<String, Entity> entities = new HashMap<String, Entity>();
+				Map<String, Entity> entities = new LinkedHashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
 					String playerKey = "player-" + key + info.getGuid();
@@ -188,7 +188,7 @@ public class JIPDBSCore {
 
 				log.info("Processing " + server.getName());
 
-				Map<String, Entity> entities = new HashMap<String, Entity>();
+				Map<String, Entity> entities = new LinkedHashMap<String, Entity>();
 
 				for (PlayerInfo info : list) {
 					String playerKey = "player-" + key + info.getGuid();
@@ -270,7 +270,7 @@ public class JIPDBSCore {
 
 				log.info("Processing " + server.getName());
 
-				Map<String, Entity> entities = new HashMap<String, Entity>();
+				Map<String, Entity> entities = new LinkedHashMap<String, Entity>();
 
 				for (BanInfo info : list) {
 
