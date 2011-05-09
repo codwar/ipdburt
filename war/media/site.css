@@ -528,11 +528,13 @@ body, .container {
     -moz-box-shadow: 10px 10px 5px #888;
     -webkit-box-shadow: 10px 10px 5px #888;
     box-shadow: 10px 10px 5px #888;
-    padding: 15px;
+    /*padding: 15px;*/
+    padding: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    width: 80%;
+    /*width: 80%;*/
+    width: 850px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 25px;

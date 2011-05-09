@@ -8,7 +8,7 @@
 
 <h1>Servidores Registrados</h1>
 <br />
-<table style="width: 85%; margin-left: auto; margin-right: auto;">
+<table>
 	<thead>
 		<tr>
 			<th>Servidor</th>

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -101,7 +102,8 @@ public class Update {
 	public void updatePlayer(Server server, List<PlayerInfo> list) {
 		
 		try {
-			Map<String, Entity> entities = new HashMap<String, Entity>(15);
+			// keep the map ordered
+			Map<String, Entity> entities = new LinkedHashMap<String, Entity>(15);
 			int connected = server.getOnlinePlayers();
 			for (PlayerInfo playerInfo : list) {
 				try {
