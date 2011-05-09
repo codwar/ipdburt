@@ -126,7 +126,7 @@ $(document).ready(
 
 <div class="footer">
      <jsp:include page="/infoservlet" />
-     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}</div>
+     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}. Dates are displayed in UTC-3.</div>
      <div class="clearer"><span></span></div>
  </div>
 </div>

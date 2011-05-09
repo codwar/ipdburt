@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.datanucleus.util.StringUtils;
 
@@ -67,7 +68,9 @@ public class BanInfo implements Serializable {
 	@Override
 	public String toString() {
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
 		DateFormat format2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		format2.setTimeZone(TimeZone.getTimeZone("GMT-3"));
 		String s = "Baneado el " + format.format(this.getCreated()) + " por " + this.getReason();
 		if ("tb".equals(this.getType())) {
 			s = s + " hasta el " + format2.format(this.getExpires());
