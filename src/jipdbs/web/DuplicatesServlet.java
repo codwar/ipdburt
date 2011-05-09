@@ -3,6 +3,7 @@ package jipdbs.web;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,11 +19,9 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
@@ -30,6 +29,8 @@ public class DuplicatesServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8523957912890704182L;
 
+	private static final Logger log = Logger.getLogger(DuplicatesServlet.class.getName());
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -40,7 +41,8 @@ public class DuplicatesServlet extends HttpServlet {
 				.getDatastoreService();
 
 		String s = req.getParameter("s");
-
+		String t = req.getParameter("t");
+		
 		Server server;
 		try {
 			server = serverDAO.get(KeyFactory.stringToKey(s));
@@ -54,23 +56,36 @@ public class DuplicatesServlet extends HttpServlet {
 		PreparedQuery pq = service.prepare(q);
 
 		List<Key> keys = new ArrayList<Key>();
-		for (Entity entity : pq.asIterable()) {
-			Query q2 = new Query("Alias").setKeysOnly();
-			q2.setAncestor(entity.getKey());
-			q2.addSort("count", SortDirection.DESCENDING);
-			PreparedQuery pq2 = service.prepare(q2);
-			try {
-				pq2.asSingleEntity();
-			} catch (TooManyResultsException e) {
-				for (Entity alias : pq2.asIterable(FetchOptions.Builder
-						.withOffset(1))) {
+		int total = 0;
+		for (Entity player : pq.asIterable()) {
+			Query qAlias = new Query("Alias");
+			qAlias.setAncestor(player.getKey());
+			qAlias.addSort("updated", SortDirection.DESCENDING);
+			PreparedQuery pqAlias = service.prepare(qAlias);
+			List<String> aliasList = new ArrayList<String>();
+			for (Entity alias : pqAlias.asIterable()) {
+				String key = ((String) alias.getProperty("nickname")) + "-" + ((Long) alias.getProperty("ip")).toString();
+				if (aliasList.contains(key)) {
 					keys.add(alias.getKey());
+					total += 1;
+				} else {
+					aliasList.add(key);
+				}
+			}
+			if (t == null) {
+				if (keys.size() > 100) {
+					service.delete(keys);
+					keys.clear();
+					LocalCache.getInstance().clear();
 				}
 			}
 		}
-		service.delete(keys);
-		LocalCache.getInstance().clear();
-		resp.getWriter()
-				.write("Done. Removed " + Integer.toString(keys.size()));
+		if (t == null) {
+			resp.getWriter()
+					.write("Done. Removed " + Integer.toString(total));
+		} else {
+			resp.getWriter()
+			.write(Integer.toString(total) + " are going to be removed.");
+		}
 	}
 }

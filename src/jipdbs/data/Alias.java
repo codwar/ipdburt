@@ -24,8 +24,6 @@ public class Alias implements Serializable {
 	private Long count;
 	private Key server;
 
-	private Entity entity;
-	
 	public Alias() {
 		// Empty.
 	}
@@ -42,17 +40,11 @@ public class Alias implements Serializable {
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 		this.setServer((Key) entity.getProperty("server"));
-		this.entity = entity;
 	}
 
 	public Entity toEntity() {
-		Entity entity;
-		if (this.entity != null) {
-			entity = this.entity;
-		} else {
-			entity = this.getKey() == null ? new Entity("Alias",
+		Entity entity = this.getKey() == null ? new Entity("Alias",
 					this.getPlayer()) : new Entity(this.getKey());
-		}
 		entity.setProperty("updated", this.getUpdated());
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
