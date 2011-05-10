@@ -7,14 +7,11 @@
 
 <jsp:include page="/search" />
 <jsp:include page="/pages/flash.jsp" />
-
-<small>
-<form method="get"><input class="search" type="text" name="q"
-	value="${queryValue}" /> <select name="t" style="width: 65px;">
-	<option value="alias" <c:if test='${type == "alias"}'>selected</c:if>>Alias</option>
-	<option value="ip" <c:if test='${type == "ip"}'>selected</c:if>>IP</option>
-</select> <input type="submit" value="Buscar" /></form>
-</small>
+<script type="text/javascript">
+<!--
+$("[name=q]").val("<c:out value="${queryValue}"/>");
+//-->
+</script>
 
 <script language="javascript">
 	function getHTML(key, offset, callback) {
@@ -29,12 +26,12 @@
 				html += "<tr class=\"aliasrow\">";
 				html += "<td><a href=\"/search.jsp?q=";
 				html += encodeURIComponent(value.nickname);
-				html += "&t=alias\">";
+				html += "\">";
 				html += value.nickname;
 				html += "</a></td>";
 				html += "<td><a href=\"/search.jsp?q=";
 				html += value.ipSearch;
-				html += "&t=ip\">";
+				html += "\">";
 				html += value.ip;
 				html += "</td>";
 				html += "<td>";
@@ -119,6 +116,7 @@
 	<thead>
 		<tr>
 			<th>UID</th>
+			<th>Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
 			<th>Visto</th>
@@ -136,8 +134,9 @@
 				</c:otherwise>
 			</c:choose>
 			<tr class="${rowStyle}">
-				<td><a href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
-				<td><span class="plus" id="plus-${player.key}"
+				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
+				<td>${player.clientId}</td>
+				<td class="icon offline <c:if test="${player.playing}">online</c:if>"><span class="plus" id="plus-${player.key}"
 					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
 					class="minus"
 					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
@@ -145,20 +144,23 @@
 					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
 				<c:url value="/search.jsp" var="url">
 					<c:param name="q" value="${player.name}" />
-					<c:param name="t" value="alias" />
 				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
-				<td><a href="/search.jsp?q=${player.ipSearch}&t=ip">${player.ip}</a>&nbsp;<a
+				<td><a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
-				<td><c:if test="${not player.playing }">
+				<td>
+				<fmt:formatDate value="${player.latest}" type="both"
+                        timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
+				<%--  
+				<c:if test="${not player.playing }">
 					<fmt:formatDate value="${player.latest}" type="both"
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
-				</c:if><c:if test="${player.playing}">Conectado</c:if></td>
+				</c:if><c:if test="${player.playing}">Conectado</c:if>--%></td>
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 			</tr>
 			<tr style="display: none;">
-				<td colspan="5" style="padding: 20px;">
+				<td colspan="6" style="padding: 20px;">
 				<table>
 					<thead>
 						<tr>
@@ -182,7 +184,7 @@
 		</c:forEach>
 		<c:if test="${fn:length(list) eq 0}">
 			<tr>
-				<td colspan="5"
+				<td colspan="6"
 					style="text-align: center; font-size: large; padding: 20px">La
 				búsqueda no arrojó resultados.</td>
 			</tr>
@@ -194,7 +196,7 @@
 				<c:param name="q" value="${query}" />
 				<c:param name="t" value="${type}" />
 			</c:url>
-			<td colspan="5"><span style="font-size: smaller;">Total:
+			<td colspan="6"><span style="font-size: smaller;">Total:
 			${count} (${time} ms)</span><pag:paginator
 				totalPages="${pageLink.totalPages}"
 				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"

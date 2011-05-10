@@ -37,7 +37,7 @@ public class ServerSaveServlet extends HttpServlet {
 		}
 
 		if (StringUtils.isEmpty(ip))
-			Flash.warn(req, "Faltó dirección IP.");
+			Flash.warn(req, "No se indicó dirección IP. No se realizará comprobación del origen de los datos.");
 
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
 			String uid = GuidGenerator.generate(name);

@@ -17,8 +17,13 @@ public class Player implements Serializable {
 	private Date updated;
 	private Date banInfoUpdated;
 	private String banInfo;
-
+	private Long clientId;
+	private Long level;
+	private String note;
+	private Boolean connected;
+	
 	public Player() {
+		this.key = null;
 	}
 
 	public Player(Entity entity) {
@@ -29,17 +34,34 @@ public class Player implements Serializable {
 		guid = (String) entity.getProperty("guid");
 		banInfo = (String) entity.getProperty("baninfo");
 		banInfoUpdated = (Date) entity.getProperty("baninfoupdated");
+		try {
+			level = (Long) entity.getProperty("level");			
+		} catch (Exception e) {
+			level = null;
+		}
+		try {
+			clientId = (Long) entity.getProperty("clientId");
+		} catch (Exception e) {
+			clientId = null;
+		}
+		note = (String) entity.getProperty("note");
+		connected = (Boolean) entity.getProperty("connected");
+		if (connected == null) connected = false;
 	}
 
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Player",
 				this.getServer()) : new Entity(this.getKey());
-		entity.setProperty("baninfo", banInfo);
-		entity.setProperty("created", created);
 		entity.setProperty("guid", guid);
 		entity.setProperty("updated", updated);
 		entity.setProperty("server", server);
 		entity.setProperty("baninfoupdated", banInfoUpdated);
+		entity.setProperty("clientId", clientId);
+		entity.setProperty("connected", connected);
+		entity.setUnindexedProperty("level", level);
+		entity.setUnindexedProperty("note", note);
+		entity.setUnindexedProperty("baninfo", banInfo);
+		entity.setUnindexedProperty("created", created);
 		return entity;
 	}
 
@@ -98,6 +120,41 @@ public class Player implements Serializable {
 	public void setBanInfoUpdated(Date banInfoUpdated) {
 		this.banInfoUpdated = banInfoUpdated;
 	}
+	
+	public Long getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(Long id) {
+		this.clientId = id;
+	}
+
+	public Long getLevel() {
+		return level;
+	}
+
+	public void setLevel(Long level) {
+		this.level = level;
+	}
+
+	@Override
+	public int hashCode() {
+		return server.hashCode() ^ guid.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (!(obj instanceof Player))
+			return false;
+
+		if (obj == this)
+			return true;
+
+		Player other = (Player) obj;
+
+		return server.equals(other.getServer()) && guid.equals(other.getGuid());
+	}
 
 	@Override
 	public String toString() {
@@ -107,5 +164,21 @@ public class Player implements Serializable {
 		b.append(guid);
 		b.append("]");
 		return b.toString();
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(Boolean connected) {
+		this.connected = connected;
 	}
 }

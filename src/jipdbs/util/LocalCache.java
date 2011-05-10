@@ -30,6 +30,7 @@ public class LocalCache {
 		}
 	}
 
+	// FIXME thread unsafe.
 	public static LocalCache getInstance() {
 		if (localManager == null) {
 			localManager = new LocalCache();

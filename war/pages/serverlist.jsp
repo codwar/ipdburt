@@ -8,19 +8,29 @@
 
 <h1>Servidores Registrados</h1>
 <br />
-<table style="width: 85%; margin-left: auto; margin-right: auto;">
+<table>
 	<thead>
 		<tr>
-			<!-- th style="width: 90px;">Conectados</th -->
 			<th>Servidor</th>
+			<th style="width: 90px;">Conectados</th>
 			<th style="width: 150px;">Actualizado</th>
 		</tr>
 	</thead>
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
-				<!-- td style="text-align: right;">${server.onlinePlayers}</td -->
+				
 				<td><a href="/search.jsp?q=${server.keyString}&t=s">${server.name}</a></td>
+				<td style="text-align: right;">
+				<c:choose>
+				<c:when test="${server.dirty}">
+				<img class="fetch-server" alt="${server.keyString}" src='/media/images/loader.gif'/>
+				</c:when>
+				<c:otherwise>
+				${server.onlinePlayers}
+				</c:otherwise>
+				</c:choose>
+				</td>
 				<td style="text-align: right;"><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
 					value="${server.updated}" /></td>

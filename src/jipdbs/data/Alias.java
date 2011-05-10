@@ -21,38 +21,41 @@ public class Alias implements Serializable {
 	private String ip;
 	private Date created;
 	private Date updated;
-	private int count;
+	private Long count;
 	private Key server;
-	
+
 	public Alias() {
+		// Empty.
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Alias(Entity entity) {
 		this.setKey(entity.getKey());
 		this.setPlayer((Key) entity.getParent());
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
-		this.setCount(((Long) entity.getProperty("count")).intValue());
-		this.setIp((String) Functions.decimalToIp((Long) entity.getProperty("ip")));
+		this.setCount((Long) entity.getProperty("count"));
+		this.setIp((String) Functions.decimalToIp((Long) entity
+				.getProperty("ip")));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 		this.setServer((Key) entity.getProperty("server"));
 	}
-	
+
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Alias", this.getPlayer()) : new Entity(this.getKey());
-		entity.setProperty("created", this.getCreated());
+		Entity entity = this.getKey() == null ? new Entity("Alias",
+					this.getPlayer()) : new Entity(this.getKey());
 		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("count", this.getCount());
 		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
 		entity.setProperty("player", this.getPlayer());
 		entity.setProperty("server", this.getServer());
+		entity.setUnindexedProperty("created", this.getCreated());
+		entity.setUnindexedProperty("count", this.getCount());
 		return entity;
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -93,11 +96,11 @@ public class Alias implements Serializable {
 		this.created = created;
 	}
 
-	public int getCount() {
+	public Long getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 
@@ -108,7 +111,7 @@ public class Alias implements Serializable {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
-	
+
 	public String getMaskedIp() {
 		return Functions.maskIpAddress(this.ip);
 	}
@@ -127,6 +130,26 @@ public class Alias implements Serializable {
 
 	public void setServer(Key server) {
 		this.server = server;
+	}
+
+	@Override
+	public int hashCode() {
+		return player.hashCode() ^ ip.hashCode() ^ nickname.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (!(obj instanceof Alias))
+			return false;
+
+		if (obj == this)
+			return true;
+
+		Alias other = (Alias) obj;
+
+		return player.equals(other.getPlayer()) && ip.equals(other.ip)
+				&& nickname.equals(other.getNickname());
 	}
 
 	@Override

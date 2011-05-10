@@ -24,12 +24,16 @@ public class Server implements Serializable {
 	private int onlinePlayers;
 	private String address;
 	private String keyString;
-
+	private String pluginVersion;
+	private Long maxLevel;
+	private Boolean dirty;
+	
 	public Server() {
 	}
 
 	public Server(Entity entity) {
 		this.setKey(entity.getKey());
+		this.setPluginVersion((String) entity.getProperty("pluginversion"));
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setAdmin((Email) entity.getProperty("admin"));
@@ -39,19 +43,27 @@ public class Server implements Serializable {
 				.setOnlinePlayers(((Long) entity.getProperty("players"))
 						.intValue());
 		this.setAddress((String) entity.getProperty("ip"));
+		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
+		if (this.getMaxLevel()==null) {
+			this.setMaxLevel(2L);
+		}
+		Boolean b = (Boolean) entity.getProperty("dirty");
+		this.setDirty(b != null ? b : true);
 	}
 
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Server")
 				: new Entity(this.getKey());
-
 		entity.setProperty("name", this.getName());
-		entity.setProperty("created", this.getCreated());
 		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("admin", this.getAdmin());
 		entity.setProperty("uid", this.getUid());
-		entity.setProperty("players", this.getOnlinePlayers());
 		entity.setProperty("ip", this.getAddress());
+		entity.setProperty("dirty", this.getDirty());
+		entity.setUnindexedProperty("created", this.getCreated());
+		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
+		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
+		entity.setUnindexedProperty("players", this.getOnlinePlayers());
+		entity.setUnindexedProperty("admin", this.getAdmin());
 		return entity;
 	}
 
@@ -136,5 +148,29 @@ public class Server implements Serializable {
 		b.append(uid);
 		b.append("]");
 		return b.toString();
+	}
+
+	public String getPluginVersion() {
+		return pluginVersion;
+	}
+
+	public void setPluginVersion(String pluginVersion) {
+		this.pluginVersion = pluginVersion;
+	}
+
+	public Long getMaxLevel() {
+		return maxLevel;
+	}
+
+	public void setMaxLevel(Long maxLevel) {
+		this.maxLevel = maxLevel;
+	}
+
+	public Boolean getDirty() {
+		return dirty;
+	}
+
+	public void setDirty(Boolean dirty) {
+		this.dirty = dirty;
 	}
 }
