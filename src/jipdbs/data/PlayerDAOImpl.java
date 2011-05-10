@@ -1,5 +1,6 @@
 package jipdbs.data;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
 
@@ -149,5 +150,17 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public void save(Collection<Player> players) {
 		save(players, true);
+	}
+
+	@Override
+	public int countConnected(Key server) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		
+		Query q = new Query("Player");
+		q.setAncestor(server);
+		q.addFilter("connected", FilterOperator.EQUAL, new Boolean(true));
+		PreparedQuery pq = service.prepare(q);
+		return pq.countEntities(withLimit(100));
+		
 	}
 }

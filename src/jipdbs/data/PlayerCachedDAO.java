@@ -86,4 +86,9 @@ public class PlayerCachedDAO implements PlayerDAO {
 	public void cleanConnected(Key server) {
 		impl.cleanConnected(server);
 	}
+
+	@Override
+	public int countConnected(Key key) {
+		return impl.countConnected(key);
+	}
 }

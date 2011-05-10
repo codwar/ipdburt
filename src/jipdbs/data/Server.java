@@ -26,6 +26,7 @@ public class Server implements Serializable {
 	private String keyString;
 	private String pluginVersion;
 	private Long maxLevel;
+	private Boolean dirty;
 	
 	public Server() {
 	}
@@ -46,6 +47,8 @@ public class Server implements Serializable {
 		if (this.getMaxLevel()==null) {
 			this.setMaxLevel(2L);
 		}
+		Boolean b = (Boolean) entity.getProperty("dirty");
+		this.setDirty(b != null ? b : true);
 	}
 
 	public Entity toEntity() {
@@ -55,6 +58,7 @@ public class Server implements Serializable {
 		entity.setProperty("updated", this.getUpdated());
 		entity.setProperty("uid", this.getUid());
 		entity.setProperty("ip", this.getAddress());
+		entity.setProperty("dirty", this.getDirty());
 		entity.setUnindexedProperty("created", this.getCreated());
 		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
 		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
@@ -160,5 +164,13 @@ public class Server implements Serializable {
 
 	public void setMaxLevel(Long maxLevel) {
 		this.maxLevel = maxLevel;
+	}
+
+	public Boolean getDirty() {
+		return dirty;
+	}
+
+	public void setDirty(Boolean dirty) {
+		this.dirty = dirty;
 	}
 }

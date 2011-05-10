@@ -1,6 +1,7 @@
 package jipdbs.web;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +16,8 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 public class ServerFetchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 9193574096825280151L;
-
+	private static final Logger log = Logger.getLogger(ServerFetchServlet.class.getName());
+	
 	private JIPDBS app;
 
 	@Override
@@ -30,10 +32,9 @@ public class ServerFetchServlet extends HttpServlet {
 		try {
 			server = app.getServer(req.getParameter("k"));
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.severe(e.getMessage());
 		}
-		req.setAttribute("server", server);
+		req.setAttribute("server", server);			
 	}
 	
 }

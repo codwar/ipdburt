@@ -28,4 +28,6 @@ public interface PlayerDAO {
 
 	public abstract void cleanConnected(Key server);
 
+	public abstract int countConnected(Key key);
+
 }

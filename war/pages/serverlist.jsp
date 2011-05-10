@@ -21,7 +21,16 @@
 			<tr>
 				
 				<td><a href="/search.jsp?q=${server.keyString}&t=s">${server.name}</a></td>
-				<td style="text-align: right;">${server.onlinePlayers}</td>
+				<td style="text-align: right;">
+				<c:choose>
+				<c:when test="${server.dirty}">
+				<img class="fetch-server" alt="${server.keyString}" src='/media/images/loader.gif'/>
+				</c:when>
+				<c:otherwise>
+				${server.onlinePlayers}
+				</c:otherwise>
+				</c:choose>
+				</td>
 				<td style="text-align: right;"><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
 					value="${server.updated}" /></td>

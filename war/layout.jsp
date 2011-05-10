@@ -58,6 +58,17 @@ $(document).ready(
 					}
 			);
             $(window).unload( function () { showContextLoader(); } );
+            $(".fetch-server").each(function() {
+            	data = {key: $(this).attr("alt")};
+            	$.post("/app/fetchserver",data, function(d) {
+            		rs = ($.parseJSON(d));
+            		if (rs.error) {
+            			$(".fetch-server[alt="+rs.key+"]").attr("src","/media/images/exclamation.png");
+            		} else {
+            			$(".fetch-server[alt="+rs.server.key+"]").replaceWith(rs.server.count);
+            		}
+            	});
+            });
 });
 </script>
 </head>

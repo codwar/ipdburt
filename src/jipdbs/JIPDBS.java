@@ -358,4 +358,11 @@ public class JIPDBS extends JIPDBSCore {
 			log.severe(w.getBuffer().toString());
 		}
 	}
+
+	public void refreshServerInfo(Server server) {
+		int c = playerDAO.countConnected(server.getKey());
+		server.setOnlinePlayers(c);
+		server.setDirty(false);
+		serverDAO.save(server);
+	}
 }

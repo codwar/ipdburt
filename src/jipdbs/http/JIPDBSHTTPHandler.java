@@ -3,6 +3,7 @@ package jipdbs.http;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,9 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import jipdbs.JIPDBS;
 import jipdbs.api.Events;
 import jipdbs.bean.PlayerInfo;
+import jipdbs.data.Server;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+
+import com.google.appengine.api.datastore.EntityNotFoundException;
 
 public class JIPDBSHTTPHandler extends HttpServlet {
 
@@ -22,7 +26,8 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 581879616460472029L;
-
+	private static final Logger log = Logger.getLogger(JIPDBSHTTPHandler.class.getName());
+	
 	private JIPDBS app;
 	
 	@Override
@@ -45,6 +50,23 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 				list.add(p);
 			}
 			app.updateConnect(key, list, null);
+		} else if ("/fetchserver".equalsIgnoreCase(req.getPathInfo())) {
+			resp.setContentType("text/plain");
+			String key = req.getParameter("key");
+			Server server = null;
+			try {
+				server = app.getServer(key);
+			} catch (EntityNotFoundException e) {
+				log.severe(e.getMessage());
+			}
+			if (server == null) {
+				resp.getWriter().println("{\"error\": true, \"server\": {\"key\": \""+key+"\"}}");
+			} else {
+				if (server.getDirty()) {
+					app.refreshServerInfo(server);
+				}
+				resp.getWriter().println("{\"error\": false, \"server\": {\"key\": \""+server.getKeyString()+"\", \"count\": \""+server.getOnlinePlayers()+"\",\"name\": \""+server.getName()+"\"}}");
+			}
 		}
 	}
 }
