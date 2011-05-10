@@ -177,6 +177,7 @@ public class Update {
 				}
 			}
 			server.setDirty(true);
+			server.setUpdated(new Date());
 			serverDAO.save(server);
 		} catch (Exception e) {
 			log.severe(e.getMessage());
