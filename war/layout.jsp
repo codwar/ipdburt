@@ -31,10 +31,13 @@
 <script type="text/javascript" src="/media/js/jquery.floatobject-1.4.js"></script>
 <script type="text/javascript" src="/media/styles/menu.js"></script>
 <script type="text/javascript">
+function showContextLoader() {
+    $.loading(true, {text: 'Enviando solicitud...', loadingClass: 'context-loader', update: {texts: ['Por favor, aguarde...', 'Por favor reintente.']}});
+}
 $(document).ready(
 		function() {
 		    $('body').ajaxStart(function() {
-		        $.loading(true, {text: 'Enviando solicitud...', pulse: false, loadingClass: 'context-loader', update: {texts: ['Por favor, aguarde...', 'Por favor reintente.']}});
+		        showContextLoader();
 		    }); 
 		    $('body').ajaxStop(function() {
 		        $.loading(false);      
@@ -54,6 +57,7 @@ $(document).ready(
 						$(this).select();
 					}
 			);
+            $(window).unload( function () { showContextLoader(); } );
 });
 </script>
 </head>
@@ -109,7 +113,7 @@ $(document).ready(
 	<img src="/media/images/bimage.png" width="211" height="215"/>
 </div>
 
-<div id="donar" style="">
+<div id="donar">
 <span style="padding-top: 4px;text-decoration: blink; color: red;">Consider&aacute; colaborar</span>
 <div id="dineromail" style="text-align: center; padding-top: 5px;">
 <a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>

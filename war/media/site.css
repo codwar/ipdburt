@@ -1,6 +1,6 @@
 #donar {
     position: absolute;
-    top: 70px;
+    top: 45px;
     left: 5px;
     padding: 5px;
     background-color: #B3C2C7;
@@ -520,7 +520,8 @@ body, .container {
     background-color: #F0F0F0; 
 }
 .container {
-	width: 80%;
+	width: 95%;
+	padding-left: 5px;
 }
 .main {
     border: none;
@@ -534,7 +535,8 @@ body, .container {
     -webkit-border-radius: 10px;
     border-radius: 10px;
     /*width: 80%;*/
-    width: 850px;
+    min-width: 850px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 25px;
