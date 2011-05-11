@@ -121,7 +121,7 @@ $(document).ready(
 </div>
 
 <div class="beta">
-	<img src="/media/images/bimage.png" width="211" height="215"/>
+	<img src="/media/images/bimage.png" width="105" height="107"/>
 </div>
 
 <div id="donar">
