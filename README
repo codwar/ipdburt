@@ -1,0 +1,41 @@
+IPDB Sudamericana
+-----------------
+
+Building and running tests
+--------------------------
+
+mvn clean install
+
+Deploy a development version
+----------------------------
+
+1. Go to the web project: cd jipdbs-web
+
+2. Deploy: mvn gae:deploy
+
+NOTE: remember to provide a valid recaptcha key.
+
+
+Release Procedure
+-----------------
+
+Go to the project root:
+
+1. Execute in the command line: mvn clean release:prepare
+
+This will start an interactive process to confirm the versions being released, 
+the tag to create and the 
+
+2. Checkout the tagged version (e.g. for the version 0.5): git checkout jipdbs-0.5 
+
+3. Goto the web project: cd jipdbs-web
+
+4. Deploy to appengine: mvn gae:deploy
+
+
+NOTE: remember to provide a valid recaptcha key.
+
+
+
+
+
