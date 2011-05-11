@@ -1,6 +1,21 @@
 IPDB Sudamericana
 -----------------
 
+Running
+-------
+
+cd jipdbs-web
+mvn gae:run
+
+Debugging
+---------
+
+mvn gae:debug
+
+This uses JPWD. A connection can be opened from Eclipse Debug as remote app in 
+order to debug.
+
+
 Building and running tests
 --------------------------
 
@@ -34,8 +49,5 @@ the tag to create and the
 
 
 NOTE: remember to provide a valid recaptcha key.
-
-
-
 
 
