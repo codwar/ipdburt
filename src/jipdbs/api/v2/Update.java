@@ -81,6 +81,7 @@ public class Update {
 		playerDAO.cleanConnected(server.getKey());
 		server.setOnlinePlayers(0);
 		server.setDirty(false);
+		server.setUpdated(new Date());
 		serverDAO.save(server);
 	}
 	
