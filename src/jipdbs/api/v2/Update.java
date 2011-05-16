@@ -102,6 +102,8 @@ public class Update {
 	 */
 	public void updatePlayer(Server server, List<PlayerInfo> list) {
 		
+		log.info("Processing server: " + server.getName());
+		
 		try {
 			for (PlayerInfo playerInfo : list) {
 				try {
