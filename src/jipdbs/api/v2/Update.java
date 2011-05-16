@@ -78,10 +78,16 @@ public class Update {
 	}
 
 	public void cleanServer(Server server) {
+		cleanServer(server, true);
+	}
+
+	public void cleanServer(Server server, boolean updateDate) {
 		playerDAO.cleanConnected(server.getKey());
 		server.setOnlinePlayers(0);
 		server.setDirty(false);
-		server.setUpdated(new Date());
+		if (updateDate) {
+			server.setUpdated(new Date());	
+		}
 		serverDAO.save(server);
 	}
 	

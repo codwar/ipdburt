@@ -82,6 +82,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>flash</servlet-name>
 		<servlet-class>jipdbs.web.FlashServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>cleanserver</servlet-name>
+		<servlet-class>jipdbs.web.batch.CleanOnlinePlayerServlet</servlet-class>
+	</servlet>	
 
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
@@ -131,6 +135,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>duplication</servlet-name>
 		<url-pattern>/admin/duplication</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>cleanserver</servlet-name>
+		<url-pattern>/admin/cleanserver</url-pattern>
+	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>xmlrpc</servlet-name>
 		<url-pattern>/xmlrpc</url-pattern>
