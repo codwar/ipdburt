@@ -50,7 +50,7 @@ public class JIPDBSRpc2Handler {
 						updated = (Date) values[6];
 					} else {
 						try {
-							updated = new Date(Long.parseLong((String) values[6]) * 1000L);
+							updated = new Date((Integer) values[6] * 1000L);
 						} catch (Exception e) {
 							log.severe(e.getMessage());
 							updated = new Date();
