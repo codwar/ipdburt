@@ -52,11 +52,12 @@ public class CleanOnlinePlayerServlet extends HttpServlet {
 			throws ServletException, IOException {
 	
 		String key = req.getParameter("key");
+		String force = req.getParameter("force");
 		if (key != null) {
 			try {
 				Server server;
 				server = app.getServer(KeyFactory.stringToKey(key));
-				if (server.getOnlinePlayers()>0) {
+				if (server.getOnlinePlayers()>0 || "true".equals(force)) {
 					Update api = new Update();
 					api.cleanServer(server, false);
 				}

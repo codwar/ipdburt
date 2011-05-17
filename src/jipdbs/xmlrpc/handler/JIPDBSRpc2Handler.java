@@ -23,6 +23,8 @@ public class JIPDBSRpc2Handler {
 	@SuppressWarnings("unused")
 	private final JIPDBS app;
 	private final Update updateApi;
+
+	private static final int maxListSize = 30;
 	
 	public JIPDBSRpc2Handler(JIPDBS app) {
 		this.app = app;
@@ -64,6 +66,13 @@ public class JIPDBSRpc2Handler {
 				list.add(playerInfo);
 			}
 			if (list.size()>0) {
+				if (list.size() > maxListSize) {
+					log.warning("List size is " + Integer.toString(list.size()));
+					// this is too much to process
+					list = list.subList(list.size() - maxListSize, list.size());
+				} else {
+					log.info("List size is " + Integer.toString(list.size()));
+				}
 				updateApi.updatePlayer(server, list);	
 			} else {
 				if (server.getOnlinePlayers()>0) {

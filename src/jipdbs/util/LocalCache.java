@@ -23,7 +23,8 @@ public class LocalCache {
 //			log.severe(e.getMessage());
 //		}
 //		cache = new ConcurrentHashMap<String, Object>(100);
-		cache = MemcacheServiceFactory.getMemcacheService();
+		// disable cache
+		cache = MemcacheServiceFactory.getMemcacheService(); 
 	}
 
 	public static LocalCache getInstance() {
