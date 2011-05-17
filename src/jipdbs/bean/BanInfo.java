@@ -30,7 +30,8 @@ public class BanInfo implements Serializable {
 		setType(parts[0]);
 		setCreated(new Date(Long.parseLong(parts[1]) * 1000L));
 		setDuration(Long.parseLong(parts[2]));
-		setReason(parts[3]);
+		if (parts.length == 4) setReason(parts[3]);
+		else setReason("No se indica motivo.");
 	}
 	
 	public Date getCreated() {
