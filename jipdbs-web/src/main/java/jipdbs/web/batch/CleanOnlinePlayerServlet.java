@@ -28,10 +28,8 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 
 public class CleanOnlinePlayerServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	private static final Logger log = Logger.getLogger(CleanOnlinePlayerServlet.class.getName());
 	
 	private JIPDBS app;
