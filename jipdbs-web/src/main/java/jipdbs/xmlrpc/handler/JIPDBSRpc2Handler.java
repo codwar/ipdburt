@@ -20,8 +20,11 @@ public class JIPDBSRpc2Handler {
 	private static final Logger log = Logger.getLogger(JIPDBSRpc2Handler.class
 			.getName());
 
+	@SuppressWarnings("unused")
 	private final JIPDBS app;
 	private final Update updateApi;
+
+	private static final int maxListSize = 30;
 	
 	public JIPDBSRpc2Handler(JIPDBS app) {
 		this.app = app;
@@ -43,13 +46,33 @@ public class JIPDBSRpc2Handler {
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
 				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong(values[3]), (String) values[4], parseLong(values[5]));
-				if (values.length > 6)
-					playerInfo.setUpdated((Date) values[6]);
-				if (values.length > 7)
+				if (values.length > 6) {
+					Date updated;
+					if (values[6] instanceof Date) {
+						updated = (Date) values[6];
+					} else {
+						try {
+							updated = new Date((Integer) values[6] * 1000L);
+						} catch (Exception e) {
+							log.severe(e.getMessage());
+							updated = new Date();
+						}
+					}
+					playerInfo.setUpdated(updated);
+				}
+				if (values.length > 7) {
 					playerInfo.setExtra((String) values[7]);
+				}
 				list.add(playerInfo);
 			}
 			if (list.size()>0) {
+				if (list.size() > maxListSize) {
+					log.warning("List size is " + Integer.toString(list.size()));
+					// this is too much to process
+					list = list.subList(list.size() - maxListSize, list.size());
+				} else {
+					log.info("List size is " + Integer.toString(list.size()));
+				}
 				updateApi.updatePlayer(server, list);	
 			} else {
 				if (server.getOnlinePlayers()>0) {

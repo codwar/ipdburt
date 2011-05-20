@@ -78,10 +78,16 @@ public class Update {
 	}
 
 	public void cleanServer(Server server) {
+		cleanServer(server, true);
+	}
+
+	public void cleanServer(Server server, boolean updateDate) {
 		playerDAO.cleanConnected(server.getKey());
 		server.setOnlinePlayers(0);
 		server.setDirty(false);
-		server.setUpdated(new Date());
+		if (updateDate) {
+			server.setUpdated(new Date());	
+		}
 		serverDAO.save(server);
 	}
 	
@@ -95,6 +101,8 @@ public class Update {
 	 * @since 0.5
 	 */
 	public void updatePlayer(Server server, List<PlayerInfo> list) {
+		
+		log.info("Processing server: " + server.getName());
 		
 		try {
 			for (PlayerInfo playerInfo : list) {

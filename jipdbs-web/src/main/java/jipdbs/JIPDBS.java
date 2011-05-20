@@ -98,6 +98,11 @@ public class JIPDBS extends JIPDBSCore {
 		}
 	}
 
+	public List<Server> getServers() {
+		int[] count = new int[1];
+		return getServers(0, 1000, count);
+	}
+	
 	public List<Server> getServers(int offset, int limit, int[] count) {
 		try {
 			return serverDAO.findAll(offset, limit, count);

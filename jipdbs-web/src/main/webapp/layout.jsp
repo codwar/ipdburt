@@ -82,7 +82,7 @@ $(document).ready(
     <div id="logo">
     <a href="/">IPDB</a>
     </div>
-        <li><form id="search-form" method="get">
+        <li><form id="search-form" method="get" action="/">
         <small><!-- span class="glass"><i></i></span--><input placeholder="Ingrese alias o IP a buscar" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
         </form>
         </li>    
