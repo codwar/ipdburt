@@ -23,7 +23,7 @@ public class Functions {
 	public static final String maskIpAddress(String ip) {
 		if (StringUtils.isEmpty(ip))
 			return "";
-		String[] parts = ip.split(".");
+		String[] parts = ip.split("\\.");
 		Integer n = IP_SEED;
 		n += Integer.parseInt(parts[0]);
 		n -= Integer.parseInt(parts[1]);
@@ -37,7 +37,7 @@ public class Functions {
 	public static final Long ipToDecimal(String ip) {
 		if (StringUtils.isEmpty(ip))
 			return 0l;
-		String[] parts = ip.split(".");
+		String[] parts = ip.split("\\.");
 		Long n = 16777216 * Long.parseLong(parts[0]);
 		n += 65536 * Long.parseLong(parts[1]);
 		n += 256 * Long.parseLong(parts[2]);
@@ -60,7 +60,7 @@ public class Functions {
 	}
 
 	public static String fixIp(String query) {
-		String[] parts = query.split(".");
+		String[] parts = query.split("\\.");
 		String[] r = new String[4];
 		for (int i = 0; i < 3; i++) {
 			if (i < parts.length)

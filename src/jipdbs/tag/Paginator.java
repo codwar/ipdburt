@@ -11,9 +11,13 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import jipdbs.util.Functions;
 
-@SuppressWarnings("serial")
 public class Paginator extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9117414369218162114L;
+	
 	private static final int LEADING_PAGE_RANGE_DISPLAYED = 4;
 	private static final int TRAILING_PAGE_RANGE_DISPLAYED = 4;
 	private static final int LEADING_PAGE_RANGE = 3;
@@ -32,7 +36,6 @@ public class Paginator extends TagSupport {
 		try {
 			out.write(generatePaginator());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return SKIP_BODY;

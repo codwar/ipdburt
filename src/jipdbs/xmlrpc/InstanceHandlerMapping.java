@@ -29,7 +29,7 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 					/*
 					 * For backward compatibility. Strip out namespace
 					 */
-					String[] methods = req.getMethodName().split(".");
+					String[] methods = req.getMethodName().split("\\.");
 					String methodName = methods[methods.length - 1];
 
 					Class<?>[] types = new Class<?>[req.getParameterCount()];
