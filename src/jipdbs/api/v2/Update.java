@@ -53,7 +53,6 @@ public class Update {
 	 */
 	public void updateName(String key, String name, String version,
 			String remoteAddr) {
-
 		try {
 			ServerManager serverManager = new ServerManager();
 			Server server = serverManager.getAuthorizedServer(key, remoteAddr,
@@ -98,9 +97,10 @@ public class Update {
 	 *            the server instance
 	 * @param list
 	 *            a list of jipdbs.bean.PlayerInfo
+	 * @throws Exception 
 	 * @since 0.5
 	 */
-	public void updatePlayer(Server server, List<PlayerInfo> list) {
+	public void updatePlayer(Server server, List<PlayerInfo> list) throws Exception {
 		
 		log.info("Processing server: " + server.getName());
 		
@@ -193,6 +193,7 @@ public class Update {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.getBuffer().toString());
+			throw e;
 		}
 	}
 
