@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.datanucleus.util.StringUtils;
-
 public class BanInfo implements Serializable {
 
 	/**
@@ -26,7 +24,7 @@ public class BanInfo implements Serializable {
 	}
 	
 	public BanInfo(String data) {
-		String[] parts = StringUtils.split(data, "::");
+		String[] parts = data.split("::");
 		setType(parts[0]);
 		setCreated(new Date(Long.parseLong(parts[1]) * 1000L));
 		setDuration(Long.parseLong(parts[2]));
