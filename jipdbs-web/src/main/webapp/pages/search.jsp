@@ -115,8 +115,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 <table>
 	<thead>
 		<tr>
-			<th>UID</th>
-			<th>Id</th>
+			<th title="ID Interno">UID</th>
+			<th title="ID Asignado por el servidor">Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
 			<th>Visto</th>
