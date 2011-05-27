@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.core.data.Server;
-import jipdbs.core.data.ServerDAO;
-import jipdbs.core.data.ServerDAOImpl;
+import jipdbs.core.model.Server;
+import jipdbs.core.model.dao.ServerDAO;
+import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;

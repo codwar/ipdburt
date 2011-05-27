@@ -19,9 +19,18 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import jipdbs.core.data.Alias;
-import jipdbs.core.data.Player;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Alias;
+import jipdbs.core.model.Player;
+import jipdbs.core.model.Server;
+import jipdbs.core.model.dao.AliasDAO;
+import jipdbs.core.model.dao.PlayerDAO;
+import jipdbs.core.model.dao.ServerDAO;
+import jipdbs.core.model.dao.cached.AliasCachedDAO;
+import jipdbs.core.model.dao.cached.PlayerCachedDAO;
+import jipdbs.core.model.dao.cached.ServerCachedDAO;
+import jipdbs.core.model.dao.impl.AliasDAOImpl;
+import jipdbs.core.model.dao.impl.PlayerDAOImpl;
+import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.info.AliasResult;
 import jipdbs.info.SearchResult;
 import net.tanesha.recaptcha.ReCaptcha;
@@ -34,10 +43,14 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class JIPDBS extends JIPDBSCore {
+public class JIPDBS {
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
+	protected final ServerDAO serverDAO = new ServerCachedDAO(new ServerDAOImpl());
+	protected final PlayerDAO playerDAO = new PlayerCachedDAO(new PlayerDAOImpl());
+	protected final AliasDAO aliasDAO = new AliasCachedDAO(new AliasDAOImpl());
+	
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
 

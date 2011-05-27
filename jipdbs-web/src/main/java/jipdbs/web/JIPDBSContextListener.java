@@ -12,9 +12,7 @@ public class JIPDBSContextListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-
 		JIPDBS app = (JIPDBS) event.getServletContext().getAttribute("jipdbs");
-		app.stop();
 	}
 
 	@Override
@@ -30,8 +28,7 @@ public class JIPDBSContextListener implements ServletContextListener {
 		}
 
 		JIPDBS app = new JIPDBS(props);
-
-		app.start();
+		
 		context.setAttribute("jipdbs", app);
 	}
 }

@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.core.JIPDBS;
 import jipdbs.core.PageLink;
-import jipdbs.core.data.Alias;
-import jipdbs.core.data.Player;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Alias;
+import jipdbs.core.model.Player;
+import jipdbs.core.model.Server;
 import jipdbs.info.AliasResult;
 import jipdbs.info.PlayerInfoView;
 

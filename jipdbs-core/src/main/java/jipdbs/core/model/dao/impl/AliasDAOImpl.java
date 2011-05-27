@@ -1,4 +1,4 @@
-package jipdbs.core.data;
+package jipdbs.core.model.dao.impl;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefetchSize;
@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jipdbs.core.model.Alias;
+import jipdbs.core.model.dao.AliasDAO;
 import jipdbs.core.util.Functions;
 import jipdbs.core.util.NGrams;
 

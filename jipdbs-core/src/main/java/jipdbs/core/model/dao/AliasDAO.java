@@ -1,7 +1,9 @@
-package jipdbs.core.data;
+package jipdbs.core.model.dao;
 
 import java.util.Collection;
 import java.util.List;
+
+import jipdbs.core.model.Alias;
 
 import com.google.appengine.api.datastore.Key;
 

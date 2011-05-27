@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import jipdbs.api.ServerManager;
 import jipdbs.api.v2.Update;
 import jipdbs.core.JIPDBS;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Server;
 import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.info.PlayerInfo;
 import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;

@@ -1,7 +1,9 @@
-package jipdbs.core.data;
+package jipdbs.core.model.dao.cached;
 
 import java.util.List;
 
+import jipdbs.core.model.Server;
+import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;

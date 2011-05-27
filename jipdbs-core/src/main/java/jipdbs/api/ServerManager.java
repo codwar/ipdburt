@@ -1,9 +1,9 @@
 package jipdbs.api;
 
-import jipdbs.core.data.Server;
-import jipdbs.core.data.ServerCachedDAO;
-import jipdbs.core.data.ServerDAO;
-import jipdbs.core.data.ServerDAOImpl;
+import jipdbs.core.model.Server;
+import jipdbs.core.model.dao.ServerDAO;
+import jipdbs.core.model.dao.cached.ServerCachedDAO;
+import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.exception.UnauthorizedUpdateException;
 
 import org.datanucleus.util.StringUtils;

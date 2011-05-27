@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.core.JIPDBS;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Server;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 

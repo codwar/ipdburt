@@ -2,7 +2,7 @@ package jipdbs.info;
 
 import java.util.Date;
 
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Server;
 
 public class SearchResult {
 

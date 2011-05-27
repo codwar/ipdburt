@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.api.v2.Update;
 import jipdbs.core.JIPDBS;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Server;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;

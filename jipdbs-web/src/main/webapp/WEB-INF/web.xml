@@ -34,10 +34,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>infoservlet</servlet-name>
 		<servlet-class>jipdbs.web.InfoServlet</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>xmlrpc</servlet-name>
-		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpcServlet</servlet-class>
-	</servlet>
     <servlet>
         <servlet-name>xmlrpc2</servlet-name>
         <servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
@@ -139,10 +135,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>cleanserver</servlet-name>
 		<url-pattern>/admin/cleanserver</url-pattern>
 	</servlet-mapping>	
-	<servlet-mapping>
-		<servlet-name>xmlrpc</servlet-name>
-		<url-pattern>/xmlrpc</url-pattern>
-	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>xmlrpc2</servlet-name>
         <url-pattern>/xmlrpc2</url-pattern>

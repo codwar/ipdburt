@@ -1,4 +1,4 @@
-package jipdbs.core.data;
+package jipdbs.core.model.dao.impl;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withOffset;
@@ -7,6 +7,9 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withPrefet
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import jipdbs.core.model.Player;
+import jipdbs.core.model.dao.PlayerDAO;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;

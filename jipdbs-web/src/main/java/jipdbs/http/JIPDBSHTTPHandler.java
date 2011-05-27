@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.api.Events;
 import jipdbs.core.JIPDBS;
-import jipdbs.core.data.Server;
+import jipdbs.core.model.Server;
 import jipdbs.info.PlayerInfo;
 
 import org.json.simple.JSONArray;

@@ -1,4 +1,4 @@
-package jipdbs.core.data;
+package jipdbs.core.model;
 
 import java.io.Serializable;
 import java.util.Collection;
