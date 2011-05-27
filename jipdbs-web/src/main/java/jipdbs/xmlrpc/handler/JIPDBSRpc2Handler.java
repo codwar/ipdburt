@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jipdbs.JIPDBS;
 import jipdbs.api.ServerManager;
 import jipdbs.api.v2.Update;
-import jipdbs.bean.PlayerInfo;
-import jipdbs.data.Server;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.data.Server;
 import jipdbs.exception.UnauthorizedUpdateException;
+import jipdbs.info.PlayerInfo;
 import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;
 
 public class JIPDBSRpc2Handler {

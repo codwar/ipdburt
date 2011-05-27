@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
-import jipdbs.PageLink;
-import jipdbs.Parameters;
-import jipdbs.bean.SearchResult;
-import jipdbs.util.Functions;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.PageLink;
+import jipdbs.core.Parameters;
+import jipdbs.core.util.Functions;
+import jipdbs.info.SearchResult;
 
 import org.datanucleus.util.StringUtils;
 

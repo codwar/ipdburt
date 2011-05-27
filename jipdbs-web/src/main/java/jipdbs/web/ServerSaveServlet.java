@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.datanucleus.util.StringUtils;
 
-import jipdbs.JIPDBS;
-import jipdbs.util.GuidGenerator;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.util.GuidGenerator;
 
 public class ServerSaveServlet extends HttpServlet {
 

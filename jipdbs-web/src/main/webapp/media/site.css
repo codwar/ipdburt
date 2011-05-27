@@ -656,3 +656,14 @@ input.search {
   -moz-box-shadow: 0 0 10px rgb(0,0,0);
   box-shadow: 0 0 5px rgb(0,0,0);
 }
+.plus, .minus {
+	font-weight: bold;
+	cursor: pointer;
+	font-family: monospace;
+}
+.plus {
+	color: green;
+}
+.minus {
+	color: red;
+}

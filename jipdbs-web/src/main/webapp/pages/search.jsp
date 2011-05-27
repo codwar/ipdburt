@@ -136,10 +136,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			<tr class="${rowStyle}">
 				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
 				<td>${player.clientId}</td>
-				<td class="icon offline <c:if test="${player.playing}">online</c:if>"><span class="plus" id="plus-${player.key}"
-					style="color: green; font-weight: bold; cursor: pointer; font-family: monospace;">[+]</span><span
-					class="minus"
-					style="display: none; color: red; font-weight: bold; cursor: pointer; font-family: monospace;">[-]</span>
+				<td class="icon offline <c:if test="${player.playing}">online</c:if>"><span class="plus" id="plus-${player.key}">[+]</span>
+				<span class="minus"	style="display: none;">[-]</span>
 				<span
 					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
 				<c:url value="/search.jsp" var="url">

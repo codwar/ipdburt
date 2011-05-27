@@ -9,7 +9,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import jipdbs.util.Functions;
+import jipdbs.core.util.Functions;
 
 public class Paginator extends TagSupport {
 

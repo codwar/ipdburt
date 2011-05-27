@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.data.AliasDAOImpl;
-import jipdbs.data.AliasDAO;
-import jipdbs.data.PlayerDAO;
-import jipdbs.data.PlayerDAOImpl;
-import jipdbs.util.LocalCache;
+import jipdbs.core.data.AliasDAO;
+import jipdbs.core.data.AliasDAOImpl;
+import jipdbs.core.data.PlayerDAO;
+import jipdbs.core.data.PlayerDAOImpl;
+import jipdbs.core.util.LocalCache;
 
 public class TruncateServlet extends HttpServlet {
 

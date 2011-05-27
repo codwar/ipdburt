@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
-import jipdbs.bean.AliasResult;
+import jipdbs.core.JIPDBS;
+import jipdbs.info.AliasResult;
 
 public class AliasServlet extends HttpServlet {
 

@@ -6,7 +6,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import jipdbs.JIPDBS;
+import jipdbs.core.JIPDBS;
 
 public class JIPDBSContextListener implements ServletContextListener {
 

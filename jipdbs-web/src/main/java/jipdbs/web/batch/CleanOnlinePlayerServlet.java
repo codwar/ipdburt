@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
 import jipdbs.api.v2.Update;
-import jipdbs.data.Server;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.data.Server;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;

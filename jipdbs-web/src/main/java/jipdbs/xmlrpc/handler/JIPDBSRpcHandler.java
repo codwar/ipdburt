@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jipdbs.BanInfo;
-import jipdbs.JIPDBS;
 import jipdbs.api.Events;
-import jipdbs.bean.PlayerInfo;
+import jipdbs.core.BanInfo;
+import jipdbs.core.JIPDBS;
+import jipdbs.info.PlayerInfo;
 import jipdbs.xmlrpc.JIPDBSXmlRpcServlet;
 
 public class JIPDBSRpcHandler {

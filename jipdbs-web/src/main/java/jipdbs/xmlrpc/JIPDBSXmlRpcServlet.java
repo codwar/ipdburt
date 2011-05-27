@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
+import jipdbs.core.JIPDBS;
 import jipdbs.xmlrpc.handler.JIPDBSRpcHandler;
 
 import org.apache.xmlrpc.XmlRpcException;

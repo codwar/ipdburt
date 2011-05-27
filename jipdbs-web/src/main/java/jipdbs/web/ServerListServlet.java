@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
-import jipdbs.data.Server;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.data.Server;
 
 public class ServerListServlet extends HttpServlet {
 

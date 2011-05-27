@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.util.Functions;
+import jipdbs.core.util.Functions;
 
 import com.google.appengine.api.utils.SystemProperty;
 
@@ -36,7 +36,6 @@ public class InfoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 		String appVer = SystemProperty.applicationVersion.get();
-		System.out.println(appVer);
 		String[] ver = appVer.split("\\.");
 		long longversion = (long) (Long.parseLong(ver[ver.length-1]) / Math.pow(2, 28)); 
 		Date d = new Date(longversion * 1000);

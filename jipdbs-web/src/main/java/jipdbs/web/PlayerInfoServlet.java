@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
-import jipdbs.PageLink;
-import jipdbs.bean.AliasResult;
-import jipdbs.bean.PlayerInfoView;
-import jipdbs.data.Alias;
-import jipdbs.data.Player;
-import jipdbs.data.Server;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.PageLink;
+import jipdbs.core.data.Alias;
+import jipdbs.core.data.Player;
+import jipdbs.core.data.Server;
+import jipdbs.info.AliasResult;
+import jipdbs.info.PlayerInfoView;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 

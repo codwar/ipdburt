@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.JIPDBS;
 import jipdbs.api.Events;
-import jipdbs.bean.PlayerInfo;
-import jipdbs.data.Server;
+import jipdbs.core.JIPDBS;
+import jipdbs.core.data.Server;
+import jipdbs.info.PlayerInfo;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;

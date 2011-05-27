@@ -22,16 +22,18 @@ Building and running tests
 
 When running for the first time:
 
+cd jipdbs-web
 mvn gae:unpack
 
 will fetch and store all the gae sdk files in the local maven repo.
 
+cd ..
 mvn clean install
 
 In order to generate Eclipse .project, .classpath and .settings files and 
 directories:
 
-Only once: mvn eclipse:configure-workspace -Dworkspace=/path/to/workspace
+Only once: mvn eclipse:configure-workspace -Declipse.workspace=/path/to/workspace
 
 mvn eclipse:clean eclipse:eclipse
 
