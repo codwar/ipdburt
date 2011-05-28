@@ -63,10 +63,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-class>jipdbs.web.MailHandlerServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>httphandler</servlet-name>
-		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>keepalivehandler</servlet-name>
 		<servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
 	</servlet>
@@ -94,10 +90,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<servlet-mapping>
 		<servlet-name>mailhandler</servlet-name>
 		<url-pattern>/_ah/mail/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>httphandler</servlet-name>
-		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>playerinfo</servlet-name>

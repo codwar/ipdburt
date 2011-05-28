@@ -1,6 +1,63 @@
 IPDB Sudamericana
 -----------------
 
+Maven Setup
+------------
+
+Confire GAE Repositories
+
++++++++++++++++++++++++++++
+<profile>
+    <id>gae-repository</id>
+    <activation>
+	<activeByDefault>true</activeByDefault>
+    </activation>
+    <repositories>
+	<repository>
+	    <id>maven-gae-repo</id>
+	    <url>http://maven-gae-plugin.googlecode.com/svn/repository</url>
+	    <releases>
+	        <enabled>true</enabled>
+	    </releases>
+	    <snapshots>
+	        <enabled>false</enabled>
+	    </snapshots>
+	</repository>
+    </repositories>
+    <pluginRepositories>
+	<pluginRepository>
+	    <id>maven-gae-plugins-repo</id>
+	    <url>http://maven-gae-plugin.googlecode.com/svn/repository</url>
+	    <releases>
+	        <enabled>true</enabled>
+	    </releases>
+	    <snapshots>
+	        <enabled>false</enabled>
+	    </snapshots>
+	</pluginRepository>
+    </pluginRepositories>
+</profile>
++++++++++++++++++++++++++++
+
+Building and running tests
+--------------------------
+
+When running for the first time:
+
+cd jipdbs-core
+mvn gae:unpack
+
+will fetch and store all the gae sdk files in the local maven repo.
+
+cd ..
+mvn clean install
+
+In order to generate Eclipse .project, .classpath and .settings files and 
+directories:
+
+Only once: mvn eclipse:configure-workspace -Declipse.workspace=/path/to/workspace
+
+mvn eclipse:clean eclipse:eclipse
 
 Running
 -------
@@ -15,27 +72,6 @@ mvn gae:debug
 
 This uses JPWD. A connection can be opened from Eclipse Debug as remote app in 
 order to debug.
-
-
-Building and running tests
---------------------------
-
-When running for the first time:
-
-cd jipdbs-web
-mvn gae:unpack
-
-will fetch and store all the gae sdk files in the local maven repo.
-
-cd ..
-mvn clean install
-
-In order to generate Eclipse .project, .classpath and .settings files and 
-directories:
-
-Only once: mvn eclipse:configure-workspace -Declipse.workspace=/path/to/workspace
-
-mvn eclipse:clean eclipse:eclipse
 
 
 Deploy a development version
