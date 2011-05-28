@@ -291,7 +291,7 @@ public class JIPDBS {
 		result.setName(alias.getNickname());
 		result.setServer(server);
 		result.setBanInfo(player.getBanInfo());
-		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "UID" + result.getId());
 		return result;
 	}
 	

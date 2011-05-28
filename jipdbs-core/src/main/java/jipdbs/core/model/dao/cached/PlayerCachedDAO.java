@@ -55,7 +55,11 @@ public class PlayerCachedDAO implements PlayerDAO {
 
 	@Override
 	public Player get(Key player) throws EntityNotFoundException {
-		return impl.get(player);
+		Player p = (Player) cache.get("player-" + KeyFactory.keyToString(player));
+		if (p != null) return p;
+		p = impl.get(player);
+		cache.put("player-" + KeyFactory.keyToString(player), p, 10);
+		return p;
 	}
 
 	@Override

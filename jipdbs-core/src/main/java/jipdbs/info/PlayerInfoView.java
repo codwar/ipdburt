@@ -22,6 +22,7 @@ public class PlayerInfoView implements Serializable {
 	private Collection<AliasResult> aliases;
 	private String level;
 	private String clientId;
+	private boolean playing;
 	
 	public String getName() {
 		return name;
@@ -85,6 +86,12 @@ public class PlayerInfoView implements Serializable {
 	}
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+	public boolean isPlaying() {
+		return playing;
+	}
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
 	}	
 	
 }

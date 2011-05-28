@@ -36,15 +36,13 @@ public class PlayerInfoServlet extends HttpServlet {
 
 		String id = req.getParameter("id");
 		
-		// TODO cachear por manejar los paginados
-		
 		Player player;
 		try {
 			player = app.getPlayer(id);
-		} catch (EntityNotFoundException e1) {
+		} catch (Exception e) {
 			// TODO manejar y tirar 404
-			e1.printStackTrace();
-			throw new ServletException(e1);
+			e.printStackTrace();
+			throw new ServletException(e);
 		}
 		
 		int page = 1;
@@ -85,6 +83,7 @@ public class PlayerInfoServlet extends HttpServlet {
 		infoView.setBanInfo(player.getBanInfo());
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
+		infoView.setPlaying(player.isConnected());
 		if (player.getLevel() != null && player.getLevel() > 0 && player.getLevel() <= server.getMaxLevel()) {
 			infoView.setLevel(player.getLevel().toString());
 		} else {

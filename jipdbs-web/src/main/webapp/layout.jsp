@@ -50,7 +50,7 @@ $(document).ready(
 			$('.close_button').click(function() {
 				$(this).parent().remove();
 			});
-			$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
+			//$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
 			$(".focus").each(
 					function() {
 						$(this).focus();
@@ -124,14 +124,19 @@ $(document).ready(
 	<img src="/media/images/bimage.png" width="105" height="107"/>
 </div>
 
+<!--
 <div id="donar">
 <span style="padding-top: 4px;text-decoration: blink; color: red;">Consider&aacute; colaborar</span>
 <div id="dineromail" style="text-align: center; padding-top: 5px;">
 <a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
 </div>
 </div>
+-->
 
 <div class="container">	
+<div id="dineromail" style="position: absolute; padding-top: 50px; padding-left: 10px;">
+<a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
+</div>
 
 <div class="clearer"><span></span></div>
 <div id="context-loader" class="context-loader">Cargando&hellip;</div>

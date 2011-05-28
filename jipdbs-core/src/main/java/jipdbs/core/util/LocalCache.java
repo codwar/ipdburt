@@ -2,6 +2,7 @@ package jipdbs.core.util;
 
 import java.util.logging.Logger;
 
+import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
@@ -25,6 +26,7 @@ public class LocalCache {
 //		cache = new ConcurrentHashMap<String, Object>(100);
 		// disable cache
 		cache = MemcacheServiceFactory.getMemcacheService(); 
+
 	}
 
 	public static LocalCache getInstance() {
@@ -40,6 +42,11 @@ public class LocalCache {
 		}
 	}
 	
+	/**
+	 * Get object from cache
+	 * @param key
+	 * @return
+	 */
 	public Object get(String key) {
 		if (cache == null)
 			return null;
@@ -48,6 +55,26 @@ public class LocalCache {
 		return ob;
 	}
 
+	/**
+	 * Cache object with expiration time
+	 * @param key
+	 * @param value 
+	 * @param expiration - Expiration time in minutes
+	 */
+	public void put(String key, Object value, Integer expiration) {
+		if (cache == null)
+			return;		
+		synchronized (cache) {
+			log.finest("Save key " + key);
+			cache.put(key, value, Expiration.byDeltaSeconds(expiration * 60));
+		}
+	}
+	
+	/**
+	 * Cache object with no expiration time
+	 * @param key
+	 * @param value
+	 */
 	public void put(String key, Object value) {
 		if (cache == null)
 			return;		
@@ -56,6 +83,4 @@ public class LocalCache {
 			cache.put(key, value);
 		}
 	}
-
-	
 }

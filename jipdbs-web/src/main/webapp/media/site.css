@@ -495,7 +495,10 @@ ul.messages li.warning {
     background-image: url('images/status_offline.png');
 }
 .online {
-    background-image: url('images/status_online.png') !important;
+    background-image: url('images/status_online.png');
+}
+.banned {
+    background-image: url('images/status_banned.png');
 }
 .edit {
     background-image: url('images/pencil.png');

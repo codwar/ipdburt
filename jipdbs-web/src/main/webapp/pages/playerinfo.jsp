@@ -9,7 +9,21 @@
 <jsp:include page="/pages/flash.jsp" />
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
-<legend>${fn:escapeXml(player.name)}</legend>
+<legend>${fn:escapeXml(player.name)}
+<span class="icon
+                <c:choose>
+                    <c:when test="${not empty player.banInfo}">
+                        banned infoTip
+                    </c:when>
+                    <c:when test="${player.playing}">
+                        online
+                    </c:when>
+                    <c:otherwise>
+                        offline
+                    </c:otherwise>
+                </c:choose>
+"></span>
+</legend>
 	<strong>Id:</strong> ${player.clientId}<br />
 	<strong>Visto:</strong> <fmt:formatDate
 	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"

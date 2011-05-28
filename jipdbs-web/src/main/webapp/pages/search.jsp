@@ -107,7 +107,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			});
 		});
 
-		$(".exclamation").tipTip();
+        $(".infoTip").tipTip({attribute: "alt"});
 
 	});
 </script>
@@ -115,8 +115,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 <table>
 	<thead>
 		<tr>
-			<th title="ID Interno">UID</th>
-			<th title="ID Asignado por el servidor">Id</th>
+			<th>Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
 			<th>Visto</th>
@@ -134,12 +133,22 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				</c:otherwise>
 			</c:choose>
 			<tr class="${rowStyle}">
-				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.id}</a></td>
-				<td>${player.clientId}</td>
-				<td class="icon offline <c:if test="${player.playing}">online</c:if>"><span class="plus" id="plus-${player.key}">[+]</span>
+				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.clientId}</a></td>
+				<td class="icon
+				<c:choose>
+                    <c:when test="${not empty player.banInfo}">
+                        banned infoTip
+                    </c:when>
+                    <c:when test="${player.playing}">
+                        online
+                    </c:when>
+                    <c:otherwise>
+                        offline
+                    </c:otherwise>
+                </c:choose>
+				" alt="${player.banInfo}"><span class="plus" id="plus-${player.key}">[+]</span>
 				<span class="minus"	style="display: none;">[-]</span>
-				<span
-					<c:if test="${not empty player.banInfo}">class="icon icon-right exclamation" title="${player.banInfo}"</c:if>>
+				<span>
 				<c:url value="/search.jsp" var="url">
 					<c:param name="q" value="${player.name}" />
 				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
