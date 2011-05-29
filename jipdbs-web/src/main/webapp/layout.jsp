@@ -21,8 +21,10 @@
 <link rel="stylesheet" type="text/css" href="/media/message.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/styles/menu.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/media/nm.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="/media/js/jquery.nm.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
 <script type="text/javascript" src="/media/js/jquery.pulse.js"></script>
@@ -30,47 +32,10 @@
 <script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.floatobject-1.4.js"></script>
 <script type="text/javascript" src="/media/styles/menu.js"></script>
-<script type="text/javascript">
-function showContextLoader() {
-    $.loading(true, {text: 'Enviando solicitud...', loadingClass: 'context-loader', update: {texts: ['Por favor, aguarde...', 'Por favor reintente.']}});
-}
-$(document).ready(
-		function() {
-		    $('body').ajaxStart(function() {
-		        showContextLoader();
-		    }); 
-		    $('body').ajaxStop(function() {
-		        $.loading(false);      
-		    });
-			$('ul.messages li').each(
-					function() {
-						$(this).append(
-								"<img class='close_button' src='/media/images/close.gif'/>");
-					});
-			$('.close_button').click(function() {
-				$(this).parent().remove();
-			});
-			//$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
-			$(".focus").each(
-					function() {
-						$(this).focus();
-						$(this).select();
-					}
-			);
-            $(window).unload( function () { showContextLoader(); } );
-            $(".fetch-server").each(function() {
-            	data = {key: $(this).attr("alt")};
-            	$.post("/app/fetchserver",data, function(d) {
-            		rs = ($.parseJSON(d));
-            		if (rs.error) {
-            			$(".fetch-server[alt="+rs.key+"]").attr("src","/media/images/exclamation.png");
-            		} else {
-            			$(".fetch-server[alt="+rs.server.key+"]").replaceWith(rs.server.count);
-            		}
-            	});
-            });
-});
-</script>
+<script type="text/javascript" src="/media/js/base.js"></script>
+<!--[if IE 6]>
+    <script type="text/javascript" src="/media/js/jquery.nm-ie6.min.js"></script>
+<![endif]-->
 </head>
 <body>
 <div style="display: none;">

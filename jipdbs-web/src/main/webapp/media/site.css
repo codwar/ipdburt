@@ -670,3 +670,10 @@ input.search {
 .minus {
 	color: red;
 }
+.button {
+    background: #fff;
+    padding: 2px;
+    font-family: Geneva, Vera, Arial, Helvetica, sans-serif;
+    font-variant : small-caps;
+    border : 1px solid #aaa;
+}

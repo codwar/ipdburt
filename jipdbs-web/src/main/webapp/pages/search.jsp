@@ -111,10 +111,11 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 
 	});
 </script>
-
-<table>
+<span id="copyall" rel="copydialog" class="button" style="visibility:hidden;">Copiar selección</span>
+<table id="search-result">
 	<thead>
 		<tr>
+		    <th style="width: 20px;"><input type="checkbox" id="multiselect"></th>
 			<th>Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
@@ -132,8 +133,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					<c:set var="rowStyle" scope="page" value="even" />
 				</c:otherwise>
 			</c:choose>
-			<tr class="${rowStyle}">
-				<td><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.clientId}</a></td>
+			<tr class="${rowStyle}" id="result-${rowCounter.count}">
+			    <td copiable="false"><input type="checkbox" value="result-${rowCounter.count}" name="selector"></td>
+				<td style="text-align: right;"><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.clientId}</a></td>
 				<td class="icon
 				<c:choose>
                     <c:when test="${not empty player.banInfo}">
@@ -165,6 +167,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
 				</c:if><c:if test="${player.playing}">Conectado</c:if>--%></td>
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
+				<c:if test="${not empty player.banInfo}">
+				<td style="display: none;">${player.banInfo}</td>
+				</c:if>
 			</tr>
 			<tr style="display: none;">
 				<td colspan="6" style="padding: 20px;">
@@ -211,3 +216,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 		</tr>
 	</tfoot>
 </table>
+<div style="display:none;" id="copydialog">
+<span id="copycontent"></span>
+<a href="#copydialog" id="copyTrigger" style="display: none;"></a>
+</div>

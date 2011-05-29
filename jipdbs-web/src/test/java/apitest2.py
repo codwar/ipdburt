@@ -2,7 +2,7 @@ import xmlrpclib
 import time
 import datetime
 
-key = "23b4a9932b07a569bf60540046fc76c7ce00f970"
+key = "571166dd4b10cdeaa3cb01005cf9e9762c026fba"
 proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
 
 print "Update Name"
@@ -18,8 +18,8 @@ players = [('connect', 'Player1-1','guid1', '1', '127.0.0.1', '0'),
             ('connect', 'Player6-1','guid6', '6', '127.0.0.1', '0'),
             ('disconnect', 'Player1-2','guid1', '1', '127.0.0.1', '0'),
             ('update', 'Player2-2','guid2', '2', '127.0.0.1', '1'),
-            ('banned', 'Player2-2','guid2', '2', '127.0.0.1', '1', datetime.datetime.now(), baninfo),
-            ('banned', 'Player3-2','guid3', '3', '127.0.0.1', '1', datetime.datetime.now(), baninfo),
+            ('banned', 'Player2-2','guid2', '2', '127.0.0.1', '1', time.time(), baninfo),
+            ('banned', 'Player3-2','guid3', '3', '127.0.0.1', '1', time.time(), baninfo),
             ('unbanned', 'Player3-2','guid3', '3', '127.0.0.1', '1'),]
 
 print "Update logs"
