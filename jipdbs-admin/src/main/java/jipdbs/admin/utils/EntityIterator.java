@@ -1,4 +1,4 @@
-package jipdbs;
+package jipdbs.admin.utils;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
