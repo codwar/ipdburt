@@ -99,7 +99,7 @@
 -->
 
 <div class="container">	
-<div id="dineromail" style="position: absolute; padding-top: 50px; padding-left: 10px;">
+<div id="dineromail" style="position: absolute; top: 50px; padding-left: 10px;">
 <a href="/donar.jsp"><img width="74" height="19" src='https://argentina.dineromail.com/imagenes/botones/donar_c.gif' border='0' name='submit' alt='Donar con DineroMail'/></a>
 </div>
 

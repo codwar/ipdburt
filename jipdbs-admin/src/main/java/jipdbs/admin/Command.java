@@ -39,7 +39,7 @@ public abstract class Command {
 		String username = console.readLine();
 		System.out.print("password: ");
 		String password = console.readLine();
-		RemoteApiOptions options = new RemoteApiOptions().server(props.getProperty("url"), 443).credentials(username, password).remoteApiPath("/remote_api");
+		RemoteApiOptions options = new RemoteApiOptions().server(props.getProperty("url"), Integer.parseInt(props.getProperty("port"))).credentials(username, password).remoteApiPath("/remote_api");
 		this.installer = new RemoteApiInstaller();
 		this.installer.install(options);		
 	}

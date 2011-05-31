@@ -78,6 +78,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>cleanserver</servlet-name>
 		<servlet-class>jipdbs.web.batch.CleanOnlinePlayerServlet</servlet-class>
 	</servlet>	
+	<servlet>
+		<servlet-name>httphandler</servlet-name>
+		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
@@ -151,7 +155,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>RemoteApiServlet</servlet-name>
 		<url-pattern>/remote_api</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>httphandler</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>

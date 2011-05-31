@@ -98,8 +98,8 @@
 					</platforms>
 					<programs>
 						<program>
-							<mainClass>jipdbs.BanInfoUpdatedUpdate</mainClass>
-							<name>baninfoupdated</name>
+							<mainClass>jipdbs.admin.App</mainClass>
+							<name>main</name>
 						</program>
 					</programs>
 				</configuration>
