@@ -10,15 +10,17 @@ import org.datanucleus.util.StringUtils;
 
 public class ServerManager {
 
-	protected final ServerDAO serverDAO = new ServerCachedDAO(
+	private final static ServerDAO serverDAO = new ServerCachedDAO(
 			new ServerDAOImpl());
 
-	public Server getAuthorizedServer(String key, String remoteAddress)
+	private ServerManager() {};
+	
+	public static Server getAuthorizedServer(String key, String remoteAddress)
 			throws UnauthorizedUpdateException {
 		return getAuthorizedServer(key, remoteAddress, null);
 	}
 
-	public Server getAuthorizedServer(String key, String remoteAddress,
+	public static Server getAuthorizedServer(String key, String remoteAddress,
 			String serverName) throws UnauthorizedUpdateException {
 
 		Server server = serverDAO.findByUid(key);

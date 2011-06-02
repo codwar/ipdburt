@@ -43,6 +43,31 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	@Override
+	public Alias findByPlayerAndNickname(Key player, String nickname) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query q = new Query("Alias");
+		q.setAncestor(player);
+		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
+		PreparedQuery pq = service.prepare(q);
+		Entity entity = null;
+		try {
+			entity = pq.asSingleEntity();
+		} catch (TooManyResultsException e) {
+			log.severe("DUPLICATED:" + nickname + " for player " + player);
+			List<Entity> list = pq.asList(withLimit(1));
+			if (list.size() > 0) {
+				entity = list.get(0);
+			}
+		}
+		if (entity != null)
+			return new Alias(entity);
+		return null;
+	}
+	
+	@Override
 	public Alias findByPlayerAndNicknameAndIp(Key player, String nickname,
 			String ip) {
 
@@ -158,7 +183,7 @@ public class AliasDAOImpl implements AliasDAO {
 
 		PreparedQuery pq = service.prepare(q);
 
-		count[0] = pq.countEntities(withPrefetchSize(limit));
+		if (count != null) count[0] = pq.countEntities(withPrefetchSize(limit));
 
 		List<Entity> list = pq.asList(withLimit(limit).offset(offset));
 

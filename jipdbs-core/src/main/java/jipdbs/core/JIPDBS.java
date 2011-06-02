@@ -20,17 +20,22 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import jipdbs.core.model.Alias;
+import jipdbs.core.model.AliasIP;
 import jipdbs.core.model.Player;
 import jipdbs.core.model.Server;
 import jipdbs.core.model.dao.AliasDAO;
+import jipdbs.core.model.dao.AliasIPDAO;
 import jipdbs.core.model.dao.PlayerDAO;
 import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.model.dao.cached.AliasCachedDAO;
+import jipdbs.core.model.dao.cached.AliasIPCachedDAO;
 import jipdbs.core.model.dao.cached.PlayerCachedDAO;
 import jipdbs.core.model.dao.cached.ServerCachedDAO;
 import jipdbs.core.model.dao.impl.AliasDAOImpl;
+import jipdbs.core.model.dao.impl.AliasIPDAOImpl;
 import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
+import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
 import jipdbs.info.SearchResult;
 import net.tanesha.recaptcha.ReCaptcha;
@@ -50,6 +55,7 @@ public class JIPDBS {
 	protected final ServerDAO serverDAO = new ServerCachedDAO(new ServerDAOImpl());
 	protected final PlayerDAO playerDAO = new PlayerCachedDAO(new PlayerDAOImpl());
 	protected final AliasDAO aliasDAO = new AliasCachedDAO(new AliasDAOImpl());
+	protected final AliasIPDAO aliasIpDAO = new AliasIPCachedDAO(new AliasIPDAOImpl());
 	
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
@@ -82,8 +88,6 @@ public class JIPDBS {
 		Server server = new Server();
 		server.setAdmin(new Email(admin));
 		server.setCreated(new Date());
-		// server.setUpdated(new Date()); // skip this. it should be updated
-		// when the server actually start sending data.
 		server.setUid(uid);
 		server.setName(name);
 		server.setOnlinePlayers(0);
@@ -134,26 +138,12 @@ public class JIPDBS {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
 			for (Player player : players) {
-
-				Alias alias = aliasDAO.getLastUsedAlias(player.getKey());
 				Server server = serverDAO.get(player.getServer());
 
 				// Whoops! inconsistent data.
-				if (alias == null || server == null)
-					continue;
+				if (server == null) continue;
 
-//				SearchResult result = new SearchResult();
-//				result.setId(player.getKey().getId());
-//				result.setKey(KeyFactory.keyToString(player.getKey()));
-//				result.setIp(alias.getMaskedIp());
-//				result.setLatest(alias.getUpdated());
-//				result.setPlaying(false);
-//				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-//				result.setName(alias.getNickname());
-//				result.setServer(server);
-//				result.setBanInfo(player.getBanInfo());
-//				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
-				SearchResult result = marshall(alias, player, server);
+				SearchResult result = marshall(player, server);
 				results.add(result);
 			}
 			return results;
@@ -172,26 +162,13 @@ public class JIPDBS {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
 			for (Player player : players) {
-
-				Alias alias = aliasDAO.getLastUsedAlias(player.getKey());
 				Server server = serverDAO.get(player.getServer());
 
 				// Whoops! inconsistent data.
-				if (alias == null || server == null)
+				if (server == null)
 					continue;
 
-//				SearchResult result = new SearchResult();
-//				result.setId(player.getKey().getId());
-//				result.setKey(KeyFactory.keyToString(player.getKey()));
-//				result.setIp(alias.getMaskedIp());
-//				result.setLatest(alias.getUpdated());
-//				result.setPlaying(false);
-//				// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-//				result.setName(alias.getNickname());
-//				result.setServer(server);
-//				result.setBanInfo(player.getBanInfo());
-//				result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
-				SearchResult result = marshall(alias, player, server);
+				SearchResult result = marshall(player, server);
 				results.add(result);
 			}
 			return results;
@@ -216,10 +193,8 @@ public class JIPDBS {
 			// No exact match, try ngrams.
 			if (aliasses.size() == 0 && query.length() >= Parameters.MIN_NGRAM_QUERY
 					&& query.length() <= Parameters.MAX_ALIAS_QUERY) {
-				aliasses = aliasDAO.findByNGrams(
-						query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query
-								.substring(0, Parameters.MAX_NGRAM_QUERY), Parameters.NGRAMS_OFFSET,
-								Parameters.NGRAMS_LIMIT, count);
+				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query.substring(0, Parameters.MAX_NGRAM_QUERY);
+				aliasses = aliasDAO.findByNGrams(query, Parameters.NGRAMS_OFFSET, Parameters.NGRAMS_LIMIT, count);
 				exactMatch[0] = false;
 			}
 
@@ -236,7 +211,21 @@ public class JIPDBS {
 			int[] count) {
 
 		try {
-			return marshall(aliasDAO.findByIP(query, offset, limit, count));
+			List<SearchResult> results = new ArrayList<SearchResult>();
+			List<AliasIP> aliasses = aliasIpDAO.findByIP(query, offset, limit, count);
+			
+			for (AliasIP alias : aliasses) {
+				Player player = playerDAO.get(alias.getPlayer());
+				Server server = serverDAO.get(player.getServer());
+
+				// Whoops! inconsistent data.
+				if (alias == null || server == null)
+					continue;
+
+				SearchResult result = marshall(player, server);
+				results.add(result);
+			}
+			return results;
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
@@ -249,7 +238,12 @@ public class JIPDBS {
 			int limit, int[] count) {
 
 		try {
-			return marshall(aliasDAO.findByServer(query, offset, limit, count));
+			List<SearchResult> results = new ArrayList<SearchResult>();
+			for (Player player : playerDAO.findByServer(query, offset, limit, count)) {
+				Server server = serverDAO.get(player.getServer());
+				results.add(marshall(player, server));
+			}
+			return results;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -259,6 +253,16 @@ public class JIPDBS {
 		}
 	}
 
+	private List<SearchResult> marshallPlayers(List<Key> players) throws EntityNotFoundException {
+		List<SearchResult> results = new ArrayList<SearchResult>();
+		for (Key key: players) {
+			Player player = playerDAO.get(key);
+			Server server = serverDAO.get(player.getServer());
+			results.add(marshall(player, server));
+		}
+		return results;
+	}
+	
 	private List<SearchResult> marshall(List<Alias> aliasses)
 			throws EntityNotFoundException {
 
@@ -273,22 +277,21 @@ public class JIPDBS {
 			if (alias == null || server == null)
 				continue;
 
-			SearchResult result = marshall(alias, player, server);
+			SearchResult result = marshall(player, server);
 			results.add(result);
 		}
 
 		return results;
 	}
 
-	private SearchResult marshall(Alias alias, Player player, Server server) {
+	private SearchResult marshall(Player player, Server server) {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey().getId());
 		result.setKey(KeyFactory.keyToString(player.getKey()));
-		result.setIp(alias.getMaskedIp());
-		result.setLatest(alias.getUpdated());
+		result.setIp(Functions.maskIpAddress(player.getIp()));
+		result.setLatest(player.getUpdated());
 		result.setPlaying(player.isConnected());
-		// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
-		result.setName(alias.getNickname());
+		result.setName(player.getNickname());
 		result.setServer(server);
 		result.setBanInfo(player.getBanInfo());
 		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "UID" + result.getId());
@@ -299,6 +302,7 @@ public class JIPDBS {
 		return playerDAO.get(KeyFactory.stringToKey(player));
 	}
 
+	@Deprecated
 	public Alias getLastAlias(String player) {
 		return aliasDAO.getLastUsedAlias(KeyFactory.stringToKey(player));
 	}
@@ -319,7 +323,7 @@ public class JIPDBS {
 
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-					item.setIp(alias.getMaskedIp());
+					item.setIp(null);
 					item.setNickname(alias.getNickname());
 					item.setUpdated(alias.getUpdated());
 					result.add(item);
@@ -334,6 +338,36 @@ public class JIPDBS {
 		}
 	}
 
+	public List<AliasResult> aliasip(String encodedKey, int offset, int limit,
+			int[] count) {
+
+		try {
+			List<AliasResult> result = new ArrayList<AliasResult>();
+
+			Player player = playerDAO.get(KeyFactory.stringToKey(encodedKey));
+
+			if (player != null) {
+				List<AliasIP> aliasses = aliasIpDAO.findByPlayer(player.getKey(),
+						offset, limit, count);
+
+				for (AliasIP alias : aliasses) {
+					AliasResult item = new AliasResult();
+					item.setCount(alias.getCount().intValue());
+					item.setIp(Functions.maskIpAddress(alias.getIp()));
+					item.setNickname(null);
+					item.setUpdated(alias.getUpdated());
+					result.add(item);
+				}
+			}
+
+			return result;
+		} catch (Exception e) {
+			log.severe("Unable to fetch IP aliasses:" + e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+	
 	public void sendAdminMail(String realId, String from, String body) {
 		try {
 

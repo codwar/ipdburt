@@ -8,11 +8,12 @@
 <json:object>
 	<json:property name="hasMore" value="${hasMore}" />
 	<json:property name="total" value="${total}" />
-	<json:property name="offset" value="${offset}" />
+	<json:property name="offset" value="${offset}" />	
 	<json:property name="pages" value="${pages}" />
 	<json:array name="items" var="item" items="${list}">
 		<json:object>
-			<json:property name="nickname" value="${item.nickname}" />
+			<json:property name="ip" value="${item.ip}" />
+			<json:property name="ipSearch" value="${item.ipSearch}" />
 			<json:property name="updated">
 				<fmt:formatDate value="${item.updated}" type="both"
 					timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />

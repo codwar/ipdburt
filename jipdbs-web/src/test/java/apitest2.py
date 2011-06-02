@@ -2,7 +2,7 @@ import xmlrpclib
 import time
 import datetime
 
-key = "571166dd4b10cdeaa3cb01005cf9e9762c026fba"
+key = "test"
 proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
 
 print "Update Name"

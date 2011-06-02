@@ -10,10 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jipdbs.core.JIPDBS;
-import jipdbs.core.PageLink;
-import jipdbs.core.model.Alias;
 import jipdbs.core.model.Player;
 import jipdbs.core.model.Server;
+import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
 import jipdbs.info.PlayerInfoView;
 
@@ -45,6 +44,9 @@ public class PlayerInfoServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		
+		List<AliasResult> list = new ArrayList<AliasResult>();
+		
+/*		
 		int page = 1;
 		int pageSize = 20;
 		
@@ -56,15 +58,12 @@ public class PlayerInfoServlet extends HttpServlet {
 
 		int offset = (page - 1) * pageSize;
 
-		List<AliasResult> list = new ArrayList<AliasResult>();
-
 		int[] total = new int[1];
 		
 		long time = System.currentTimeMillis();
 		
 		list = app.alias(id, offset, pageSize, total);
-		
-		Alias alias = app.getLastAlias(id);
+		*/
 		Server server;
 		try {
 			server = app.getServer(player.getServer());
@@ -76,9 +75,9 @@ public class PlayerInfoServlet extends HttpServlet {
 		
 		PlayerInfoView infoView = new PlayerInfoView();
 		infoView.setKey(id);
-		infoView.setName(alias.getNickname());
-		infoView.setIp(alias.getMaskedIp());
-		infoView.setUpdated(alias.getUpdated());
+		infoView.setName(player.getNickname());
+		infoView.setIp(Functions.maskIpAddress(player.getIp()));
+		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
 		infoView.setBanInfo(player.getBanInfo());
 		infoView.setAliases(list);
@@ -90,11 +89,11 @@ public class PlayerInfoServlet extends HttpServlet {
 			infoView.setLevel("-");
 		}
 		
-		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
+		//int totalPages = (int) Math.ceil((double) total[0] / pageSize);
 		
 		req.setAttribute("player", infoView);
-		req.setAttribute("count", total[0]);
-		req.setAttribute("time", time);
-		req.setAttribute("pageLink", new PageLink(page , pageSize, totalPages));
+		//req.setAttribute("count", total[0]);
+		//req.setAttribute("time", time);
+		//req.setAttribute("pageLink", new PageLink(page , pageSize, totalPages));
 	}
 }

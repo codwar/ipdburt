@@ -444,6 +444,10 @@ tfoot .pagination {
     background-color:#555555;
     border:1px solid #555555;
 }
+.pagination .prev,
+.pagination .next {
+    cursor: pointer;
+}
 /* ------- MESSAGES ----------- */
 ul.messages {
     list-style-type: none;

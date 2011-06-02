@@ -38,8 +38,7 @@ public class JIPDBSRpc2Handler {
 	public void update(String key, Object[] plist) throws Exception {
 
 		try {
-			ServerManager serverManager = new ServerManager();
-			Server server = serverManager.getAuthorizedServer(key,
+			Server server = ServerManager.getAuthorizedServer(key,
 					JIPDBSXmlRpc2Servlet.getClientIpAddress());
 
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();

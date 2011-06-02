@@ -24,25 +24,14 @@ public class AliasCachedDAO implements AliasDAO {
 	public void save(Alias alias, boolean commit) {
 		impl.save(alias, commit);
 		if (alias.getKey() != null) {
-			cache.put(cacheKey(alias.getPlayer(), alias.getNickname(), alias.getIp()),alias);
+			cache.put(cacheKey(alias.getPlayer(), alias.getNickname()),alias);
 		}
 	}
 
 	@Override
 	public Alias findByPlayerAndNicknameAndIp(Key player, String nickname,
 			String ip) {
-		Alias alias = (Alias) cache.get(cacheKey(player, nickname, ip));
-
-		if (alias != null)
-			return alias;
-
-		alias = impl.findByPlayerAndNicknameAndIp(player, nickname, ip);
-
-		if (alias != null)
-			cache.put(
-					cacheKey(alias.getPlayer(), alias.getNickname(),
-							alias.getIp()), alias);
-
+		Alias alias = impl.findByPlayerAndNicknameAndIp(player, nickname, ip);
 		return alias;
 	}
 
@@ -86,8 +75,8 @@ public class AliasCachedDAO implements AliasDAO {
 		impl.truncate();
 	}
 
-	private String cacheKey(Key player, String nickname, String ip) {
-		return "alias-" + KeyFactory.keyToString(player) + nickname + ip;
+	private String cacheKey(Key player, String nickname) {
+		return "alias-" + KeyFactory.keyToString(player) + nickname;
 	}
 
 	@Override
@@ -104,5 +93,20 @@ public class AliasCachedDAO implements AliasDAO {
 	@Override
 	public void save(Collection<Alias> aliasses) {
 		save(aliasses, true);
+	}
+
+	@Override
+	public Alias findByPlayerAndNickname(Key player, String nickname) {
+		Alias alias = (Alias) cache.get(cacheKey(player, nickname));
+
+		if (alias != null)
+			return alias;
+
+		alias = impl.findByPlayerAndNickname(player, nickname);
+
+		if (alias != null)
+			cache.put(cacheKey(alias.getPlayer(), alias.getNickname()), alias);
+
+		return alias;
 	}
 }

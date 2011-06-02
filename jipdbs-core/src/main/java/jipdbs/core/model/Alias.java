@@ -24,8 +24,8 @@ public class Alias implements Serializable {
 	private Long count;
 	private Key server;
 
-	public Alias() {
-		// Empty.
+	public Alias(Key player) {
+		this.player = player;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,10 +80,12 @@ public class Alias implements Serializable {
 		this.nickname = nickname;
 	}
 
+	@Deprecated
 	public String getIp() {
 		return ip;
 	}
 
+	@Deprecated
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
