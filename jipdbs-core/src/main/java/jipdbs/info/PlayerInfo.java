@@ -29,6 +29,11 @@ public class PlayerInfo implements Serializable {
 		setLevel(level);
 	}
 	
+	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level, String extra) {
+		this(event, name, guid, id, ip, level);
+		setExtra(extra);
+	}
+	
 	public String getName() {
 		return name;
 	}
