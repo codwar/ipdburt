@@ -239,12 +239,14 @@ public class JIPDBS {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
-			for (Player player : playerDAO.findByServer(query, offset, limit, count)) {
-				Server server = serverDAO.get(player.getServer());
-				results.add(marshall(player, server));
+			
+			Server server = serverDAO.get(KeyFactory.stringToKey(query));
+			if (server != null) {
+				for (Player player : playerDAO.findByServer(query, offset, limit, count)) {
+					results.add(marshall(player, server));
+				}
 			}
 			return results;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());

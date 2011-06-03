@@ -178,7 +178,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 				.getDatastoreService();
 
 		Key server = KeyFactory.stringToKey(query);
-		Query q = new Query("Player").setKeysOnly();
+		Query q = new Query("Player");
 		q.setAncestor(server);
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);

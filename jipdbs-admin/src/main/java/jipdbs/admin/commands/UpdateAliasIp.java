@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Transaction;
 
 public class UpdateAliasIp extends Command {
@@ -39,7 +38,7 @@ public class UpdateAliasIp extends Command {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
 		Query playerQuery = new Query("Player");
-		playerQuery.addFilter("nickname", FilterOperator.EQUAL, null);
+		//playerQuery.addFilter("nickname", FilterOperator.EQUAL, "");
 
 		PreparedQuery pq = ds.prepare(playerQuery);
 		final int total = pq.countEntities(withLimit(Integer.MAX_VALUE));
@@ -56,6 +55,8 @@ public class UpdateAliasIp extends Command {
 				final Player player = new Player(entity);
 
 				count = count + 1;
+
+				if (player.getNickname() != null) return;
 
 				Alias lastAlias = aliasDAO.getLastUsedAlias(player.getKey());
 
