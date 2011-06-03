@@ -515,6 +515,9 @@ ul.messages li.warning {
 .vcard {
 	background-image: url('images/vcard.png');
 }
+.information {
+    background-image: url('images/information.png');
+}
 .close_button {
     float: right;
     cursor: pointer;

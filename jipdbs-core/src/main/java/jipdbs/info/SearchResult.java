@@ -25,6 +25,8 @@ public class SearchResult {
 	private boolean playing;
 
 	private String banInfo;
+	
+	private String note;
 
 	private long id;
 	
@@ -119,6 +121,14 @@ public class SearchResult {
 
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
 	}
 	
 }

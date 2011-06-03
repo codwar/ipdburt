@@ -287,6 +287,7 @@ public class JIPDBS {
 		result.setIp(alias.getMaskedIp());
 		result.setLatest(alias.getUpdated());
 		result.setPlaying(player.isConnected());
+		result.setNote(player.getNote());
 		// result.setPlaying(player.getUpdated().equals(server.getUpdated()));
 		result.setName(alias.getNickname());
 		result.setServer(server);

@@ -84,6 +84,7 @@ public class PlayerInfoServlet extends HttpServlet {
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());
+		infoView.setNote(player.getNote());
 		if (player.getLevel() != null && player.getLevel() > 0 && player.getLevel() <= server.getMaxLevel()) {
 			infoView.setLevel(player.getLevel().toString());
 		} else {

@@ -23,6 +23,7 @@ public class PlayerInfoView implements Serializable {
 	private String level;
 	private String clientId;
 	private boolean playing;
+	private String note;
 	
 	public String getName() {
 		return name;
@@ -92,6 +93,12 @@ public class PlayerInfoView implements Serializable {
 	}
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
 	}	
 	
 }

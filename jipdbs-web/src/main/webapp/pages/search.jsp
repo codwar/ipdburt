@@ -135,7 +135,12 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			</c:choose>
 			<tr class="${rowStyle}" id="result-${rowCounter.count}">
 			    <td copiable="false"><input type="checkbox" value="result-${rowCounter.count}" name="selector"></td>
-				<td style="text-align: right;"><a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.clientId}</a></td>
+				<td style="text-align: right;">
+				<c:if test="${not empty player.note}">
+				<span class="icon information infoTip" alt="${player.note}">&nbsp;</span>
+				</c:if>
+				<a title="Mostrar más información" href="/playerinfo.jsp?id=${player.key}">${player.clientId}</a>
+				</td>
 				<td class="icon
 				<c:choose>
                     <c:when test="${not empty player.banInfo}">
