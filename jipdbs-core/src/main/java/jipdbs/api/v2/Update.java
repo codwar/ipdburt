@@ -126,7 +126,9 @@ public class Update {
 					}
 					player.setNickname(playerInfo.getName());
 					player.setIp(playerInfo.getIp());
-					player.setUpdated(playerInfo.getUpdated());
+					if (playerInfo.getUpdated().after(player.getUpdated())) {
+						player.setUpdated(playerInfo.getUpdated());	
+					}
 					
 					handlePlayerEvent(playerInfo, player);
 					
