@@ -12,6 +12,8 @@ public interface PlayerDAO {
 
 	public abstract Player findByServerAndGuid(Key server, String guid);
 
+	public abstract List<Player> findByServer(String query, int offset, int limit, int[] count);
+	
 	public abstract List<Player> findLatest(int offset, int limit, int[] count);
 
 	public abstract List<Player> findBanned(int offset, int limit, int[] count);

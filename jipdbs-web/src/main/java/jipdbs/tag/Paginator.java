@@ -75,7 +75,7 @@ public class Paginator extends TagSupport {
 			html.append("&ps=" + Integer.toString(pageSize));
 			html.append("'>&laquo; Previous</a></span>");
 		} else {
-			html.append("<span class='prev-na'>&laquo; Previous</span>");
+			html.append("<span class='prev-na'>&laquo; Anterior</span>");
 		}
 		if (!in_leading_range) {
 			for (Integer num : pages_outside_trailing_range) {
@@ -130,7 +130,7 @@ public class Paginator extends TagSupport {
 			html.append("&ps=" + Integer.toString(pageSize));
 			html.append("'>Next &raquo;</a></span>");
 		} else {
-			html.append("<span class='next-na'>Next &raquo;</span>");			
+			html.append("<span class='next-na'>Siguiente &raquo;</span>");			
 		}
 		return html.toString();
 	}

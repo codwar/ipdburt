@@ -13,8 +13,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 //-->
 </script>
 
-<script language="javascript">
-	function getHTML(key, offset, callback) {
+<script type="text/javascript">
+	function getAlias(key, offset, callback) {
 
 		$.getJSON("/json/alias.jsp?id=" + key + "&o=" + offset, function(data) {
 
@@ -29,15 +29,10 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				html += "\">";
 				html += value.nickname;
 				html += "</a></td>";
-				html += "<td><a href=\"/search.jsp?q=";
-				html += value.ipSearch;
-				html += "\">";
-				html += value.ip;
-				html += "</td>";
 				html += "<td>";
 				html += value.updated;
 				html += "</td>";
-				html += "<td>";
+				html += "<td style='text-align: right;'>";
 				html += value.count;
 				html += "</td>";
 				html += "</tr>";
@@ -49,15 +44,48 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 
 		});
 	}
+	function getAliasIP(key, offset, callback) {
 
+		$.getJSON("/json/aliasip.jsp?type=ip&id=" + key + "&o=" + offset, function(data) {
+			var rows = new Array();
+			$.each(data.items, function(key, value) {
+				var html = "";
+				html += "<tr class=\"aliasrow\">";
+				html += "<td><a href=\"/search.jsp?q=";
+				html += value.ipSearch;
+				html += "\">";
+				html += value.ip;
+				html += "</td>";
+				html += "<td>";
+				html += value.updated;
+				html += "</td>";
+				html += "<td style='text-align: right;'>";
+				html += value.count;
+				html += "</td>";
+				html += "</tr>";
+				rows[key] = $(html);
+			});
+			callback(offset, rows, data.hasMore);
+		});
+	}
+	
 	$(function() {
 		$(".plus").each(function(key) {
 
 			$(this).click(function() {
 
 				var elem = $(this);
-				var key = elem.attr("id").substring("plus-".length);
-
+				var type = elem.attr("alt");
+				if (type == "ip") {
+					var key = elem.attr("id").substring("plus-ip-".length);
+					var reminus = "minus-" + key;
+				} else {
+					var key = elem.attr("id").substring("plus-".length);
+					var reminus = "minus-ip-" + key;
+				}
+				
+				$("#"+reminus+":visible").click();
+				
 				var minus = elem.next();
 				var sibling = elem.parent().parent().next();
 
@@ -75,7 +103,11 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 						more.show();
 						more.unbind();
 						more.click(function() {
-							getHTML(key, offset + 10, updateFun);
+							if (type=="ip") {
+								getAliasIP(key, offset + 10, updateFun);
+							} else {
+								getAlias(key, offset + 10, updateFun);
+							}
 						});
 					} else
 						more.hide();
@@ -85,15 +117,17 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					sibling.show();
 				};
 
-				getHTML(key, 0, updateFun);
+				if (type=="ip") {
+					getAliasIP(key, 0, updateFun);
+				} else {
+					getAlias(key, 0, updateFun);
+				}
 
 			});
 		});
 
 		$(".minus").each(function(key) {
-
 			$(this).click(function() {
-
 				var elem = $(this);
 
 				var plus = elem.prev();
@@ -103,7 +137,6 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				sibling.find(".aliasrow").remove();
 				elem.hide();
 				plus.show();
-
 			});
 		});
 
@@ -153,17 +186,21 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
                         offline
                     </c:otherwise>
                 </c:choose>
-				" alt="${player.banInfo}"><span class="plus" id="plus-${player.key}">[+]</span>
-				<span class="minus"	style="display: none;">[-]</span>
+				" alt="${player.banInfo}"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
+				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
 				<c:url value="/search.jsp" var="url">
 					<c:param name="q" value="${player.name}" />
 				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
-				<td><a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
+				<td>
+				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
+				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
+				<span>
+				<a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
-				<td>
+				<td style="text-align: right;">
 				<fmt:formatDate value="${player.latest}" type="both"
                         timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
 				<%--  
@@ -185,10 +222,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 								href="/playerinfo.jsp?id=${player.key}" class="icon details">Todo</a></td>
 						</tr>
 						<tr>
-							<th>Nombre</th>
-							<th>IP</th>
-							<th>Visto</th>
-							<th>Cantidad de Usos</th>
+							<th></th>
+							<th style="width: 160px;">Visto</th>
+							<th style="width: 40px;">Usos</th>
 						</tr>
 					</thead>
 					<tr id="more" style="cursor: pointer;">

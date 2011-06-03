@@ -89,3 +89,7 @@ function SelectText(element) {
         selection.setBaseAndExtent(text, 0, text, 1);
     }
 }
+String.prototype.format = function () {
+	var args = arguments;
+	return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+};

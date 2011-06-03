@@ -16,6 +16,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -135,7 +136,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 			entity.setProperty("connected", new Boolean(false));
 			commit.add(entity);
 		}
-		if (commit.size()>0) service.put(commit);
+		if (commit.size() > 0)
+			service.put(commit);
 
 	}
 
@@ -157,13 +159,36 @@ public class PlayerDAOImpl implements PlayerDAO {
 
 	@Override
 	public int countConnected(Key server) {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
 		Query q = new Query("Player");
 		q.setAncestor(server);
 		q.addFilter("connected", FilterOperator.EQUAL, new Boolean(true));
 		PreparedQuery pq = service.prepare(q);
 		return pq.countEntities(withLimit(100));
-		
+
+	}
+
+	@Override
+	public List<Player> findByServer(String query, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Key server = KeyFactory.stringToKey(query);
+		Query q = new Query("Player");
+		q.setAncestor(server);
+		q.addSort("updated", SortDirection.DESCENDING);
+		PreparedQuery pq = service.prepare(q);
+
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+
+		List<Player> result = new ArrayList<Player>();
+		for (Entity player : pq.asIterable(withLimit(limit).offset(offset))) {
+			result.add(new Player(player));
+		}
+		return result;
 	}
 }

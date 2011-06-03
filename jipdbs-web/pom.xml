@@ -12,6 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
 		<gae.version>1.5.0</gae.version>
+		<skipTests>true</skipTests>
 	</properties>
 
 	<dependencies>
@@ -202,6 +203,9 @@
 				<groupId>net.kindleit</groupId>
 				<artifactId>maven-gae-plugin</artifactId>
 				<version>0.8.4</version>
+		        <configuration>
+		          <skipTests>${skipTests}</skipTests>
+		        </configuration>				
 				<dependencies>
 					<dependency>
 						<groupId>net.kindleit</groupId>

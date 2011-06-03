@@ -41,6 +41,8 @@ public final class EntityIterator {
 					callback.withEntity(entity,
 							DatastoreServiceFactory.getDatastoreService());
 				} catch (Exception e) {
+					System.err.println(e.getMessage());
+					e.printStackTrace();
 					break;
 				}
 			}

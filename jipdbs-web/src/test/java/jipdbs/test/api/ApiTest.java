@@ -44,8 +44,7 @@ public class ApiTest extends TestCase {
 	
 	public void testUpdateClient() throws Exception {
 
-		ServerManager serverManager = new ServerManager();
-		Server server = serverManager.getAuthorizedServer("UIDTEST1","127.0.0.1");
+		Server server = ServerManager.getAuthorizedServer("UIDTEST1","127.0.0.1");
 		
 		List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 		

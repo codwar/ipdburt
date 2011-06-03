@@ -8,6 +8,82 @@
 <jsp:include page="/playerinfo" />
 <jsp:include page="/pages/flash.jsp" />
 
+<script type="text/javascript">
+	var clientKey = '${player.key}';
+    function pagination(key, offset, hasMore, pages) {
+        prev = $("#prev-"+key);
+        $(prev).unbind('click');
+    	if (offset == 0) {
+			$(prev).removeClass('prev').addClass('prev-na');
+    	} else {
+    	    $(prev).removeClass('prev-na').addClass('prev');
+    	    $(prev).click({'offset': offset-1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
+    	}
+        next = $("#next-"+key);
+        $(next).unbind('click');
+    	if (hasMore) {
+    		$(next).removeClass('next-na').addClass('next');
+    		$(next).click({'offset': offset+1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
+    	} else {
+    	    $(next).removeClass('next').addClass('next-na');
+    	}
+    	$("#curr-"+key).html("{0}-{1}".format(offset+1,pages));
+    }
+    function getHTML(key, offset) {
+    	if (key == 'alias') {
+    		getAlias(offset);
+    	} else {
+    	    getAliasIP(offset);
+    	}
+    }
+	function getAlias(offset) {
+		$.getJSON("/json/alias.jsp?id=" + clientKey + "&o=" + offset, function(data) {
+			$("#tablealias").html("");
+			$.each(data.items, function(key, value) {
+				var html = "";
+				html += "<tr class=\"aliasrow\">";
+				html += "<td><a href=\"/search.jsp?q=";
+				html += encodeURIComponent(value.nickname);
+				html += "\">";
+				html += value.nickname;
+				html += "</a></td>";
+				html += "<td>";
+				html += value.updated;
+				html += "</td>";
+				html += "<td style='text-align: right;'>";
+				html += value.count;
+				html += "</td>";
+				html += "</tr>";
+				$("#tablealias").append(html);
+			});
+			pagination('alias', data.offset, data.hasMore, data.pages);
+		});
+	}
+	function getAliasIP(offset) {
+		$.getJSON("/json/aliasip.jsp?type=ip&id=" + clientKey + "&o=" + offset, function(data) {
+			$("#tableip").html("");
+			$.each(data.items, function(key, value) {
+				var html = "";
+				html += "<tr class=\"aliasrow\">";
+				html += "<td><a href=\"/search.jsp?q=";
+				html += value.ipSearch;
+				html += "\">";
+				html += value.ip;
+				html += "</td>";
+				html += "<td>";
+				html += value.updated;
+				html += "</td>";
+				html += "<td style='text-align: right;'>";
+				html += value.count;
+				html += "</td>";
+				html += "</tr>";
+				$("#tableip").append(html);
+			});
+			pagination('ip', data.offset, data.hasMore, data.pages);
+		});
+	}
+</script>
+
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
 <legend>${fn:escapeXml(player.name)}
 <span class="icon
@@ -39,37 +115,46 @@
 	<strong>Estado:</strong> ${player.banInfo}<br />
 </c:if></fieldset>
 <br />
+<h2>Aliases</h2>
 <table>
 	<thead>
 		<tr>
 			<th>Alias</th>
-			<th>IP</th>
-			<th>Visto</th>
-			<th>Usos</th>
+			<th style="width: 160px;">Visto</th>
+			<th style="width: 40px;">Usos</th>			
 		</tr>
 	</thead>
-	<tbody>
-		<c:forEach items="${player.aliases}" var="alias">
-			<tr>
-				<td>
-				<c:url value="/search.jsp" var="url">
-                    <c:param name="q" value="${alias.nickname}" />
-                </c:url>
-				<a href="${url}">${fn:escapeXml(alias.nickname)}</a></td>
-				<td><a href="/search.jsp?q=${alias.ip}">${alias.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${alias.ipZero}" title="Whois" class="icon vcard"></a></td>
-				<td><fmt:formatDate type="both" timeZone="GMT-3"
-					pattern="dd-MM-yyyy HH:mm:ss" value="${alias.updated}" /></td>
-				<td>${alias.count}</td>
-			</tr>
-		</c:forEach>
+	<tbody id="tablealias">
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="4"><span style="font-size: smaller;">Total:
-			${count} (${time} ms)</span><pag:paginator
-				totalPages="${pageLink.totalPages}"
-				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
-				url="/playerinfo.jsp?id=${player.key}" /></td>
+			<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
 		</tr>
 	</tfoot>
 </table>
+<br/>
+<h2>IPs</h2>
+<table>
+	<thead>
+		<tr>
+			<th>IP</th>
+			<th style="width: 160px;">Visto</th>
+			<th style="width: 40px;">Usos</th>			
+		</tr>
+	</thead>
+	<tbody id="tableip">
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-ip'><a>&laquo; Anterior</a></span><span class='curr' id='curr-ip'>-</span><span id='next-ip' class='next-na'><a>Siguiente &raquo;</a></span></td>
+		</tr>
+	</tfoot>
+</table>
+<script type="text/javascript">
+$(document).ready(
+	function() {
+		getAlias(0);
+		getAliasIP(0);
+	}
+)
+</script>

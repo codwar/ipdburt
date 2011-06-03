@@ -33,28 +33,35 @@ public final class NGrams {
 		return bigrams;
 	}
 
-	public static Collection<String> ngrams(String s) {
+	public static Collection<String> ngrams(String s, int min) {
 
 		Set<String> ngrams = new HashSet<String>();
 
-		if (s.trim().length() < 2) {
-			ngrams.add(s);
+		if (s.trim().length() <= min) {
+			ngrams.add(s.toLowerCase());
 			return ngrams;
 		}
 		
-		for (int i = 0; i < s.length() - 2; i++) {
-			for (int j = s.length(); j > i; j--)
+		for (int i = 0; i < s.length() - min; i++) {
+			for (int j = s.length(); j > i + (min-1); j--) {
 				ngrams.add(s.substring(i, j).toLowerCase());
+			}		
 		}
 
 		return ngrams;
 	}
+	
+	public static Collection<String> ngrams(String s) {
+		return ngrams(s,2);
+	}
 
 	public static void main(String[] args) {
-		System.out.println(bigrams("[+ter]Shonaka"));
-		System.out.println(bigrams("[+ter]Sho naka"));
-		System.out.println(ngrams("[+ter]Shonaka"));
-		System.out.println(ngrams("[+ter]Sho naka"));
+		System.out.println(ngrams("TextoDePrueba1"));
+		System.out.println(ngrams("TextoDePrueba1",2));
+		System.out.println(ngrams("TextoDePrueba1",3));
+		System.out.println(ngrams("TextoDePrueba1",4));
+		System.out.println(ngrams("TextoDePrueba1",5));
+		System.out.println(ngrams("Texto", 5));
 	}
 
 }

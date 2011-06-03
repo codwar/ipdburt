@@ -97,4 +97,10 @@ public class PlayerCachedDAO implements PlayerDAO {
 	public int countConnected(Key key) {
 		return impl.countConnected(key);
 	}
+
+	@Override
+	public List<Player> findByServer(String query, int offset, int limit,
+			int[] count) {
+		return impl.findByServer(query, offset, limit, count);
+	}
 }

@@ -30,6 +30,7 @@ public class AliasServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String id = req.getParameter("id");
+		String type = req.getParameter("type");
 		
 		int offset = 0;
 		
@@ -42,10 +43,16 @@ public class AliasServlet extends HttpServlet {
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
 		int[] count = new int[1];
-		list = app.alias(id, offset, DEFAULT_LIMIT, count);
+		if ("ip".equals(type)) {
+			list = app.aliasip(id, offset, DEFAULT_LIMIT, count);
+		} else {
+			list = app.alias(id, offset, DEFAULT_LIMIT, count);	
+		}
 
 		req.setAttribute("hasMore", new Boolean((offset + DEFAULT_LIMIT) < count[0]));
 		req.setAttribute("list", list);
-		req.setAttribute("count", count);
+		req.setAttribute("total", count[0]);
+		req.setAttribute("pages", (int) Math.ceil((double) count[0] / DEFAULT_LIMIT));
+		req.setAttribute("offset", offset);
 	}
 }
