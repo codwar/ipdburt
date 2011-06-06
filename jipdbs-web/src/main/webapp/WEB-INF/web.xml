@@ -185,7 +185,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
-
+<!-- 
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>xmlrpc2</web-resource-name>
@@ -195,7 +195,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>    
-
+ -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>RemoteApiServlet</web-resource-name>
+            <url-pattern>/remote_api/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+ 
 	<error-page>
 		<error-code>403</error-code>
 		<location>/error.jsp</location>

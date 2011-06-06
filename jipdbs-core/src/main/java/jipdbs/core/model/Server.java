@@ -173,4 +173,11 @@ public class Server implements Serializable {
 	public void setDirty(Boolean dirty) {
 		this.dirty = dirty;
 	}
+	
+	public Boolean getOffline() {
+		Date today = new Date();
+		long diff = today.getTime() - this.updated.getTime();
+		return (diff/86400000 >=2);
+	}
+	
 }

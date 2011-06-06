@@ -33,7 +33,7 @@
 				</td>
 				<td style="text-align: right;"><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
-					value="${server.updated}" /></td>
+					value="${server.updated}" /><c:if test="${server.offline}"><span class="icon exclamation">&nbsp;</span></c:if></td>
 			</tr>
 		</c:forEach>
 	</tbody>
