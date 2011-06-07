@@ -116,9 +116,11 @@ public class UnloadDataOld extends Command {
 						a.append("\"updated\":").append(EscapeChars.toString(Transformer.date_to_string(alias.getUpdated()))).append(",");
 						a.append("\"count\":").append(EscapeChars.toString(alias.getCount())).append(",");
 						StringBuilder ngrams = new StringBuilder();
-						for (Iterator<String> it = alias.getNgrams().iterator(); it.hasNext() ; ) {
-							ngrams.append(EscapeChars.toString(EscapeChars.forJSON(it.next())));
-							if (it.hasNext()) ngrams.append(",");
+						if (alias.getNgrams() != null) {
+							for (Iterator<String> it = alias.getNgrams().iterator(); it.hasNext() ; ) {
+								ngrams.append(EscapeChars.toString(EscapeChars.forJSON(it.next())));
+								if (it.hasNext()) ngrams.append(",");
+							}
 						}
 						a.append("\"ngrams\": [").append(ngrams.toString()).append("]");
 						aliases.add("{" + a.toString() + "}");

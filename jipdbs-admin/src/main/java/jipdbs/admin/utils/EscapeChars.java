@@ -593,6 +593,7 @@ public final class EscapeChars {
 	}
 
 	public static String toString(String s) {
+		if (s == null) s = "null";
 		return "\"" + s + "\"";
 	}
 
