@@ -76,17 +76,6 @@ public class UnloadDataOld extends Command {
 
 				count = count + 1;
 				
-				Alias lastAlias = null;
-				
-				if (player.getNickname() != null) {
-					lastAlias = new Alias(player.getKey());
-					lastAlias.setNickname(player.getNickname());
-					lastAlias.setIp(player.getIp());
-				} else {
-					lastAlias = aliasDAO.getLastUsedAlias(player.getKey());	
-				}
-				if (lastAlias == null) return;
-
 				/* PROCESS SERVER */
 				ServerDAO serverDAO = new ServerDAOImpl();
 				Server server = serverDAO.get(player.getServer());
@@ -128,8 +117,6 @@ public class UnloadDataOld extends Command {
 				});
 				
 				StringBuilder p = new StringBuilder();
-				p.append("\"nickname\":").append(EscapeChars.toString(EscapeChars.forJSON(lastAlias.getNickname()))).append(",");
-				p.append("\"ip\":").append(EscapeChars.toString(lastAlias.getIp())).append(",");
 				p.append("\"guid\":").append(EscapeChars.toString(player.getGuid())).append(",");
 				p.append("\"baninfo\":").append(EscapeChars.toString(player.getBanInfo())).append(",");
 				p.append("\"baninfoupdated\":").append(EscapeChars.toString(Transformer.date_to_string(player.getBanInfoUpdated()))).append(",");

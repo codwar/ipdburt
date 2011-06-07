@@ -63,7 +63,7 @@ public class LoadDataOld extends Command {
 		player.setUpdated(Transformer.string_to_date(obj.getString("updated")));
 		player.setBanInfoUpdated(Transformer.string_to_date(obj.getString("baninfoupdated")));
 		player.setBanInfo(Transformer.string_to_null(obj.getString("baninfo")));
-		player.setClientId(Transformer.string_to_long(obj.getString("clientId")));
+		player.setClientId(Transformer.string_to_long(obj.getString("clientid")));
 		player.setLevel(Transformer.string_to_long(obj.getString("level")));
 		player.setNote(Transformer.string_to_null(obj.getString("note")));
 		player.setConnected(false);

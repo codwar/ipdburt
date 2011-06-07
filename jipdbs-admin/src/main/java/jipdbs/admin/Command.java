@@ -43,15 +43,15 @@ public abstract class Command {
 				System.in));
 		System.out.print("username: ");
 		String username = console.readLine();
-		char passwd[] = null;
-		try {
-			passwd = PasswordField.getPassword(System.in, "Enter password: ");
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-		String password = String.valueOf(passwd);
-		// System.out.print("password: ");
-		// String password = console.readLine();
+//		char passwd[] = null;
+//		try {
+//			passwd = PasswordField.getPassword(System.in, "Enter password: ");
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		}
+//		String password = String.valueOf(passwd);
+		System.out.print("password: ");
+		String password = console.readLine();
 		RemoteApiOptions options = new RemoteApiOptions()
 				.server(props.getProperty("url"),
 						Integer.parseInt(props.getProperty("port")))
