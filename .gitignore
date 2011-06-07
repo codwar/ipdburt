@@ -1,5 +1,7 @@
 target
 bin
+war
+test
 .classpath
 .project
 .settings
