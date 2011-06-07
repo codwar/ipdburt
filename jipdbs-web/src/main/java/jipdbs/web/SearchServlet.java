@@ -29,7 +29,8 @@ public class SearchServlet extends HttpServlet {
 	private JIPDBS app;
 
 	private final static String IP_RE = "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d|[\\*])){3}$";
-	private final static Pattern IP_VALIDATOR = Pattern.compile(IP_RE);
+	//private final static Pattern IP_VALIDATOR = Pattern.compile(IP_RE);
+	private final static String CLIENT_ID_RE = "^@([0-9]+)$";
 	
 	private static final Logger log = Logger.getLogger(SearchServlet.class.getName());
 	
@@ -85,12 +86,15 @@ public class SearchServlet extends HttpServlet {
 			queryValue = "";
 			list = app.bannedQuery(offset, limit, total);
 		} else if (StringUtils.notEmpty(query)) {
-			Matcher matcher = IP_VALIDATOR.matcher(query);
-			if (matcher.matches()) {
+			if (Pattern.matches(IP_RE, query)) {
 				log.finest("Buscando IP " + query);
 				query = Functions.fixIp(query);
 				queryValue = query;
 				list = app.ipSearch(query, offset, limit, total);
+			} else if (Pattern.matches(CLIENT_ID_RE, query)) {
+				log.finest("Buscando Client ID " + query);
+				queryValue = query;
+				list = app.clientIdSearch(query.substring(1), offset, limit, total);
 			} else {
 				log.finest("Buscando Alias " + query);
 				if (validPlayerNameChars(query)) {

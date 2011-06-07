@@ -17,6 +17,8 @@ public class PlayerCachedDAO implements PlayerDAO {
 
 	private final PlayerDAO impl;
 
+	private final Integer SEARCH_EXPIRE = 10;
+	
 	public PlayerCachedDAO(PlayerDAO impl) {
 		this.impl = impl;
 	}
@@ -103,4 +105,17 @@ public class PlayerCachedDAO implements PlayerDAO {
 			int[] count) {
 		return impl.findByServer(query, offset, limit, count);
 	}
+
+	@Override
+	public List<Player> findByClientId(String query, int offset, int limit,
+			int[] count) {
+		String key = "playersearch-" + query + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		if (players != null) return players;
+		players = impl.findByClientId(query, offset, limit, count);
+		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		return players;
+	}
+	
 }

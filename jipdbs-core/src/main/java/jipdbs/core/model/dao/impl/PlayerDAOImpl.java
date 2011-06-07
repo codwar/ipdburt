@@ -191,4 +191,26 @@ public class PlayerDAOImpl implements PlayerDAO {
 		}
 		return result;
 	}
+
+	@Override
+	public List<Player> findByClientId(String query, int offset, int limit,
+			int[] count) {
+
+		DatastoreService service = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query q = new Query("Player");
+		q.addFilter("clientId", FilterOperator.EQUAL, Long.parseLong(query));
+		q.addSort("updated", SortDirection.DESCENDING);
+		PreparedQuery pq = service.prepare(q);
+
+		count[0] = pq.countEntities(withPrefetchSize(limit));
+
+		List<Player> result = new ArrayList<Player>();
+		for (Entity player : pq.asIterable(withLimit(limit).offset(offset))) {
+			result.add(new Player(player));
+		}
+		return result;
+
+	}
 }

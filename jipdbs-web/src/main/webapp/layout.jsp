@@ -48,7 +48,7 @@
     <a href="/">IPDB</a>
     </div>
         <li><form id="search-form" method="get" action="/">
-        <small><!-- span class="glass"><i></i></span--><input placeholder="Ingrese alias o IP a buscar" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
+        <small><!-- span class="glass"><i></i></span--><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
         </form>
         </li>    
         <li><a href="/">Inicio</a></li>

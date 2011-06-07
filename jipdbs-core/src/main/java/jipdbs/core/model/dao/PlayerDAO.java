@@ -34,4 +34,6 @@ public interface PlayerDAO {
 
 	public abstract int countConnected(Key key);
 
+	public abstract List<Player> findByClientId(String query, int offset, int limit, int[] count);
+
 }

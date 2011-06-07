@@ -200,7 +200,6 @@ public class JIPDBS {
 
 			return marshall(aliasses);
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();
@@ -227,7 +226,6 @@ public class JIPDBS {
 			}
 			return results;
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();
@@ -418,5 +416,30 @@ public class JIPDBS {
 		server.setOnlinePlayers(c);
 		server.setDirty(false);
 		serverDAO.save(server);
+	}
+
+	public List<SearchResult> clientIdSearch(String query, int offset, int limit,
+			int[] count) {
+
+		try {
+			List<SearchResult> results = new ArrayList<SearchResult>();
+			List<Player> players = playerDAO.findByClientId(query, offset, limit, count);
+			
+			for (Player player : players) {
+				Server server = serverDAO.get(player.getServer());
+
+				// Whoops! inconsistent data.
+				if (server == null)
+					continue;
+
+				SearchResult result = marshall(player, server);
+				results.add(result);
+			}
+			return results;
+		} catch (Exception e) {
+			log.severe("Unable to fetch players:" + e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
 	}
 }
