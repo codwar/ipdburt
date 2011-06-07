@@ -15,6 +15,8 @@ public class ServerCachedDAO implements ServerDAO {
 
 	private final ServerDAO impl;
 
+	private final Integer SEARCH_EXPIRE = 5;
+	
 	public ServerCachedDAO(ServerDAO impl) {
 		this.impl = impl;
 	}
@@ -27,7 +29,13 @@ public class ServerCachedDAO implements ServerDAO {
 
 	@Override
 	public List<Server> findAll(int offset, int limit, int[] count) {
-		return impl.findAll(offset, limit, count);
+		String key = "server-all" + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Server> servers = (List<Server>) LocalCache.getInstance().get(key);
+		if (servers != null) return servers;
+		servers = impl.findAll(offset, limit, count);
+		LocalCache.getInstance().put(key, servers, SEARCH_EXPIRE);
+		return servers;
 	}
 
 	@Override

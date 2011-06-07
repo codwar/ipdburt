@@ -17,7 +17,7 @@ public class PlayerCachedDAO implements PlayerDAO {
 
 	private final PlayerDAO impl;
 
-	private final Integer SEARCH_EXPIRE = 10;
+	private final Integer SEARCH_EXPIRE = 5;
 	
 	public PlayerCachedDAO(PlayerDAO impl) {
 		this.impl = impl;
@@ -47,12 +47,24 @@ public class PlayerCachedDAO implements PlayerDAO {
 
 	@Override
 	public List<Player> findLatest(int offset, int limit, int[] count) {
-		return impl.findLatest(offset, limit, count);
+		String key = "player-latest-" + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		if (players != null) return players;
+		players = impl.findLatest(offset, limit, count);
+		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		return players;
 	}
 
 	@Override
 	public List<Player> findBanned(int offset, int limit, int[] count) {
-		return impl.findBanned(offset, limit, count);
+		String key = "player-banned-" + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		if (players != null) return players;
+		players = impl.findBanned(offset, limit, count);
+		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		return players;
 	}
 
 	@Override
@@ -103,13 +115,19 @@ public class PlayerCachedDAO implements PlayerDAO {
 	@Override
 	public List<Player> findByServer(String query, int offset, int limit,
 			int[] count) {
-		return impl.findByServer(query, offset, limit, count);
+		String key = "player-server-" + query + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		if (players != null) return players;
+		players = impl.findByServer(query, offset, limit, count);
+		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		return players;
 	}
 
 	@Override
 	public List<Player> findByClientId(String query, int offset, int limit,
 			int[] count) {
-		String key = "playersearch-" + query + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-cid-" + query + Integer.toString(offset) + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
 		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
 		if (players != null) return players;

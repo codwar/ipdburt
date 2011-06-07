@@ -16,6 +16,8 @@ public class AliasCachedDAO implements AliasDAO {
 
 	private final AliasDAO impl;
 
+	private final Integer SEARCH_EXPIRE = 5;
+	
 	public AliasCachedDAO(AliasDAO impl) {
 		this.impl = impl;
 	}
@@ -43,13 +45,25 @@ public class AliasCachedDAO implements AliasDAO {
 	@Override
 	public List<Alias> findByNickname(String query, int offset, int limit,
 			int[] count) {
-		return impl.findByNickname(query, offset, limit, count);
+		String key = "alias-nick" + query + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByNickname(query, offset, limit, count);
+		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		return aliasses;
 	}
 
 	@Override
 	public List<Alias> findByNGrams(String query, int offset, int limit,
 			int[] count) {
-		return impl.findByNGrams(query, offset, limit, count);
+		String key = "alias-gram" + query + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByNGrams(query, offset, limit, count);
+		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		return aliasses;
 	}
 
 	@Override
@@ -66,7 +80,13 @@ public class AliasCachedDAO implements AliasDAO {
 	@Override
 	public List<Alias> findByServer(String query, int offset, int limit,
 			int[] count) {
-		return impl.findByServer(query, offset, limit, count);
+		String key = "alias-server" + query + Integer.toString(offset) + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByServer(query, offset, limit, count);
+		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		return aliasses;
 	}
 
 	@Override
