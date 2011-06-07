@@ -248,7 +248,6 @@ public class JIPDBS {
 			}
 			return results;
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.severe("Unable to fetch players:" + e.getMessage());
 			count[0] = 0;
 			return Collections.emptyList();

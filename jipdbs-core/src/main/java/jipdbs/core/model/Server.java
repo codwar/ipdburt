@@ -176,8 +176,11 @@ public class Server implements Serializable {
 	
 	public Boolean getOffline() {
 		Date today = new Date();
-		long diff = today.getTime() - this.updated.getTime();
-		return (diff/86400000 >=2);
+		if (this.updated != null) {
+			long diff = today.getTime() - this.updated.getTime();
+			return (diff/86400000 >=2);
+		}
+		return true;
 	}
 	
 }

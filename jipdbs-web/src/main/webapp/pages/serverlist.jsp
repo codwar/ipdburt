@@ -31,9 +31,9 @@
 				</c:otherwise>
 				</c:choose>
 				</td>
-				<td style="text-align: right;"><fmt:formatDate type="both"
+				<td style="text-align: right;"><c:if test="${server.offline}"><span class="icon exclamation">&nbsp;</span></c:if><fmt:formatDate type="both"
 					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
-					value="${server.updated}" /><c:if test="${server.offline}"><span class="icon exclamation">&nbsp;</span></c:if></td>
+					value="${server.updated}" /></td>
 			</tr>
 		</c:forEach>
 	</tbody>

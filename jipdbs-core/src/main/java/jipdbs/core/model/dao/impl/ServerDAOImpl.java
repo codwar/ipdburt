@@ -74,7 +74,13 @@ public class ServerDAOImpl implements ServerDAO {
 
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-
-		return new Server(service.get(server));
+		
+		try {
+			Entity entity = service.get(server);
+			if (entity!=null) return new Server(entity);
+		} catch (Exception e) {
+		}
+		
+		return null;
 	}
 }
