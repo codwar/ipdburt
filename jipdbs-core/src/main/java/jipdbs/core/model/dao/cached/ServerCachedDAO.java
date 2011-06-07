@@ -25,16 +25,17 @@ public class ServerCachedDAO implements ServerDAO {
 	public void save(Server server) {
 		impl.save(server);
 		cache.put(cacheKey(server.getUid()), server);
+		cache.clear("server");
 	}
 
 	@Override
 	public List<Server> findAll(int offset, int limit, int[] count) {
 		String key = "server-all" + Integer.toString(offset) + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
-		List<Server> servers = (List<Server>) LocalCache.getInstance().get(key);
+		List<Server> servers = (List<Server>) LocalCache.getInstance().get("server", key);
 		if (servers != null) return servers;
 		servers = impl.findAll(offset, limit, count);
-		LocalCache.getInstance().put(key, servers, SEARCH_EXPIRE);
+		LocalCache.getInstance().put("server", key, servers, SEARCH_EXPIRE);
 		return servers;
 	}
 

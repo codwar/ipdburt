@@ -1,5 +1,10 @@
 package jipdbs.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,6 +79,10 @@ public class Functions {
 		return join(r, ".");
 	}
 
+	public static String join(Collection<String> list, String token) {
+		return join(list.toArray(new String[0]), token);
+	}
+	
 	public static String join(String[] list, String token) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < list.length; i++) {
@@ -116,6 +125,19 @@ public class Functions {
 		return list;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List sublist(List list, int size) {
+		List result = new ArrayList();
+		for (int i : Range.range(0, list.size(), size)) {
+			if (i + size > list.size() ) {
+				result.add(list.subList(i, i+ (list.size() - i)));	
+			} else {
+				result.add(list.subList(i, i + size));	
+			}
+		}
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		String s = "125.68.67.66";
 		Long v = ipToDecimal(s);
@@ -124,5 +146,27 @@ public class Functions {
 		System.out.println(decimalToIp(v));
 		System.out.println(getIpRange("127.0.0.*"));
 		System.out.println(range(0, -10));
+
+		for (int i : Range.range(0, 2000, 100)) {
+			System.out.println(i);
+		}
+		
+		List<String> list = new ArrayList<String>();
+		list.add("1");
+		list.add("2");
+		list.add("3");
+		list.add("4");
+		list.add("5");
+		list.add("6");
+		list.add("7");
+		list.add("8");
+		list.add("9");
+		
+		for (Iterator it = sublist(list, 5).iterator(); it.hasNext();) {
+			System.out.println(it.next());
+		}
+		
 	}
 }
+
+

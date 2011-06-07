@@ -27,7 +27,7 @@ public class App
 				}
 				System.out.println("");
 			} else {
-				command.run(Arrays.copyOf(args, 1));
+				command.run(Arrays.copyOfRange(args, 1, args.length));
 			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
