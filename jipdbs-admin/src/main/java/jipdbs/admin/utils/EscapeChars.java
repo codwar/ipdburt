@@ -598,6 +598,7 @@ public final class EscapeChars {
 	}
 
 	public static String toString(Object o) {
+		if (o == null) o = "null";
 		return toString(o.toString());
 	}
 	
