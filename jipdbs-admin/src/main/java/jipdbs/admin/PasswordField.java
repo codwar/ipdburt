@@ -29,7 +29,6 @@ public class PasswordField {
 		      try {
 		         stop = true;
 		         while(stop) {
-		           System.out.print("\010" + echochar);
 		           try {
 		              // attempt masking at this rate
 		              Thread.currentThread().sleep(1);
@@ -37,6 +36,7 @@ public class PasswordField {
 		              Thread.currentThread().interrupt();
 		              return;
 		           }
+		           System.out.print("\010" + echochar);		           
 		         }
 		      } finally { // restore the original priority
 		         Thread.currentThread().setPriority(priority);
