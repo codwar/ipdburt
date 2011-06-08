@@ -163,7 +163,7 @@ public class UnloadData extends Command {
 				out.write("{" + p.toString() + "}\n");
 				out.flush();
 				
-				System.out.println("%" + (count * 100) / total);
+				System.out.println(count + " - %" + (count * 100) / total);
 
 			}
 		});

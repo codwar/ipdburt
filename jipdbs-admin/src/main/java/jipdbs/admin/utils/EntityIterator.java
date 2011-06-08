@@ -12,6 +12,8 @@ import com.google.appengine.api.datastore.QueryResultList;
 
 public final class EntityIterator {
 
+	private static final int WAIT = 5000;
+	
 	public static interface Callback {
 
 		void withEntity(Entity entity, DatastoreService ds) throws Exception;
@@ -45,6 +47,13 @@ public final class EntityIterator {
 					break;
 				}
 			}
+			// wait before fetching new data
+			try {
+				Thread.sleep(WAIT);
+			} catch (InterruptedException e) {
+				System.err.println(e.getMessage());
+			}
+			
 			list = pq.asQueryResultList(withLimit(
 					batchSize).startCursor(cursor));
 			cursor = list.getCursor();

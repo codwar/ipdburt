@@ -131,7 +131,7 @@ public class UpdateAliasIp extends Command {
 						tx.rollback();
 				}
 
-				System.out.println("%" + (count * 100) / total);
+				System.out.println(count + " - %" + (count * 100) / total);
 
 			}
 		});
