@@ -14,6 +14,25 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 </script>
 
 <script type="text/javascript">
+    function pagination(parent, offset, hasMore, pages, func) {
+        prev = $(parent).find("#prev-alias");
+        $(prev).unbind('click');
+    	if (offset == 1) {
+			$(prev).removeClass('prev').addClass('prev-na');
+    	} else {
+    	    $(prev).removeClass('prev-na').addClass('prev');
+    	    $(prev).click({'offset': offset-1}, func);
+    	}
+        next = $(parent).find("#next-alias");
+        $(next).unbind('click');
+    	if (hasMore) {
+    		$(next).removeClass('next-na').addClass('next');
+    		$(next).click({'offset': offset+1}, func);
+    	} else {
+    	    $(next).removeClass('next').addClass('next-na');
+    	}
+    	$(parent).find("#curr-alias").html("{0}-{1}".format(offset,pages));
+    }
 	function getAlias(key, offset, callback) {
 
 		$.getJSON("/json/alias.jsp?id=" + key + "&o=" + offset, function(data) {
@@ -40,7 +59,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				rows[key] = $(html);
 			});
 
-			callback(offset, rows, data.hasMore);
+			callback(data.offset, rows, data.hasMore, data.pages);
 
 		});
 	}
@@ -65,7 +84,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				html += "</tr>";
 				rows[key] = $(html);
 			});
-			callback(offset, rows, data.hasMore);
+			callback(data.offset, rows, data.hasMore, data.pages);
 		});
 	}
 	
@@ -89,29 +108,25 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				var minus = elem.next();
 				var sibling = elem.parent().parent().next();
 
-				var updateFun = function(offset, rows, hasMore) {
+				var updateFun = function(offset, rows, hasMore, pages) {
 
 					var table = sibling.find("table");
 
-					var more = table.find("#more");
-
+					$(table).find("tbody").html("");
 					$.each(rows, function(key, value) {
-						more.before(value);
+						$(table).find("tbody").append(value);
 					});
 
-					if (hasMore) {
-						more.show();
-						more.unbind();
-						more.click(function() {
-							if (type=="ip") {
-								getAliasIP(key, offset + 1, updateFun);
-							} else {
-								getAlias(key, offset + 1, updateFun);
-							}
-						});
-					} else
-						more.hide();
+					var func = function(e) {
+						if (type=="ip") {
+							getAliasIP(key, e.data.offset, updateFun);
+						} else {
+							getAlias(key, e.data.offset, updateFun);
+						}
+					};
 
+					pagination(table, offset, hasMore, pages, func);
+					
 					elem.hide();
 					minus.show();
 					sibling.show();
@@ -227,10 +242,19 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 							<th style="width: 40px;">Usos</th>
 						</tr>
 					</thead>
+					<tbody>
+					</tbody>
+					<!--
 					<tr id="more" style="cursor: pointer;">
 						<td colspan="4" style="text-align: center;"><span
 							class="icon refresh">Más...</span></td>
 					</tr>
+					-->
+					<tfoot>
+						<tr>
+							<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
+						</tr>
+					</tfoot>
 				</table>
 				</td>
 			</tr>
