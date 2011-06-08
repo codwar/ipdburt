@@ -88,7 +88,7 @@ public class UpdateAliasIp extends Command {
 					} else {
 						newAlias = new Alias(player.getKey());
 						newAlias.setCount(1L);
-						newAlias.setNickname(player.getNickname());
+						newAlias.setNickname(alias.getNickname());
 						newAlias.setCreated(alias.getCreated());
 						newAlias.setUpdated(alias.getUpdated());
 						newAlias.setNgrams(alias.getNgrams());
