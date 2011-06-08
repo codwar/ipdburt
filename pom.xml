@@ -16,4 +16,17 @@
 	<scm>
 		<connection>scm:git:https://git@github.com/mschonaker/jipdbs.git</connection>
 	</scm>
+    
+    <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+        
 </project>
