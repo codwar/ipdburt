@@ -12,7 +12,7 @@ import com.google.appengine.api.datastore.QueryResultList;
 
 public final class EntityIterator {
 
-	private static final int WAIT = 5000;
+	private static final int WAIT = 1000;
 	
 	public static interface Callback {
 
