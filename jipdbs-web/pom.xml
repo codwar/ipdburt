@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jipdbs</groupId>
 	<artifactId>jipdbs-web</artifactId>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>jipdbs-web</name>
 
