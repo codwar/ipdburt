@@ -20,10 +20,20 @@ public class BanInfo implements Serializable {
 	private Long duration;
 	private String type;
 	
+	private String rawData;
+	
+	public static String getDetail(String data) {
+		if (data != null && data.startsWith("#")) {
+				return new BanInfo(data.substring(1)).toString();
+		}
+		return data;
+	}
+	
 	public BanInfo() {
 	}
 	
 	public BanInfo(String data) {
+		this.rawData = "#" + data;
 		String[] parts = data.split("::");
 		setType(parts[0]);
 		setCreated(new Date(Long.parseLong(parts[1]) * 1000L));
@@ -75,6 +85,10 @@ public class BanInfo implements Serializable {
 			s = s + " hasta el " + format2.format(this.getExpires());
 		}
 		return s;
+	}
+
+	public String getRawData() {
+		return rawData;
 	}
 	
 }

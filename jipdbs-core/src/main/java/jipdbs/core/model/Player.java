@@ -203,4 +203,5 @@ public class Player implements Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	
 }

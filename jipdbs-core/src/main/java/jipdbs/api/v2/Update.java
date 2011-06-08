@@ -170,7 +170,7 @@ public class Update {
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
 		if (Events.BAN.equals(playerInfo.getEvent())) {
 			BanInfo banInfo = new BanInfo(playerInfo.getExtra());
-			player.setBanInfo(banInfo.toString());
+			player.setBanInfo(banInfo.getRawData());
 			player.setBanInfoUpdated(playerInfo.getUpdated());
 			player.setConnected(false);
 		} else if (Events.CONNECT.equals(playerInfo.getEvent())

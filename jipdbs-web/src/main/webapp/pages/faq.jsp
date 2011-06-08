@@ -5,7 +5,7 @@
 <a name="como_ingresar_al_sistema" href="#como_ingresar_al_sistema"><h2>Como ingresar al sistema</h2></a>
 <br/>
 <p>Para ingresar a IPDB el servidor debe tener instalado y funcionando el bot <a target="_blank" href="http://www.bigbrotherbot.com">B3</a>.</p>
-<p>Instalar el plugin IPDB (<a href="http://dl.dropbox.com/u/9131337/ipdb2.zip">descargar</a>).</p>
+<p>Instalar el plugin IPDB (<a href="http://update.ipdburt.com.ar/ipdb.zip">descargar</a>).</p>
 <p>Mediante el <a href="/contact.jsp">formulario de contacto</a> solicitar una clave informado:</p>
 <ol style="padding-left: 45px;">
 <li style="list-style: lower-latin;">IP del servidor</li>

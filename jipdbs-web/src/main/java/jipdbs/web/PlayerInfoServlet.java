@@ -1,19 +1,24 @@
 package jipdbs.web;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jipdbs.api.v2.Update;
 import jipdbs.core.JIPDBS;
 import jipdbs.core.model.Player;
 import jipdbs.core.model.Server;
 import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
+import jipdbs.info.BanInfo;
 import jipdbs.info.PlayerInfoView;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -22,6 +27,8 @@ public class PlayerInfoServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 812345074174537109L;
 
+	private static final Logger log = Logger.getLogger(Update.class.getName());
+	
 	private JIPDBS app;
 
 	@Override
@@ -40,36 +47,21 @@ public class PlayerInfoServlet extends HttpServlet {
 			player = app.getPlayer(id);
 		} catch (Exception e) {
 			// TODO manejar y tirar 404
-			e.printStackTrace();
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 			throw new ServletException(e);
 		}
 		
 		List<AliasResult> list = new ArrayList<AliasResult>();
 		
-/*		
-		int page = 1;
-		int pageSize = 20;
-		
-		try {
-			page = Integer.parseInt(req.getParameter("p"));
-		} catch (NumberFormatException e) {
-			// Ignore.
-		}
-
-		int offset = (page - 1) * pageSize;
-
-		int[] total = new int[1];
-		
-		long time = System.currentTimeMillis();
-		
-		list = app.alias(id, offset, pageSize, total);
-		*/
 		Server server;
 		try {
 			server = app.getServer(player.getServer());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.getBuffer().toString());
 			throw new ServletException(e);
 		}
 		
@@ -79,7 +71,7 @@ public class PlayerInfoServlet extends HttpServlet {
 		infoView.setIp(Functions.maskIpAddress(player.getIp()));
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
-		infoView.setBanInfo(player.getBanInfo());
+		infoView.setBanInfo(BanInfo.getDetail(player.getBanInfo()));
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());
