@@ -33,10 +33,9 @@ public final class EntityIterator {
 		Cursor cursor = list.getCursor();
 
 		while (totalElements <= maxElements && list.size() > 0) {
-			
-			totalElements += 1;
-			
 			for (Entity entity : list) {
+				totalElements++;
+				if (totalElements > maxElements) break;
 				try {
 					callback.withEntity(entity,
 							DatastoreServiceFactory.getDatastoreService());
@@ -46,10 +45,8 @@ public final class EntityIterator {
 					break;
 				}
 			}
-
 			list = pq.asQueryResultList(withLimit(
 					batchSize).startCursor(cursor));
-			totalElements += list.size();
 			cursor = list.getCursor();
 		}
 	}
