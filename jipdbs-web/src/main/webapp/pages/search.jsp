@@ -104,9 +104,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 						more.unbind();
 						more.click(function() {
 							if (type=="ip") {
-								getAliasIP(key, offset + 10, updateFun);
+								getAliasIP(key, offset + 1, updateFun);
 							} else {
-								getAlias(key, offset + 10, updateFun);
+								getAlias(key, offset + 1, updateFun);
 							}
 						});
 					} else
@@ -118,9 +118,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				};
 
 				if (type=="ip") {
-					getAliasIP(key, 0, updateFun);
+					getAliasIP(key, 1, updateFun);
 				} else {
-					getAlias(key, 0, updateFun);
+					getAlias(key, 1, updateFun);
 				}
 
 			});

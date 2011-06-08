@@ -32,13 +32,15 @@ public class AliasServlet extends HttpServlet {
 		String id = req.getParameter("id");
 		String type = req.getParameter("type");
 		
-		int offset = 0;
-		
+		int page = 1;
 		try {
-			offset = Integer.parseInt(req.getParameter("o"));
+			page = Integer.parseInt(req.getParameter("o"));
+			if (page <= 0) page = 1;
 		} catch (NumberFormatException e) {
 			// Ignore.
 		}
+		
+		int offset = (page - 1) * DEFAULT_LIMIT;
 
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
@@ -53,6 +55,6 @@ public class AliasServlet extends HttpServlet {
 		req.setAttribute("list", list);
 		req.setAttribute("total", count[0]);
 		req.setAttribute("pages", (int) Math.ceil((double) count[0] / DEFAULT_LIMIT));
-		req.setAttribute("offset", offset);
+		req.setAttribute("offset", page);
 	}
 }

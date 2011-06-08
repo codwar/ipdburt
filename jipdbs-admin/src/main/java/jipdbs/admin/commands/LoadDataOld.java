@@ -67,8 +67,6 @@ public class LoadDataOld extends Command {
 		player.setLevel(Transformer.string_to_long(obj.getString("level")));
 		player.setNote(Transformer.string_to_null(obj.getString("note")));
 		player.setConnected(false);
-		player.setNickname(obj.getString("nickname"));
-		player.setIp(obj.getString("ip"));
 		player.setServer(server.getKey());
 		playerDao.save(player);
 		

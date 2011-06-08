@@ -16,6 +16,7 @@ import jipdbs.core.model.AliasIP;
 import jipdbs.core.model.Player;
 import jipdbs.core.model.dao.AliasDAO;
 import jipdbs.core.model.dao.impl.AliasDAOImpl;
+import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -135,6 +136,8 @@ public class UpdateAliasIp extends Command {
 			}
 		});
 
+		LocalCache.getInstance().clearAll();
+		
 		System.out.print("Done");
 
 	}

@@ -13,7 +13,7 @@
     function pagination(key, offset, hasMore, pages) {
         prev = $("#prev-"+key);
         $(prev).unbind('click');
-    	if (offset == 0) {
+    	if (offset == 1) {
 			$(prev).removeClass('prev').addClass('prev-na');
     	} else {
     	    $(prev).removeClass('prev-na').addClass('prev');
@@ -27,7 +27,7 @@
     	} else {
     	    $(next).removeClass('next').addClass('next-na');
     	}
-    	$("#curr-"+key).html("{0}-{1}".format(offset+1,pages));
+    	$("#curr-"+key).html("{0}-{1}".format(offset,pages));
     }
     function getHTML(key, offset) {
     	if (key == 'alias') {
@@ -153,8 +153,8 @@
 <script type="text/javascript">
 $(document).ready(
 	function() {
-		getAlias(0);
-		getAliasIP(0);
+		getAlias(1);
+		getAliasIP(1);
 	}
 )
 </script>
