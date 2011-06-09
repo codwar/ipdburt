@@ -23,6 +23,7 @@ import jipdbs.core.model.dao.impl.AliasDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.Functions;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -66,10 +67,10 @@ public class UnloadDataOld extends Command {
 
 		final BufferedWriter out = new BufferedWriter(wrt);
 		
-		EntityIterator.iterate("Player", limit, offset, 100, new Callback() {
+		EntityIterator.iterate("Player", limit, 100, null, new Callback() {
 			@SuppressWarnings("deprecation")
 			@Override
-			public void withEntity(Entity entity, DatastoreService ds)
+			public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total)
 					throws Exception {
 
 				final Player player = new Player(entity);
@@ -94,9 +95,9 @@ public class UnloadDataOld extends Command {
 				final List<String> aliases = new ArrayList<String>();
 				Query aliasQuery = new Query("Alias");
 				aliasQuery.setAncestor(player.getKey());
-				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, new Callback() {
+				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, null, new Callback() {
 					@Override
-					public void withEntity(Entity entity, DatastoreService ds) throws Exception {
+					public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total) throws Exception {
 						Alias alias = new Alias(entity);
 						StringBuilder a = new StringBuilder();
 						a.append("\"nickname\":").append(EscapeChars.toString(EscapeChars.forJSON(alias.getNickname()))).append(",");

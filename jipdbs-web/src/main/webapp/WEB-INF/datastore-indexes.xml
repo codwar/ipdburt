@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
-    <datastore-index kind="Alias" ancestor="true" source="auto">
-        <property name="count" direction="desc"/>
-    </datastore-index>
-    <datastore-index kind="Alias" ancestor="false" source="auto">
-        <property name="ip" direction="asc"/>
-        <property name="updated" direction="desc"/>
-    </datastore-index>
-    <datastore-index kind="Alias" ancestor="false" source="auto">
-        <property name="ngrams" direction="asc"/>
-        <property name="updated" direction="desc"/>
-    </datastore-index>
-    <datastore-index kind="Alias" ancestor="true" source="auto">
-        <property name="nickname" direction="asc"/>
-        <property name="ip" direction="asc"/>
-    </datastore-index>
-    <datastore-index kind="Alias" ancestor="true" source="auto">
+	<!-- PLAYER -->
+    <datastore-index kind="Player" ancestor="false" source="auto">
+        <property name="connected" direction="desc"/>
         <property name="updated" direction="desc"/>
     </datastore-index>
     <datastore-index kind="Player" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
-    <datastore-index kind="Player" ancestor="false" source="auto">
-        <property name="connected" direction="desc"/>
+	<!-- ALIAS -->    
+    <datastore-index kind="Alias" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
-    </datastore-index>    
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="true" source="auto">
+        <property name="nickname" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="Alias" ancestor="false" source="auto">
+        <property name="ngrams" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+	<!-- ALIASIP -->
+	<datastore-index kind="AliasIP" ancestor="true" source="auto">
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="AliasIP" ancestor="false" source="auto">
+        <property name="ip" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
 </datastore-indexes>

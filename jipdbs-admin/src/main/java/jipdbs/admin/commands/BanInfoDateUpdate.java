@@ -5,6 +5,7 @@ import jipdbs.admin.utils.EntityIterator;
 import jipdbs.admin.utils.EntityIterator.Callback;
 import jipdbs.core.model.Player;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 
@@ -14,10 +15,10 @@ public class BanInfoDateUpdate extends Command {
 	protected void execute(String[] args) throws Exception {
 		long maxEntities = 10000000000L;
 
-		EntityIterator.iterate("Player", maxEntities, new Callback() {
+		EntityIterator.iterate("Player", maxEntities, null, new Callback() {
 
 			@Override
-			public void withEntity(Entity entity, DatastoreService ds)
+			public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total)
 					throws Exception {
 
 				Player player = new Player(entity);

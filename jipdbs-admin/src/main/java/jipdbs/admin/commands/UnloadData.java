@@ -1,7 +1,5 @@
 package jipdbs.admin.commands;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.Writer;
@@ -24,10 +22,9 @@ import jipdbs.core.model.dao.impl.AliasDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.Functions;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
 public class UnloadData extends Command {
@@ -44,12 +41,6 @@ public class UnloadData extends Command {
 		Writer wrt = new FileWriter(args[0]); 
 		
 		System.out.println("Writing to " + args[0]);
-		
-		int offset = 0;
-		try {
-			offset = Integer.parseInt(args[1]); 
-		} catch (Exception e) {
-		}
 
 		int limit = maxEntities;
 		try {
@@ -57,20 +48,33 @@ public class UnloadData extends Command {
 		} catch (Exception e) {
 		}
 		
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		initializeState("unloaddata");
 
-		PreparedQuery pq = ds.prepare(new Query("Player"));
-		final int total = pq.countEntities(withLimit(limit).offset(offset));
+		Cursor cursor = null;
+		boolean force = false;
+		try {
+			if ("force".equalsIgnoreCase(args[1])) {
+				force = true;
+			}
+		} catch (Exception e) {
+		}
+
+		if (!force) cursor = loadCursor();
+		
 		count = 0;
-
-		System.out.println("Processing " + total + " records.");
-
+		
+		if (cursor == null) {
+			System.out.println("Starting process");	
+		} else {
+			System.out.println("Resuming from previous state");
+		}
+		
 		final BufferedWriter out = new BufferedWriter(wrt);
 		
-		EntityIterator.iterate("Player", limit, offset, 100, new Callback() {
+		EntityIterator.iterate("Player", limit, 100, cursor, new Callback() {
 			@SuppressWarnings("deprecation")
 			@Override
-			public void withEntity(Entity entity, DatastoreService ds)
+			public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total)
 					throws Exception {
 
 				final Player player = new Player(entity);
@@ -106,9 +110,9 @@ public class UnloadData extends Command {
 				final List<String> aliases = new ArrayList<String>();
 				Query aliasQuery = new Query("Alias");
 				aliasQuery.setAncestor(player.getKey());
-				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, new Callback() {
+				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, null, new Callback() {
 					@Override
-					public void withEntity(Entity entity, DatastoreService ds) throws Exception {
+					public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total) throws Exception {
 						Alias alias = new Alias(entity);
 						StringBuilder a = new StringBuilder();
 						a.append("\"nickname\":").append(EscapeChars.toString(EscapeChars.forJSON(alias.getNickname()))).append(",");
@@ -131,9 +135,9 @@ public class UnloadData extends Command {
 				final List<String> ips = new ArrayList<String>();
 				Query ipQuery = new Query("AliasIP");
 				ipQuery.setAncestor(player.getKey());
-				EntityIterator.iterate(ipQuery, Integer.MAX_VALUE, new Callback() {
+				EntityIterator.iterate(ipQuery, Integer.MAX_VALUE, null, new Callback() {
 					@Override
-					public void withEntity(Entity entity, DatastoreService ds) throws Exception {
+					public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total) throws Exception {
 						AliasIP alias = new AliasIP(entity);
 						StringBuilder a = new StringBuilder();
 						a.append("\"ip\":").append(EscapeChars.toString(EscapeChars.forJSON(alias.getIp()))).append(",");
@@ -159,7 +163,6 @@ public class UnloadData extends Command {
 				p.append("\"aliasses\":[").append(Functions.join(aliases, ",")).append("]").append(",");
 				p.append("\"ipaliasses\":[").append(Functions.join(ips, ",")).append("]");
 				
-				//if (count > 1) out.write(",");
 				out.write("{" + p.toString() + "}\n");
 				out.flush();
 				

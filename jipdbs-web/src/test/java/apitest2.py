@@ -1,12 +1,30 @@
 import xmlrpclib
 import time
 import datetime
+import socket
 
-key = "e58943e6914a517a7b4c3ae9fd49f2da8892dbae"
+key = "63e1bafbf9951b76a99cf253ea0f5601d1075528"
 proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
+socket.setdefaulttimeout(10)
 
 print "Update Name"
-proxy.updateName(key,"Test API %s" % time.time(), "test")
+
+try:
+    proxy.updateName(key,"Test API %s" % time.time(), "test")
+except xmlrpclib.ProtocolError, protocolError:
+    print "1"
+except xmlrpclib.Fault, applicationError:
+    print "2"
+except socket.timeout, timeoutError:
+    print "timedout"
+except socket.error, x:
+    print x
+    print "conn error"
+except Exception, e:
+    raise e
+socket.setdefaulttimeout(None)
+
+baninfo = "%s::%s::%s::%s" % ("pb", int(time.time()), -1, "adverte: por gil")
 
 baninfo = "%s::%s::%s::%s" % ('pb', int(time.time()), -1, 'Test')
 

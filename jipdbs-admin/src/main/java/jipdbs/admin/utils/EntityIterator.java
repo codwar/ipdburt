@@ -12,35 +12,39 @@ import com.google.appengine.api.datastore.QueryResultList;
 
 public final class EntityIterator {
 
-	private static final int WAIT = 1000;
+	private static final int WAIT = 30000;
 	
 	public static interface Callback {
 
-		void withEntity(Entity entity, DatastoreService ds) throws Exception;
+		void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long totalElements) throws Exception;
 
 	}
 
-	public static void iterate(Query q, long maxElements, int offset, int batchSize, Callback callback) {
+	public static void iterate(Query q, long maxElements, int batchSize, Cursor startCursor, Callback callback) {
 
 		batchSize = Math.min(batchSize, 1000);
 
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		PreparedQuery pq = ds.prepare(q);
 
-		QueryResultList<Entity> list = pq
-				.asQueryResultList(withLimit(batchSize).offset(offset));
+		QueryResultList<Entity> list = null;
+		if (startCursor == null) {
+			list = pq.asQueryResultList(withLimit(batchSize));
+		} else {
+			list = pq.asQueryResultList(withLimit(batchSize).startCursor(startCursor));
+		}
 
 		long totalElements = 0;
 
 		Cursor cursor = list.getCursor();
-
+		
 		while (totalElements <= maxElements && list.size() > 0) {
 			for (Entity entity : list) {
 				totalElements++;
 				if (totalElements > maxElements) break;
 				try {
 					callback.withEntity(entity,
-							DatastoreServiceFactory.getDatastoreService());
+							DatastoreServiceFactory.getDatastoreService(), list.getCursor(), totalElements);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 					e.printStackTrace();
@@ -60,26 +64,22 @@ public final class EntityIterator {
 		}
 	}
 
-	public static void iterate(Query query, long maxElements,
-			Callback callback) {
-		iterate(query, maxElements, 0, 100, callback);
+	public static void iterate(Query query, long maxElements, Cursor startCursor, Callback callback) {
+		iterate(query, maxElements, 100, startCursor, callback);
 	}
 	
-	public static void iterate(String entityName, long maxElements,
-			int batchSize, Callback callback) {
+	public static void iterate(String entityName, long maxElements,	int batchSize, Cursor startCursor, Callback callback) {
 		Query q = new Query(entityName);
-		iterate(q, maxElements, 0, batchSize, callback);
+		iterate(q, maxElements, batchSize, startCursor, callback);
 	}
 	
-	public static void iterate(String entityName, long maxElements,
-			Callback callback) {
-		iterate(entityName, maxElements, 100, callback);
+	public static void iterate(String entityName, long maxElements,	Cursor startCursor, Callback callback) {
+		iterate(entityName, maxElements, 100, startCursor, callback);
 	}
 	
-	public static void iterate(String entityName, long maxElements,
-			int offset, int batchSize, Callback callback) {
+	public static void iterate(String entityName, long maxElements,	int offset, int batchSize, Cursor startCursor, Callback callback) {
 		Query q = new Query(entityName);
-		iterate(q, maxElements, offset, batchSize, callback);
+		iterate(q, maxElements, batchSize, startCursor, callback);
 	}
 	
 }

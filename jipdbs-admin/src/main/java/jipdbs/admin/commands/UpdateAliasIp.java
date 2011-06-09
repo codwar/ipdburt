@@ -1,7 +1,5 @@
 package jipdbs.admin.commands;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -18,12 +16,15 @@ import jipdbs.core.model.dao.AliasDAO;
 import jipdbs.core.model.dao.impl.AliasDAOImpl;
 import jipdbs.core.util.LocalCache;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.datastore.Transaction;
 
 public class UpdateAliasIp extends Command {
@@ -36,27 +37,55 @@ public class UpdateAliasIp extends Command {
 
 		final AliasDAO aliasDAO = new AliasDAOImpl();
 
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-
 		Query playerQuery = new Query("Player");
-		//playerQuery.addFilter("nickname", FilterOperator.EQUAL, "");
-
-		PreparedQuery pq = ds.prepare(playerQuery);
-		final int total = pq.countEntities(withLimit(Integer.MAX_VALUE));
+		
 		count = 0;
 
-		System.out.println("Processing " + total + " records.");
+		initializeState("updatealiasip");
 
-		EntityIterator.iterate(playerQuery, maxEntities, new Callback() {
+		Cursor cursor = null;
+		int offset = 0;
+		boolean force = false;
+		try {
+			if ("force".equalsIgnoreCase(args[0])) {
+				force = true;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			offset = Integer.parseInt(args[1]);
+		} catch (Exception e) {
+		}
+		
+		if (!force) cursor = loadCursor();
+		
+		if (offset > 0) {
+			/* TRY TO GET A CURSOR FROM THE OFFSET */
+			DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+			PreparedQuery pq = ds.prepare(new Query("Player").setKeysOnly());
+			QueryResultList<Entity> q = pq.asQueryResultList(FetchOptions.Builder.withLimit(1).offset(offset));
+			cursor = q.getCursor();
+		}
+		
+		if (cursor == null) {
+			System.out.println("Starting process");	
+		} else {
+			System.out.println("Resuming from previous state");
+		}
+		
+		EntityIterator.iterate(playerQuery, maxEntities, cursor, new Callback() {
 			@SuppressWarnings("deprecation")
 			@Override
-			public void withEntity(Entity entity, DatastoreService ds)
+			public void withEntity(Entity entity, DatastoreService ds, Cursor cursor, long total)
 					throws Exception {
 
 				final Player player = new Player(entity);
 
 				count = count + 1;
 
+				saveCursor(cursor);
+				
 				if (player.getNickname() != null) return;
 
 				Alias lastAlias = aliasDAO.getLastUsedAlias(player.getKey());
