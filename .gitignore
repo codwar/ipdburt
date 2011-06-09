@@ -1,8 +1,9 @@
-.settings
-war/WEB-INF/classes
-war/WEB-INF/appengine-generated/
-src/jipdbs.properties
-war/WEB-INF/lib/appengine-api-1.0-sdk-*.jar
-war/WEB-INF/lib/appengine-api-labs-*.jar
-war/WEB-INF/lib/appengine-jsr107cache-*.jar
+target
 bin
+war
+test
+.classpath
+.project
+.settings
+jipdbs.properties
+.pydevproject
