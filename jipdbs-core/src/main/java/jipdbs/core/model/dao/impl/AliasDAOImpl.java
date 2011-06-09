@@ -196,6 +196,7 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	@Override
+	@Deprecated
 	public List<Alias> findByIP(String query, int offset, int limit, int[] count) {
 
 		DatastoreService service = DatastoreServiceFactory
