@@ -8,7 +8,7 @@
     <datastore-index kind="Player" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
-	<!-- ALIAS -->    
+    <!-- ALIAS -->    
     <datastore-index kind="Alias" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
