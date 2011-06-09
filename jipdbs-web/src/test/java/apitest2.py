@@ -3,8 +3,8 @@ import time
 import datetime
 import socket
 
-key = "d87eca9fac12710a1aadab89d5f69ed8b3f31d05"
-proxy = xmlrpclib.ServerProxy("http://localhost:8888/xmlrpc2")
+key = "63e1bafbf9951b76a99cf253ea0f5601d1075528"
+proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
 socket.setdefaulttimeout(10)
 
 print "Update Name"
