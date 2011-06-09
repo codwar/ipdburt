@@ -18,9 +18,13 @@ import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.datastore.Transaction;
 
 public class UpdateAliasIp extends Command {
@@ -40,6 +44,7 @@ public class UpdateAliasIp extends Command {
 		initializeState("updatealiasip");
 
 		Cursor cursor = null;
+		int offset = 0;
 		boolean force = false;
 		try {
 			if ("force".equalsIgnoreCase(args[0])) {
@@ -48,7 +53,20 @@ public class UpdateAliasIp extends Command {
 		} catch (Exception e) {
 		}
 
+		try {
+			offset = Integer.parseInt(args[1]);
+		} catch (Exception e) {
+		}
+		
 		if (!force) cursor = loadCursor();
+		
+		if (offset > 0) {
+			/* TRY TO GET A CURSOR FROM THE OFFSET */
+			DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+			PreparedQuery pq = ds.prepare(new Query("Player").setKeysOnly());
+			QueryResultList<Entity> q = pq.asQueryResultList(FetchOptions.Builder.withLimit(1).offset(offset));
+			cursor = q.getCursor();
+		}
 		
 		if (cursor == null) {
 			System.out.println("Starting process");	
