@@ -8,6 +8,10 @@
     <datastore-index kind="Player" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
+    <datastore-index kind="Player" ancestor="false" source="auto">
+        <property name="clientId" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>    
     <!-- ALIAS -->    
     <datastore-index kind="PlayerAlias" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
