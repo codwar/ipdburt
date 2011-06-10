@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-import jipdbs.core.util.Functions;
-
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
@@ -18,7 +16,6 @@ public class Alias implements Serializable {
 	private Key player;
 	private String nickname;
 	private Collection<String> ngrams;
-	private String ip;
 	private Date created;
 	private Date updated;
 	private Long count;
@@ -35,18 +32,15 @@ public class Alias implements Serializable {
 		this.setCreated((Date) entity.getProperty("created"));
 		this.setUpdated((Date) entity.getProperty("updated"));
 		this.setCount((Long) entity.getProperty("count"));
-		this.setIp((String) Functions.decimalToIp((Long) entity
-				.getProperty("ip")));
 		this.setNickname((String) entity.getProperty("nickname"));
 		this.setNgrams((Collection<String>) entity.getProperty("ngrams"));
 		this.setServer((Key) entity.getProperty("server"));
 	}
 
 	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Alias",
+		Entity entity = this.getKey() == null ? new Entity("PlayerAlias",
 					this.getPlayer()) : new Entity(this.getKey());
 		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("ip", Functions.ipToDecimal(this.getIp()));
 		entity.setProperty("nickname", this.getNickname());
 		entity.setProperty("ngrams", this.getNgrams());
 		entity.setProperty("player", this.getPlayer());
@@ -80,16 +74,6 @@ public class Alias implements Serializable {
 		this.nickname = nickname;
 	}
 
-	@Deprecated
-	public String getIp() {
-		return ip;
-	}
-
-	@Deprecated
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
-
 	public Date getCreated() {
 		return created;
 	}
@@ -114,10 +98,6 @@ public class Alias implements Serializable {
 		this.updated = updated;
 	}
 
-	public String getMaskedIp() {
-		return Functions.maskIpAddress(this.ip);
-	}
-
 	public Collection<String> getNgrams() {
 		return ngrams;
 	}
@@ -136,7 +116,7 @@ public class Alias implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return player.hashCode() ^ ip.hashCode() ^ nickname.hashCode();
+		return player.hashCode() ^ nickname.hashCode();
 	}
 
 	@Override
@@ -150,17 +130,13 @@ public class Alias implements Serializable {
 
 		Alias other = (Alias) obj;
 
-		return player.equals(other.getPlayer()) && ip.equals(other.ip)
-				&& nickname.equals(other.getNickname());
+		return player.equals(other.getPlayer()) && nickname.equals(other.getNickname());
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("\"");
 		b.append(nickname);
-		b.append("[");
-		b.append(ip);
-		b.append("]");
 		return b.toString();
 	}
 }

@@ -93,7 +93,7 @@ public class UnloadDataOld extends Command {
 				
 				/* PROCESS PLAYER ALIASES */
 				final List<String> aliases = new ArrayList<String>();
-				Query aliasQuery = new Query("Alias");
+				Query aliasQuery = new Query("PlayerAlias");
 				aliasQuery.setAncestor(player.getKey());
 				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, null, new Callback() {
 					@Override
@@ -101,7 +101,7 @@ public class UnloadDataOld extends Command {
 						Alias alias = new Alias(entity);
 						StringBuilder a = new StringBuilder();
 						a.append("\"nickname\":").append(EscapeChars.toString(EscapeChars.forJSON(alias.getNickname()))).append(",");
-						a.append("\"ip\":").append(EscapeChars.toString(alias.getIp())).append(",");
+						//a.append("\"ip\":").append(EscapeChars.toString(alias.getIp())).append(",");
 						a.append("\"created\":").append(EscapeChars.toString(Transformer.date_to_string(alias.getCreated()))).append(",");
 						a.append("\"updated\":").append(EscapeChars.toString(Transformer.date_to_string(alias.getUpdated()))).append(",");
 						a.append("\"count\":").append(EscapeChars.toString(alias.getCount())).append(",");

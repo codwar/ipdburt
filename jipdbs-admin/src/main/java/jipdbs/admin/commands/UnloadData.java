@@ -86,7 +86,7 @@ public class UnloadData extends Command {
 				if (player.getNickname() != null) {
 					lastAlias = new Alias(player.getKey());
 					lastAlias.setNickname(player.getNickname());
-					lastAlias.setIp(player.getIp());
+					//lastAlias.setIp(player.getIp());
 				} else {
 					lastAlias = aliasDAO.getLastUsedAlias(player.getKey());	
 				}
@@ -108,7 +108,7 @@ public class UnloadData extends Command {
 				
 				/* PROCESS PLAYER ALIASES */
 				final List<String> aliases = new ArrayList<String>();
-				Query aliasQuery = new Query("Alias");
+				Query aliasQuery = new Query("PlayerAlias");
 				aliasQuery.setAncestor(player.getKey());
 				EntityIterator.iterate(aliasQuery, Integer.MAX_VALUE, null, new Callback() {
 					@Override
@@ -150,7 +150,7 @@ public class UnloadData extends Command {
 
 				StringBuilder p = new StringBuilder();
 				p.append("\"nickname\":").append(EscapeChars.toString(EscapeChars.forJSON(lastAlias.getNickname()))).append(",");
-				p.append("\"ip\":").append(EscapeChars.toString(lastAlias.getIp())).append(",");
+				p.append("\"ip\":").append(EscapeChars.toString(player.getIp())).append(",");
 				p.append("\"guid\":").append(EscapeChars.toString(player.getGuid())).append(",");
 				p.append("\"baninfo\":").append(EscapeChars.toString(player.getBanInfo())).append(",");
 				p.append("\"baninfoupdated\":").append(EscapeChars.toString(Transformer.date_to_string(player.getBanInfoUpdated()))).append(",");
