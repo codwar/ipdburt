@@ -94,7 +94,7 @@ public class LoadDataOld extends Command {
 		Alias alias = new Alias(player.getKey());
 		alias.setServer(server.getKey());
 		alias.setNickname(obj.getString("nickname"));
-		alias.setIp(obj.getString("ip"));
+		//alias.setIp(obj.getString("ip"));
 		alias.setCreated(Transformer.string_to_date(obj.getString("created")));
 		alias.setUpdated(Transformer.string_to_date(obj.getString("updated")));
 		alias.setCount(Transformer.string_to_long(obj.getString("count")));

@@ -33,7 +33,7 @@ public abstract class Command {
 	}
 
 	protected void initializeState(String name) {
-		this.file = new File(System.getProperty("java.io.tmpdir") + name + ".resume");
+		this.file = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + name + ".resume");
 	}
 	
 	protected void saveCursor(Cursor cursor) throws Exception {

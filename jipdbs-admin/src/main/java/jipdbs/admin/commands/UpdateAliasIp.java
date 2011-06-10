@@ -91,7 +91,7 @@ public class UpdateAliasIp extends Command {
 				Alias lastAlias = aliasDAO.getLastUsedAlias(player.getKey());
 
 				player.setNickname(lastAlias.getNickname());
-				player.setIp(lastAlias.getIp());
+				//player.setIp(lastAlias.getIp());
 
 				List<Alias> aliases = aliasDAO.findByPlayer(player.getKey(), 0,
 						1000, null);
@@ -125,23 +125,23 @@ public class UpdateAliasIp extends Command {
 					}
 					mapAlias.put(alias.getNickname(), newAlias.toEntity());
 					AliasIP newIpAlias = null;
-					if (mapIP.containsKey(alias.getIp())) {
-						newIpAlias = new AliasIP(mapIP.get(alias.getIp()));
-						newIpAlias.setCount(newIpAlias.getCount() + 1L);
-						if (alias.getUpdated().after(newIpAlias.getUpdated())) {
-							newIpAlias.setUpdated(alias.getUpdated());
-						}
-						if (alias.getCreated().before(newIpAlias.getCreated())) {
-							newIpAlias.setCreated(alias.getCreated());
-						}
-					} else {
-						newIpAlias = new AliasIP(player.getKey());
-						newIpAlias.setCount(1L);
-						newIpAlias.setCreated(alias.getCreated());
-						newIpAlias.setIp(alias.getIp());
-						newIpAlias.setUpdated(alias.getUpdated());
-					}
-					mapIP.put(alias.getIp(), newIpAlias.toEntity());
+//					if (mapIP.containsKey(alias.getIp())) {
+//						newIpAlias = new AliasIP(mapIP.get(alias.getIp()));
+//						newIpAlias.setCount(newIpAlias.getCount() + 1L);
+//						if (alias.getUpdated().after(newIpAlias.getUpdated())) {
+//							newIpAlias.setUpdated(alias.getUpdated());
+//						}
+//						if (alias.getCreated().before(newIpAlias.getCreated())) {
+//							newIpAlias.setCreated(alias.getCreated());
+//						}
+//					} else {
+//						newIpAlias = new AliasIP(player.getKey());
+//						newIpAlias.setCount(1L);
+//						newIpAlias.setCreated(alias.getCreated());
+//						newIpAlias.setIp(alias.getIp());
+//						newIpAlias.setUpdated(alias.getUpdated());
+//					}
+//					mapIP.put(alias.getIp(), newIpAlias.toEntity());
 				}
 
 				Transaction tx = ds.beginTransaction();

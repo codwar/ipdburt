@@ -48,7 +48,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.setAncestor(player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
 		PreparedQuery pq = service.prepare(q);
@@ -74,7 +74,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.setAncestor(player);
 		q.addFilter("nickname", FilterOperator.EQUAL, nickname);
 		q.addFilter("ip", FilterOperator.EQUAL, Functions.ipToDecimal(ip));
@@ -101,7 +101,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
 
@@ -123,7 +123,7 @@ public class AliasDAOImpl implements AliasDAO {
 		Collection<String> ngrams = new ArrayList<String>();
 		ngrams.add(query.toLowerCase());
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.addFilter("ngrams", FilterOperator.IN, ngrams);
 		q.addSort("updated", SortDirection.DESCENDING);
 
@@ -153,7 +153,7 @@ public class AliasDAOImpl implements AliasDAO {
 		if (ngrams.size() == 0)
 			return Collections.emptyList();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.addFilter("ngrams", FilterOperator.IN, ngrams);
 
 		PreparedQuery pq = service.prepare(q);
@@ -177,7 +177,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.setAncestor(player);
 		q.addSort("updated", SortDirection.DESCENDING);
 
@@ -202,7 +202,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 
 		Long[] range = Functions.getIpRange(query);
 		q.addFilter("ip", FilterOperator.GREATER_THAN_OR_EQUAL, range[0]);
@@ -254,7 +254,7 @@ public class AliasDAOImpl implements AliasDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("Alias");
+		Query q = new Query("PlayerAlias");
 		q.setKeysOnly();
 		PreparedQuery pq = service.prepare(q);
 		List<Key> keys = new ArrayList<Key>();
