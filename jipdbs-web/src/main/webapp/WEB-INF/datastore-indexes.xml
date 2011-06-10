@@ -9,13 +9,13 @@
         <property name="updated" direction="desc"/>
     </datastore-index>
     <!-- ALIAS -->    
-    <datastore-index kind="Alias" ancestor="true" source="auto">
+    <datastore-index kind="PlayerAlias" ancestor="true" source="auto">
         <property name="updated" direction="desc"/>
     </datastore-index>
-    <datastore-index kind="Alias" ancestor="true" source="auto">
+    <datastore-index kind="PlayerAlias" ancestor="true" source="auto">
         <property name="nickname" direction="asc"/>
     </datastore-index>
-    <datastore-index kind="Alias" ancestor="false" source="auto">
+    <datastore-index kind="PlayerAlias" ancestor="false" source="auto">
         <property name="ngrams" direction="asc"/>
         <property name="updated" direction="desc"/>
     </datastore-index>
