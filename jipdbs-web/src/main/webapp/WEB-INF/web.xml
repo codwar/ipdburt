@@ -4,10 +4,20 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
+
 	<listener>
 		<listener-class>jipdbs.web.JIPDBSContextListener</listener-class>
 	</listener>
 
+     <filter>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+     </filter>
+     <filter-mapping>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+     </filter-mapping>
+        
 	<servlet>
 		<display-name>Remote Api Servlet</display-name>
 		<servlet-name>RemoteApiServlet</servlet-name>
@@ -19,7 +29,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>serverlist</servlet-name>
+		<servlet-name>ServerList</servlet-name>
 		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
 	</servlet>
 	<servlet>
@@ -100,7 +110,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/playerinfo</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>serverlist</servlet-name>
+		<servlet-name>ServerList</servlet-name>
 		<url-pattern>/serverlist</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

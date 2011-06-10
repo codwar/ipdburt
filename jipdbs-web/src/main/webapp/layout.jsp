@@ -52,13 +52,13 @@
         </form>
         </li>    
         <li><a href="/">Inicio</a></li>
-        <li><a href="/search.jsp?t=ban">Baneados</a></li>
-        <li><a href="/serverlist.jsp">Servidores</a></li>
+        <li><a href="<c:url value="/search.jsp?t=ban"/>">Baneados</a></li>
+        <li><a href="<c:url value="/serverlist.jsp"/>">Servidores</a></li>
         <%
             UserService userService = UserServiceFactory.getUserService();
             if (request.getUserPrincipal() != null) {
         %>
-        <li><a href="/admin/serverlist.jsp">Administrar</a></li>
+        <li><a href="<c:url value="/admin/servers"/>">Administrar</a></li>
         <%      
             }
         %>

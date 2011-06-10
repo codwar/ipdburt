@@ -3,7 +3,7 @@ import time
 import datetime
 import socket
 
-key = "63e1bafbf9951b76a99cf253ea0f5601d1075528"
+key = "ed92ad5fed59a42f47ced2a9901f086959a87d7a"
 proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
 socket.setdefaulttimeout(10)
 
