@@ -22,6 +22,7 @@
 <link rel="stylesheet" type="text/css" href="/media/tipTip.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/styles/menu.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/nm.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="/media/selector/css/openid-shadow.css" />
 <link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.nm.min.js"></script>
@@ -32,10 +33,29 @@
 <script type="text/javascript" src="/media/js/jquery.tiptip.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.floatobject-1.4.js"></script>
 <script type="text/javascript" src="/media/styles/menu.js"></script>
+<script type="text/javascript" src="/media/selector/js/openid-jquery.js"></script>
+<script type="text/javascript" src="/media/selector/js/openid-es.js"></script>
 <script type="text/javascript" src="/media/js/base.js"></script>
 <!--[if IE 6]>
     <script type="text/javascript" src="/media/js/jquery.nm-ie6.min.js"></script>
 <![endif]-->
+<script type="text/javascript">
+    $(document).ready(function() {
+        openid.init('openid_identifier');
+        openid.setDemoMode(true); //Stops form submission for client javascript-only test purposes
+        $("#loginbox").click(function() { 
+            $("#logincontainer").toggle();
+            $(this).find("i").toggleClass("signout");
+        });
+        $("fieldset#signin_menu").mouseup(function() {
+            return false
+        });
+        $(document).mouseup(function(e) {
+        	$("#logincontainer").hide();
+            $("#loginbox").find("i").removeClass("signout");
+        });        
+    });
+</script>
 </head>
 <body>
 <div style="display: none;">
@@ -75,16 +95,15 @@
             <%
             if (request.getUserPrincipal() != null) {
                 out.write("<a href=\""+userService.createLogoutURL(request.getRequestURI())+"\" id=\"signin-link\"><em>"+request.getUserPrincipal().getName()+"</em><strong>Desconectar</strong><i class=\"signout\"></i></a>");
-            } else {
-                out.write("<a href=\""+userService.createLoginURL(request.getRequestURI())+"\" id=\"signin-link\"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>");
-            }
-            %>
+            } else { %>
+              <span id="loginbox"><a href="#" id="signin-link"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a></span>
+            <% } %>
             </div>                
         </li>
     </div>
     </ul>
 </div>
-
+<jsp:include page="/pages/login_box.jsp"/>
 <div class="beta">
 	<img src="/media/images/bimage.png" width="105" height="107"/>
 </div>

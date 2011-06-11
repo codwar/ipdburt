@@ -155,7 +155,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			});
 		});
 
-        $(".infoTip").tipTip({attribute: "alt"});
+        $(".infoTip").tipTip({attribute: "alt", defaultPosition: "right"});
 
         $('.bbcode').nyroModal();
 
