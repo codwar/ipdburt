@@ -205,13 +205,11 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				" alt="${player.banInfo}"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
-				<c:url value="/search.jsp" var="url">
-					<c:param name="q" value="${player.name}" />
-				</c:url> <a href="${url}">${fn:escapeXml(player.name)}</a></span></td>
+				<a href="<c:url value="/search.jsp"><c:param name="q" value="${player.name}"/></c:url>">${fn:escapeXml(player.name)}</a></span></td>
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
-				<a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
+				<a href="<c:url value="/search.jsp"><c:param name="q" value="${player.ipSearch}"/></c:url>">${player.ip}</a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>

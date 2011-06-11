@@ -8,8 +8,8 @@
         <to>/?q=$1</to>
     </rule>
     <rule>
-        <from>^/list/server/(\.)$</from>
-        <to>/?q=$1&t=s</to>
+        <from>^/list/server/(.*)$</from>
+        <to>/?q=$1&amp;t=s</to>
     </rule>
     <rule>
         <from>^/status$</from>
@@ -29,17 +29,17 @@
     </rule>
 
     <outbound-rule>
-        <from>^/\?q=(.*)$</from>
+        <from>^/?q=(.*)$</from>
         <to>/search/$1</to>
     </outbound-rule>
 
     <outbound-rule>
-        <from>^/search\.jsp\?q=(.*)$</from>
+        <from>^/search.jsp?q=(.*)$</from>
         <to>/search/$1</to>
     </outbound-rule>
     
     <outbound-rule>
-        <from>^/search\.jsp\?q=(.*)&t=s$</from>
+        <from>^/search.jsp?q=(.*)&amp;t=s$</from>
         <to>/list/server/$1</to>
     </outbound-rule>    
 
