@@ -164,7 +164,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 <table id="search-result">
 	<thead>
 		<tr>
-		    <th style="width: 20px;"><input type="checkbox" id="multiselect"></th>
+		    <!-- th style="width: 20px;"><input type="checkbox" id="multiselect"></th-->
 			<th>Id</th>
 			<th>Nombre</th>
 			<th>IP</th>
@@ -183,7 +183,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				</c:otherwise>
 			</c:choose>
 			<tr class="${rowStyle}" id="result-${rowCounter.count}">
-			    <td copiable="false"><input type="checkbox" value="result-${rowCounter.count}" name="selector"></td>
+			    <!-- td copiable="false"><input type="checkbox" value="result-${rowCounter.count}" name="selector"></td-->
 				<td style="text-align: right;">
 				<c:if test="${not empty player.note}">
 				<span class="icon information infoTip" alt="${player.note}">&nbsp;</span>
@@ -211,19 +211,20 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
-				<span>
 				<a href="/search.jsp?q=${player.ipSearch}">${player.ip}</a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
 				<td style="text-align: right;">
-				<fmt:formatDate value="${player.latest}" type="both"
-                        timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
-				<%--  
-				<c:if test="${not player.playing }">
-					<fmt:formatDate value="${player.latest}" type="both"
-						timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
-				</c:if><c:if test="${player.playing}">Conectado</c:if>--%></td>
+                <c:choose>
+                    <c:when test="${player.playing}">
+                        Conectado
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
+                    </c:otherwise>
+                </c:choose>
+                </td>
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 				<c:if test="${not empty player.banInfo}">
 				<td style="display: none;">${player.banInfo}</td>
@@ -245,12 +246,6 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					</thead>
 					<tbody>
 					</tbody>
-					<!--
-					<tr id="more" style="cursor: pointer;">
-						<td colspan="4" style="text-align: center;"><span
-							class="icon refresh">Más...</span></td>
-					</tr>
-					-->
 					<tfoot>
 						<tr>
 							<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
