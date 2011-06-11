@@ -11,16 +11,13 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class PlayerCachedDAO implements PlayerDAO {
-
-	private static final LocalCache cache = LocalCache.getInstance();
+public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 
 	private final PlayerDAO impl;
 
-	private final Integer SEARCH_EXPIRE = 5;
-	
 	public PlayerCachedDAO(PlayerDAO impl) {
 		this.impl = impl;
+		this.initializeCache();
 	}
 
 	@Override
@@ -44,26 +41,26 @@ public class PlayerCachedDAO implements PlayerDAO {
 
 		return player;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Player> findLatest(int offset, int limit, int[] count) {
-		String key = "player-latest-" + Integer.toString(offset) + Integer.toString(limit);
-		@SuppressWarnings("unchecked")
-		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		String key = "player-latest-" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findLatest(offset, limit, count);
-		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		putCachedList(key, players, count);
 		return players;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Player> findBanned(int offset, int limit, int[] count) {
-		String key = "player-banned-" + Integer.toString(offset) + Integer.toString(limit);
-		@SuppressWarnings("unchecked")
-		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		String key = "player-banned-" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findBanned(offset, limit, count);
-		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		putCachedList(key, players, count);
 		return players;
 	}
 
@@ -115,25 +112,30 @@ public class PlayerCachedDAO implements PlayerDAO {
 	@Override
 	public List<Player> findByServer(String query, int offset, int limit,
 			int[] count) {
-		String key = "player-server-" + query + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-server-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
-		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findByServer(query, offset, limit, count);
-		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		putCachedList(key, players, count);
 		return players;
 	}
 
 	@Override
 	public List<Player> findByClientId(String query, int offset, int limit,
 			int[] count) {
-		String key = "player-cid-" + query + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-cid-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
-		List<Player> players = (List<Player>) LocalCache.getInstance().get(key);
+		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findByClientId(query, offset, limit, count);
-		LocalCache.getInstance().put(key, players, SEARCH_EXPIRE);
+		putCachedList(key, players, count);
 		return players;
+	}
+
+	@Override
+	protected void initializeCache() {
+		this.cache = LocalCache.getInstance();
 	}
 	
 }

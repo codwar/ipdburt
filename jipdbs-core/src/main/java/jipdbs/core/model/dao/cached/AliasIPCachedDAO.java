@@ -9,14 +9,13 @@ import jipdbs.core.util.LocalCache;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class AliasIPCachedDAO implements AliasIPDAO {
+public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
 
-	private static final LocalCache cache = LocalCache.getInstance();
-	
 	private AliasIPDAO impl;
 	
 	public AliasIPCachedDAO(AliasIPDAO impl) {
 		this.impl = impl;
+		this.initializeCache();
 	}
 
 	private String cacheKey(Key player, String ip) {
@@ -57,6 +56,11 @@ public class AliasIPCachedDAO implements AliasIPDAO {
 	public List<AliasIP> findByIP(String query, int offset, int limit,
 			int[] count) {
 		return impl.findByIP(query, offset, limit, count);
+	}
+
+	@Override
+	protected void initializeCache() {
+		this.cache = LocalCache.getInstance();
 	}
 
 }

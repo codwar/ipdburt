@@ -33,6 +33,7 @@ $(document).ready(
             		}
             	});
             });
+/*
            $(":checkbox").change(checkElements);
            $("#multiselect").click(function(){
         	   $("input[name='selector']").attr('checked',$(this).is(':checked'));
@@ -48,18 +49,18 @@ $(document).ready(
                            if (v.substring(0,3)=='[+]') {
                                v = $.trim(v.substring(12));
                            }
-                           rowText = rowText + " | " + v;
+                           rowText = rowText + "[td]" + v + "[/td]";
                        });
-                       text = text + rowText.substring(3) + "\n<br/>";
+                       text = text + "[tr]" + rowText + "[/tr]<br/>";
                    }
                );
                if (text != "") {
-            	   $("#copycontent").html(text);
+            	   $("#copycontent").html("[table]"+text+"[/table]");
             	   $("#copyTrigger").nm().nmCall();
                }
            });
-           $("#copycontent").click(function() {SelectText("copycontent")});
            checkElements();
+*/           
 });
 
 function showContextLoader() {

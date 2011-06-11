@@ -157,9 +157,10 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 
         $(".infoTip").tipTip({attribute: "alt"});
 
+        $('.bbcode').nyroModal();
+
 	});
 </script>
-<span id="copyall" rel="copydialog" class="button" style="visibility:hidden;">Copiar selección</span>
 <table id="search-result">
 	<thead>
 		<tr>
@@ -273,15 +274,14 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				<c:param name="q" value="${query}" />
 				<c:param name="t" value="${type}" />
 			</c:url>
-			<td colspan="6"><span style="font-size: smaller;">Total:
-			${count} (${time} ms)</span><pag:paginator
+			<td colspan="6">
+			<span style="font-size: smaller;">Total:
+			${count} (${time} ms)</span>
+			<pag:paginator
 				totalPages="${pageLink.totalPages}"
 				currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
 				url="${url}" /></td>
 		</tr>
 	</tfoot>
 </table>
-<div style="display:none;" id="copydialog">
-<span id="copycontent"></span>
-<a href="#copydialog" id="copyTrigger" style="display: none;"></a>
-</div>
+<a href="<c:url value="/pages/search_bbcode.jsp"><c:param name="q" value="${query}"/><c:param name="t" value="${type}"/></c:url>" class="button icon code bbcode">Código para foros</a>

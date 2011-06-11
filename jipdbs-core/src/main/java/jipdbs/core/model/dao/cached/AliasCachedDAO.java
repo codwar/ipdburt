@@ -10,18 +10,20 @@ import jipdbs.core.util.LocalCache;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class AliasCachedDAO implements AliasDAO {
-
-	private static final LocalCache cache = LocalCache.getInstance();
+public class AliasCachedDAO extends CachedDAO implements AliasDAO {
 
 	private final AliasDAO impl;
 
-	private final Integer SEARCH_EXPIRE = 5;
-	
 	public AliasCachedDAO(AliasDAO impl) {
 		this.impl = impl;
+		this.initializeCache();
 	}
 
+	@Override
+	protected void initializeCache() {
+		this.cache = LocalCache.getInstance();
+	}
+	
 	@Override
 	public void save(Alias alias, boolean commit) {
 		impl.save(alias, commit);
@@ -41,28 +43,27 @@ public class AliasCachedDAO implements AliasDAO {
 	public Alias getLastUsedAlias(Key player) {
 		return impl.getLastUsedAlias(player);
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Alias> findByNickname(String query, int offset, int limit,
-			int[] count) {
-		String key = "alias-nick" + query + Integer.toString(offset) + Integer.toString(limit);
-		@SuppressWarnings("unchecked")
-		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+	public List<Alias> findByNickname(String query, int offset, int limit, int[] count) {
+		String key = "alias-nick" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
 		aliasses = impl.findByNickname(query, offset, limit, count);
-		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		putCachedList(key, aliasses, count);
 		return aliasses;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Alias> findByNGrams(String query, int offset, int limit,
 			int[] count) {
-		String key = "alias-gram" + query + Integer.toString(offset) + Integer.toString(limit);
-		@SuppressWarnings("unchecked")
-		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+		String key = "alias-gram" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
 		aliasses = impl.findByNGrams(query, offset, limit, count);
-		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		putCachedList(key, aliasses, count);
 		return aliasses;
 	}
 
@@ -77,15 +78,14 @@ public class AliasCachedDAO implements AliasDAO {
 		return impl.findByIP(query, offset, limit, count);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Alias> findByServer(String query, int offset, int limit,
-			int[] count) {
-		String key = "alias-server" + query + Integer.toString(offset) + Integer.toString(limit);
-		@SuppressWarnings("unchecked")
-		List<Alias> aliasses = (List<Alias>) LocalCache.getInstance().get(key);
+	public List<Alias> findByServer(String query, int offset, int limit, int[] count) {
+		String key = "alias-server" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
 		aliasses = impl.findByServer(query, offset, limit, count);
-		LocalCache.getInstance().put(key, aliasses, SEARCH_EXPIRE);
+		putCachedList(key, aliasses, count);
 		return aliasses;
 	}
 

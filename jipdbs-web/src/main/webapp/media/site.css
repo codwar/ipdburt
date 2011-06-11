@@ -522,6 +522,9 @@ ul.messages li.warning {
 .information {
     background-image: url('images/information.png');
 }
+.code {
+    background-image: url('images/page_white_code.png');
+}
 .close_button {
     float: right;
     cursor: pointer;
@@ -678,7 +681,7 @@ input.search {
 	color: red;
 }
 .button {
-    background: #fff;
+    background-color: #fff;
     padding: 2px;
     font-family: Geneva, Vera, Arial, Helvetica, sans-serif;
     font-variant : small-caps;
