@@ -45,7 +45,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Player> findLatest(int offset, int limit, int[] count) {
-		String key = "player-latest-" + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-latest-" + Integer.toString(offset) + "L" + Integer.toString(limit);
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findLatest(offset, limit, count);
@@ -56,7 +56,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Player> findBanned(int offset, int limit, int[] count) {
-		String key = "player-banned-" + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-banned-" + Integer.toString(offset) + "L" + Integer.toString(limit);
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
 		players = impl.findBanned(offset, limit, count);
@@ -112,7 +112,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@Override
 	public List<Player> findByServer(String query, int offset, int limit,
 			int[] count) {
-		String key = "player-server-" + query + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-server-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
@@ -124,7 +124,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@Override
 	public List<Player> findByClientId(String query, int offset, int limit,
 			int[] count) {
-		String key = "player-cid-" + query + Integer.toString(offset) + Integer.toString(limit);
+		String key = "player-cid-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;

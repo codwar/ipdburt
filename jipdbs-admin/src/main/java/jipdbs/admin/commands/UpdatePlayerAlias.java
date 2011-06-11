@@ -122,11 +122,11 @@ public class UpdatePlayerAlias extends Command {
 							alias.setNickname((String) entity.getProperty("nickname"));
 							alias.setCreated((Date) entity.getProperty("created"));
 							alias.setUpdated((Date) entity.getProperty("updated"));
-							alias.setCount(1l);
+							alias.setCount((Long) entity.getProperty("count"));
 							alias.setServer(player.getServer());
 							alias.setNgrams(NGrams.ngrams(alias.getNickname()));
 						} else {
-							alias.setCount(alias.getCount() + 1l);
+							alias.setCount(alias.getCount() + (Long) entity.getProperty("count"));
 							try {
 								if (alias.getUpdated().before((Date) entity.getProperty("updated"))) {
 									alias.setUpdated((Date) entity.getProperty("updated"));

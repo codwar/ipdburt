@@ -7,3 +7,4 @@ test
 .settings
 jipdbs.properties
 .pydevproject
+pom.xml.versionsBackup
