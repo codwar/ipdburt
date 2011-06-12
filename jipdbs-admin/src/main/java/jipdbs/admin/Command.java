@@ -27,22 +27,19 @@ public abstract class Command {
 	private File file = null;
 	
 	public void run(String[] args) throws Exception {
-		OptionParser parser = new OptionParser() {
-            {
-                acceptsAll(Arrays.asList("u", "username"), "username").withOptionalArg().ofType(String.class);
-                acceptsAll(Arrays.asList("p", "password"), "password").withOptionalArg().ofType(String.class);
-                acceptsAll(Arrays.asList("h", "?"), "print help");
-            }
-        };
+		OptionParser parser = getCommandOptions();
+		parser.acceptsAll(Arrays.asList("u", "username"), "username").withOptionalArg().ofType(String.class);
+		parser.acceptsAll(Arrays.asList("p", "password"), "password").withOptionalArg().ofType(String.class);
+		parser.acceptsAll(Arrays.asList("h", "?"), "print help");
+		
 		try {
 			String username = null;
 			String password = null;
 			OptionSet options = parser.parse(args);
-			
+
 			if (options.has("?")) {
+				System.out.println("=== " + this.getClass().getSimpleName() + " ===\n");
 				parser.printHelpOn(System.out);
-				System.out.println("\n=== " + this.getClass().getSimpleName() + " ===");
-				getCommandOptions().printHelpOn(System.out);
 				return;
 			}
 			
