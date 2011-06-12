@@ -50,7 +50,7 @@ public abstract class Command {
 				password = (String) options.valueOf("p");
 			}
 			initializeRemoteApi(username, password);
-			execute(args);
+			execute(options);
 		} finally {
 			try {
 				this.installer.uninstall();
@@ -139,7 +139,7 @@ public abstract class Command {
 	 * @param args
 	 * @throws Exception
 	 */
-	protected abstract void execute(String[] args) throws Exception;
+	protected abstract void execute(OptionSet options) throws Exception;
 	
 	protected abstract OptionParser getCommandOptions();
 	

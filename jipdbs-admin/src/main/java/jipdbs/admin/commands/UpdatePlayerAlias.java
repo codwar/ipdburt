@@ -40,12 +40,9 @@ public class UpdatePlayerAlias extends Command {
 	static int count = 0;
 
 	@Override
-	protected void execute(String[] args) throws Exception {
+	protected void execute(OptionSet options) throws Exception {
 
 		initializeState("updateplayer");
-		
-		OptionParser parser = getCommandOptions();
-		OptionSet options = parser.parse(args);
 		
 		int limit = 1000;
 		if (options.hasArgument("limit")) {

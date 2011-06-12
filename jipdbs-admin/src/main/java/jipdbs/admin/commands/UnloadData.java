@@ -36,12 +36,9 @@ public class UnloadData extends Command {
 	static int count = 0;
 
 	@Override
-	protected void execute(String[] args) throws Exception {
+	protected void execute(OptionSet options) throws Exception {
 		final int maxEntities = Integer.MAX_VALUE;
 
-		OptionParser parser = getCommandOptions();
-		OptionSet options = parser.parse(args);
-		
 		if (!options.hasArgument("output")) return;
 		
 		final AliasDAO aliasDAO = new AliasDAOImpl();

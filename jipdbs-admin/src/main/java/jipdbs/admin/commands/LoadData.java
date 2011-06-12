@@ -33,10 +33,7 @@ import com.google.appengine.api.datastore.Entity;
 public class LoadData extends Command {
 
 	@Override
-	protected void execute(String[] args) throws Exception {
-		
-		OptionParser parser = getCommandOptions();
-		OptionSet options = parser.parse(args);
+	protected void execute(OptionSet options) throws Exception {
 		
 		if (!options.hasArgument("input")) return;
 		
