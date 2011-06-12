@@ -1,9 +1,11 @@
 package jipdbs.admin.commands;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,6 +23,8 @@ import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.model.dao.impl.AliasDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.Functions;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -32,33 +36,32 @@ public class UnloadData extends Command {
 	static int count = 0;
 
 	@Override
-	protected void execute(String[] args) throws Exception {
+	protected void execute(OptionSet options) throws Exception {
 		final int maxEntities = Integer.MAX_VALUE;
 
+		if (!options.hasArgument("output")) return;
+		
 		final AliasDAO aliasDAO = new AliasDAOImpl();
 
+		String file = (String) options.valueOf("output");
 		
-		Writer wrt = new FileWriter(args[0]); 
+		Writer wrt = new FileWriter(file); 
 		
-		System.out.println("Writing to " + args[0]);
+		System.out.println("Writing to " + file);
 
 		int limit = maxEntities;
-		try {
-			limit = Integer.parseInt(args[2]);
-		} catch (Exception e) {
+		if (options.hasArgument("limit")) {
+			limit = (Integer) options.valueOf("limit");
 		}
 		
 		initializeState("unloaddata");
-
-		Cursor cursor = null;
+		
 		boolean force = false;
-		try {
-			if ("force".equalsIgnoreCase(args[1])) {
-				force = true;
-			}
-		} catch (Exception e) {
+		if (options.has("force")) {
+			force = true;
 		}
 
+		Cursor cursor = null;
 		if (!force) cursor = loadCursor();
 		
 		count = 0;
@@ -176,6 +179,18 @@ public class UnloadData extends Command {
 		
 		System.out.print("Done");
 
+	}
+
+	@Override
+	protected OptionParser getCommandOptions() {
+		OptionParser parser = new OptionParser() {
+            {
+                acceptsAll( Arrays.asList("o", "output"), "output file" ).withRequiredArg().ofType(File.class);
+                acceptsAll( Arrays.asList("l", "limit"), "limit" ).withOptionalArg().ofType(Integer.class);
+                acceptsAll( Arrays.asList("f", "force"), "do not resume");                
+            }
+        };
+		return parser;
 	}
 	
 }

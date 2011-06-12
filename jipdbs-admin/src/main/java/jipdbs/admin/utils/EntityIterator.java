@@ -22,7 +22,8 @@ public final class EntityIterator {
 
 	public static void iterate(Query q, long maxElements, int batchSize, Cursor startCursor, Callback callback) {
 
-		batchSize = Math.min(batchSize, 1000);
+		
+		batchSize = (int) Math.min(Math.min(maxElements, batchSize), 1000);
 
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		PreparedQuery pq = ds.prepare(q);
@@ -38,10 +39,9 @@ public final class EntityIterator {
 
 		Cursor cursor = list.getCursor();
 		
-		while (totalElements <= maxElements && list.size() > 0) {
+		while (totalElements < maxElements && list.size() > 0) {
 			for (Entity entity : list) {
 				totalElements++;
-				if (totalElements > maxElements) break;
 				try {
 					callback.withEntity(entity,
 							DatastoreServiceFactory.getDatastoreService(), list.getCursor(), totalElements);
@@ -50,7 +50,11 @@ public final class EntityIterator {
 					e.printStackTrace();
 					break;
 				}
+				if (totalElements >= maxElements) break;
 			}
+			
+			if (totalElements >= maxElements) break;
+			
 			// wait before fetching new data
 			try {
 				Thread.sleep(WAIT);
@@ -58,8 +62,7 @@ public final class EntityIterator {
 				System.err.println(e.getMessage());
 			}
 			
-			list = pq.asQueryResultList(withLimit(
-					batchSize).startCursor(cursor));
+			list = pq.asQueryResultList(withLimit((int) Math.min(batchSize, maxElements - totalElements)).startCursor(cursor));
 			cursor = list.getCursor();
 		}
 	}
