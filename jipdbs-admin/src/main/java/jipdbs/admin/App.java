@@ -25,6 +25,7 @@ public class App
 				for (Class c : classes) {
 					System.out.println(c.getSimpleName().toLowerCase());
 				}
+				System.out.println("Use <command> -? : to get the command help");
 				System.out.println("");
 			} else {
 				command.run(Arrays.copyOfRange(args, 1, args.length));

@@ -2,6 +2,7 @@ package jipdbs.admin.commands;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ import jipdbs.core.model.dao.impl.AliasIPDAOImpl;
 import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.util.Functions;
 import jipdbs.core.util.NGrams;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -40,22 +43,21 @@ public class UpdatePlayerAlias extends Command {
 	protected void execute(String[] args) throws Exception {
 
 		initializeState("updateplayer");
-
+		
+		OptionParser parser = getCommandOptions();
+		OptionSet options = parser.parse(args);
+		
 		int limit = 1000;
-		try {
-			limit = Integer.parseInt(args[0]);
-		} catch (Exception e) {
+		if (options.hasArgument("limit")) {
+			limit = (Integer) options.valueOf("limit");
 		}
 		
-		Cursor cursor = null;
 		boolean force = false;
-		try {
-			if ("force".equalsIgnoreCase(args[1])) {
-				force = true;
-			}
-		} catch (Exception e) {
+		if (options.has("force")) {
+			force = true;
 		}
 
+		Cursor cursor = null;
 		if (!force) cursor = loadCursor();
 		
 		if (cursor == null) {
@@ -194,8 +196,20 @@ public class UpdatePlayerAlias extends Command {
 			}
 		});
 
-		System.out.print("Done");
+		System.out.println("Done");
 
+	}
+
+	@Override
+	public OptionParser getCommandOptions() {
+		OptionParser parser = new OptionParser() {
+            {
+                acceptsAll( Arrays.asList("l", "limit") ).withOptionalArg().ofType(Integer.class)
+                    .describedAs( "limit" ).defaultsTo( 1000 );
+                acceptsAll( Arrays.asList("f", "force"), "do not resume");
+            }
+        };
+		return parser;
 	}
 
 }

@@ -1,9 +1,11 @@
 package jipdbs.admin.commands;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jipdbs.admin.Command;
@@ -17,6 +19,8 @@ import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.LocalCache;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -31,9 +35,15 @@ public class LoadData extends Command {
 	@Override
 	protected void execute(String[] args) throws Exception {
 		
-		Reader input = new FileReader(args[0]);
+		OptionParser parser = getCommandOptions();
+		OptionSet options = parser.parse(args);
 		
-		System.out.println("Reading " + args[0]);
+		if (!options.hasArgument("input")) return;
+		
+		String file = (String) options.valueOf("input");
+		Reader input = new FileReader(file);
+		
+		System.out.println("Reading " + file);
 
 		BufferedReader reader = new BufferedReader(input);
 		
@@ -47,7 +57,7 @@ public class LoadData extends Command {
 		reader.close();
 		input.close();
 		
-		System.out.print("Done");
+		System.out.println("Done");
 
 	}
 
@@ -161,6 +171,16 @@ public class LoadData extends Command {
 		}
 		
 		return server;
+	}
+
+	@Override
+	protected OptionParser getCommandOptions() {
+		OptionParser parser = new OptionParser() {
+            {
+                acceptsAll( Arrays.asList("i", "input"), "input file" ).withRequiredArg().ofType(File.class);
+            }
+        };
+		return parser;
 	}
 	
 }

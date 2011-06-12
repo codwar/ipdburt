@@ -9,7 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Properties;
+
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
@@ -21,8 +27,32 @@ public abstract class Command {
 	private File file = null;
 	
 	public void run(String[] args) throws Exception {
+		OptionParser parser = new OptionParser() {
+            {
+                acceptsAll(Arrays.asList("u", "username"), "username").withOptionalArg().ofType(String.class);
+                acceptsAll(Arrays.asList("p", "password"), "password").withOptionalArg().ofType(String.class);
+                acceptsAll(Arrays.asList("h", "?"), "print help");
+            }
+        };
 		try {
-			initializeRemoteApi();
+			String username = null;
+			String password = null;
+			OptionSet options = parser.parse(args);
+			
+			if (options.has("?")) {
+				parser.printHelpOn(System.out);
+				System.out.println("\n=== " + this.getClass().getSimpleName() + " ===");
+				getCommandOptions().printHelpOn(System.out);
+				return;
+			}
+			
+			if (options.hasArgument("u")) {
+				username = (String) options.valueOf("u");
+			}
+			if (options.hasArgument("p")) {
+				password = (String) options.valueOf("p");
+			}
+			initializeRemoteApi(username, password);
 			execute(args);
 		} finally {
 			try {
@@ -73,7 +103,7 @@ public abstract class Command {
 	 * 
 	 * @throws Exception
 	 */
-	protected void initializeRemoteApi() throws Exception {
+	protected void initializeRemoteApi(String username, String password) throws Exception {
 		Properties props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream(
@@ -83,8 +113,10 @@ public abstract class Command {
 		}
 		BufferedReader console = new BufferedReader(new InputStreamReader(
 				System.in));
-		System.out.print("username: ");
-		String username = console.readLine();
+		if (StringUtils.isEmpty(username)) {
+			System.out.print("username: ");
+			username = console.readLine();
+		}
 //		char passwd[] = null;
 //		try {
 //			passwd = PasswordField.getPassword(System.in, "Enter password: ");
@@ -92,8 +124,10 @@ public abstract class Command {
 //			ioe.printStackTrace();
 //		}
 //		String password = String.valueOf(passwd);
-		System.out.print("password: ");
-		String password = console.readLine();
+		if (password == null) {
+			System.out.print("password for '" + username + "': ");
+			password = console.readLine();
+		}
 		RemoteApiOptions options = new RemoteApiOptions()
 				.server(props.getProperty("url"),
 						Integer.parseInt(props.getProperty("port")))
@@ -109,5 +143,7 @@ public abstract class Command {
 	 * @throws Exception
 	 */
 	protected abstract void execute(String[] args) throws Exception;
+	
+	protected abstract OptionParser getCommandOptions();
 	
 }
