@@ -35,6 +35,10 @@ public class JIPDBSRpc2Handler {
 		this.updateApi.updateName(key, name, version, JIPDBSXmlRpc2Servlet.getClientIpAddress());
 	}
 
+	public void updateName(String key, String name, Object[] data) {
+		this.updateApi.updateName(key, name, (String) data[0], JIPDBSXmlRpc2Servlet.getClientIpAddress());
+	}
+	
 	public void update(String key, Object[] plist) throws Exception {
 
 		try {

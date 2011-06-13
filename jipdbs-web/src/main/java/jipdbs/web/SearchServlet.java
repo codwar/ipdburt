@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -59,7 +58,7 @@ public class SearchServlet extends HttpServlet {
 		}
 
 		int offset = (page - 1) * pageSize;
-		int limit = pageSize;
+		int limit = Math.min(pageSize, Parameters.MAX_ENTITY_LIMIT);
 
 		String query = req.getParameter("q");
 		String type = "";
@@ -121,13 +120,15 @@ public class SearchServlet extends HttpServlet {
 
 		time = System.currentTimeMillis() - time;
 
-		int totalPages = (int) Math.ceil((double) total[0] / pageSize);
+		int totalElements = Math.min(Parameters.MAX_ENTITY_LIMIT, total[0]);
+		
+		int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
 		req.setAttribute("list", list);
 		req.setAttribute("queryValue", queryValue);
 		req.setAttribute("query", query);
 		req.setAttribute("type", type);
-		req.setAttribute("count", total[0]);
+		req.setAttribute("count", totalElements);
 		req.setAttribute("time", time);
 		req.setAttribute("pageLink", new PageLink(page, pageSize, totalPages));
 	}

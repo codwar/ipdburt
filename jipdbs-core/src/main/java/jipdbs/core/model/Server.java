@@ -23,10 +23,10 @@ public class Server implements Serializable {
 	private Date updated;
 	private int onlinePlayers;
 	private String address;
-	private String keyString;
 	private String pluginVersion;
 	private Long maxLevel;
 	private Boolean dirty;
+	private Integer permission;
 	
 	public Server() {
 	}
@@ -44,6 +44,7 @@ public class Server implements Serializable {
 						.intValue());
 		this.setAddress((String) entity.getProperty("ip"));
 		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
+		this.setPermission((Integer) entity.getProperty("permission"));
 		if (this.getMaxLevel()==null) {
 			this.setMaxLevel(2L);
 		}
@@ -54,16 +55,17 @@ public class Server implements Serializable {
 	public Entity toEntity() {
 		Entity entity = this.getKey() == null ? new Entity("Server")
 				: new Entity(this.getKey());
-		entity.setProperty("name", this.getName());
 		entity.setProperty("updated", this.getUpdated());
 		entity.setProperty("uid", this.getUid());
 		entity.setProperty("ip", this.getAddress());
 		entity.setProperty("dirty", this.getDirty());
+		entity.setUnindexedProperty("name", this.getName());
 		entity.setUnindexedProperty("created", this.getCreated());
 		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
 		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
 		entity.setUnindexedProperty("players", this.getOnlinePlayers());
 		entity.setUnindexedProperty("admin", this.getAdmin());
+		entity.setUnindexedProperty("permission", this.getPermission());
 		return entity;
 	}
 
@@ -71,17 +73,8 @@ public class Server implements Serializable {
 		return key;
 	}
 
-	public String getKeyString() {
-		return keyString;
-	}
-
-	public void setKeyString(String keyString) {
-		this.keyString = keyString;
-	}
-
 	public void setKey(Key key) {
 		this.key = key;
-		this.keyString = KeyFactory.keyToString(key);
 	}
 
 	public String getUid() {
@@ -174,6 +167,10 @@ public class Server implements Serializable {
 		this.dirty = dirty;
 	}
 	
+	public String getKeyString() {
+		return KeyFactory.keyToString(this.getKey());
+	}
+	
 	public Boolean getOffline() {
 		Date today = new Date();
 		if (this.updated != null) {
@@ -181,6 +178,14 @@ public class Server implements Serializable {
 			return (diff/86400000 >=2);
 		}
 		return true;
+	}
+
+	public Integer getPermission() {
+		return permission;
+	}
+
+	public void setPermission(Integer permission) {
+		this.permission = permission;
 	}
 	
 }

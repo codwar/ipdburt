@@ -12,6 +12,7 @@ import jipdbs.core.JIPDBS;
 import jipdbs.core.model.Server;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class JIPDBSHTTPHandler extends HttpServlet {
 
@@ -52,7 +53,7 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 				}
 				resp.getWriter().println(
 						"{\"error\": false, \"server\": {\"key\": \""
-								+ server.getKeyString() + "\", \"count\": \""
+								+ KeyFactory.keyToString(server.getKey()) + "\", \"count\": \""
 								+ server.getOnlinePlayers() + "\",\"name\": \""
 								+ server.getName() + "\"}}");
 			}
