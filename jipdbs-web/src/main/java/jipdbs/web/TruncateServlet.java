@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jipdbs.core.cache.CacheFactory;
 import jipdbs.core.model.dao.AliasDAO;
 import jipdbs.core.model.dao.PlayerDAO;
 import jipdbs.core.model.dao.impl.AliasDAOImpl;
 import jipdbs.core.model.dao.impl.PlayerDAOImpl;
-import jipdbs.core.util.LocalCache;
 
 public class TruncateServlet extends HttpServlet {
 
@@ -27,7 +27,7 @@ public class TruncateServlet extends HttpServlet {
 		aliasDAO.truncate();
 		playerDAO.truncate();
 		
-		LocalCache.getInstance().clear();
+		CacheFactory.getInstance().clearAll();
 		
 		resp.getWriter().write("Done");
 		

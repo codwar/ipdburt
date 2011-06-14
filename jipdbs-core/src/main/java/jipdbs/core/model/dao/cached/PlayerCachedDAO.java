@@ -3,9 +3,9 @@ package jipdbs.core.model.dao.cached;
 import java.util.Collection;
 import java.util.List;
 
+import jipdbs.core.cache.CacheFactory;
 import jipdbs.core.model.Player;
 import jipdbs.core.model.dao.PlayerDAO;
-import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -135,7 +135,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = LocalCache.getInstance();
+		this.cache = CacheFactory.getInstance().getCache("player");
 	}
 	
 }

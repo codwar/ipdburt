@@ -28,6 +28,10 @@ public class Player implements Serializable {
 		this.key = null;
 	}
 
+	public Player(Key key) {
+		this.key = key;
+	}
+	
 	public Player(Entity entity) {
 		this.key = entity.getKey();
 		this.server = entity.getParent();

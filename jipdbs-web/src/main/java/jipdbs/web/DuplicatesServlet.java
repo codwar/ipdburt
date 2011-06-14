@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jipdbs.core.cache.CacheFactory;
 import jipdbs.core.model.Server;
 import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
-import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -76,7 +76,7 @@ public class DuplicatesServlet extends HttpServlet {
 				if (keys.size() > 100) {
 					service.delete(keys);
 					keys.clear();
-					LocalCache.getInstance().clear();
+					CacheFactory.getInstance().clearAll();
 				}
 			}
 		}
