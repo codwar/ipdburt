@@ -92,6 +92,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>httphandler</servlet-name>
 		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
 	</servlet>
+    <servlet>
+        <servlet-name>xmlrpc3</servlet-name>
+        <servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
+    </servlet>    
 
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
@@ -169,7 +173,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>httphandler</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>xmlrpc3</servlet-name>
+        <url-pattern>/api/v3/xmlrpc</url-pattern>
+    </servlet-mapping>
+    
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>mail</web-resource-name>

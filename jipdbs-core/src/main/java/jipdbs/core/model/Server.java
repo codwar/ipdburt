@@ -39,17 +39,17 @@ public class Server implements Serializable {
 		this.setAdmin((Email) entity.getProperty("admin"));
 		this.setName((String) entity.getProperty("name"));
 		this.setUid((String) entity.getProperty("uid"));
-		this
-				.setOnlinePlayers(((Long) entity.getProperty("players"))
-						.intValue());
+		this.setOnlinePlayers(((Long) entity.getProperty("players")).intValue());
 		this.setAddress((String) entity.getProperty("ip"));
 		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
-		this.setPermission((Integer) entity.getProperty("permission"));
+		
 		if (this.getMaxLevel()==null) {
 			this.setMaxLevel(2L);
 		}
 		Boolean b = (Boolean) entity.getProperty("dirty");
 		this.setDirty(b != null ? b : true);
+		Long permission = (Long) entity.getProperty("permission");
+		this.setPermission(permission != null ? permission.intValue() : 0);
 	}
 
 	public Entity toEntity() {

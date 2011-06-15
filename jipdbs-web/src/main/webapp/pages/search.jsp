@@ -214,14 +214,15 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
 				<td style="text-align: right;">
-                <c:choose>
+                <%-- c:choose>
                     <c:when test="${player.playing}">
                         Conectado
                     </c:when>
                     <c:otherwise>
                         <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                     </c:otherwise>
-                </c:choose>
+                </c:choose --%>
+                <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>
 				<td><a href="/search.jsp?q=${player.server.keyString}&t=s">${player.server.name}</a></td>
 				<c:if test="${not empty player.banInfo}">

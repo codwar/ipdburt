@@ -73,4 +73,9 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 		this.cache = CacheFactory.getInstance().getCache("penalty");
 	}
 
+	@Override
+	public void save(List<Penalty> list) {
+		impl.save(list);
+	}
+
 }

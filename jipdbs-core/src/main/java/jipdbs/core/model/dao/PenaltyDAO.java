@@ -21,4 +21,11 @@ public interface PenaltyDAO {
 	public abstract List<Penalty> findByPlayerAndType(Key player, Integer type,
 			int offset, int limit, int[] count);
 
+	/**
+	 * Save a list of Penalty.
+	 * This is a batch method. It wont return the object key
+	 * @param list
+	 */
+	void save(List<Penalty> list);
+
 }

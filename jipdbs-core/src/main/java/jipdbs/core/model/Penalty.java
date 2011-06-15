@@ -12,18 +12,18 @@ public class Penalty implements Serializable {
 	 */
 	private static final long serialVersionUID = -1204044149724053986L;
 
-	public static final Integer BAN = 0;
-	public static final Integer NOTICE = 1;
+	public static final Long BAN = 0L;
+	public static final Long NOTICE = 1L;
 	
 	private Key key;
 	private Player player;
 	private Player admin;
 	
-	private Integer type;
+	private Long type;
 	private Date created;
 	private Date updated;
 	private String reason;
-	private Integer duration;
+	private Long duration;
 	private Boolean synced;
 	private Boolean active;
 	
@@ -39,11 +39,11 @@ public class Penalty implements Serializable {
 		this.key = key;
 	}
 
-	public Integer getType() {
+	public Long getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(Long type) {
 		this.type = type;
 	}
 
@@ -71,11 +71,11 @@ public class Penalty implements Serializable {
 		this.reason = reason;
 	}
 
-	public Integer getDuration() {
+	public Long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Integer duration) {
+	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
 

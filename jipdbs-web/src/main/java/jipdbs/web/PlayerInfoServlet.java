@@ -18,7 +18,7 @@ import jipdbs.core.model.Player;
 import jipdbs.core.model.Server;
 import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
-import jipdbs.info.BanInfo;
+import jipdbs.info.PenaltyInfo;
 import jipdbs.info.PlayerInfoView;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -71,7 +71,7 @@ public class PlayerInfoServlet extends HttpServlet {
 		infoView.setIp(Functions.maskIpAddress(player.getIp()));
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
-		infoView.setBanInfo(BanInfo.getDetail(player.getBanInfo()));
+		infoView.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());

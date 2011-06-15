@@ -44,9 +44,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		penalty.setActive((Boolean) entity.getProperty("active"));
 		penalty.setSynced((Boolean) entity.getProperty("synced"));
 		penalty.setReason((String) entity.getProperty("reason"));
-		penalty.setDuration((Integer) entity.getProperty("duration"));
+		penalty.setDuration((Long) entity.getProperty("duration"));
 		penalty.setAdmin(new Player((Key) entity.getProperty("admin")));
-		penalty.setType((Integer) entity.getProperty("type"));
+		penalty.setType((Long) entity.getProperty("type"));
 		return penalty;
 	}
 
@@ -139,7 +139,16 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			list.add(fromEntity(entity));
 		}
 		return list;
-		
 	}
 
+	@Override
+	public void save(List<Penalty> list) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Penalty penalty : list) {
+			entities.add(toEntity(penalty));
+		}
+		service.put(entities);
+	}
+	
 }

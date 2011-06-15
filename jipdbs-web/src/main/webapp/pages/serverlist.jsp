@@ -13,7 +13,7 @@
 		<tr>
 			<th>Servidor</th>
 			<th style="width: 90px;">Conectados</th>
-			<th style="width: 150px;">Actualizado</th>
+			<th style="width: 160px;">Actualizado</th>
 		</tr>
 	</thead>
 	<tbody>

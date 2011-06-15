@@ -37,7 +37,7 @@ import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
-import jipdbs.info.BanInfo;
+import jipdbs.info.PenaltyInfo;
 import jipdbs.info.SearchResult;
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
@@ -294,7 +294,7 @@ public class JIPDBS {
 		result.setNote(player.getNote());
 		result.setName(player.getNickname());
 		result.setServer(server);
-		result.setBanInfo(BanInfo.getDetail(player.getBanInfo()));
+		result.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
 		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "UID" + result.getId());
 		return result;
 	}
