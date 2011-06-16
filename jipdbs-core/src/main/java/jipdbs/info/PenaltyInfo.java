@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.StringUtils;
+
 import jipdbs.legacy.python.date.DateUtils;
 
 public class PenaltyInfo implements Serializable {
@@ -87,7 +89,7 @@ public class PenaltyInfo implements Serializable {
 			s.append(" hasta ");
 			s.append(format2.format(this.getExpires()));
 		}
-		if (!this.getAdmin().equals("-")) {
+		if (!StringUtils.isEmpty(this.getAdmin())) {
 			s.append(" (").append(getAdmin()).append(")");
 		}
 		return s.toString();
@@ -124,6 +126,7 @@ public class PenaltyInfo implements Serializable {
 	}
 	
 	public String getAdmin() {
+		if (admin != null && admin.equals("-")) return null;
 		return admin;
 	}
 

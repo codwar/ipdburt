@@ -180,7 +180,7 @@ public class Update {
 			|| Events.ADDNOTE.equals(playerInfo.getEvent())
 			|| Events.UNBAN.equals(playerInfo.getEvent())
 			|| Events.DELNOTE.equals(playerInfo.getEvent())) {
-			PenaltyTask.process(player);
+			PenaltyTask.enqueue(player, playerInfo.getEvent());
 		}
 	}
 

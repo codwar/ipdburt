@@ -1,0 +1,11 @@
+<queue-entries>
+  <queue>
+    <name>penalty</name>
+    <rate>5/s</rate>
+    <bucket-size>100</bucket-size>
+    <retry-parameters>
+      <task-retry-limit>10</task-retry-limit>
+      <task-age-limit>1h</task-age-limit>
+    </retry-parameters>
+  </queue>
+</queue-entries>

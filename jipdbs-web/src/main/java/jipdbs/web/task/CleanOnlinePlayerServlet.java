@@ -1,4 +1,4 @@
-package jipdbs.web.batch;
+package jipdbs.web.task;
 
 import java.io.IOException;
 import java.util.Date;
@@ -71,7 +71,7 @@ public class CleanOnlinePlayerServlet extends HttpServlet {
 			
 			Queue queue = QueueFactory.getDefaultQueue();
 			for (Entity server : pq.asIterable()) {
-				queue.add(TaskOptions.Builder.withUrl("/admin/cleanserver").param("key", KeyFactory.keyToString(server.getKey())));
+				queue.add(TaskOptions.Builder.withUrl("/admin/task/cleanserver").param("key", KeyFactory.keyToString(server.getKey())));
 			}
 			resp.getWriter().write("Total: " + pq.countEntities(FetchOptions.Builder.withLimit(1000)));
 		}

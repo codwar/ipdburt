@@ -17,7 +17,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <filter-name>UrlRewriteFilter</filter-name>
         <url-pattern>/*</url-pattern>
      </filter-mapping>
- -->        
+ -->
+
+	 
 	<servlet>
 		<display-name>Remote Api Servlet</display-name>
 		<servlet-name>RemoteApiServlet</servlet-name>
@@ -86,7 +88,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	</servlet>
 	<servlet>
 		<servlet-name>cleanserver</servlet-name>
-		<servlet-class>jipdbs.web.batch.CleanOnlinePlayerServlet</servlet-class>
+		<servlet-class>jipdbs.web.task.CleanOnlinePlayerServlet</servlet-class>
 	</servlet>	
 	<servlet>
 		<servlet-name>httphandler</servlet-name>
@@ -96,6 +98,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <servlet-name>xmlrpc3</servlet-name>
         <servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
     </servlet>    
+    <servlet>
+        <servlet-name>PenaltyTask</servlet-name>
+        <servlet-class>jipdbs.web.task.PenaltyTaskServlet</servlet-class>
+    </servlet>  
 
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
@@ -141,10 +147,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>duplication</servlet-name>
 		<url-pattern>/admin/duplication</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>cleanserver</servlet-name>
-		<url-pattern>/admin/cleanserver</url-pattern>
-	</servlet-mapping>	
     <servlet-mapping>
         <servlet-name>xmlrpc2</servlet-name>
         <url-pattern>/xmlrpc2</url-pattern>
@@ -178,6 +180,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <url-pattern>/api/v3/xmlrpc</url-pattern>
     </servlet-mapping>
     
+    <!--  TASKS -->
+    <servlet-mapping>
+		<servlet-name>cleanserver</servlet-name>
+		<url-pattern>/admin/task/cleanserver</url-pattern>
+	</servlet-mapping>	
+    <servlet-mapping>
+		<servlet-name>PenaltyTask</servlet-name>
+		<url-pattern>/admin/task/penalty</url-pattern>
+	</servlet-mapping>	
+	
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>mail</web-resource-name>

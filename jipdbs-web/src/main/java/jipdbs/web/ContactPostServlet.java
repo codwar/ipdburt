@@ -6,25 +6,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.core.JIPDBS;
-
 import org.datanucleus.util.StringUtils;
 
-@SuppressWarnings("serial")
-public class ContactPostServlet extends HttpServlet {
+public class ContactPostServlet extends JIPDBServlet {
 
-	private JIPDBS app;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7749142119667666559L;
+	
 	private final static String MAIL_RE = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
-	@Override
-	public void init() throws ServletException {
-		app = (JIPDBS) getServletContext().getAttribute("jipdbs");
-	}
-
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

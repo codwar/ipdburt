@@ -36,6 +36,11 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	}
 
 	@Override
+	public List<Penalty> findByPlayer(Key player) {
+		return this.findByPlayer(player, 1000);
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Penalty> findByPlayer(Key player, int limit) {
 		String cachekey = "penalty-player-" + KeyFactory.keyToString(player) + "l" + Integer.toString(limit);
@@ -48,8 +53,8 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Penalty> findByType(Integer type, int offset, int limit, int[] count) {
-		String key = "penalty-type" + Integer.toString(type) + Integer.toString(offset) + "L" + Integer.toString(limit);
+	public List<Penalty> findByType(Long type, int offset, int limit, int[] count) {
+		String key = "penalty-type" + Long.toString(type) + Integer.toString(offset) + "L" + Integer.toString(limit);
 		List<Penalty> list = (List<Penalty>) getCachedList(key, count);
 		if (list != null) return list;
 		list = impl.findByType(type, offset, limit, count);
@@ -59,8 +64,8 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Penalty> findByPlayerAndType(Key player, Integer type, int offset, int limit, int[] count) {
-		String key = "penalty-ptype" + KeyFactory.keyToString(player) + Integer.toString(type) + Integer.toString(offset) + "L" + Integer.toString(limit);
+	public List<Penalty> findByPlayerAndType(Key player, Long type, int offset, int limit, int[] count) {
+		String key = "penalty-ptype" + KeyFactory.keyToString(player) + Long.toString(type) + Integer.toString(offset) + "L" + Integer.toString(limit);
 		List<Penalty> list = (List<Penalty>) getCachedList(key, count);
 		if (list != null) return list;
 		list = impl.findByPlayerAndType(player, type, offset, limit, count);
@@ -76,6 +81,29 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@Override
 	public void save(List<Penalty> list) {
 		impl.save(list);
+	}
+
+	@Override
+	public void delete(Penalty penalty) {
+		this.delete(penalty);
+		this.cache.clear();
+		
+	}
+
+	@Override
+	public void delete(List<Penalty> list) {
+		this.delete(list);
+		this.cache.clear();
+	}
+
+	@Override
+	public List<Penalty> findByPlayerAndTypeAndActive(Key player, Long type) {
+		return impl.findByPlayerAndTypeAndActive(player, type);
+	}
+
+	@Override
+	public List<Penalty> findByPlayerAndType(Key player, Long type) {
+		return impl.findByPlayerAndType(player, type);
 	}
 
 }

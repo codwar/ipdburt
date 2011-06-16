@@ -71,6 +71,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		return fromEntity(ds.get(key));
 	}
 
+	@Override
+	public List<Penalty> findByPlayer(Key player) {
+		return this.findByPlayer(player, 1000);
+	}
+	
 	/* (non-Javadoc)
 	 * @see jipdbs.core.model.dao.impl.PenaltyDAO#findByPlayer(com.google.appengine.api.datastore.Key, int)
 	 */
@@ -97,7 +102,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see jipdbs.core.model.dao.impl.PenaltyDAO#findByType(java.lang.Integer, int, int, int[])
 	 */
 	@Override
-	public List<Penalty> findByType(Integer type, int offset, int limit, int[] count) {
+	public List<Penalty> findByType(Long type, int offset, int limit, int[] count) {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
 		Query q = new Query("Penalty");
@@ -121,7 +126,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see jipdbs.core.model.dao.impl.PenaltyDAO#findByPlayerAndType(com.google.appengine.api.datastore.Key, java.lang.Integer, int, int, int[])
 	 */
 	@Override
-	public List<Penalty> findByPlayerAndType(Key player, Integer type, int offset, int limit, int[] count) {
+	public List<Penalty> findByPlayerAndType(Key player, Long type, int offset, int limit, int[] count) {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
 		Query q = new Query("Penalty");
@@ -149,6 +154,49 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			entities.add(toEntity(penalty));
 		}
 		service.put(entities);
+	}
+
+	@Override
+	public void delete(Penalty penalty) {
+		if (penalty.getKey() != null) {
+			DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+			service.delete(penalty.getKey());
+		}
+	}
+
+	@Override
+	public void delete(List<Penalty> list) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		List<Key> entities = new ArrayList<Key>();
+		for (Penalty penalty : list) {
+			if (penalty.getKey() != null) {
+				entities.add(penalty.getKey());	
+			}
+		}
+		service.delete(entities);
+	}
+
+	@Override
+	public List<Penalty> findByPlayerAndTypeAndActive(Key player, Long type) {
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+
+		Query q = new Query("Penalty");
+		q.setAncestor(player);
+		q.addFilter("type", FilterOperator.EQUAL, type);
+		q.addFilter("active", FilterOperator.EQUAL, true);
+
+		PreparedQuery pq = ds.prepare(q);
+		List<Penalty> list = new ArrayList<Penalty>();
+		for (Entity entity : pq.asIterable()) {
+			list.add(fromEntity(entity));
+		}
+		return list;
+	}
+	
+	@Override
+	public List<Penalty> findByPlayerAndType(Key player, Long type) {
+		int[] count = new int[1];
+		return this.findByPlayerAndType(player, type, 0, 1000, count);
 	}
 	
 }

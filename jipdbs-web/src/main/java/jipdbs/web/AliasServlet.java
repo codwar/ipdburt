@@ -5,26 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.core.JIPDBS;
 import jipdbs.info.AliasResult;
 
-public class AliasServlet extends HttpServlet {
+public class AliasServlet extends JIPDBServlet {
 
 	private static final long serialVersionUID = 8123604074174537109L;
 
-	private JIPDBS app;
-
 	private final int DEFAULT_LIMIT = 10;
 	
-	@Override
-	public void init() throws ServletException {
-		app = (JIPDBS) getServletContext().getAttribute("jipdbs");
-	}
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
