@@ -29,6 +29,20 @@ public class PlayerInfo implements Serializable {
 		setLevel(level);
 	}
 	
+	/**
+	 * @param addnote
+	 * @param string
+	 * @param string2
+	 * @param l
+	 * @param string3
+	 * @param m
+	 * @param notice
+	 */
+	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level, PenaltyInfo penalty) {
+		this(event, name, guid, id, ip, level);
+		this.setPenaltyInfo(penalty);
+	}
+
 	public String getName() {
 		return name;
 	}
