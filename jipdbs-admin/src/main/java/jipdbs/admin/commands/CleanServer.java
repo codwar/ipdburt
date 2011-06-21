@@ -67,6 +67,8 @@ public class CleanServer extends Command {
 		
 		System.out.println("Processing server: " + server.getProperty("name"));
 		
+		Thread.sleep(5);
+		
 		Query players = new Query("Player");
 		players.setAncestor(key);
 		
