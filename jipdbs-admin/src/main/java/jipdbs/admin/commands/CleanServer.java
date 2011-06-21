@@ -65,6 +65,8 @@ public class CleanServer extends Command {
 		// check if the server exists
 		Entity server = ds.get(key);
 		
+		System.out.println("Processing server: " + server.getProperty("name"));
+		
 		Query players = new Query("Player");
 		players.setAncestor(key);
 		
