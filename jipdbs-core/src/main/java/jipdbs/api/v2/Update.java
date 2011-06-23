@@ -128,8 +128,9 @@ public class Update {
 						player.setBanInfoUpdated(null);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
+						player.setClientId(playerInfo.getClientId());
 						player.setLevel(playerInfo.getLevel());
-						if (player.getClientId() == null || player.getClientId() == 0) {
+						if (player.getClientId() == null) {
 							player.setClientId(playerInfo.getClientId());
 						}
 						playerLastUpdate = player.getUpdated();

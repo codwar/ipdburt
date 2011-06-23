@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../urlresolver/src/main/resources/urlresolver.xsd">
-  <processor class="jipdbs.web.processors.TestProcessor">
-    <rule name="test" uri="^/(?P(key)[-\w]+)/detail/$"/>
-  </processor>
-  <processor class="jipdbs.web.processors.PlayerInfoProcessor">
-    <rule name="playerinfo" uri="^/op/(?P(key)[\w]+)/detail/$"/>
-  </processor>  
-</config>

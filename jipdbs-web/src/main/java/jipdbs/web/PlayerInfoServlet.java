@@ -27,7 +27,7 @@ public class PlayerInfoServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 812345074174537109L;
 
-	private static final Logger log = Logger.getLogger(PlayerInfoServlet.class.getName());
+	private static final Logger log = Logger.getLogger(Update.class.getName());
 	
 	private JIPDBS app;
 

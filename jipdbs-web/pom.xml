@@ -14,6 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
 		<gae.version>1.5.0</gae.version>
+		<skipTests>false</skipTests>
 	</properties>
 
 	<dependencies>
@@ -120,11 +121,6 @@
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
 			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>sgt</groupId>
-			<artifactId>urlresolver</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
