@@ -54,12 +54,12 @@ public class ApiTest extends TestCase {
 		list.add(new PlayerInfo(Events.CONNECT, "player2", "guid2", 1L, "127.0.0.2", 1L));
 		list.add(new PlayerInfo(Events.CONNECT, "player3", "guid3", 1L, "127.0.0.3", 1L));
 		list.add(new PlayerInfo(Events.CONNECT, "player4", "guid4", 1L, "127.0.0.4", 1L));
-		list.add(new PlayerInfo(Events.ADDNOTE, "player5", "guid5", 1L, "127.0.0.5", 1L, "Una Nota"));
-		list.add(new PlayerInfo(Events.ADDNOTE, "player6", "guid6", 1L, "127.0.0.6", 1L, "Una Nota"));
+		//list.add(new PlayerInfo(Events.ADDNOTE, "player5", "guid5", 1L, "127.0.0.5", 1L, "Una Nota"));
+		//list.add(new PlayerInfo(Events.ADDNOTE, "player6", "guid6", 1L, "127.0.0.6", 1L, "Una Nota"));
 		list.add(new PlayerInfo(Events.DELNOTE, "player5", "guid5", 1L, "127.0.0.7", 1L));
 		list.add(new PlayerInfo(Events.UPDATE, "player2", "guid2", 1L, "127.0.0.5", 1L));
-		list.add(new PlayerInfo(Events.BAN, "player1", "guid1", 1L, "127.0.0.1", 1L, banInfo));
-		list.add(new PlayerInfo(Events.BAN, "player2-2", "guid2", 1L, "127.0.0.99", 1L, banInfo));
+		//list.add(new PlayerInfo(Events.BAN, "player1", "guid1", 1L, "127.0.0.1", 1L, banInfo));
+		//list.add(new PlayerInfo(Events.BAN, "player2-2", "guid2", 1L, "127.0.0.99", 1L, banInfo));
 		list.add(new PlayerInfo(Events.UNBAN, "player2-3", "guid2", 1L, "127.0.0.98", 1L));
 		list.add(new PlayerInfo(Events.DISCONNECT, "player4-1", "guid4", 1L, "127.0.0.55", 1L));
 		

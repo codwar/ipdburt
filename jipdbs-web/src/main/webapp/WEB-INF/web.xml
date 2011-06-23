@@ -8,6 +8,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<listener>
 		<listener-class>jipdbs.web.JIPDBSContextListener</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>ar.sgt.resolver.listener.ResolverListener</listener-class>
+	</listener>	
+	
 <!-- 
      <filter>
         <filter-name>UrlRewriteFilter</filter-name>
@@ -19,6 +24,19 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
      </filter-mapping>
  -->
 
+	<servlet>
+		<display-name>Resolver</display-name>
+		<servlet-name>Resolver</servlet-name>
+		<servlet-class>ar.sgt.resolver.servlet.ResolverServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>append_backslash</param-name>
+			<param-value>true</param-value>
+		</init-param>		
+	</servlet>
 	 
 	<servlet>
 		<display-name>Remote Api Servlet</display-name>
@@ -101,8 +119,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet>
         <servlet-name>PenaltyTask</servlet-name>
         <servlet-class>jipdbs.web.task.PenaltyTaskServlet</servlet-class>
-    </servlet>  
-
+    </servlet>
+    
+	<servlet-mapping>
+		<servlet-name>Resolver</servlet-name>
+		<url-pattern>/op/*</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
 		<url-pattern>/_ah/sessioncleanup</url-pattern>
