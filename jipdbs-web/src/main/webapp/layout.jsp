@@ -23,7 +23,32 @@
 <link rel="stylesheet" type="text/css" href="/media/styles/menu.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/nm.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="/media/site.css" media="screen"/>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<!-- UI -->
+<script type="text/javascript" src="/media/js/jquery.cookie.js"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/dark-hive/jquery-ui.css"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+<script type="text/javascript">
+$(document).ready(
+	function() {
+       if ($.cookie('contest') != "true") {
+           $("#concurso-message" ).dialog({
+                 modal: true,
+                 width: 870,
+                 draggable: false,
+                 buttons: {
+                   Ok: function() {
+                     $( this ).dialog( "close" );
+                    }
+                 },
+                 close: function(event, ui) { $.cookie('contest', 'true', { expires: 30, path: '/' }); }
+            });
+        }
+    }
+)
+</script>
+<!-- END UI -->
 <script type="text/javascript" src="/media/js/jquery.nm.min.js"></script>
 <script type="text/javascript" src="/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="/media/js/jquery.place.js"></script>
@@ -38,6 +63,10 @@
 <![endif]-->
 </head>
 <body>
+<div id="concurso-message" title="Comunicaci&oacute;n Importante" style="display: none;">
+<p>IPDB URT est&aacute; organizando un concurso abierto para seleccionar un logo para el sitio.</p>
+<p>Todo aquel que desee participar puede ingresar a <a href="http://concurso.ipdburt.com.ar">concurso.ipdburt.com.ar</a></p>
+</div>
 <div style="display: none;">
 <!-- preload image -->
 <img src='/media/images/metabox_loader.gif'/>
@@ -62,12 +91,12 @@
         <%      
             }
         %>
+        <li><a target="_blank" href="http://concurso.ipdburt.com.ar">Concurso</a></li>
         <li>  
             <span class="subnav">Ayuda</span>
             <ul class="subnav">
             	<li><a href="/contact.jsp">Contacto</a></li>
             	<li><a href="/faq.jsp">FAQ</a></li>
-            	<li><a target="_blank" href="http://arg.urbanterror.com.ar">Libro de quejas</a></li>
             </ul>  
         </li>
         <li style="float: right; margin-right: 20px;">
