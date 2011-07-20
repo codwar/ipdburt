@@ -18,7 +18,7 @@ public class Flash implements Serializable {
 	private final List<String> errors = new LinkedList<String>();
 	private final List<String> oks = new LinkedList<String>();
 
-	/* package */ static void info(HttpServletRequest req, String msg) {
+	public static void info(HttpServletRequest req, String msg) {
 
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
 		if (flash == null) {
@@ -29,7 +29,7 @@ public class Flash implements Serializable {
 		flash.infos.add(msg);
 	}
 
-	/* package */ static void ok(HttpServletRequest req, String msg) {
+	public static void ok(HttpServletRequest req, String msg) {
 
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
 		if (flash == null) {
@@ -40,7 +40,7 @@ public class Flash implements Serializable {
 		flash.oks.add(msg);
 	}
 
-	/* package */ static void warn(HttpServletRequest req, String msg) {
+	public static void warn(HttpServletRequest req, String msg) {
 
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
 		if (flash == null) {
@@ -51,7 +51,7 @@ public class Flash implements Serializable {
 		flash.warns.add(msg);
 	}
 
-	/* package */ static void error(HttpServletRequest req, String msg) {
+	public static void error(HttpServletRequest req, String msg) {
 
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
 		if (flash == null) {
@@ -62,7 +62,7 @@ public class Flash implements Serializable {
 		flash.errors.add(msg);
 	}
 
-	/* package*/ static Flash clear(HttpServletRequest req) {
+	public static Flash clear(HttpServletRequest req) {
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
 
 		req.getSession().removeAttribute(SESSION_NAME);

@@ -14,7 +14,6 @@ $(document).ready(
 			$('.close_button').click(function() {
 				$(this).parent().remove();
 			});
-			//$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
 			$(".focus").each(
 					function() {
 						$(this).focus();
@@ -22,17 +21,9 @@ $(document).ready(
 					}
 			);
             $(window).unload( function () { showContextLoader(); } );
-            $(".fetch-server").each(function() {
-            	data = {key: $(this).attr("alt")};
-            	$.post("/app/fetchserver",data, function(d) {
-            		rs = ($.parseJSON(d));
-            		if (rs.error) {
-            			$(".fetch-server[alt="+rs.key+"]").attr("src","/media/images/exclamation.png");
-            		} else {
-            			$(".fetch-server[alt="+rs.server.key+"]").replaceWith(rs.server.count);
-            		}
-            	});
-            });
+            
+            updateServerList();
+            
 /*
            $(":checkbox").change(checkElements);
            $("#multiselect").click(function(){
@@ -88,6 +79,18 @@ function SelectText(element) {
     } else if ($.browser.safari) {
         var selection = window.getSelection();
         selection.setBaseAndExtent(text, 0, text, 1);
+    }
+}
+function updateServerList() {
+    if ($.find('.fetch-server').length > 0) {
+    	var url = dutils.urls.resolve('serverinfo', {});
+    	$.post(url, $("input[name=key]").serializeArray(), function(d) {
+    		var res = ($.parseJSON(d));
+    		for (var i = 0; i < res.list.length; i++) { 
+    		    server = res.list[i];
+    		    $(".fetch-server[alt="+server.key+"]").replaceWith("<span>"+server.count+"</span>");
+    		}
+    	});       	
     }
 }
 String.prototype.format = function () {

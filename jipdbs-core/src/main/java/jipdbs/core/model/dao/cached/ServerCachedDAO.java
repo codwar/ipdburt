@@ -28,9 +28,11 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Server> findAll(int offset, int limit, int[] count) {
-		String key = "server-all" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		String key = "server-all" + Integer.toString(offset) + "L"
+				+ Integer.toString(limit);
 		List<Server> servers = (List<Server>) getCachedList(key, count);
-		if (servers != null) return servers;
+		if (servers != null)
+			return servers;
 		servers = impl.findAll(offset, limit, count);
 		putCachedList(key, servers, count);
 		return servers;

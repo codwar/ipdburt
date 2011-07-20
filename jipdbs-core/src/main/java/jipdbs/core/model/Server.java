@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Email;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -29,44 +28,6 @@ public class Server implements Serializable {
 	private Integer permission;
 	
 	public Server() {
-	}
-
-	public Server(Entity entity) {
-		this.setKey(entity.getKey());
-		this.setPluginVersion((String) entity.getProperty("pluginversion"));
-		this.setCreated((Date) entity.getProperty("created"));
-		this.setUpdated((Date) entity.getProperty("updated"));
-		this.setAdmin((Email) entity.getProperty("admin"));
-		this.setName((String) entity.getProperty("name"));
-		this.setUid((String) entity.getProperty("uid"));
-		this.setOnlinePlayers(((Long) entity.getProperty("players")).intValue());
-		this.setAddress((String) entity.getProperty("ip"));
-		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
-		
-		if (this.getMaxLevel()==null) {
-			this.setMaxLevel(2L);
-		}
-		Boolean b = (Boolean) entity.getProperty("dirty");
-		this.setDirty(b != null ? b : true);
-		Long permission = (Long) entity.getProperty("permission");
-		this.setPermission(permission != null ? permission.intValue() : 0);
-	}
-
-	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Server")
-				: new Entity(this.getKey());
-		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("uid", this.getUid());
-		entity.setProperty("ip", this.getAddress());
-		entity.setProperty("dirty", this.getDirty());
-		entity.setUnindexedProperty("name", this.getName());
-		entity.setUnindexedProperty("created", this.getCreated());
-		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
-		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
-		entity.setUnindexedProperty("players", this.getOnlinePlayers());
-		entity.setUnindexedProperty("admin", this.getAdmin());
-		entity.setUnindexedProperty("permission", this.getPermission());
-		return entity;
 	}
 
 	public Key getKey() {

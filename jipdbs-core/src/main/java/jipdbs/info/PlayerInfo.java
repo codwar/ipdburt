@@ -112,8 +112,9 @@ public class PlayerInfo implements Serializable {
 		return this.penaltyInfo;
 	}
 
-	public void setPenaltyInfo(PenaltyInfo banInfo) {
+	public PlayerInfo setPenaltyInfo(PenaltyInfo banInfo) {
 		this.penaltyInfo = banInfo;
+		return this;
 	}
 
 }

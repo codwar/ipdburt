@@ -1,13 +1,8 @@
 #donar {
-    position: absolute;
-    top: 45px;
-    left: 5px;
-    padding: 5px;
-    background-color: #B3C2C7;
-    align: center;
-    -webkit-box-shadow: 0 0 10px rgb(0,0,0);
-    -moz-box-shadow: 0 0 10px rgb(0,0,0);
-    box-shadow: 0 0 10px rgb(0,0,0);
+	float: left;
+    background: transparent;
+    display: block;
+    padding-top: 9px;
 }
 .helptext {
   font-family: sans-serif;
@@ -626,7 +621,7 @@ ul.topnav {
     padding: 0 20px !important;
 }
 input.search {
-	width: 160px;
+	width: 140px;
 }
 .beta {
 	top: 40px !important;
