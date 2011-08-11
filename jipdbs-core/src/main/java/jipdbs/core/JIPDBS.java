@@ -291,8 +291,8 @@ public class JIPDBS {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey().getId());
 		result.setKey(KeyFactory.keyToString(player.getKey()));
-        UserService userService = UserServiceFactory.getUserService();
-        if (userService.isUserAdmin()) {
+        
+        if (isSuperAdmin()) {
             result.setIp(player.getIp());    
         } else {
             result.setIp(Functions.maskIpAddress(player.getIp()));    
@@ -347,6 +347,16 @@ public class JIPDBS {
 		}
 	}
 
+    public boolean isSuperAdmin() {
+        try {
+            UserService userService = UserServiceFactory.getUserService();
+            return userService.isUserAdmin();
+        } catch (Exception e) {
+            log.severe(e);
+            return false;
+        }
+    }
+    
 	public List<AliasResult> aliasip(String encodedKey, int offset, int limit,
 			int[] count) {
 
@@ -358,13 +368,11 @@ public class JIPDBS {
 			if (player != null) {
 				List<AliasIP> aliasses = aliasIpDAO.findByPlayer(player.getKey(),
 						offset, limit, count);
-
-                UserService userService = UserServiceFactory.getUserService();
                 
 				for (AliasIP alias : aliasses) {
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-                    if (userService.isUserAdmin()) {
+                    if (isSuperAdmin()) {
                         item.setIp(alias.getIp());
                     } else {
                         item.setIp(Functions.maskIpAddress(alias.getIp()));

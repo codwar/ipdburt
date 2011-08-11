@@ -23,9 +23,6 @@ import jipdbs.info.PlayerInfoView;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 public class PlayerInfoServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 812345074174537109L;
@@ -73,7 +70,7 @@ public class PlayerInfoServlet extends HttpServlet {
 		PlayerInfoView infoView = new PlayerInfoView();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
-        if (userService.isUserAdmin()) {
+        if (app.isSuperAdmin()) {
             infoView.setIp(player.getIp());    
         } else {
             infoView.setIp(Functions.maskIpAddress(player.getIp()));    

@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>jipdbs</artifactId>
 		<groupId>jipdbs</groupId>
-		<version>0.6.2</version>
+		<version>0.6.3</version>
 	</parent>
 	<artifactId>jipdbs-core</artifactId>
 	<name>jipdbs-core</name>
