@@ -49,6 +49,9 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
 public class JIPDBS {
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
@@ -288,7 +291,12 @@ public class JIPDBS {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey().getId());
 		result.setKey(KeyFactory.keyToString(player.getKey()));
-		result.setIp(Functions.maskIpAddress(player.getIp()));
+        UserService userService = UserServiceFactory.getUserService();
+        if (userService.isUserAdmin()) {
+            result.setIp(player.getIp());    
+        } else {
+            result.setIp(Functions.maskIpAddress(player.getIp()));    
+        }
 		result.setLatest(player.getUpdated());
 		result.setPlaying(player.isConnected());
 		result.setNote(player.getNote());
@@ -351,10 +359,16 @@ public class JIPDBS {
 				List<AliasIP> aliasses = aliasIpDAO.findByPlayer(player.getKey(),
 						offset, limit, count);
 
+                UserService userService = UserServiceFactory.getUserService();
+                
 				for (AliasIP alias : aliasses) {
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-					item.setIp(Functions.maskIpAddress(alias.getIp()));
+                    if (userService.isUserAdmin()) {
+                        item.setIp(alias.getIp());
+                    } else {
+                        item.setIp(Functions.maskIpAddress(alias.getIp()));
+                    }
 					item.setNickname(null);
 					item.setUpdated(alias.getUpdated());
 					result.add(item);
