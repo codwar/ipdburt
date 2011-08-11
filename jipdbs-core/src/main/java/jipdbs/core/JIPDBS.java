@@ -352,7 +352,7 @@ public class JIPDBS {
             UserService userService = UserServiceFactory.getUserService();
             return userService.isUserAdmin();
         } catch (Exception e) {
-            log.severe(e);
+            log.severe(e.getMessage());
             return false;
         }
     }
