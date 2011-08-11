@@ -65,8 +65,6 @@ public class PlayerInfoServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		
-        UserService userService = UserServiceFactory.getUserService();
-        
 		PlayerInfoView infoView = new PlayerInfoView();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
