@@ -37,6 +37,12 @@
   <forward-processor redirect="/page/donar.jsp">
     <rule name="donation" pattern="^/donate/$"/>
   </forward-processor>
+  <forward-processor redirect="/page/donar_ok.jsp">
+    <rule name="donation_ok" pattern="^/donate/thanks/$"/>
+  </forward-processor>
+  <forward-processor redirect="/page/donar_fail.jsp">
+    <rule name="donation_fail" pattern="^/donate/sad/$"/>
+  </forward-processor>  
   <processor class="jipdbs.web.processors.ContactProcessor" redirect="/page/contact.jsp">
     <rule name="contact" pattern="^/contact/$"/>
   </processor>  

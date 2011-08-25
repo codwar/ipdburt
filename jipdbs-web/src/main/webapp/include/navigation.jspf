@@ -8,7 +8,7 @@
 <div id="topnavigation">
     <ul class="topnav">
     <div id="donar">
-        <a href="/donate/"><img width="80" src="/media/images/donar_es.gif" alt="Donar"/></a>
+        <a href="<url:url name="donation"/>"><img width="80" src="/media/images/donar_es.gif" alt="Donar"/></a>
     </div>
     <div id="logo">
         <a href="/">IPDB</a>

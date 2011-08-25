@@ -34,45 +34,14 @@
 		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet
 		</servlet-class>
 	</servlet>
+	
 	<servlet>
-		<servlet-name>ServerList</servlet-name>
-		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>serverfetch</servlet-name>
-		<servlet-class>jipdbs.web.ServerFetchServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>serversave</servlet-name>
-		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>infoservlet</servlet-name>
+		<servlet-name>InfoServlet</servlet-name>
 		<servlet-class>jipdbs.web.InfoServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>xmlrpc2</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>search</servlet-name>
-		<servlet-class>jipdbs.web.SearchServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>alias</servlet-name>
-		<servlet-class>jipdbs.web.AliasServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>contactpost</servlet-name>
-		<servlet-class>jipdbs.web.ContactPostServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>playerinfo</servlet-name>
-		<servlet-class>jipdbs.web.PlayerInfoServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>truncate</servlet-name>
-		<servlet-class>jipdbs.web.TruncateServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>mailhandler</servlet-name>
@@ -81,10 +50,6 @@
 	<servlet>
 		<servlet-name>keepalivehandler</servlet-name>
 		<servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>duplication</servlet-name>
-		<servlet-class>jipdbs.web.DuplicatesServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>flash</servlet-name>
@@ -120,52 +85,15 @@
 		<servlet-name>flash</servlet-name>
 		<url-pattern>/flash</url-pattern>
 	</servlet-mapping>
-	<!-- 
 	<servlet-mapping>
-		<servlet-name>playerinfo</servlet-name>
-		<url-pattern>/playerinfo</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>contactpost</servlet-name>
-		<url-pattern>/contactpost</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>infoservlet</servlet-name>
+		<servlet-name>InfoServlet</servlet-name>
 		<url-pattern>/infoservlet</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>serversave</servlet-name>
-		<url-pattern>/admin/serversave</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>serverfetch</servlet-name>
-		<url-pattern>/admin/serverfetch</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>truncate</servlet-name>
-		<url-pattern>/admin/truncate</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>duplication</servlet-name>
-		<url-pattern>/admin/duplication</url-pattern>
-	</servlet-mapping> -->
+	
 	<servlet-mapping>
 		<servlet-name>xmlrpc2</servlet-name>
 		<url-pattern>/xmlrpc2</url-pattern>
 	</servlet-mapping>
-<!-- 
-	<servlet-mapping>
-		<servlet-name>search</servlet-name>
-		<url-pattern>/search</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>alias</servlet-name>
-		<url-pattern>/alias</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>alias</servlet-name>
-		<url-pattern>/alias</url-pattern>
-	</servlet-mapping> -->
 	<servlet-mapping>
 		<servlet-name>keepalivehandler</servlet-name>
 		<url-pattern>/cron/keepalive</url-pattern>

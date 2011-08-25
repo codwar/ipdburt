@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <h1>Colabor&aacute; con IPDB</h1>
 <p>Tu colaboraci&oacute;n nos permite cubrir los costos de mantenimiento del sistema.</p>
@@ -14,8 +15,8 @@
 <input type='hidden' name='E_Comercio' value='1860801'>
 <input type='hidden' name='NroItem' value='IPDB'>
 <input type='hidden' name='image_url' value='http://'>
-<input type='hidden' name='DireccionExito' value='http://www.ipdburt.com.ar/thanks.jsp'>
-<input type='hidden' name='DireccionFracaso' value='http://www.ipdburt.com.ar/nok.jsp'>
+<input type='hidden' name='DireccionExito' value='http://www.ipdburt.com.ar<url:url name="donation_ok"/>'>
+<input type='hidden' name='DireccionFracaso' value='http://www.ipdburt.com.ar<url:url name="donation_fail"/>'>
 <input type='hidden' name='DireccionEnvio' value='0'>
 <input type='hidden' name='Mensaje' value='0'>
 <input type='hidden' name='MediosPago' value='4,2,7,13'><br/>
