@@ -1,14 +1,10 @@
 package jipdbs.core.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.datanucleus.util.StringUtils;
 
 import com.google.appengine.api.utils.SystemProperty;
 
@@ -26,7 +22,7 @@ public class Functions {
 	}
 
 	public static final String maskIpAddress(String ip) {
-		if (StringUtils.isEmpty(ip))
+		if (ip == null || ip.length() == 0)
 			return "";
 		String[] parts = ip.split("\\.");
 		Integer n = IP_SEED;
@@ -40,7 +36,7 @@ public class Functions {
 	}
 
 	public static final Long ipToDecimal(String ip) {
-		if (StringUtils.isEmpty(ip))
+		if (ip == null || ip.length() == 0)
 			return 0l;
 		String[] parts = ip.split("\\.");
 		Long n = 16777216 * Long.parseLong(parts[0]);
@@ -96,8 +92,8 @@ public class Functions {
 	public static Long[] getIpRange(String query) {
 		Long[] result = new Long[2];
 		if (query.contains("*")) {
-			String start = StringUtils.replaceAll(query, "*", "0");
-			String end = StringUtils.replaceAll(query, "*", "255");
+			String start = query.replaceAll("\\*", "0");
+			String end = query.replaceAll("\\*", "255");
 			result[0] = ipToDecimal(start);
 			result[1] = ipToDecimal(end);
 		} else {
@@ -162,7 +158,7 @@ public class Functions {
 		list.add("8");
 		list.add("9");
 		
-		for (Iterator it = sublist(list, 5).iterator(); it.hasNext();) {
+		for (Iterator<?> it = sublist(list, 5).iterator(); it.hasNext();) {
 			System.out.println(it.next());
 		}
 		
