@@ -13,7 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
-		<gae.version>1.5.0</gae.version>
+		<gae.version>1.5.2</gae.version>
 		<skipTests>false</skipTests>
 	</properties>
 
@@ -118,9 +118,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>3.1.0</version>
+			<groupId>sgt</groupId>
+			<artifactId>urlresolver</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 
@@ -131,19 +131,19 @@
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>install-templates</id>
+						<id>install-urlresolver</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${project.basedir}/lib/templates.jar</file>
-							<groupId>templates</groupId>
-							<artifactId>templates</artifactId>
-							<version>1.0</version>
+							<file>${project.basedir}/lib/urlresolver-0.0.1.jar</file>
+							<groupId>sgt</groupId>
+							<artifactId>urlresolver</artifactId>
+							<version>0.0.1</version>
 							<packaging>jar</packaging>
 						</configuration>
-					</execution>
+					</execution>					
 					<execution>
 						<id>install-json-taglib</id>
 						<phase>initialize</phase>
