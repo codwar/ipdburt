@@ -76,12 +76,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>templates</groupId>
-			<artifactId>templates</artifactId>
-			<version>1.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>json-taglib</groupId>
 			<artifactId>json-taglib</artifactId>
 			<version>0.4.1</version>

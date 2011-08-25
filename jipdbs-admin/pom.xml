@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-remote-api</artifactId>
-			<version>1.4.3</version>
+			<version>${gae.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
