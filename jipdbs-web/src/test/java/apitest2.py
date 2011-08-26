@@ -3,7 +3,7 @@ import time
 import datetime
 import socket
 
-keys= ['0759890c22075f7d2e473817a468a1c80c9670f6','b20553616be35a6ad03067e29a8667d8e7d85fd3','cf3d578c7828d1abecec2b74562121bd8179063f','073b99edd082f46bb9586f85281be05a02291938']
+keys= ['fbe228aed5f806e61df7842dd0650c9e204273ca']
 
 for  key in keys:
     proxy = xmlrpclib.ServerProxy("http://localhost:8080/xmlrpc2")
@@ -12,7 +12,7 @@ for  key in keys:
     print "Update Name"
     
     try:
-        proxy.updateName(key,"T%s" % key.replace("<", "&lt;").replace(">","&gt;"), "test")
+        proxy.updateName(key,"Server-%s" % key.replace("<", "&lt;").replace(">","&gt;"), "test")
     except xmlrpclib.ProtocolError, protocolError:
         print "1"
     except xmlrpclib.Fault, applicationError:

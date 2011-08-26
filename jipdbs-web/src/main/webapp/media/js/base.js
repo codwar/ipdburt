@@ -24,6 +24,11 @@ $(document).ready(
             
             updateServerList();
             
+            $(".search").keypress(function(e) {
+            	if ( e.which == 13 ) {
+            		window.location = dutils.urls.resolve('search', {'query': $(this).val()});
+            	}
+            });
 /*
            $(":checkbox").change(checkElements);
            $("#multiselect").click(function(){

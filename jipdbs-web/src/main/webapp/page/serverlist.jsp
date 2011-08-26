@@ -5,9 +5,7 @@
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
-    dutils.conf.urls = {
-        "serverinfo": "<url:clean name="serverinfo"/>",
-    }
+    dutils.conf.urls.serverinfo = "<url:clean name="serverinfo"/>";
 </script>
 
 <h1>Servidores Registrados</h1>

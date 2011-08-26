@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <h1>Preguntas Frecuentes</h1>
 <a name="como_ingresar_al_sistema" href="#como_ingresar_al_sistema"><h2>Como ingresar al sistema</h2></a>
 <br/>
 <p>Para ingresar a IPDB el servidor debe tener instalado y funcionando el bot <a target="_blank" href="http://www.bigbrotherbot.com">B3</a>.</p>
 <p>Instalar el plugin IPDB (<a href="http://update.ipdburt.com.ar/ipdb.zip">descargar</a>).</p>
-<p>Mediante el <a href="/contact.jsp">formulario de contacto</a> solicitar una clave informado:</p>
+<p>Mediante el <a href="<url:url name="contact"/>">formulario de contacto</a> solicitar una clave informado:</p>
 <ol style="padding-left: 45px;">
 <li style="list-style: lower-latin;">IP del servidor</li>
 <li style="list-style: lower-latin;">Link a la página del servidor en <a target="_blank" href="http://www.gametracker.com">GameTracker</a></li>

@@ -1,5 +1,6 @@
 var dutils = {};
 dutils.conf = {};
+dutils.conf.urls = {};
 
 dutils.urls = function(){
 

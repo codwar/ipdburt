@@ -7,10 +7,8 @@
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
-    dutils.conf.urls = {
-        "alias": "<url:clean name="alias"/>",
-        "alias-ip": "<url:clean name="alias-ip"/>",
-    }
+    dutils.conf.urls.alias = "<url:clean name="alias"/>";
+    dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
 </script>
 
 <script type="text/javascript">
@@ -64,7 +62,7 @@
 		});
 	}
 	function getAliasIP(offset) {
-        url = dutils.urls.resolve('alias-ip', { key: clientKey}) + "?o=" + offset;
+        url = dutils.urls.resolve('aliasip', { key: clientKey}) + "?o=" + offset;
 		$.getJSON(url, function(data) {
 			$("#tableip").html("");
 			$.each(data.items, function(key, value) {

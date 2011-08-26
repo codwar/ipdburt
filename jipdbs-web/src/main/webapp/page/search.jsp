@@ -12,10 +12,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 //-->
 </script>
 <script type="text/javascript">
-    dutils.conf.urls = {
-        "alias": "<url:clean name="alias"/>",
-        "alias-ip": "<url:clean name="alias-ip"/>",
-    }
+    dutils.conf.urls.alias = "<url:clean name="alias"/>";
+    dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
 </script>
 
 <script type="text/javascript">
@@ -61,7 +59,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 		});
 	}
 	function getAliasIP(key, offset, callback) {
-		url = dutils.urls.resolve('alias-ip', { key: key}) + "?o=" + offset;
+		url = dutils.urls.resolve('aliasip', { key: key}) + "?o=" + offset;
 		$.getJSON(url, function(data) {
 			var rows = new Array();
 			$.each(data.items, function(key, value) {

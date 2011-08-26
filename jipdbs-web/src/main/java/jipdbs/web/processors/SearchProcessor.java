@@ -81,7 +81,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 		} else if (StringUtils.isEmpty(query)) {
 			log.fine("Empty");
 			list = app.rootQuery(offset, limit, total);
-		} else if (Validator.isValidIp(query)) {
+		} else if (Validator.isValidSearchIp(query)) {
 			log.finest("Buscando IP " + query);
 			query = Functions.fixIp(query);
 			queryValue = query;
