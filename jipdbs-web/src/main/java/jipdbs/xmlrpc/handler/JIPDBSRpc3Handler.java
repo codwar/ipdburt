@@ -77,6 +77,7 @@ public class JIPDBSRpc3Handler {
 					penalty.setDuration(parseLong(data[2]));
 					penalty.setReason((String) data[3]);
 					penalty.setAdmin((String) data[4]);
+					penalty.setAdminId((String) data[5]);
 					playerInfo.setPenaltyInfo(penalty);
 				} else if (Events.ADDNOTE.equals(event)) {
 					Object[] data = (Object[]) values[7];
@@ -85,6 +86,7 @@ public class JIPDBSRpc3Handler {
 					penalty.setCreated(parseLong(data[1]));
 					penalty.setReason((String) data[2]);
 					penalty.setAdmin((String) data[3]);
+					penalty.setAdminId((String) data[4]);
 					playerInfo.setPenaltyInfo(penalty);			
 				}
 				list.add(playerInfo);

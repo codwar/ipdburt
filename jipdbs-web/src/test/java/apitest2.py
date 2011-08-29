@@ -38,9 +38,9 @@ for  key in keys:
                 ('connect', 'Player6-1','guid6', '6', '127.0.0.1', '0'),
                 ('disconnect', 'Player1-2','guid1', '1', '127.0.0.1', '0'),
                 ('update', 'Player2-2','guid2', '2', '127.0.0.1', '1'),
-                #('addnote', 'Player2-2','guid2', '2', '127.0.0.1', '1', int(time.time()), "un pt"),
-                #('banned', 'Player2-2','guid2', '2', '127.0.0.1', '1', int(time.time()), baninfo),
-                #('banned', 'Player3-2','guid3', '3', '127.0.0.1', '1', int(time.time()), baninfo),
+                ('addnote', 'Player2-2','guid2', '2', '127.0.0.1', '1', int(time.time()), "un pt"),
+                ('banned', 'Player2-2','guid2', '2', '127.0.0.1', '1', int(time.time()), baninfo),
+                ('banned', 'Player3-2','guid3', '3', '127.0.0.1', '1', int(time.time()), baninfo),
                 ('unbanned', 'Player3-2','guid3', '3', '127.0.0.1', '1'),]
     
     print "Update logs"

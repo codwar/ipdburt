@@ -169,13 +169,13 @@
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>/page/*</url-pattern>
-			<include-prelude>/include/header.jspf</include-prelude>
-			<include-coda>/include/footer.jspf</include-coda>
+			<include-prelude>/include/header.jsp</include-prelude>
+			<include-coda>/include/footer.jsp</include-coda>
 		</jsp-property-group>
         <jsp-property-group>
             <url-pattern>/admin/*</url-pattern>
-            <include-prelude>/include/header.jspf</include-prelude>
-            <include-coda>/include/footer.jspf</include-coda>
+            <include-prelude>/include/header.jsp</include-prelude>
+            <include-coda>/include/footer.jsp</include-coda>
         </jsp-property-group>
 	</jsp-config>
 

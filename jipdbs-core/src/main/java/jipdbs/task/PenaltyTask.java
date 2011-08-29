@@ -55,8 +55,8 @@ public class PenaltyTask {
 				penalty.setSynced(true);
 				penalty.setActive(true);
 				try {
-					if (penaltyInfo.getAdmin() != null) {
-						Player admin = playerDAO.findByServerAndGuid(player.getServer(), penaltyInfo.getAdmin());
+					if (penaltyInfo.getAdminId() != null) {
+						Player admin = playerDAO.findByServerAndGuid(player.getServer(), penaltyInfo.getAdminId());
 						if (admin != null) penalty.setAdmin(admin);
 					}
 				} catch (Exception e) {
@@ -77,8 +77,8 @@ public class PenaltyTask {
 				penalty.setSynced(true);
 				penalty.setActive(true);
 				try {
-					if (info.getAdmin() != null) {
-						Player admin = playerDAO.findByServerAndGuid(player.getServer(), info.getAdmin());
+					if (info.getAdminId() != null) {
+						Player admin = playerDAO.findByServerAndGuid(player.getServer(), info.getAdminId());
 						if (admin != null) penalty.setAdmin(admin);
 					}
 				} catch (Exception e) {

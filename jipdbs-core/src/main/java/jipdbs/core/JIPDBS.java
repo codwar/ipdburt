@@ -74,7 +74,10 @@ public class JIPDBS {
 	public String getNewRecaptchaCode() {
 		ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey,
 				recaptchaPrivateKey, false);
-		return c.createRecaptchaHtml(null, null);
+		Properties cProp = new Properties();
+		cProp.setProperty("theme", "white");
+		cProp.setProperty("lang", "es");
+		return c.createRecaptchaHtml(null, cProp);
 	}
 
 	public boolean isRecaptchaValid(String remoteAddr, String challenge,
@@ -181,6 +184,9 @@ public class JIPDBS {
 			return results;
 		} catch (Exception e) {
 			log.severe("Unable to fetch banned query players:" + e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.toString());
 			count[0] = 0;
 			return Collections.emptyList();
 		}

@@ -23,6 +23,7 @@ public class PenaltyInfo implements Serializable {
 	private String reason;
 	private Long duration;
 	private Long type;
+	private String adminId;
 	private String admin;
 	
 	public static String getDetail(String data) {
@@ -75,6 +76,14 @@ public class PenaltyInfo implements Serializable {
 		return calendar.getTime();
 	}
 	
+	public String getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+
 	@Override
 	public String toString() {
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");

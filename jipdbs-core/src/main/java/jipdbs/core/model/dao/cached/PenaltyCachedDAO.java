@@ -21,7 +21,7 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	
 	@Override
 	public void save(Penalty penalty) {
-		this.save(penalty);
+		impl.save(penalty);
 		cache.put("penalty-" + KeyFactory.keyToString(penalty.getKey()), penalty);
 	}
 

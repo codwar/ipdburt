@@ -63,7 +63,7 @@
 <!-- preload image -->
 <img src='/media/images/metabox_loader.gif'/>
 </div>
-<jsp:include page="/include/navigation.jspf"/>
+<jsp:include page="/include/navigation.jsp"/>
 <%-- jsp:include page="/pages/login_box.jsp"/--%>
 <div class="beta">
 	<img src="/media/images/bimage.png" width="105" height="107"/>
@@ -74,4 +74,4 @@
 <div class="clearer"><span></span></div>
 <div id="context-loader" class="context-loader">Cargando&hellip;</div>
 <div id="main" class="main" style="display: none;">
-<jsp:include page="/include/flash.jspf" />
+<jsp:include page="/include/flash.jsp" />
