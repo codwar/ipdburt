@@ -2,7 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urlresolver.xsd">
   <processor class="jipdbs.web.processors.PlayerInfoProcessor" redirect="/page/playerinfo.jsp">
     <rule name="playerinfo" pattern="^/detail/($key[\w]+)/$"/>
-    <!-- rule pattern="^/playerinfo.jsp?id=($key[\w]+)/$"/--> <!-- backward compatibility -->
   </processor>
   <processor class="jipdbs.web.processors.SearchProcessor" redirect="/page/search.jsp">
     <rule pattern="^/$"/>
@@ -13,7 +12,6 @@
     <rule name="serverfilter" pattern="^/server/($query[\w]+)/$">
         <arg name="type" value="server"/>
     </rule>
-    <!-- rule pattern="^/search.jsp?q=($query.+)/$"/--> <!-- backward compatibility -->
   </processor>
   <processor class="jipdbs.web.processors.ServerListProcessor" redirect="/page/serverlist.jsp">
     <rule name="serverlist" pattern="^/servers/$"/>
@@ -50,5 +48,15 @@
   </processor>  
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
-  </forward-processor>  
+  </forward-processor>
+  <!-- BACKWARD COMPATIBILITY -->
+  <redirect>
+	<rule pattern="^/playerinfo.jsp/$" redirect="playerinfo">
+		<arg name="key" value="id"/>
+	</rule>
+	<rule pattern="^/search.jsp/$" redirect="search">
+		<arg name="query" value="q"/>
+	</rule>	
+	<rule pattern="^/serverlist.jsp/$" redirect="serverlist"/>
+  </redirect>
 </config>

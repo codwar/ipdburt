@@ -19,8 +19,6 @@ nj8nePJEalF0eDkIFgAcgBjoh8bsvOe6H6fq9Zhqt1FhiHQ6SLOJrVSIdnYI9/aoGDO81ut92hU5
 MCCvFhWD2Xmllr/3vJ0/fV9enD4trWxWWtmsvDhzRp76vtzyvPJrSn0eg9kpupqGlz/mpeB8Vqm3
 PorHL+e1zilQh9b+XRyNHjdEHvdgD+hPNa92cGKIAuLAqRjMAIxhCAyAESAnevkHqFl0tYb2n/YA
 AAAASUVORK5CYII=</Image>
-<Url type="text/html" method="get" template="http://www.ipdburt.com.ar/">
-  <Param name="q" value="{searchTerms}"/>
-</Url>
+<Url type="text/html" template="http://www.ipdburt.com.ar/{searchTerms}/"/>
 <moz:SearchForm>http://www.ipdburt.com.ar/</moz:SearchForm>
 </OpenSearchDescription>
