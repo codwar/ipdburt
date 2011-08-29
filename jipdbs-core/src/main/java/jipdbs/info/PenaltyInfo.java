@@ -7,10 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.logging.Logger;
+
+import jipdbs.core.model.Penalty;
+import jipdbs.legacy.python.date.DateUtils;
 
 import org.apache.commons.lang.StringUtils;
-
-import jipdbs.legacy.python.date.DateUtils;
 
 public class PenaltyInfo implements Serializable {
 
@@ -19,6 +21,8 @@ public class PenaltyInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = 6801850365975055431L;
 
+	private static final Logger log = Logger.getLogger(PenaltyInfo.class.getName());
+	
 	private Date created;
 	private String reason;
 	private Long duration;
@@ -105,19 +109,31 @@ public class PenaltyInfo implements Serializable {
 	}
 	
 	public void parseRaw(String data) {
+		log.fine("Parse " + data);
 		if (data.startsWith("#")) {
 			data = data.substring(1);
 		}
 		String[] parts = data.split("::");
-		setType(Long.parseLong(parts[0]));
-		setCreated(Long.parseLong(parts[1]));
-		setAdmin(parts[2]);
-		if (parts[3].equals("-")) {
-			setReason(null);
-		} else {
-			setReason(parts[3]);	
+		try {
+			setType(Long.parseLong(parts[0]));
+			setCreated(Long.parseLong(parts[1]));
+			setAdmin(parts[2]);
+			if ("-".equals(parts[3])) {
+				setReason(null);
+			} else {
+				setReason(parts[3]);	
+			}
+			setDuration(Long.parseLong(parts[4]));
+		} catch (NumberFormatException e) {
+			setType(Penalty.BAN);
+			setCreated(Long.parseLong(parts[1]));
+			setDuration(Long.parseLong(parts[2]));
+			if (parts[3].equals("-")) {
+				setReason(null);
+			} else {
+				setReason(parts[3]);	
+			}
 		}
-		setDuration(Long.parseLong(parts[4]));
 	}
 	
 	public String getRawData() {

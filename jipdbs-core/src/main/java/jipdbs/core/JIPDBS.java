@@ -183,7 +183,7 @@ public class JIPDBS {
 			}
 			return results;
 		} catch (Exception e) {
-			log.severe("Unable to fetch banned query players:" + e.getMessage());
+			log.severe("Unable to fetch banned query players: " + e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.toString());
