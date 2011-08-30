@@ -60,7 +60,11 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		PlayerInfoView infoView = new PlayerInfoView();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
-		infoView.setIp(Functions.maskIpAddress(player.getIp()));
+		if (app.isSuperAdmin()) {
+			infoView.setIp(player.getIp());	
+		} else {
+			infoView.setIp(Functions.maskIpAddress(player.getIp()));
+		}
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
 		infoView.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
