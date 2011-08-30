@@ -68,10 +68,11 @@ public class Paginator extends TagSupport {
 		
 		StringBuilder html = new StringBuilder();
 		html.append("<div class='pagination'>");
+		String pageUrl = url.contains("?") ? url + "&" : url + "?";
 		if (currentPage > 1) {
 			html.append("<span class='prev'><a href='");
-			html.append(url);
-			html.append("&p=" + Integer.toString(currentPage-1));
+			html.append(pageUrl);
+			html.append("p=" + Integer.toString(currentPage-1));
 			html.append("&ps=" + Integer.toString(pageSize));
 			html.append("'>&laquo; Previous</a></span>");
 		} else {
@@ -80,8 +81,8 @@ public class Paginator extends TagSupport {
 		if (!in_leading_range) {
 			for (Integer num : pages_outside_trailing_range) {
 				html.append("<span class='page'><a href='");
-				html.append(url);
-				html.append("&p=" + Integer.toString(num));
+				html.append(pageUrl);
+				html.append("p=" + Integer.toString(num));
 				html.append("&ps=" + Integer.toString(pageSize));
 				html.append("'>");
 				html.append(Integer.toString(num));
@@ -98,8 +99,8 @@ public class Paginator extends TagSupport {
 						html.append("</span>");
 					} else {
 						html.append("<span class='page'><a href='");
-						html.append(url);
-						html.append("&p=" + Integer.toString(num));
+						html.append(pageUrl);
+						html.append("p=" + Integer.toString(num));
 						html.append("&ps=" + Integer.toString(pageSize));
 						html.append("'>");
 						html.append(Integer.toString(num));
@@ -115,8 +116,8 @@ public class Paginator extends TagSupport {
 			html.append("...");
 			for (Integer num : pages_outside_leading_range) {
 				html.append("<span class='page'><a href='");
-				html.append(url);
-				html.append("&p=" + Integer.toString(num));
+				html.append(pageUrl);
+				html.append("p=" + Integer.toString(num));
 				html.append("&ps=" + Integer.toString(pageSize));
 				html.append("'>");
 				html.append(Integer.toString(num));
@@ -125,8 +126,8 @@ public class Paginator extends TagSupport {
 		}
 		if (currentPage < totalPages) {
 			html.append("<span class='next'><a href='");
-			html.append(url);
-			html.append("&p=" + Integer.toString(currentPage+1));
+			html.append(pageUrl);
+			html.append("p=" + Integer.toString(currentPage+1));
 			html.append("&ps=" + Integer.toString(pageSize));
 			html.append("'>Next &raquo;</a></span>");
 		} else {
