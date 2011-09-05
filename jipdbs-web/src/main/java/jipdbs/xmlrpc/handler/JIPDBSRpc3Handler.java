@@ -16,7 +16,7 @@ import jipdbs.core.model.Server;
 import jipdbs.exception.UnauthorizedUpdateException;
 import jipdbs.info.PenaltyInfo;
 import jipdbs.info.PlayerInfo;
-import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;
+import jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet;
 
 public class JIPDBSRpc3Handler {
 
@@ -36,14 +36,14 @@ public class JIPDBSRpc3Handler {
 
 	public void updateName(String key, String name, Object[] data) {
 		this.updateApi.updateName(key, name, (String) data[0],
-				(Integer) data[1], JIPDBSXmlRpc2Servlet.getClientIpAddress());
+				(Integer) data[1], JIPDBSXmlRpc3Servlet.getClientIpAddress());
 	}
 
 	public void update(String key, Object[] plist) throws Exception {
 
 		try {
 			Server server = ServerManager.getAuthorizedServer(key,
-					JIPDBSXmlRpc2Servlet.getClientIpAddress());
+					JIPDBSXmlRpc3Servlet.getClientIpAddress());
 
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
