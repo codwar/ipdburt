@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jipdbs.core.util.LocalCache;
+import jipdbs.core.cache.Cache;
 
 public abstract class CachedDAO {
 
 	private static final Logger log = Logger.getLogger(CachedDAO.class.getName());
 	
-	protected LocalCache cache;
-
+	protected Cache cache;
+	
 	protected final Integer SEARCH_EXPIRE = 5;
 	
 	protected abstract void initializeCache();
@@ -20,7 +20,7 @@ public abstract class CachedDAO {
 	@SuppressWarnings("unchecked")
 	protected Object getCachedList(String key, int[] count) {
 		try {
-			Map<String, Object> map = (Map<String, Object>) LocalCache.getInstance().get(key);
+			Map<String, Object> map = (Map<String, Object>) cache.get(key);
 			if (map != null) {
 				if (log.isLoggable(Level.FINE)) log.fine(map.toString());
 				count[0] = (Integer) map.get("count");
@@ -37,7 +37,7 @@ public abstract class CachedDAO {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list);
 		map.put("count", count[0]);
-		LocalCache.getInstance().put(key, map, SEARCH_EXPIRE);
+		cache.put(key, map, SEARCH_EXPIRE);
 	}
 	
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>jipdbs</artifactId>
 		<groupId>jipdbs</groupId>
-		<version>0.6.3</version>
+		<version>0.8-SNAPSHOT</version>
 	</parent>
 	<artifactId>jipdbs-core</artifactId>
 	<name>jipdbs-core</name>
@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
-		<gae.version>1.5.0</gae.version>
+		<gae.version>1.5.2</gae.version>
 	</properties>
 
 	<dependencies>
@@ -57,12 +57,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>0.9.24</version>
-		</dependency>
-
-		<dependency>
 			<groupId>net.sf.jsr107cache</groupId>
 			<artifactId>jsr107cache</artifactId>
 			<version>1.1</version>
@@ -78,14 +72,8 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
-			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.datanucleus</groupId>
-			<artifactId>datanucleus-core</artifactId>
-			<version>2.2.4</version>
-		</dependency>
 	</dependencies>
 
 	<build>

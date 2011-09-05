@@ -1,62 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaeehttp://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
+
 	<listener>
 		<listener-class>jipdbs.web.JIPDBSContextListener</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>ar.sgt.resolver.listener.ResolverListener
+		</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>ResolverFilter</filter-name>
+		<filter-class>ar.sgt.resolver.filter.ResolverFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResolverFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<display-name>Remote Api Servlet</display-name>
 		<servlet-name>RemoteApiServlet</servlet-name>
-		<servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
+		<servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet
+		</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
-		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
+		<servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet
+		</servlet-class>
 	</servlet>
+	
 	<servlet>
-		<servlet-name>serverlist</servlet-name>
-		<servlet-class>jipdbs.web.ServerListServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>serverfetch</servlet-name>
-		<servlet-class>jipdbs.web.ServerFetchServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>serversave</servlet-name>
-		<servlet-class>jipdbs.web.ServerSaveServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>infoservlet</servlet-name>
+		<servlet-name>InfoServlet</servlet-name>
 		<servlet-class>jipdbs.web.InfoServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>xmlrpc2</servlet-name>
-        <servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
-    </servlet>	
 	<servlet>
-		<servlet-name>search</servlet-name>
-		<servlet-class>jipdbs.web.SearchServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>alias</servlet-name>
-		<servlet-class>jipdbs.web.AliasServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>contactpost</servlet-name>
-		<servlet-class>jipdbs.web.ContactPostServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>playerinfo</servlet-name>
-		<servlet-class>jipdbs.web.PlayerInfoServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>truncate</servlet-name>
-		<servlet-class>jipdbs.web.TruncateServlet</servlet-class>
+		<servlet-name>xmlrpc2</servlet-name>
+		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>mailhandler</servlet-name>
@@ -67,85 +52,47 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>duplication</servlet-name>
-		<servlet-class>jipdbs.web.DuplicatesServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>flash</servlet-name>
 		<servlet-class>jipdbs.web.FlashServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>cleanserver</servlet-name>
-		<servlet-class>jipdbs.web.batch.CleanOnlinePlayerServlet</servlet-class>
-	</servlet>	
+		<servlet-class>jipdbs.web.task.CleanOnlinePlayerServlet
+		</servlet-class>
+	</servlet>
 	<servlet>
 		<servlet-name>httphandler</servlet-name>
 		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>xmlrpc3</servlet-name>
+		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>PenaltyTask</servlet-name>
+		<servlet-class>jipdbs.web.task.PenaltyTaskServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>_ah_sessioncleanup</servlet-name>
 		<url-pattern>/_ah/sessioncleanup</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mailhandler</servlet-name>
+        <url-pattern>/_ah/mail/*</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>flash</servlet-name>
 		<url-pattern>/flash</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>mailhandler</servlet-name>
-		<url-pattern>/_ah/mail/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>playerinfo</servlet-name>
-		<url-pattern>/playerinfo</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>serverlist</servlet-name>
-		<url-pattern>/serverlist</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>contactpost</servlet-name>
-		<url-pattern>/contactpost</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>infoservlet</servlet-name>
+		<servlet-name>InfoServlet</servlet-name>
 		<url-pattern>/infoservlet</url-pattern>
 	</servlet-mapping>
+	
 	<servlet-mapping>
-		<servlet-name>serversave</servlet-name>
-		<url-pattern>/admin/serversave</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>serverfetch</servlet-name>
-		<url-pattern>/admin/serverfetch</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>truncate</servlet-name>
-		<url-pattern>/admin/truncate</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>duplication</servlet-name>
-		<url-pattern>/admin/duplication</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>cleanserver</servlet-name>
-		<url-pattern>/admin/cleanserver</url-pattern>
-	</servlet-mapping>	
-    <servlet-mapping>
-        <servlet-name>xmlrpc2</servlet-name>
-        <url-pattern>/xmlrpc2</url-pattern>
-    </servlet-mapping>	
-	<servlet-mapping>
-		<servlet-name>search</servlet-name>
-		<url-pattern>/search</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>alias</servlet-name>
-		<url-pattern>/alias</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>alias</servlet-name>
-		<url-pattern>/alias</url-pattern>
+		<servlet-name>xmlrpc2</servlet-name>
+		<url-pattern>/xmlrpc2</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>keepalivehandler</servlet-name>
@@ -158,6 +105,20 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	<servlet-mapping>
 		<servlet-name>httphandler</servlet-name>
 		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>xmlrpc3</servlet-name>
+		<url-pattern>/api/v3/xmlrpc</url-pattern>
+	</servlet-mapping>
+
+	<!-- TASKS -->
+	<servlet-mapping>
+		<servlet-name>cleanserver</servlet-name>
+		<url-pattern>/admin/task/cleanserver</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PenaltyTask</servlet-name>
+		<url-pattern>/admin/task/penalty</url-pattern>
 	</servlet-mapping>
 
 	<security-constraint>
@@ -185,38 +146,41 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
-<!-- 
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>xmlrpc2</web-resource-name>
-            <url-pattern>/xmlrpc2/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>    
- -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>RemoteApiServlet</web-resource-name>
-            <url-pattern>/remote_api/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
- 
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>RemoteApiServlet</web-resource-name>
+			<url-pattern>/remote_api/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
 	<error-page>
 		<error-code>403</error-code>
-		<location>/error.jsp</location>
+		<location>/page/error.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/error.jsp</location>
+		<location>/page/error.jsp</location>
 	</error-page>
 
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>/page/*</url-pattern>
+			<include-prelude>/include/header.jsp</include-prelude>
+			<include-coda>/include/footer.jsp</include-coda>
+		</jsp-property-group>
+        <jsp-property-group>
+            <url-pattern>/admin/*</url-pattern>
+            <include-prelude>/include/header.jsp</include-prelude>
+            <include-coda>/include/footer.jsp</include-coda>
+        </jsp-property-group>
+	</jsp-config>
+
 	<welcome-file-list>
-		<welcome-file>search.jsp</welcome-file>
+		<welcome-file>page/search.jsp</welcome-file>
 	</welcome-file-list>
 
 	<session-config>

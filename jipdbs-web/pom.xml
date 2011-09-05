@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jipdbs</artifactId>
         <groupId>jipdbs</groupId>
-        <version>0.6.3</version>
+        <version>0.8-SNAPSHOT</version>
     </parent>
 	<artifactId>jipdbs-web</artifactId>
 	<name>jipdbs-web</name>
@@ -13,7 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
-		<gae.version>1.5.0</gae.version>
+		<gae.version>1.5.2</gae.version>
 		<skipTests>false</skipTests>
 	</properties>
 
@@ -76,12 +76,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>templates</groupId>
-			<artifactId>templates</artifactId>
-			<version>1.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>json-taglib</groupId>
 			<artifactId>json-taglib</artifactId>
 			<version>0.4.1</version>
@@ -117,6 +111,11 @@
 			<version>${gae.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>sgt</groupId>
+			<artifactId>urlresolver</artifactId>
+			<version>0.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -126,19 +125,19 @@
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>install-templates</id>
+						<id>install-urlresolver</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${project.basedir}/lib/templates.jar</file>
-							<groupId>templates</groupId>
-							<artifactId>templates</artifactId>
-							<version>1.0</version>
+							<file>${project.basedir}/lib/urlresolver-0.0.2.jar</file>
+							<groupId>sgt</groupId>
+							<artifactId>urlresolver</artifactId>
+							<version>0.0.2</version>
 							<packaging>jar</packaging>
 						</configuration>
-					</execution>
+					</execution>		 			
 					<execution>
 						<id>install-json-taglib</id>
 						<phase>initialize</phase>

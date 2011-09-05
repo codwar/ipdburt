@@ -59,6 +59,10 @@ public abstract class Command {
 		}
 	}
 
+	protected void initializeState() {
+		this.initializeState(this.getClass().getSimpleName().toLowerCase());
+	}
+	
 	protected void initializeState(String name) {
 		this.file = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + name + ".resume");
 	}

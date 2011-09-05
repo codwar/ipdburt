@@ -6,8 +6,6 @@ import jipdbs.core.model.dao.cached.ServerCachedDAO;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.exception.UnauthorizedUpdateException;
 
-import org.datanucleus.util.StringUtils;
-
 public class ServerManager {
 
 	private final static ServerDAO serverDAO = new ServerCachedDAO(
@@ -41,8 +39,8 @@ public class ServerManager {
 			throw new UnauthorizedUpdateException(message);
 		}
 
-		if (remoteAddress != null && StringUtils.notEmpty(server.getAddress())
-				&& !remoteAddress.equals(server.getAddress())) {
+		if (remoteAddress != null && server.getAddress() != null && server.getAddress().length() > 0
+		        && !remoteAddress.equals(server.getAddress())) {
 
 			// Compose.
 			StringBuilder builder = new StringBuilder(

@@ -14,7 +14,6 @@ $(document).ready(
 			$('.close_button').click(function() {
 				$(this).parent().remove();
 			});
-			//$("#donar").makeFloat({x: 'current', y: 'current', speed: 'fast'});
 			$(".focus").each(
 					function() {
 						$(this).focus();
@@ -22,17 +21,15 @@ $(document).ready(
 					}
 			);
             $(window).unload( function () { showContextLoader(); } );
-            $(".fetch-server").each(function() {
-            	data = {key: $(this).attr("alt")};
-            	$.post("/app/fetchserver",data, function(d) {
-            		rs = ($.parseJSON(d));
-            		if (rs.error) {
-            			$(".fetch-server[alt="+rs.key+"]").attr("src","/media/images/exclamation.png");
-            		} else {
-            			$(".fetch-server[alt="+rs.server.key+"]").replaceWith(rs.server.count);
-            		}
-            	});
+            
+            updateServerList();
+            
+            $(".search").keypress(function(e) {
+            	if ( e.which == 13 ) {
+            		window.location = dutils.urls.resolve('search', {'query': $(this).val()});
+            	}
             });
+/*
            $(":checkbox").change(checkElements);
            $("#multiselect").click(function(){
         	   $("input[name='selector']").attr('checked',$(this).is(':checked'));
@@ -48,18 +45,18 @@ $(document).ready(
                            if (v.substring(0,3)=='[+]') {
                                v = $.trim(v.substring(12));
                            }
-                           rowText = rowText + " | " + v;
+                           rowText = rowText + "[td]" + v + "[/td]";
                        });
-                       text = text + rowText.substring(3) + "\n<br/>";
+                       text = text + "[tr]" + rowText + "[/tr]<br/>";
                    }
                );
                if (text != "") {
-            	   $("#copycontent").html(text);
+            	   $("#copycontent").html("[table]"+text+"[/table]");
             	   $("#copyTrigger").nm().nmCall();
                }
            });
-           $("#copycontent").click(function() {SelectText("copycontent")});
            checkElements();
+*/           
 });
 
 function showContextLoader() {
@@ -87,6 +84,18 @@ function SelectText(element) {
     } else if ($.browser.safari) {
         var selection = window.getSelection();
         selection.setBaseAndExtent(text, 0, text, 1);
+    }
+}
+function updateServerList() {
+    if ($.find('.fetch-server').length > 0) {
+    	var url = dutils.urls.resolve('serverinfo', {});
+    	$.post(url, $("input[name=key]").serializeArray(), function(d) {
+    		var res = ($.parseJSON(d));
+    		for (var i = 0; i < res.list.length; i++) { 
+    		    server = res.list[i];
+    		    $(".fetch-server[alt="+server.key+"]").replaceWith("<span>"+server.count+"</span>");
+    		}
+    	});       	
     }
 }
 String.prototype.format = function () {

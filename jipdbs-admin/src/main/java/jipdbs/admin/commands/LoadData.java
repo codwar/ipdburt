@@ -18,7 +18,6 @@ import jipdbs.core.model.dao.PlayerDAO;
 import jipdbs.core.model.dao.ServerDAO;
 import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
-import jipdbs.core.util.LocalCache;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.sf.json.JSONArray;
@@ -116,8 +115,6 @@ public class LoadData extends Command {
 		if (aliasList.size()>0) {
 			ds.put(aliasList);
 		}
-		
-		LocalCache.getInstance().clearAll();
 		
 	}
 

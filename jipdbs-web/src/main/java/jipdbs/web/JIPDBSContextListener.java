@@ -7,12 +7,13 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import jipdbs.core.JIPDBS;
+import jipdbs.task.TaskManager;
 
 public class JIPDBSContextListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		JIPDBS app = (JIPDBS) event.getServletContext().getAttribute("jipdbs");
+		//JIPDBS app = (JIPDBS) event.getServletContext().getAttribute("jipdbs");
 	}
 
 	@Override
@@ -27,8 +28,7 @@ public class JIPDBSContextListener implements ServletContextListener {
 			context.log("Unable to load context properties: " + e.getMessage());
 		}
 
-		JIPDBS app = new JIPDBS(props);
-		
-		context.setAttribute("jipdbs", app);
+		context.setAttribute(Context.JIPDBS, new JIPDBS(props));
+		context.setAttribute(Context.TASK_MANAGER, new TaskManager());
 	}
 }

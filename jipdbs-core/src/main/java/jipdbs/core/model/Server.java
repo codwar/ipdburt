@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.google.appengine.api.datastore.Email;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -23,65 +22,20 @@ public class Server implements Serializable {
 	private Date updated;
 	private int onlinePlayers;
 	private String address;
-	private String keyString;
 	private String pluginVersion;
 	private Long maxLevel;
 	private Boolean dirty;
+	private Integer permission;
 	
 	public Server() {
-	}
-
-	public Server(Entity entity) {
-		this.setKey(entity.getKey());
-		this.setPluginVersion((String) entity.getProperty("pluginversion"));
-		this.setCreated((Date) entity.getProperty("created"));
-		this.setUpdated((Date) entity.getProperty("updated"));
-		this.setAdmin((Email) entity.getProperty("admin"));
-		this.setName((String) entity.getProperty("name"));
-		this.setUid((String) entity.getProperty("uid"));
-		this
-				.setOnlinePlayers(((Long) entity.getProperty("players"))
-						.intValue());
-		this.setAddress((String) entity.getProperty("ip"));
-		this.setMaxLevel((Long) entity.getProperty("maxlevel"));
-		if (this.getMaxLevel()==null) {
-			this.setMaxLevel(2L);
-		}
-		Boolean b = (Boolean) entity.getProperty("dirty");
-		this.setDirty(b != null ? b : true);
-	}
-
-	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("Server")
-				: new Entity(this.getKey());
-		entity.setProperty("name", this.getName());
-		entity.setProperty("updated", this.getUpdated());
-		entity.setProperty("uid", this.getUid());
-		entity.setProperty("ip", this.getAddress());
-		entity.setProperty("dirty", this.getDirty());
-		entity.setUnindexedProperty("created", this.getCreated());
-		entity.setUnindexedProperty("pluginversion", this.getPluginVersion());
-		entity.setUnindexedProperty("maxlevel", this.getMaxLevel());		
-		entity.setUnindexedProperty("players", this.getOnlinePlayers());
-		entity.setUnindexedProperty("admin", this.getAdmin());
-		return entity;
 	}
 
 	public Key getKey() {
 		return key;
 	}
 
-	public String getKeyString() {
-		return keyString;
-	}
-
-	public void setKeyString(String keyString) {
-		this.keyString = keyString;
-	}
-
 	public void setKey(Key key) {
 		this.key = key;
-		this.keyString = KeyFactory.keyToString(key);
 	}
 
 	public String getUid() {
@@ -174,6 +128,10 @@ public class Server implements Serializable {
 		this.dirty = dirty;
 	}
 	
+	public String getKeyString() {
+		return KeyFactory.keyToString(this.getKey());
+	}
+	
 	public Boolean getOffline() {
 		Date today = new Date();
 		if (this.updated != null) {
@@ -181,6 +139,14 @@ public class Server implements Serializable {
 			return (diff/86400000 >=2);
 		}
 		return true;
+	}
+
+	public Integer getPermission() {
+		return permission;
+	}
+
+	public void setPermission(Integer permission) {
+		this.permission = permission;
 	}
 	
 }

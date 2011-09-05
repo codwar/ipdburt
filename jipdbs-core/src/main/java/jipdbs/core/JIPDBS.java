@@ -37,7 +37,7 @@ import jipdbs.core.model.dao.impl.PlayerDAOImpl;
 import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.util.Functions;
 import jipdbs.info.AliasResult;
-import jipdbs.info.BanInfo;
+import jipdbs.info.PenaltyInfo;
 import jipdbs.info.SearchResult;
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
@@ -48,16 +48,21 @@ import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 public class JIPDBS {
 
 	private static final Logger log = Logger.getLogger(JIPDBS.class.getName());
 
-	protected final ServerDAO serverDAO = new ServerCachedDAO(new ServerDAOImpl());
-	protected final PlayerDAO playerDAO = new PlayerCachedDAO(new PlayerDAOImpl());
+	protected final ServerDAO serverDAO = new ServerCachedDAO(
+			new ServerDAOImpl());
+	protected final PlayerDAO playerDAO = new PlayerCachedDAO(
+			new PlayerDAOImpl());
 	protected final AliasDAO aliasDAO = new AliasCachedDAO(new AliasDAOImpl());
-	protected final AliasIPDAO aliasIpDAO = new AliasIPCachedDAO(new AliasIPDAOImpl());
-	
+	protected final AliasIPDAO aliasIpDAO = new AliasIPCachedDAO(
+			new AliasIPDAOImpl());
+
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
 
@@ -69,7 +74,10 @@ public class JIPDBS {
 	public String getNewRecaptchaCode() {
 		ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey,
 				recaptchaPrivateKey, false);
-		return c.createRecaptchaHtml(null, null);
+		Properties cProp = new Properties();
+		cProp.setProperty("theme", "white");
+		cProp.setProperty("lang", "es");
+		return c.createRecaptchaHtml(null, cProp);
 	}
 
 	public boolean isRecaptchaValid(String remoteAddr, String challenge,
@@ -120,7 +128,7 @@ public class JIPDBS {
 		int[] count = new int[1];
 		return getServers(0, 1000, count);
 	}
-	
+
 	public List<Server> getServers(int offset, int limit, int[] count) {
 		try {
 			return serverDAO.findAll(offset, limit, count);
@@ -142,7 +150,8 @@ public class JIPDBS {
 				Server server = serverDAO.get(player.getServer());
 
 				// Whoops! inconsistent data.
-				if (server == null) continue;
+				if (server == null)
+					continue;
 
 				SearchResult result = marshall(player, server);
 				results.add(result);
@@ -174,7 +183,10 @@ public class JIPDBS {
 			}
 			return results;
 		} catch (Exception e) {
-			log.severe("Unable to fetch banned query players:" + e.getMessage());
+			log.severe("Unable to fetch banned query players: " + e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.severe(w.toString());
 			count[0] = 0;
 			return Collections.emptyList();
 		}
@@ -192,10 +204,14 @@ public class JIPDBS {
 			exactMatch[0] = true;
 
 			// No exact match, try ngrams.
-			if (aliasses.size() == 0 && query.length() >= Parameters.MIN_NGRAM_QUERY
+			if (aliasses.size() == 0
+					&& query.length() >= Parameters.MIN_NGRAM_QUERY
 					&& query.length() <= Parameters.MAX_ALIAS_QUERY) {
-				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query.substring(0, Parameters.MAX_NGRAM_QUERY);
-				aliasses = aliasDAO.findByNGrams(query, Parameters.NGRAMS_OFFSET, Parameters.NGRAMS_LIMIT, count);
+				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query
+						: query.substring(0, Parameters.MAX_NGRAM_QUERY);
+				aliasses = aliasDAO.findByNGrams(query,
+						Parameters.NGRAMS_OFFSET, Parameters.NGRAMS_LIMIT,
+						count);
 				exactMatch[0] = false;
 			}
 
@@ -212,8 +228,9 @@ public class JIPDBS {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
-			List<AliasIP> aliasses = aliasIpDAO.findByIP(query, offset, limit, count);
-			
+			List<AliasIP> aliasses = aliasIpDAO.findByIP(query, offset, limit,
+					count);
+
 			for (AliasIP alias : aliasses) {
 				Player player = playerDAO.get(alias.getPlayer());
 				Server server = serverDAO.get(player.getServer());
@@ -238,10 +255,11 @@ public class JIPDBS {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
-			
+
 			Server server = serverDAO.get(KeyFactory.stringToKey(query));
 			if (server != null) {
-				for (Player player : playerDAO.findByServer(query, offset, limit, count)) {
+				for (Player player : playerDAO.findByServer(query, offset,
+						limit, count)) {
 					results.add(marshall(player, server));
 				}
 			}
@@ -253,16 +271,17 @@ public class JIPDBS {
 		}
 	}
 
-	private List<SearchResult> marshallPlayers(List<Key> players) throws EntityNotFoundException {
+	private List<SearchResult> marshallPlayers(List<Key> players)
+			throws EntityNotFoundException {
 		List<SearchResult> results = new ArrayList<SearchResult>();
-		for (Key key: players) {
+		for (Key key : players) {
 			Player player = playerDAO.get(key);
 			Server server = serverDAO.get(player.getServer());
 			results.add(marshall(player, server));
 		}
 		return results;
 	}
-	
+
 	private List<SearchResult> marshall(List<Alias> aliasses)
 			throws EntityNotFoundException {
 
@@ -288,17 +307,22 @@ public class JIPDBS {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey().getId());
 		result.setKey(KeyFactory.keyToString(player.getKey()));
-		result.setIp(Functions.maskIpAddress(player.getIp()));
+		if (isSuperAdmin()) {
+			result.setIp(player.getIp());
+		} else {
+			result.setIp(Functions.maskIpAddress(player.getIp()));
+		}
 		result.setLatest(player.getUpdated());
 		result.setPlaying(player.isConnected());
 		result.setNote(player.getNote());
 		result.setName(player.getNickname());
 		result.setServer(server);
-		result.setBanInfo(BanInfo.getDetail(player.getBanInfo()));
-		result.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "UID" + result.getId());
+		result.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
+		result.setClientId(player.getClientId() != null ? "@"
+				+ player.getClientId().toString() : "UID" + result.getId());
 		return result;
 	}
-	
+
 	public Player getPlayer(String player) throws EntityNotFoundException {
 		return playerDAO.get(KeyFactory.stringToKey(player));
 	}
@@ -339,6 +363,15 @@ public class JIPDBS {
 		}
 	}
 
+	public boolean isSuperAdmin() {
+		try {
+			UserService userService = UserServiceFactory.getUserService();
+			return userService.isUserAdmin();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	public List<AliasResult> aliasip(String encodedKey, int offset, int limit,
 			int[] count) {
 
@@ -348,13 +381,17 @@ public class JIPDBS {
 			Player player = playerDAO.get(KeyFactory.stringToKey(encodedKey));
 
 			if (player != null) {
-				List<AliasIP> aliasses = aliasIpDAO.findByPlayer(player.getKey(),
-						offset, limit, count);
+				List<AliasIP> aliasses = aliasIpDAO.findByPlayer(
+						player.getKey(), offset, limit, count);
 
 				for (AliasIP alias : aliasses) {
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-					item.setIp(Functions.maskIpAddress(alias.getIp()));
+					if (isSuperAdmin()) {
+						item.setIp(alias.getIp());
+					} else {
+						item.setIp(Functions.maskIpAddress(alias.getIp()));
+					}
 					item.setNickname(null);
 					item.setUpdated(alias.getUpdated());
 					result.add(item);
@@ -368,7 +405,7 @@ public class JIPDBS {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	public void sendAdminMail(String realId, String from, String body) {
 		try {
 
@@ -419,13 +456,14 @@ public class JIPDBS {
 		serverDAO.save(server);
 	}
 
-	public List<SearchResult> clientIdSearch(String query, int offset, int limit,
-			int[] count) {
+	public List<SearchResult> clientIdSearch(String query, int offset,
+			int limit, int[] count) {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
-			List<Player> players = playerDAO.findByClientId(query, offset, limit, count);
-			
+			List<Player> players = playerDAO.findByClientId(query, offset,
+					limit, count);
+
 			for (Player player : players) {
 				Server server = serverDAO.get(player.getServer());
 

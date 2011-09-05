@@ -7,11 +7,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jipdbs.api.Events;
 import jipdbs.api.ServerManager;
 import jipdbs.api.v2.Update;
 import jipdbs.core.JIPDBS;
+import jipdbs.core.model.Penalty;
 import jipdbs.core.model.Server;
 import jipdbs.exception.UnauthorizedUpdateException;
+import jipdbs.info.PenaltyInfo;
 import jipdbs.info.PlayerInfo;
 import jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet;
 
@@ -35,6 +38,10 @@ public class JIPDBSRpc2Handler {
 		this.updateApi.updateName(key, name, version, JIPDBSXmlRpc2Servlet.getClientIpAddress());
 	}
 
+	public void updateName(String key, String name, Object[] data) {
+		this.updateApi.updateName(key, name, (String) data[0], JIPDBSXmlRpc2Servlet.getClientIpAddress());
+	}
+	
 	public void update(String key, Object[] plist) throws Exception {
 
 		try {
@@ -44,7 +51,8 @@ public class JIPDBSRpc2Handler {
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				Object[] values = ((Object[]) o);
-				PlayerInfo playerInfo = new PlayerInfo((String) values[0], (String) values[1], (String) values[2], parseLong(values[3]), (String) values[4], parseLong(values[5]));
+				String event = (String) values[0];
+				PlayerInfo playerInfo = new PlayerInfo(event, (String) values[1], (String) values[2], parseLong(values[3]), (String) values[4], parseLong(values[5]));
 				if (values.length > 6) {
 					Date updated;
 					if (values[6] instanceof Date) {
@@ -60,7 +68,20 @@ public class JIPDBSRpc2Handler {
 					playerInfo.setUpdated(updated);
 				}
 				if (values.length > 7) {
-					playerInfo.setExtra((String) values[7]);
+					PenaltyInfo info = new PenaltyInfo();
+					if (Events.BAN.equals(event)) {
+						String[] parts = ((String) values[7]).split("::");
+						info.setType(Penalty.BAN);
+						info.setCreated(parseLong(parts[1]));
+						info.setDuration(parseLong(parts[2]));
+						info.setReason(parts[3]);
+					} else {
+						info.setCreated(new Date());
+						info.setDuration(-1L);
+						info.setType(Penalty.NOTICE);
+						info.setReason((String) values[7]);
+					}
+					playerInfo.setPenaltyInfo(info);
 				}
 				list.add(playerInfo);
 			}

@@ -16,7 +16,7 @@ public class PlayerInfo implements Serializable {
 	private String ip;
 	private Long level;
 	private Date updated = new Date();
-	private String extra = null;
+	private PenaltyInfo penaltyInfo = null;
 	
 	private String event;
 	
@@ -29,11 +29,20 @@ public class PlayerInfo implements Serializable {
 		setLevel(level);
 	}
 	
-	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level, String extra) {
+	/**
+	 * @param addnote
+	 * @param string
+	 * @param string2
+	 * @param l
+	 * @param string3
+	 * @param m
+	 * @param notice
+	 */
+	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level, PenaltyInfo penalty) {
 		this(event, name, guid, id, ip, level);
-		setExtra(extra);
+		this.setPenaltyInfo(penalty);
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -78,8 +87,17 @@ public class PlayerInfo implements Serializable {
 		return updated;
 	}
 
+	/**
+	 * set updated date.
+	 * do not allow dates in the future
+	 * @param updated
+	 */
 	public void setUpdated(Date updated) {
-		this.updated = updated;
+		if (updated.after(new Date())) {
+			this.updated = new Date();
+		} else {
+			this.updated = updated;	
+		}
 	}
 
 	public String getEvent() {
@@ -89,17 +107,14 @@ public class PlayerInfo implements Serializable {
 	public void setEvent(String event) {
 		this.event = event;
 	}
-
-	public String getExtra() {
-		return extra;
-	}
-
-	public void setExtra(String extra) {
-		this.extra = extra;
-	}
 	
-	public BanInfo getBanInfo() {
-		return new BanInfo(this.extra);
+	public PenaltyInfo getPenaltyInfo() {
+		return this.penaltyInfo;
+	}
+
+	public PlayerInfo setPenaltyInfo(PenaltyInfo banInfo) {
+		this.penaltyInfo = banInfo;
+		return this;
 	}
 
 }

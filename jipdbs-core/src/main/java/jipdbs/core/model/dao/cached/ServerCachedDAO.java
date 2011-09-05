@@ -2,9 +2,9 @@ package jipdbs.core.model.dao.cached;
 
 import java.util.List;
 
+import jipdbs.core.cache.CacheFactory;
 import jipdbs.core.model.Server;
 import jipdbs.core.model.dao.ServerDAO;
-import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -21,16 +21,18 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 	@Override
 	public void save(Server server) {
 		impl.save(server);
+		cache.clear();
 		cache.put(cacheKey(server.getUid()), server);
-		cache.clear("server");
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Server> findAll(int offset, int limit, int[] count) {
-		String key = "server-all" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		String key = "server-all" + Integer.toString(offset) + "L"
+				+ Integer.toString(limit);
 		List<Server> servers = (List<Server>) getCachedList(key, count);
-		if (servers != null) return servers;
+		if (servers != null)
+			return servers;
 		servers = impl.findAll(offset, limit, count);
 		putCachedList(key, servers, count);
 		return servers;
@@ -63,6 +65,6 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = LocalCache.getInstance();
+		this.cache = CacheFactory.getInstance().getCache("server");
 	}
 }

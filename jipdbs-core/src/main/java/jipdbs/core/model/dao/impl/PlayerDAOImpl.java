@@ -180,6 +180,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Key server = KeyFactory.stringToKey(query);
 		Query q = new Query("Player");
 		q.setAncestor(server);
+		q.addSort("connected", SortDirection.DESCENDING);
 		q.addSort("updated", SortDirection.DESCENDING);
 		PreparedQuery pq = service.prepare(q);
 

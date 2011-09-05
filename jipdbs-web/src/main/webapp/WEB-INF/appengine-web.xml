@@ -2,30 +2,36 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
 	<application>ipdburt</application>
 	<version>${gaeversion}</version>
-	
+
 	<!-- Configure java.util.logging -->
 	<system-properties>
-		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
 	</system-properties>
 
-    <ssl-enabled>true</ssl-enabled>
+	<ssl-enabled>true</ssl-enabled>
 
-    <warmup-requests-enabled>true</warmup-requests-enabled>
+	<threadsafe>true</threadsafe>
 
-    <!-- TO ALLOW THE APP SEND MAIL WITH OWN ADDRESS -->
-    <inbound-services>
-        <service>mail</service>
-    </inbound-services>
+	<warmup-requests-enabled>true</warmup-requests-enabled>
 
-    <static-files>
-        <include path="/**.png" expiration="30d"/>
-        <include path="/**.jpg" expiration="30d"/>
-        <include path="/**.gif" expiration="30d"/>
-        <include path="/**.ico" expiration="30d"/>
-        <include path="/**.js" expiration="30d"/>
-        <include path="/**.css" expiration="1d"/>
-    </static-files>
-    
-    <sessions-enabled>true</sessions-enabled>
-    	
+	<!-- TO ALLOW THE APP SEND MAIL WITH OWN ADDRESS -->
+	<inbound-services>
+		<service>mail</service>
+	</inbound-services>
+
+	<static-files>
+		<include path="/**.png" expiration="30d" />
+		<include path="/**.jpg" expiration="30d" />
+		<include path="/**.gif" expiration="30d" />
+		<include path="/**.ico" expiration="30d" />
+		<include path="/**.js" expiration="30d" />
+		<include path="/**.css" expiration="1d" />
+	</static-files>
+
+	<sessions-enabled>true</sessions-enabled>
+
+	<admin-console>
+		<page name="Servers" url="/admin/servers/" />
+	</admin-console>
+
 </appengine-web-app>

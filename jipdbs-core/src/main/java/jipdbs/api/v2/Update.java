@@ -22,8 +22,8 @@ import jipdbs.core.model.dao.impl.ServerDAOImpl;
 import jipdbs.core.model.util.AliasManager;
 import jipdbs.core.util.MailAdmin;
 import jipdbs.exception.UnauthorizedUpdateException;
-import jipdbs.info.BanInfo;
 import jipdbs.info.PlayerInfo;
+import jipdbs.task.PenaltyTask;
 
 public class Update {
 
@@ -50,15 +50,14 @@ public class Update {
 	 *            the server's B3 plugin version. Can be null.
 	 * @since 0.5
 	 */
-	public void updateName(String key, String name, String version,
-			String remoteAddr) {
+	public void updateName(String key, String name, String version,	Integer permission, String remoteAddr) {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, remoteAddr,name);
 			server.setName(name);
+			server.setPermission(permission);
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
 			serverDAO.save(server);
-
 		} catch (UnauthorizedUpdateException e) {
 			MailAdmin.sendMail("WARN", e.getMessage());
 			log.severe(e.getMessage());
@@ -71,6 +70,17 @@ public class Update {
 			e.printStackTrace(new PrintWriter(w));
 			log.severe(w.getBuffer().toString());
 		}
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @param name
+	 * @param version
+	 * @param remoteAddr
+	 */
+	public void updateName(String key, String name, String version,	String remoteAddr) {
+		updateName(key, name, version, 0, remoteAddr);
 	}
 
 	public void cleanServer(Server server) {
@@ -118,6 +128,7 @@ public class Update {
 						player.setBanInfoUpdated(null);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
+						player.setClientId(playerInfo.getClientId());
 						player.setLevel(playerInfo.getLevel());
 						if (player.getClientId() == null || player.getClientId() == 0) {
 							player.setClientId(playerInfo.getClientId());
@@ -134,6 +145,8 @@ public class Update {
 					
 					playerDAO.save(player);
 
+					handlePenaltyEvent(playerInfo, player);
+					
 					boolean update = false;
 					if (Events.CONNECT.equals(playerInfo.getEvent())) {
 						if (server.getUpdated() == null
@@ -162,6 +175,15 @@ public class Update {
 		}
 	}
 
+	private void handlePenaltyEvent(PlayerInfo playerInfo, Player player) {
+		if (Events.BAN.equals(playerInfo.getEvent())
+			|| Events.ADDNOTE.equals(playerInfo.getEvent())
+			|| Events.UNBAN.equals(playerInfo.getEvent())
+			|| Events.DELNOTE.equals(playerInfo.getEvent())) {
+			PenaltyTask.enqueue(player, playerInfo.getEvent());
+		}
+	}
+
 	/**
 	 * 
 	 * @param playerInfo
@@ -169,9 +191,12 @@ public class Update {
 	 */
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
 		if (Events.BAN.equals(playerInfo.getEvent())) {
-			BanInfo banInfo = new BanInfo(playerInfo.getExtra());
-			player.setBanInfo(banInfo.getRawData());
-			player.setBanInfoUpdated(playerInfo.getUpdated());
+			player.setBanInfo(playerInfo.getPenaltyInfo().getRawData());
+			if (playerInfo.getPenaltyInfo().getCreated() != null) {
+				player.setBanInfoUpdated(playerInfo.getPenaltyInfo().getCreated());	
+			} else {
+				player.setBanInfoUpdated(playerInfo.getUpdated());
+			}
 			player.setConnected(false);
 		} else if (Events.CONNECT.equals(playerInfo.getEvent())
 				|| Events.DISCONNECT.equals(playerInfo.getEvent())
@@ -185,7 +210,7 @@ public class Update {
 				player.setConnected(false);
 			}
 		} else if (Events.ADDNOTE.equals(playerInfo.getEvent())) {
-			player.setNote(playerInfo.getExtra());
+			player.setNote(playerInfo.getPenaltyInfo().getRawData());
 		} else if (Events.DELNOTE.equals(playerInfo.getEvent())) {
 			player.setNote(null);
 		}

@@ -2,9 +2,9 @@ package jipdbs.core.model.dao.cached;
 
 import java.util.List;
 
+import jipdbs.core.cache.CacheFactory;
 import jipdbs.core.model.AliasIP;
 import jipdbs.core.model.dao.AliasIPDAO;
-import jipdbs.core.util.LocalCache;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -60,7 +60,7 @@ public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = LocalCache.getInstance();
+		this.cache = CacheFactory.getInstance().getCache("aliasip");
 	}
 
 }

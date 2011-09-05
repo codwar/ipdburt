@@ -1,0 +1,11 @@
+<!-- Indices written at Mon, 27 Jun 2011 15:41:52 ART -->
+
+<datastore-indexes>
+
+    <!-- Used 2 times in query history -->
+    <datastore-index kind="Player" ancestor="false" source="auto">
+        <property name="connected" direction="desc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>

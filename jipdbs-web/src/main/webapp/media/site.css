@@ -1,13 +1,8 @@
 #donar {
-    position: absolute;
-    top: 45px;
-    left: 5px;
-    padding: 5px;
-    background-color: #B3C2C7;
-    align: center;
-    -webkit-box-shadow: 0 0 10px rgb(0,0,0);
-    -moz-box-shadow: 0 0 10px rgb(0,0,0);
-    box-shadow: 0 0 10px rgb(0,0,0);
+	float: left;
+    background: transparent;
+    display: block;
+    padding-top: 9px;
 }
 .helptext {
   font-family: sans-serif;
@@ -18,7 +13,6 @@
   line-height: 120%;
   margin: 0.2em 0;
 }
-
 /* Form Styling */
 input[type=text],input[type=password],textarea,select {
     /*padding: 9px;*/
@@ -522,6 +516,9 @@ ul.messages li.warning {
 .information {
     background-image: url('images/information.png');
 }
+.code {
+    background-image: url('images/page_white_code.png');
+}
 .close_button {
     float: right;
     cursor: pointer;
@@ -623,7 +620,7 @@ ul.topnav {
     padding: 0 20px !important;
 }
 input.search {
-	width: 160px;
+	width: 140px;
 }
 .beta {
 	top: 40px !important;
@@ -678,9 +675,38 @@ input.search {
 	color: red;
 }
 .button {
-    background: #fff;
+    background-color: #fff;
     padding: 2px;
     font-family: Geneva, Vera, Arial, Helvetica, sans-serif;
     font-variant : small-caps;
     border : 1px solid #aaa;
+}
+#openidbox {
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;	
+}
+#logincontainer {
+    position: absolute;
+    right: 10px;
+    top: 20px;    
+}
+#signin_menu {
+    background: repeat scroll 0 0 #333333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 0 0 9px 9px
+}
+#signin_menu p {
+    color: white;
+    font-size: 12px !important;
+}
+#signin_menu a {
+    padding: 0 !important;
+}
+#signin_menu input {
+    font-size: 10px !important;
+}
+#signin_menu #openid_username {
+    width: 90px;	
 }

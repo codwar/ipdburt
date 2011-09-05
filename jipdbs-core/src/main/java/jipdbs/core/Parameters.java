@@ -10,4 +10,6 @@ public interface Parameters {
 	public static final int MAX_SINGLE_QUERY = 32;
 	public static final int MAX_ALIAS_QUERY = 20;
 	
+	public static final int MAX_ENTITY_LIMIT = 400;
+	
 }
