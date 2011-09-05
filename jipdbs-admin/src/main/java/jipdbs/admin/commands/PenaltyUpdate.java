@@ -96,7 +96,7 @@ public class PenaltyUpdate extends Command {
 					player.setBanInfo(info.getRawData());
 					playerDAO.save(player);
 					
-					Penalty penalty = new Penalty(player);
+					Penalty penalty = new Penalty(player.getKey());
 					penalty.setActive(true);
 					penalty.setSynced(true);
 					penalty.setAdmin(null);
