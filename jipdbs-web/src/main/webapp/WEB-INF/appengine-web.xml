@@ -23,7 +23,7 @@
         <include path="/**.gif" expiration="30d"/>
         <include path="/**.ico" expiration="30d"/>
         <include path="/**.js" expiration="30d"/>
-        <include path="/**.css" expiration="15d"/>
+        <include path="/**.css" expiration="1d"/>
     </static-files>
     
     <sessions-enabled>true</sessions-enabled>
