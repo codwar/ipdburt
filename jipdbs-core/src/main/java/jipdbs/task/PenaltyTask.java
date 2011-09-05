@@ -44,7 +44,7 @@ public class PenaltyTask {
 				if (penalties.size() > 0) {
 					penalty = penalties.get(0);
 				} else {
-					penalty = new Penalty(player);
+					penalty = new Penalty(player.getKey());
 				}
 				PenaltyInfo penaltyInfo = new PenaltyInfo(player.getBanInfo());
 				penalty.setType(Penalty.BAN);
@@ -57,7 +57,7 @@ public class PenaltyTask {
 				try {
 					if (penaltyInfo.getAdminId() != null) {
 						Player admin = playerDAO.findByServerAndGuid(player.getServer(), penaltyInfo.getAdminId());
-						if (admin != null) penalty.setAdmin(admin);
+						if (admin != null) penalty.setAdmin(admin.getKey());
 					}
 				} catch (Exception e) {
 				}
@@ -69,7 +69,7 @@ public class PenaltyTask {
 				if (penalties.size() > 0) dao.delete(penalties);
 			} else {
 				PenaltyInfo info = new PenaltyInfo(player.getBanInfo());
-				Penalty penalty = new Penalty(player);
+				Penalty penalty = new Penalty(player.getKey());
 				penalty.setType(Penalty.NOTICE);
 				penalty.setCreated(info.getCreated());
 				penalty.setUpdated(new Date());
@@ -79,7 +79,7 @@ public class PenaltyTask {
 				try {
 					if (info.getAdminId() != null) {
 						Player admin = playerDAO.findByServerAndGuid(player.getServer(), info.getAdminId());
-						if (admin != null) penalty.setAdmin(admin);
+						if (admin != null) penalty.setAdmin(admin.getKey());
 					}
 				} catch (Exception e) {
 				}

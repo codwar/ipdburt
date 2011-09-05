@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import jipdbs.core.model.Penalty;
-import jipdbs.core.model.Player;
 import jipdbs.core.model.dao.PenaltyDAO;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -25,7 +24,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 public class PenaltyDAOImpl implements PenaltyDAO {
 
 	private Entity toEntity(Penalty penalty) {
-		Entity entity = penalty.getKey() == null ? new Entity("Penalty", penalty.getPlayer().getKey()) : new Entity(penalty.getKey());
+		Entity entity = penalty.getKey() == null ? new Entity("Penalty", penalty.getPlayer()) : new Entity(penalty.getKey());
 		entity.setProperty("updated", penalty.getUpdated());
 		entity.setProperty("synced", penalty.getSynced());
 		entity.setProperty("active", penalty.getActive());
@@ -38,14 +37,14 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	}
 
 	private Penalty fromEntity(Entity entity) {
-		Penalty penalty = new Penalty(new Player(entity.getParent()));
+		Penalty penalty = new Penalty(entity.getParent());
 		penalty.setUpdated((Date) entity.getProperty("updated"));
 		penalty.setCreated((Date) entity.getProperty("created"));
 		penalty.setActive((Boolean) entity.getProperty("active"));
 		penalty.setSynced((Boolean) entity.getProperty("synced"));
 		penalty.setReason((String) entity.getProperty("reason"));
 		penalty.setDuration((Long) entity.getProperty("duration"));
-		penalty.setAdmin(new Player((Key) entity.getProperty("admin")));
+		penalty.setAdmin((Key) entity.getProperty("admin"));
 		penalty.setType((Long) entity.getProperty("type"));
 		return penalty;
 	}

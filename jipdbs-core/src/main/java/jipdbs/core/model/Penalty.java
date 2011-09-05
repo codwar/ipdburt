@@ -16,8 +16,8 @@ public class Penalty implements Serializable {
 	public static final Long NOTICE = 1L;
 	
 	private Key key;
-	private Player player;
-	private Player admin;
+	private Key player;
+	private Key admin;
 	
 	private Long type;
 	private Date created;
@@ -27,7 +27,7 @@ public class Penalty implements Serializable {
 	private Boolean synced;
 	private Boolean active;
 	
-	public Penalty(Player player) {
+	public Penalty(Key player) {
 		this.player = player;
 	}
 
@@ -95,19 +95,19 @@ public class Penalty implements Serializable {
 		this.active = active;
 	}
 
-	public Player getPlayer() {
+	public Key getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
+	public void setPlayer(Key player) {
 		this.player = player;
 	}
 
-	public Player getAdmin() {
+	public Key getAdmin() {
 		return admin;
 	}
 
-	public void setAdmin(Player admin) {
+	public void setAdmin(Key admin) {
 		this.admin = admin;
 	}
 
