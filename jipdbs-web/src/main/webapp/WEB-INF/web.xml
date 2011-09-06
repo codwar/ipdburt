@@ -138,10 +138,6 @@
 			<web-resource-name>cron</web-resource-name>
 			<url-pattern>/cron/*</url-pattern>
 		</web-resource-collection>
-		<web-resource-collection>
-			<web-resource-name>remote_api</web-resource-name>
-			<url-pattern>/remote_api</url-pattern>
-		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
