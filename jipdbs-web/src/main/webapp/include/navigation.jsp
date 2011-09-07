@@ -27,7 +27,7 @@
             UserService userService = UserServiceFactory.getUserService();
             if (request.getUserPrincipal() != null) {
         %>
-        <li><a href="<url:url name="admin-serverlist"/>">Administrar</a></li>
+        <li><a href="https://ipdburt.appspot.com/<url:url name="admin-serverlist"/>">Administrar</a></li>
         <%      
             }
         %>
