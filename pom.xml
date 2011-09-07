@@ -4,7 +4,7 @@
 	<groupId>jipdbs</groupId>
 	<artifactId>jipdbs</artifactId>
 	<packaging>pom</packaging>
-	<version>0.7.3-SNAPSHOT</version>
+	<version>0.7.3</version>
 	<name>jipdbs</name>
 	<modules>
 		<module>jipdbs-web</module>
