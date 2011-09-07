@@ -85,14 +85,14 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	public void delete(Penalty penalty) {
-		this.delete(penalty);
+		impl.delete(penalty);
 		this.cache.clear();
 		
 	}
 
 	@Override
 	public void delete(List<Penalty> list) {
-		this.delete(list);
+		impl.delete(list);
 		this.cache.clear();
 	}
 
