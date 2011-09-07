@@ -77,7 +77,7 @@ public class JIPDBSRpc3Handler {
 					penalty.setDuration(parseLong(data[2]));
 					penalty.setReason((String) data[3]);
 					penalty.setAdmin((String) data[4]);
-					penalty.setAdminId(Integer.toString((Integer) data[5]));
+					penalty.setAdminId(smartCast(data[5]));
 					playerInfo.setPenaltyInfo(penalty);
 				} else if (Events.ADDNOTE.equals(event)) {
 					Object[] data = (Object[]) values[7];
@@ -86,7 +86,7 @@ public class JIPDBSRpc3Handler {
 					penalty.setCreated(parseLong(data[1]));
 					penalty.setReason((String) data[2]);
 					penalty.setAdmin((String) data[3]);
-					penalty.setAdminId(Integer.toString((Integer) data[4]));
+					penalty.setAdminId(smartCast(data[4]));
 					playerInfo.setPenaltyInfo(penalty);			
 				}
 				list.add(playerInfo);
@@ -118,6 +118,19 @@ public class JIPDBSRpc3Handler {
 			log.severe(w.getBuffer().toString());
 			throw e;
 		}
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	private String smartCast(Object obj) {
+		if (obj instanceof Number) {
+			return ((Number) obj).toString();
+		} else if (obj instanceof String) {
+			return (String) obj;
+		}
+		return null;
 	}
 
 	private Long parseLong(Object s) {
