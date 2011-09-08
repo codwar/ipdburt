@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>jipdbs</groupId>
-	<artifactId>jipdbs</artifactId>
+	<groupId>iddb</groupId>
+	<artifactId>iddb</artifactId>
 	<packaging>pom</packaging>
 	<version>0.8-SNAPSHOT</version>
-	<name>jipdbs</name>
+	<name>iddb</name>
 	<modules>
-		<module>jipdbs-web</module>
-		<module>jipdbs-admin</module>
-		<module>jipdbs-core</module>
+		<module>iddb-web</module>
+		<module>iddb-core</module>
+		<module>iddb-remote</module>
 	</modules>
 	
 	<scm>
-		<connection>scm:git:https://git@github.com/mschonaker/jipdbs.git</connection>
+		<connection>scm:git:https://git@github.com/codwar/ipdburt.git</connection>
 	</scm>
     
     <build>
