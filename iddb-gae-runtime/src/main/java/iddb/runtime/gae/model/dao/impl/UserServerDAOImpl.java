@@ -2,36 +2,40 @@ package iddb.runtime.gae.model.dao.impl;
 
 import iddb.core.model.UserServer;
 import iddb.core.model.dao.UserServerDAO;
+import iddb.exception.EntityDoesNotExistsException;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
 public class UserServerDAOImpl implements UserServerDAO {
 
-	public UserServer(Entity entity) {
-		this.key = entity.getKey();
-		this.user = entity.getParent();
-		this.server = (Key) entity.getProperty("server");
-		this.owner = (Boolean) entity.getProperty("owner");
+	public static final String ENTITY = "UserServer";
+	
+	private UserServer fromEntity(Entity entity) {
+		UserServer user = new UserServer();
+		user.setKey(entity.getKey().getId());
+		user.setUser(entity.getParent().getId());
+		user.setServer(((Key) entity.getProperty("server")).getId());
+		user.setOwner((Boolean) entity.getProperty("owner"));
+		return user;
 	}
 
-	public Entity toEntity() {
-		Entity entity = this.getKey() == null ? new Entity("UserServer", this.user) : new Entity(this.key);
-		entity.setProperty("server", this.server);
-		entity.setUnindexedProperty("owner", this.owner);
+	private Entity toEntity(UserServer user) {
+		Entity entity = user.getKey() == null ? new Entity(ENTITY, KeyFactory.createKey(UserDAOImpl.ENTITY, user.getUser())) : new Entity(KeyFactory.createKey(ENTITY, user.getKey()));
+		entity.setProperty("server", KeyFactory.createKey(ServerDAOImpl.ENTITY, user.getServer()));
+		entity.setUnindexedProperty("owner", user.getOwner());
 		return entity;
 	}
-
 	
 	/*
 	 * (non-Javadoc)
@@ -45,9 +49,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Entity entity = userServer.toEntity();
+		Entity entity = toEntity(userServer);
 		service.put(entity);
-		userServer.setKey(entity.getKey());
+		userServer.setKey(entity.getKey().getId());
 	}
 
 	/*
@@ -58,19 +62,19 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 * .api.datastore.Key)
 	 */
 	@Override
-	public List<UserServer> findByUser(Key user) {
+	public List<UserServer> findByUser(Long user) {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("UserServer");
-		q.setAncestor(user);
+		Query q = new Query(ENTITY);
+		q.setAncestor(KeyFactory.createKey(UserDAOImpl.ENTITY, user));
 
 		PreparedQuery pq = service.prepare(q);
 
 		List<UserServer> list = new ArrayList<UserServer>();
 
 		for (Entity entity : pq.asIterable()) {
-			list.add(new UserServer(entity));
+			list.add(fromEntity(entity));
 		}
 
 		return list;
@@ -84,10 +88,15 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 * .datastore.Key)
 	 */
 	@Override
-	public UserServer get(Key userServer) throws EntityNotFoundException {
+	public UserServer get(Long key) throws EntityDoesNotExistsException {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-		return new UserServer(service.get(userServer));
+		try {
+			return fromEntity(service.get(KeyFactory.createKey(ENTITY, key)));
+		} catch (EntityNotFoundException e) {
+			throw new EntityDoesNotExistsException("UserServer with id %s not found", key.toString());
+		}
+		
 	}
 
 	/*
@@ -98,34 +107,34 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 * .appengine.api.datastore.Key, com.google.appengine.api.datastore.Key)
 	 */
 	@Override
-	public UserServer findByUserAndServer(Key user, Key server) {
+	public UserServer findByUserAndServer(Long user, Long server) {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
-		Query q = new Query("UserServer");
-		q.setAncestor(user);
-		q.addFilter("server", FilterOperator.EQUAL, server);
+		Query q = new Query(ENTITY);
+		q.setAncestor(KeyFactory.createKey(UserDAOImpl.ENTITY, user));
+		q.addFilter("server", FilterOperator.EQUAL, KeyFactory.createKey(ServerDAOImpl.ENTITY, server));
 		PreparedQuery pq = service.prepare(q);
 		Entity entity = pq.asSingleEntity();
 		if (entity != null) {
-			return new UserServer(entity);
+			return fromEntity(entity);
 		}
 		return null;
 	}
 
 	@Override
-	public List<UserServer> findByServer(Key server) {
+	public List<UserServer> findByServer(Long server) {
 		DatastoreService service = DatastoreServiceFactory
 				.getDatastoreService();
 
-		Query q = new Query("UserServer");
-		q.addFilter("server", FilterOperator.EQUAL, server);
+		Query q = new Query(ENTITY);
+		q.addFilter("server", FilterOperator.EQUAL, KeyFactory.createKey(ENTITY, server));
 
 		PreparedQuery pq = service.prepare(q);
 
 		List<UserServer> list = new ArrayList<UserServer>();
 
 		for (Entity entity : pq.asIterable()) {
-			list.add(new UserServer(entity));
+			list.add(fromEntity(entity));
 		}
 
 		return list;

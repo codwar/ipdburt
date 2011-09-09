@@ -29,9 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -46,8 +43,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 public class PenaltyDAOImpl implements PenaltyDAO {
 
 	public static final String ENTITY = "Penalty";
-	
-	private static final Logger log = LoggerFactory.getLogger(PenaltyDAOImpl.class);
 	
 	private Entity toEntity(Penalty penalty) {
 		Entity entity = penalty.getKey() == null ? new Entity(ENTITY, KeyFactory.createKey(PlayerDAOImpl.ENTITY, penalty.getPlayer())) : new Entity(KeyFactory.createKey(ENTITY, penalty.getKey()));
