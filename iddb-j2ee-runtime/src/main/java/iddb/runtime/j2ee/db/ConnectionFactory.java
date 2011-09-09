@@ -1,4 +1,4 @@
-package jipdbs.db;
+package iddb.runtime.j2ee.db;
 
 import java.sql.Connection;
 

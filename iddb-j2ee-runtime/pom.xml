@@ -1,12 +1,34 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>iddb</artifactId>
 		<groupId>iddb</groupId>
 		<version>0.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>iddb-j2ee-runtime</artifactId>	
+	<artifactId>iddb-j2ee-runtime</artifactId>
+	
+	<profiles>
+		<profile>
+			<id>memcache</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>spy</id>
+					<name>Spy Repository</name>
+					<layout>default</layout>
+					<url>http://files.couchbase.com/maven2/</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -27,11 +49,28 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>iddb-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>2.6</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
+
 </project>

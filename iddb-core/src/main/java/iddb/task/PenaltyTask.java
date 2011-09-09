@@ -21,37 +21,28 @@ package iddb.task;
 import iddb.api.Events;
 import iddb.core.model.Penalty;
 import iddb.core.model.Player;
+import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
-import iddb.core.model.dao.cached.PenaltyCachedDAO;
-import iddb.core.model.dao.cached.PlayerCachedDAO;
-import iddb.core.model.dao.impl.PenaltyDAOImpl;
-import iddb.core.model.dao.impl.PlayerDAOImpl;
 import iddb.info.PenaltyInfo;
 
 import java.util.Date;
 import java.util.List;
 
-
 import org.apache.commons.lang.StringUtils;
-
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 
 public class PenaltyTask {
 
 	private static final String URL = "/admin/task/penalty";
 	
 	public static void enqueue(Player player, String event) {
-		Queue queue = QueueFactory.getQueue("penalty");
-		queue.add(TaskOptions.Builder.withUrl(URL).param("key", KeyFactory.keyToString(player.getKey())).param("event", event));
+//		Queue queue = QueueFactory.getQueue("penalty");
+//		queue.add(TaskOptions.Builder.withUrl(URL).param("key", KeyFactory.keyToString(player.getKey())).param("event", event));
 	}
 	
 	public void process(Player player, String event) {
-		PenaltyDAO dao = new PenaltyCachedDAO(new PenaltyDAOImpl());
-		PlayerDAO playerDAO = new PlayerCachedDAO(new PlayerDAOImpl());
+		PenaltyDAO dao = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
+		PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 		
 		if (Events.BAN.equals(event) || Events.UNBAN.equals(event)) {
 			if (StringUtils.isEmpty(player.getBanInfo())) {
@@ -63,7 +54,8 @@ public class PenaltyTask {
 				if (penalties.size() > 0) {
 					penalty = penalties.get(0);
 				} else {
-					penalty = new Penalty(player.getKey());
+					penalty = new Penalty();
+					penalty.setPlayer(player.getKey());
 				}
 				PenaltyInfo penaltyInfo = new PenaltyInfo(player.getBanInfo());
 				penalty.setType(Penalty.BAN);
@@ -88,7 +80,8 @@ public class PenaltyTask {
 				if (penalties.size() > 0) dao.delete(penalties);
 			} else {
 				PenaltyInfo info = new PenaltyInfo(player.getBanInfo());
-				Penalty penalty = new Penalty(player.getKey());
+				Penalty penalty = new Penalty();
+				penalty.setPlayer(player.getKey());
 				penalty.setType(Penalty.NOTICE);
 				penalty.setCreated(info.getCreated());
 				penalty.setUpdated(new Date());

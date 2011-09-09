@@ -21,6 +21,7 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.AliasIP;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.util.Functions;
+import iddb.runtime.j2ee.db.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +30,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jipdbs.db.ConnectionFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

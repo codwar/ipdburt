@@ -21,6 +21,7 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
+import iddb.runtime.j2ee.db.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -31,7 +32,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import jipdbs.db.ConnectionFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

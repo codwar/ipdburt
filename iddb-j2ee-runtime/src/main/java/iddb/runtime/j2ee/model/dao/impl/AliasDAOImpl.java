@@ -21,6 +21,7 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
+import iddb.runtime.j2ee.db.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,7 +33,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import jipdbs.db.ConnectionFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

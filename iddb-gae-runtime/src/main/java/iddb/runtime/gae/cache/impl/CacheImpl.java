@@ -54,9 +54,11 @@ public class CacheImpl implements Cache {
 	 */
 	@Override
 	public Object get(String key) {
-		Object ob = this.service.get(key); 
-		log.debug("Lookup for key " + key + " [" + Boolean.toString(ob != null) + "]");
-		return ob;
+		synchronized (key) {
+			Object ob = this.service.get(key); 
+			log.debug("Lookup for key " + key + " [" + Boolean.toString(ob != null) + "]");
+			return ob;
+		}
 	}
 
 	/* (non-Javadoc)
