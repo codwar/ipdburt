@@ -28,7 +28,7 @@ public interface PlayerDAO {
 
 	public abstract Player findByServerAndGuid(Long server, String guid);
 
-	public abstract List<Player> findByServer(String query, int offset,
+	public abstract List<Player> findByServer(Long server, int offset,
 			int limit, int[] count);
 
 	public abstract List<Player> findLatest(int offset, int limit, int[] count);
@@ -49,7 +49,7 @@ public interface PlayerDAO {
 
 	public abstract int countConnected(Long key);
 
-	public abstract List<Player> findByClientId(String query, int offset,
+	public abstract List<Player> findByClientId(Long clientId, int offset,
 			int limit, int[] count);
 
 }

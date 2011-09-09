@@ -248,16 +248,16 @@ public class JIPDBS {
 		}
 	}
 
-	public List<SearchResult> byServerSearch(String query, int offset,
+	public List<SearchResult> byServerSearch(Long serverId, int offset,
 			int limit, int[] count) {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
 			// TODO trabajar la key
-			Server server = serverDAO.get(Long.parseLong(query));
+			Server server = serverDAO.get(serverId);
 			if (server != null) {
-				for (Player player : playerDAO.findByServer(query, offset,
+				for (Player player : playerDAO.findByServer(serverId, offset,
 						limit, count)) {
 					results.add(marshall(player, server));
 				}
@@ -411,12 +411,12 @@ public class JIPDBS {
 		serverDAO.save(server);
 	}
 
-	public List<SearchResult> clientIdSearch(String query, int offset,
+	public List<SearchResult> clientIdSearch(Long clientId, int offset,
 			int limit, int[] count) {
 
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
-			List<Player> players = playerDAO.findByClientId(query, offset,
+			List<Player> players = playerDAO.findByClientId(clientId, offset,
 					limit, count);
 
 			for (Player player : players) {

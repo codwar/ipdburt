@@ -120,25 +120,25 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	}
 
 	@Override
-	public List<Player> findByServer(String query, int offset, int limit,
+	public List<Player> findByServer(Long server, int offset, int limit,
 			int[] count) {
-		String key = "player-server-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
+		String key = "player-server-" + server + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
-		players = impl.findByServer(query, offset, limit, count);
+		players = impl.findByServer(server, offset, limit, count);
 		putCachedList(key, players, count);
 		return players;
 	}
 
 	@Override
-	public List<Player> findByClientId(String query, int offset, int limit,
+	public List<Player> findByClientId(Long clientId, int offset, int limit,
 			int[] count) {
-		String key = "player-cid-" + query + Integer.toString(offset) + "L" + Integer.toString(limit);
+		String key = "player-cid-" + clientId + Integer.toString(offset) + "L" + Integer.toString(limit);
 		@SuppressWarnings("unchecked")
 		List<Player> players = (List<Player>) getCachedList(key, count);
 		if (players != null) return players;
-		players = impl.findByClientId(query, offset, limit, count);
+		players = impl.findByClientId(clientId, offset, limit, count);
 		putCachedList(key, players, count);
 		return players;
 	}

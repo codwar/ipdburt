@@ -11,8 +11,7 @@
     
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<downloadSources>true</downloadSources>
-		<gae.version>1.5.2</gae.version>
+		<downloadSources>false</downloadSources>
 		<skipTests>false</skipTests>
 	</properties>
 
@@ -22,19 +21,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>iddb-core</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>appengine-api-1.0-sdk</artifactId>
-					<groupId>com.google.appengine</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>net.kindleit</groupId>
-			<artifactId>gae-runtime</artifactId>
-			<version>${gae.version}</version>
-			<type>pom</type>
 		</dependency>
 
 		<dependency>
@@ -85,6 +71,7 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.xmlrpc</groupId>
 			<artifactId>xmlrpc-client</artifactId>
@@ -92,24 +79,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-labs</artifactId>
-			<version>${gae.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-stubs</artifactId>
-			<version>${gae.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-testing</artifactId>
-			<version>${gae.version}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>sgt</groupId>
 			<artifactId>urlresolver</artifactId>
@@ -197,23 +166,6 @@
 						</resource>
 					</webResources>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>net.kindleit</groupId>
-				<artifactId>maven-gae-plugin</artifactId>
-				<version>0.8.4</version>
-		        <configuration>
-		          <skipTests>${skipTests}</skipTests>
-		        </configuration>				
-				<dependencies>
-					<dependency>
-						<groupId>net.kindleit</groupId>
-						<artifactId>gae-runtime</artifactId>
-						<version>${gae.version}</version>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 			<plugin>
