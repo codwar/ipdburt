@@ -34,8 +34,6 @@ public interface AliasDAO {
 	public abstract List<Alias> findByPlayer(Long player, int offset,
 			int limit, int[] count);
 
-	public abstract void truncate();
-
 	public abstract void save(Alias alias);
 
 	public abstract void save(Collection<Alias> aliasses);

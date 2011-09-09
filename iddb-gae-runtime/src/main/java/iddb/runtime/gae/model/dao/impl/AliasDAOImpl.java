@@ -197,21 +197,6 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	@Override
-	public void truncate() {
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query q = new Query(ENTITY);
-		q.setKeysOnly();
-		PreparedQuery pq = service.prepare(q);
-		List<Key> keys = new ArrayList<Key>();
-		for (Entity entity : pq.asIterable()) {
-			keys.add(entity.getKey());
-		}
-		service.delete(keys);
-	}
-
-	@Override
 	public void save(Collection<Alias> aliasses, boolean commit) {
 		for (Alias alias : aliasses)
 			save(alias, commit);

@@ -16,7 +16,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -150,22 +149,6 @@ public class PlayerDAOImpl implements PlayerDAO {
 		} catch (EntityNotFoundException e) {
 			throw new EntityDoesNotExistsException("Player with id %s was not found", player.toString());
 		}
-	}
-
-	@Override
-	public void truncate() {
-
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query q = new Query(ENTITY);
-		q.setKeysOnly();
-		PreparedQuery pq = service.prepare(q);
-		List<Key> keys = new ArrayList<Key>();
-		for (Entity entity : pq.asIterable()) {
-			keys.add(entity.getKey());
-		}
-		service.delete(keys);
 	}
 
 	@Override
