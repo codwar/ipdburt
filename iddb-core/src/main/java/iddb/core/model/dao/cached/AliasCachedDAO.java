@@ -76,12 +76,6 @@ public class AliasCachedDAO extends CachedDAO implements AliasDAO {
 		return impl.findByPlayer(player, offset, limit, count);
 	}
 
-	@Override
-	public void truncate() {
-		cache.clear();
-		impl.truncate();
-	}
-
 	private String cacheKey(Long player, String nickname) {
 		return "key-" + player.toString() + "#" + nickname;
 	}

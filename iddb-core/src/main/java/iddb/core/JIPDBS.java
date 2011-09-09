@@ -27,6 +27,7 @@ import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
+import iddb.core.security.UserServiceFactory;
 import iddb.core.util.Functions;
 import iddb.core.util.MailManager;
 import iddb.exception.EntityDoesNotExistsException;
@@ -294,7 +295,7 @@ public class JIPDBS {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey());
 		result.setKey(player.getKey());
-		if (isSuperAdmin()) {
+		if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
 			result.setIp(player.getIp());
 		} else {
 			result.setIp(Functions.maskIpAddress(player.getIp()));
@@ -347,17 +348,6 @@ public class JIPDBS {
 		}
 	}
 
-	public boolean isSuperAdmin() {
-		// TODO implementar
-		return false;
-//		try {
-//			UserService userService = UserServiceFactory.getUserService();
-//			return userService.isUserAdmin();
-//		} catch (Exception e) {
-//			return false;
-//		}
-	}
-
 	public List<AliasResult> aliasip(String key, int offset, int limit,
 			int[] count) {
 
@@ -373,7 +363,7 @@ public class JIPDBS {
 				for (AliasIP alias : aliasses) {
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-					if (isSuperAdmin()) {
+					if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
 						item.setIp(alias.getIp());
 					} else {
 						item.setIp(Functions.maskIpAddress(alias.getIp()));

@@ -21,8 +21,6 @@ package iddb.core.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.swing.text.MaskFormatter;
-
 public class Server implements Serializable {
 
 	/**

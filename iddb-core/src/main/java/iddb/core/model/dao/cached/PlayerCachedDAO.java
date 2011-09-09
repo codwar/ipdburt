@@ -89,12 +89,6 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 		return p;
 	}
 
-	@Override
-	public void truncate() {
-		cache.clear();
-		impl.truncate();
-	}
-
 	private String cacheKey(Long server, String guid) {
 		return "key-" + server.toString() + "#" + guid;
 	}
