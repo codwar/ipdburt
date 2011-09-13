@@ -31,16 +31,17 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-public class PenaltyTask {
+public class PenaltyTask implements Runnable {
 
-	private static final String URL = "/admin/task/penalty";
+	private Player player;
+	private String event;
 	
-	public static void enqueue(Player player, String event) {
-//		Queue queue = QueueFactory.getQueue("penalty");
-//		queue.add(TaskOptions.Builder.withUrl(URL).param("key", KeyFactory.keyToString(player.getKey())).param("event", event));
+	public PenaltyTask(Player player, String event) {
+		this.player = player;
+		this.event = event;
 	}
 	
-	public void process(Player player, String event) {
+	private void process(Player player, String event) {
 		PenaltyDAO dao = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
 		PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 		
@@ -99,5 +100,13 @@ public class PenaltyTask {
 			}
 		}
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		process(player, event);
 	}
 }

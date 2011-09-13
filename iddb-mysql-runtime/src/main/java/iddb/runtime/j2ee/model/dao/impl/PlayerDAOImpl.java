@@ -21,8 +21,9 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Player;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.exception.EntityDoesNotExistsException;
-import iddb.runtime.j2ee.db.ConnectionFactory;
+import iddb.runtime.db.ConnectionFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +32,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,10 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public Player findByServerAndGuid(Long server, String guid) {
 		String sql = "SELECT * FROM PLAYER WHERE SERVERID = ? AND GUID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		Player player = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, server);
 			st.setString(2, guid);
@@ -56,9 +57,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByServerAndGuid", e);
+		} catch (IOException e) {
+			logger.error("findByServerAndGuid", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -69,19 +72,20 @@ public class PlayerDAOImpl implements PlayerDAO {
 	/**
 	 * 
 	 */
-	public List<Player> findByServer(String query, int offset, int limit,int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE SERVERID = " + query;
+	public List<Player> findByServer(Long key, int offset, int limit,int[] count) {
+		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE SERVERID = " + key;
 		String sql = "SELECT * FROM PLAYER WHERE SERVERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setLong(1, new Long(query));
+			st.setLong(1, key);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();
@@ -92,9 +96,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByServer", e);
+		} catch (IOException e) {
+			logger.error("findByServer", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -108,9 +114,10 @@ public class PlayerDAOImpl implements PlayerDAO {
 	public List<Player> findLatest(int offset, int limit, int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM PLAYER";
 		String sql = "SELECT * FROM PLAYER ORDER BY CONNECTED DESC, UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -127,9 +134,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findBanned", e);
+		} catch (IOException e) {
+			logger.error("findBanned", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -143,9 +152,10 @@ public class PlayerDAOImpl implements PlayerDAO {
 	public List<Player> findBanned(int offset, int limit, int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE BANINFOUPDATED IS NOT NULL";
 		String sql = "SELECT * FROM PLAYER WHERE BANINFOUPDATED IS NOT NULL ORDER BY BANINFOUPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -162,9 +172,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findBanned", e);
+		} catch (IOException e) {
+			logger.error("findBanned", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -174,9 +186,10 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public Player get(Long key) throws EntityDoesNotExistsException {
 		String sql = "SELECT * FROM PLAYER WHERE ID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		Player player = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -188,9 +201,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("get", e);
+		} catch (IOException e) {
+			logger.error("get", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -236,8 +251,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 					"NICKNAME = ?" +
 					"IP = ? WHERE ID = ?";
 		}
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player.getServer());
 			st.setString(2, player.getGuid());
@@ -263,9 +279,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save", e);
+		} catch (IOException e) {
+			logger.error("Save", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -282,8 +300,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public void cleanConnected(Long server) {
 		String sql = "UPDATE PLAYER SET CONNECTED = ? WHERE CONNECTED = ? AND SERVERID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setBoolean(1, false);
 			st.setBoolean(2, true);
@@ -292,9 +311,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			logger.debug("Updated {} players.", r);
 		} catch (SQLException e) {
 			logger.error("cleanConnected", e);
+		} catch (IOException e) {
+			logger.error("cleanConnected", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -303,9 +324,10 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public int countConnected(Long key) {
 		String sql = "SELECT COUNT(ID) FROM PLAYER WHERE CONNECTED = ? AND SERVERID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		int c = 0;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setBoolean(1, true);
 			st.setLong(2, key);
@@ -315,9 +337,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("countConnected", e);
+		} catch (IOException e) {
+			logger.error("countConnected", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -325,21 +349,22 @@ public class PlayerDAOImpl implements PlayerDAO {
 	}
 
 	@Override
-	public List<Player> findByClientId(String query, int offset, int limit,
+	public List<Player> findByClientId(Long clientId, int offset, int limit,
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE CLIENTID = ?";
 		String sql = "SELECT * FROM PLAYER WHERE CLIENTID = ? ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setString(1, query);
+			stC.setLong(1, clientId);
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, query);
+			stC.setLong(1, clientId);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();
@@ -350,9 +375,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByClientId", e);
+		} catch (IOException e) {
+			logger.error("findByClientId", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}

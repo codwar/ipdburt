@@ -18,10 +18,29 @@
  */
 package iddb.task;
 
-/**
- * @author 12072245
- *
- */
-public interface TaskQueue {
+import iddb.api.v2.Update;
+import iddb.core.model.Server;
+import iddb.core.model.dao.DAOFactory;
+import iddb.core.model.dao.ServerDAO;
+
+import java.util.Date;
+import java.util.List;
+
+public class CleanOnlinePlayersTask implements Runnable {
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		ServerDAO serverDAO = DAOFactory.getServerDAO();
+		List<Server> servers = serverDAO.listNotUpdatedSince(new Date(new Date().getTime()-7200000)); // 2 horas
+		for (Server server : servers) {
+			if (server.getOnlinePlayers()>0) {
+				Update api = new Update();
+				api.cleanServer(server, false);
+			}
+		}
+	}
 
 }

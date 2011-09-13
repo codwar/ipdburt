@@ -1,19 +1,36 @@
+/**
+ *   Copyright(c) 2010-2011 CodWar Soft
+ * 
+ *   This file is part of IPDB UrT.
+ *
+ *   IPDB UrT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software. If not, see <http://www.gnu.org/licenses/>.
+ */
 package jipdbs.http;
 
 import iddb.core.JIPDBS;
 import iddb.core.model.Server;
+import iddb.exception.EntityDoesNotExistsException;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.KeyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JIPDBSHTTPHandler extends HttpServlet {
 
@@ -21,8 +38,7 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 581879616460472029L;
-	private static final Logger log = Logger.getLogger(JIPDBSHTTPHandler.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(JIPDBSHTTPHandler.class);
 
 	private JIPDBS app;
 
@@ -41,8 +57,8 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 			Server server = null;
 			try {
 				server = app.getServer(key);
-			} catch (EntityNotFoundException e) {
-				log.severe(e.getMessage());
+			} catch (EntityDoesNotExistsException e) {
+				log.error(e.getMessage());
 			}
 			if (server == null) {
 				resp.getWriter().println(
@@ -54,7 +70,7 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 				}
 				resp.getWriter().println(
 						"{\"error\": false, \"server\": {\"key\": \""
-								+ KeyFactory.keyToString(server.getKey()) + "\", \"count\": \""
+								+ server.getKey() + "\", \"count\": \""
 								+ server.getOnlinePlayers() + "\",\"name\": \""
 								+ server.getName() + "\"}}");
 			}

@@ -23,6 +23,7 @@ import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
 
+import java.util.Date;
 import java.util.List;
 
 public class ServerCachedDAO extends CachedDAO implements ServerDAO {
@@ -82,5 +83,13 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 	@Override
 	protected void initializeCache() {
 		this.cache = CacheFactory.getInstance().getCache("server");
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#listNotUpdatedSince(java.util.Date)
+	 */
+	@Override
+	public List<Server> listNotUpdatedSince(Date date) {
+		return impl.listNotUpdatedSince(date);
 	}
 }

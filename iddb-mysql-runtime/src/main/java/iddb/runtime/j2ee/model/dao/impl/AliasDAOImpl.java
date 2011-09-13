@@ -21,8 +21,9 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
-import iddb.runtime.j2ee.db.ConnectionFactory;
+import iddb.runtime.db.ConnectionFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -46,9 +46,10 @@ public class AliasDAOImpl implements AliasDAO {
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE NICKNAME = ? GROUP BY PLAYERID";
 		String sql = "SELECT * FROM ALIAS WHERE NICKNAME = ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
 		List<Alias> list = new ArrayList<Alias>();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setString(1, query);
 			ResultSet rsC = stC.executeQuery(sqlCount);
@@ -67,9 +68,11 @@ public class AliasDAOImpl implements AliasDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByNickname", e);
+		} catch (IOException e) {
+			logger.error("findByNickname", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -123,9 +126,10 @@ public class AliasDAOImpl implements AliasDAO {
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE PLAYERID = ?";
 		String sql = "SELECT * FROM ALIAS WHERE PLAYERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
 		List<Alias> list = new ArrayList<Alias>();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			ResultSet rsC = stC.executeQuery(sqlCount);
@@ -144,9 +148,11 @@ public class AliasDAOImpl implements AliasDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayer", e);
+		} catch (IOException e) {
+			logger.error("findByPlayer", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -176,8 +182,9 @@ public class AliasDAOImpl implements AliasDAO {
 					"UPDATED = ?," +
 					"COUNT = ? WHERE ID = ?";
 		}
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, alias.getPlayer());
 			st.setString(2, alias.getNickname());
@@ -197,9 +204,11 @@ public class AliasDAOImpl implements AliasDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save", e);
+		} catch (IOException e) {
+			logger.error("Save", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -213,9 +222,10 @@ public class AliasDAOImpl implements AliasDAO {
 
 	public Alias findByPlayerAndNickname(Long player, String nickname) {
 		String sql = "SELECT * FROM ALIAS WHERE PLAYERID = ? AND NICKNAME = ?";
-		Connection conn = ConnectionFactory.getConnection();
 		Alias alias = null;
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setString(2, nickname);
@@ -226,9 +236,11 @@ public class AliasDAOImpl implements AliasDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayerAndNickname", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndNickname", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}

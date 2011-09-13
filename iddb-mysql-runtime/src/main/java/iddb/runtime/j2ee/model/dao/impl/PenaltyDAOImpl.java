@@ -21,15 +21,15 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Penalty;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.exception.EntityDoesNotExistsException;
-import iddb.runtime.j2ee.db.ConnectionFactory;
+import iddb.runtime.db.ConnectionFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +57,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 					"CREATED = ?," +
 					"UPDATED = ? WHERE ID = ?";
 		}
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, penalty.getPlayer());
 			st.setLong(2, penalty.getAdmin());
@@ -81,9 +82,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save", e);
+		} catch (IOException e) {
+			logger.error("Save", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -95,17 +98,20 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public void delete(Penalty penalty) {
 		String sql = "DELETE FROM PENALTY WHERE ID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, penalty.getKey());
 			int r = st.executeUpdate();
 			logger.debug("{} penalty removed", r);
 		} catch (SQLException e) {
 			logger.error("get", e);
+		} catch (IOException e) {
+			logger.error("get", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -117,9 +123,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public Penalty get(Long key) throws EntityDoesNotExistsException {
 		String sql = "SELECT * FROM PENALTY WHERE ID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		Penalty penalty = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -131,9 +138,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("get", e);
+		} catch (IOException e) {
+			logger.error("get", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -164,9 +173,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public List<Penalty> findByPlayer(Long player) {
 		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			ResultSet rs = st.executeQuery();
@@ -177,9 +187,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayer", e);
+		} catch (IOException e) {
+			logger.error("findByPlayer", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -192,9 +204,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public List<Penalty> findByPlayer(Long player, int limit) {
 		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? LIMIT ?";
-		Connection conn = ConnectionFactory.getConnection();
 		List<Penalty> list = new ArrayList<Penalty>();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, limit);
@@ -206,9 +219,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayer", e);
+		} catch (IOException e) {
+			logger.error("findByPlayer", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -223,9 +238,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM PENALTY WHERE TYPE = ?";
 		String sql = "SELECT * FROM PENALTY WHERE TYPE = ? ORDER BY CREATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setInt(1, type.intValue());
 			ResultSet rsC = stC.executeQuery(sqlCount);
@@ -244,9 +260,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByType", e);
+		} catch (IOException e) {
+			logger.error("findByType", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -259,9 +277,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type) {
 		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? AND ACTIVE = ? ORDER BY CREATED DESC";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
@@ -274,9 +293,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayerAndTypeAndActive", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndTypeAndActive", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -290,9 +311,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	public List<Penalty> findByPlayerAndType(Long player, Long type, int offset, int limit, int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM PENALTY WHERE PLAYERID = ? AND TYPE = ?";
 		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? ORDER BY CREATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			stC.setInt(2, type.intValue());
@@ -313,9 +335,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayerAndType", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndType", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -338,8 +362,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public void delete(List<Penalty> list) {
 		String sql = "DELETE FROM PENALTY WHERE ID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			for (Penalty p : list) {
 				st.setLong(1, p.getKey());
@@ -348,9 +373,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.executeBatch();
 		} catch (SQLException e) {
 			logger.error("delete", e);
+		} catch (IOException e) {
+			logger.error("delete", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -362,9 +389,10 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public List<Penalty> findByPlayerAndType(Long player, Long type) {
 		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? ORDER BY CREATED DESC";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
@@ -376,9 +404,11 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayerAndType", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndType", e);			
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}

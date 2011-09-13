@@ -21,17 +21,18 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
-import iddb.runtime.j2ee.db.ConnectionFactory;
+import iddb.runtime.db.ConnectionFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +49,9 @@ public class ServerDAOImpl implements ServerDAO {
 		} else {
 			sql = "UPDATE SERVER SET UID = ?, NAME = ?, ADMIN = ?, CREATED = ?, UPDATED = ?, ONLINEPLAYERS = ?, ADDRESS = ?, PLUGINVERSION = ?, MAXLEVEL = ?, DIRTY = ?, PERMISSION = ? WHERE ID = ?";
 		}
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, server.getUid());
 			st.setString(2, server.getName());
@@ -74,9 +76,11 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save", e);
+		} catch (IOException e) {
+			logger.error("Save", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -84,12 +88,12 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public List<Server> findAll(int offset, int limit, int[] count) {
-		// TODO this is mysql syntax
 		String sqlCount = "SELECT COUNT(ID) FROM SERVER";
 		String sql = "SELECT * FROM SERVER LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -106,9 +110,11 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findAll", e);
+		} catch (IOException e) {
+			logger.error("findAll", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -118,9 +124,10 @@ public class ServerDAOImpl implements ServerDAO {
 	@Override
 	public Server findByUid(String uid) {
 		String sql = "SELECT * FROM SERVER WHERE UID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		Server server = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, uid);
 			ResultSet rs = st.executeQuery();
@@ -130,9 +137,11 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByUid", e);
+		} catch (IOException e) {
+			logger.error("findByUid", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -157,9 +166,10 @@ public class ServerDAOImpl implements ServerDAO {
 	@Override
 	public Server get(Long key) throws EntityDoesNotExistsException {
 		String sql = "SELECT * FROM SERVER WHERE ID = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		Server server = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -171,13 +181,46 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("get", e);
+		} catch (IOException e) {
+			logger.error("get", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
 		return server;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#listNotUpdatedSince(java.util.Date)
+	 */
+	@Override
+	public List<Server> listNotUpdatedSince(java.util.Date date) {
+		String sql = "SELECT * FROM SERVER WHERE UPDATED <= ?";
+		Connection conn = null;
+		List<Server> list = new ArrayList<Server>();
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setTimestamp(1, new Timestamp(date.getTime()));
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Server server = new Server();
+				loadServer(server, rs);
+				list.add(server);
+			}
+		} catch (SQLException e) {
+			logger.error("listNotUpdatedSince", e);
+		} catch (IOException e) {
+			logger.error("listNotUpdatedSince", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
 	}
 
 }

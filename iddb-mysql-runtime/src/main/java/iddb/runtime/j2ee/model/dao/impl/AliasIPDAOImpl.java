@@ -21,15 +21,15 @@ package iddb.runtime.j2ee.model.dao.impl;
 import iddb.core.model.AliasIP;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.util.Functions;
-import iddb.runtime.j2ee.db.ConnectionFactory;
+import iddb.runtime.db.ConnectionFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +55,9 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 					"UPDATED = ?," +
 					"COUNT = ? WHERE ID = ?";
 		}
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, alias.getPlayer());
 			st.setLong(2, Functions.ipToDecimal(alias.getIp()));
@@ -75,9 +76,11 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save", e);
+		} catch (IOException e) {
+			logger.error("Save", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -89,9 +92,10 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	@Override
 	public AliasIP findByPlayerAndIp(Long player, String ip) {
 		String sql = "SELECT * FROM ALIASIP WHERE PLAYERID = ? AND IP = ?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		AliasIP alias = null;
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setLong(2, Functions.ipToDecimal(ip));
@@ -102,9 +106,11 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayerAndIp", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndIp", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -133,9 +139,10 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM ALIASIP WHERE PLAYERID = ?";
 		String sql = "SELECT * FROM ALIASIP WHERE PLAYERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			ResultSet rsC = stC.executeQuery(sqlCount);
@@ -154,9 +161,11 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByPlayer", e);
+		} catch (IOException e) {
+			logger.error("findByPlayer", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}
@@ -171,9 +180,10 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			int[] count) {
 		String sqlCount = "SELECT COUNT(ID) FROM ALIASIP WHERE IP BETWEEN ? AND ? GROUP BY PLAYERID";
 		String sql = "SELECT * FROM ALIASIP WHERE IP BETWEEN ? AND ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
-		Connection conn = ConnectionFactory.getConnection();
+		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {
+			conn = ConnectionFactory.getConnection();
 			Long[] range = Functions.getIpRange(query);
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, range[0]);
@@ -195,9 +205,11 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("findByIP", e);
+		} catch (IOException e) {
+			logger.error("findByIP", e);
 		} finally {
 			try {
-				conn.close();
+				if (conn != null) conn.close();
 			} catch (Exception e) {
 			}
 		}

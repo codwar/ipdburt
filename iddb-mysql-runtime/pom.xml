@@ -7,29 +7,8 @@
 		<groupId>iddb</groupId>
 		<version>0.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>iddb-j2ee-runtime</artifactId>
+	<artifactId>iddb-mysql-runtime</artifactId>
 	
-	<profiles>
-		<profile>
-			<id>memcache</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<repositories>
-				<repository>
-					<id>spy</id>
-					<name>Spy Repository</name>
-					<layout>default</layout>
-					<url>http://files.couchbase.com/maven2/</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-		</profile>
-	</profiles>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -51,25 +30,19 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>iddb-db-runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-core</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>spy</groupId>
-			<artifactId>spymemcached</artifactId>
-			<version>2.6</version>
-			<scope>provided</scope>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.17</version>
 		</dependency>
 	</dependencies>
 

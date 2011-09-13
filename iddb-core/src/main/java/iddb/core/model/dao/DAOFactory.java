@@ -32,4 +32,9 @@ public final class DAOFactory {
 		}
 		return null;
 	}
+	
+	public static ServerDAO getServerDAO() {
+		return (ServerDAO) forClass(ServerDAO.class);
+	}
+	
 }

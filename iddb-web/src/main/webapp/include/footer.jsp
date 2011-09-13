@@ -1,6 +1,16 @@
+<%@page import="java.util.Properties"%>
 <div class="footer">
-     <jsp:include page="/infoservlet" />
-     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v${app.version}. Times are displayed in UTC-3.</div>
+     <%
+     	String version = null;
+     	try {
+         	Properties prop = new Properties();
+         	prop.load(this.getClass().getClassLoader().getResourceAsStream("release.properties"));
+         	version = prop.getProperty("version") + "." + prop.getProperty("build");
+     	} catch (Exception e) {
+     		version = "-";
+     	}
+     %>
+     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v<% out.print(version); %>. Times are displayed in UTC-3.</div>
      <div class="clearer"><span></span></div>
  </div>
 </div>

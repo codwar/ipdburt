@@ -18,32 +18,62 @@
  */
 package iddb.task;
 
-import iddb.core.model.Player;
-import iddb.core.model.dao.DAOFactory;
-import iddb.core.model.dao.PlayerDAO;
-import iddb.exception.EntityDoesNotExistsException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TaskManager {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(TaskManager.class);
+	private static final Logger log = LoggerFactory.getLogger(TaskManager.class);
 
-	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory
-			.forClass(PlayerDAO.class);
-
-	private PenaltyTask penaltyTask = new PenaltyTask();
-
-	public void processPenalty(String key, String event) {
-		try {
-			// TODO manejar keys
-			Player player = playerDAO.get(Long.parseLong(key));
-			penaltyTask.process(player, event);
-		} catch (EntityDoesNotExistsException e) {
-			log.error(e.getMessage());
-		}
+	private int poolSize = 5;
+	private int maxPoolSize = 10;
+	private long keepAliveTime = 10;
+	
+	private ThreadPoolExecutor threadPool = null;
+	
+	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
+	
+	private static TaskManager instance;
+	
+	private TaskManager() {
+		threadPool = new ThreadPoolExecutor(poolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, queue);
 	}
+	
+	public static TaskManager getInstance() {
+		if (instance == null) {
+			instance = new TaskManager();
+		}
+		return instance;
+	}
+	
+	public void runTask(Runnable task) {
+		threadPool.execute(task);
+		log.debug("Task queue size: {}", queue.size());
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		threadPool.shutdown();
+		super.finalize();
+	}
+//
+//	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory
+//			.forClass(PlayerDAO.class);
+//
+//	private PenaltyTask penaltyTask = new PenaltyTask();
+//
+//	public void processPenalty(String key, String event) {
+//		try {
+//			// TODO manejar keys
+//			Player player = playerDAO.get(Long.parseLong(key));
+//			penaltyTask.process(player, event);
+//		} catch (EntityDoesNotExistsException e) {
+//			log.error(e.getMessage());
+//		}
+//	}
 
 }

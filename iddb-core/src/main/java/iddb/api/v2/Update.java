@@ -31,6 +31,7 @@ import iddb.core.util.MailManager;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.info.PlayerInfo;
 import iddb.task.PenaltyTask;
+import iddb.task.TaskManager;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -198,7 +199,7 @@ public class Update {
 			|| Events.ADDNOTE.equals(playerInfo.getEvent())
 			|| Events.UNBAN.equals(playerInfo.getEvent())
 			|| Events.DELNOTE.equals(playerInfo.getEvent())) {
-			PenaltyTask.enqueue(player, playerInfo.getEvent());
+			TaskManager.getInstance().runTask(new PenaltyTask(player, playerInfo.getEvent()));
 		}
 	}
 

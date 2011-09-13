@@ -1,3 +1,21 @@
+/**
+ *   Copyright(c) 2010-2011 CodWar Soft
+ * 
+ *   This file is part of IPDB UrT.
+ *
+ *   IPDB UrT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software. If not, see <http://www.gnu.org/licenses/>.
+ */
 package jipdbs.web.processors;
 
 import iddb.core.JIPDBS;
@@ -9,7 +27,6 @@ import iddb.info.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,14 +34,15 @@ import jipdbs.web.CommonConstants;
 import jipdbs.web.Flash;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
 
 public class SearchProcessor extends FlashResponseProcessor {
 
-	private static final Logger log = Logger.getLogger(SearchProcessor.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(SearchProcessor.class);
 
 	@Override
 	public String processProcessor(ResolverContext context) throws ProcessorException {
@@ -73,25 +91,34 @@ public class SearchProcessor extends FlashResponseProcessor {
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
 		if ("server".equals(type)) {
-			log.fine("Server filter");
+			log.debug("Server filter");
 			queryValue = "";
-			list = app.byServerSearch(query, offset, limit, total);
+			try {
+				list = app.byServerSearch(Long.parseLong(query), offset, limit, total);
+			} catch (NumberFormatException e) {
+				log.error("Invalid server id: {}", query);
+			}
 		} else if ("ban".equals(type)) {
-			log.fine("Ban list");
+			log.debug("Ban list");
 			list = app.bannedQuery(offset, limit, total);
 		} else if (StringUtils.isEmpty(query)) {
-			log.fine("Empty");
+			log.debug("Empty");
 			list = app.rootQuery(offset, limit, total);
 		} else if (Validator.isValidSearchIp(query)) {
-			log.finest("Buscando IP " + query);
+			log.debug("Buscando IP " + query);
 			query = Functions.fixIp(query);
 			queryValue = query;
 			list = app.ipSearch(query, offset, limit, total);
 		} else if (Validator.isValidClientId(query)) {
-			log.finest("Buscando Client ID " + query);
-			list = app.clientIdSearch(query.substring(1), offset, limit, total);
+			log.debug("Buscando Client ID " + query);
+			try {
+				Long clientId = Long.parseLong(query.substring(1));
+				list = app.clientIdSearch(clientId, offset, limit, total);
+			} catch (NumberFormatException e) {
+				log.error("Invalid client id: {}", query);
+			}
 		} else {
-			log.finest("Buscando Alias " + query);
+			log.debug("Buscando Alias " + query);
 			if (Validator.isValidPlayerName(query)) {
 				boolean[] exactMatch = new boolean[1];
 				exactMatch[0] = true;

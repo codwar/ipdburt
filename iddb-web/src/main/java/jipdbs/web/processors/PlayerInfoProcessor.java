@@ -1,9 +1,29 @@
+/**
+ *   Copyright(c) 2010-2011 CodWar Soft
+ * 
+ *   This file is part of IPDB UrT.
+ *
+ *   IPDB UrT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software. If not, see <http://www.gnu.org/licenses/>.
+ */
 package jipdbs.web.processors;
 
 import iddb.core.JIPDBS;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.security.UserServiceFactory;
 import iddb.core.util.Functions;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
 import iddb.info.PenaltyInfo;
 import iddb.info.PlayerInfoView;
@@ -12,20 +32,20 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
 
-import com.google.appengine.api.datastore.EntityNotFoundException;
-
 public class PlayerInfoProcessor extends FlashResponseProcessor {
 
-	private static final Logger log = Logger.getLogger(PlayerInfoProcessor.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(PlayerInfoProcessor.class);
 	
 	@Override
 	public String processProcessor(ResolverContext context) throws ProcessorException {
@@ -42,7 +62,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		} catch (Exception e) {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
+			log.error(w.getBuffer().toString());
 			throw new HttpError(HttpServletResponse.SC_NOT_FOUND);
 		}
 		
@@ -51,17 +71,17 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		Server server;
 		try {
 			server = app.getServer(player.getServer());
-		} catch (EntityNotFoundException e) {
+		} catch (EntityDoesNotExistsException e) {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
-			log.severe(w.getBuffer().toString());
+			log.error(w.getBuffer().toString());
 			throw new ProcessorException(e);
 		}
 		
 		PlayerInfoView infoView = new PlayerInfoView();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
-		if (app.isSuperAdmin()) {
+		if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
 			infoView.setIp(player.getIp());	
 		} else {
 			infoView.setIp(Functions.maskIpAddress(player.getIp()));

@@ -21,6 +21,7 @@ package iddb.core.model.dao;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ServerDAO {
@@ -32,5 +33,7 @@ public interface ServerDAO {
 	public abstract Server findByUid(String uid);
 
 	public abstract Server get(Long server) throws EntityDoesNotExistsException;
+	
+	public abstract List<Server> listNotUpdatedSince(Date date); 
 
 }
