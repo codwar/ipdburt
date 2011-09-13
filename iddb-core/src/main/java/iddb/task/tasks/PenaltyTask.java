@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.task;
+package iddb.task.tasks;
 
 import iddb.api.Events;
 import iddb.core.model.Penalty;

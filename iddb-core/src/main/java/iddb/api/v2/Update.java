@@ -30,8 +30,8 @@ import iddb.core.model.util.AliasManager;
 import iddb.core.util.MailManager;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.info.PlayerInfo;
-import iddb.task.PenaltyTask;
 import iddb.task.TaskManager;
+import iddb.task.tasks.PenaltyTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

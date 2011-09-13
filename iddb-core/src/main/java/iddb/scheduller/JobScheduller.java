@@ -16,31 +16,36 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.task;
+package iddb.scheduller;
 
-import iddb.api.v2.Update;
-import iddb.core.model.Server;
-import iddb.core.model.dao.DAOFactory;
-import iddb.core.model.dao.ServerDAO;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Timer;
 
-import java.util.Date;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CleanOnlinePlayersTask implements Runnable {
+public class JobScheduller {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-		ServerDAO serverDAO = DAOFactory.getServerDAO();
-		List<Server> servers = serverDAO.listNotUpdatedSince(new Date(new Date().getTime()-7200000)); // 2 horas
-		for (Server server : servers) {
-			if (server.getOnlinePlayers()>0) {
-				Update api = new Update();
-				api.cleanServer(server, false);
+	private static final Logger log = LoggerFactory.getLogger(JobScheduller.class);
+	
+	public void setup() {
+		Properties prop = new Properties();
+		// TODO load cron.properties
+		/*
+		 * className=0 5 * * * (crontab format)
+		 */
+		
+		for (Entry<Object, Object> entry : prop.entrySet()) {
+			String jobClass = (String) entry.getKey();
+			String timePattern = (String) entry.getValue();
+			String[] tp = timePattern.split("\\s");
+			if (tp.length == 5) {
+				Timer timer = new Timer();
+			} else {
+				log.error("Invalid time entry {}", timePattern);
 			}
 		}
+		
 	}
-
 }
