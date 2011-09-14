@@ -2,6 +2,8 @@ package iddb.runtime.db;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -35,10 +37,10 @@ public final class ConnectionFactory {
 		}
 	}
 	
-	public static Connection getConnection() throws IOException {
+	public static Connection getConnection() throws IOException, SQLException {
 		if (instance == null) {
 			instance = new ConnectionFactory();
 		}
-		return null;
+		return DriverManager.getConnection(instance.props.getProperty("url"));
 	}
 }

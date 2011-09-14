@@ -21,12 +21,12 @@
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
-				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${server.keyString}"/></url:url>">${server.name}</a></td>
+				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${server.key}"/></url:url>">${server.name}</a></td>
 				<td style="text-align: right;">
 				<c:choose>
 				<c:when test="${server.dirty}">
-				<input type="hidden" name="key" value="${server.keyString}"/>
- 				<img class="fetch-server" alt="${server.keyString}" src='/media/images/loader.gif'/>
+				<input type="hidden" name="key" value="${server.key}"/>
+ 				<img class="fetch-server" alt="${server.key}" src='/media/images/loader.gif'/>
 				</c:when>
 				<c:otherwise>
 				${server.onlinePlayers}

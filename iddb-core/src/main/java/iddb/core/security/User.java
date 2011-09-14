@@ -22,6 +22,8 @@ public interface User {
 
 	public String getUsername();
 	
+	public String getEmail();
+	
 	public boolean isAuthenticated();
 	
 	public boolean isAnonymous();

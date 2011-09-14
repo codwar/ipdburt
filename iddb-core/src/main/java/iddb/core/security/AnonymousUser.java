@@ -52,4 +52,12 @@ public final class AnonymousUser implements User {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.security.User#getEmail()
+	 */
+	@Override
+	public String getEmail() {
+		return null;
+	}
+
 }

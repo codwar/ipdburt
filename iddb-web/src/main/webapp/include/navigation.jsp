@@ -1,8 +1,9 @@
+<%@page import="iddb.core.security.UserServiceFactory"%>
+<%@page import="iddb.core.security.UserService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.google.appengine.api.users.*"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
@@ -25,7 +26,7 @@
         <li><a href="<url:url name="serverlist"/>">Servidores</a></li>
         <%
             UserService userService = UserServiceFactory.getUserService();
-            if (request.getUserPrincipal() != null) {
+            if (userService.getCurrentUser().isSuperAdmin()) {
         %>
         <li><a href="https://ipdburt.appspot.com/<url:url name="admin-serverlist"/>">Administrar</a></li>
         <%      
@@ -41,10 +42,10 @@
         <li style="float: right; margin-right: 20px;">
             <div id="session">
             <%
-            if (request.getUserPrincipal() != null) {
-                out.write("<a href=\""+userService.createLogoutURL("/")+"\" id=\"signin-link\"><em>"+request.getUserPrincipal().getName()+"</em><strong>Desconectar</strong><i class=\"signout\"></i></a>");
+            if (userService.getCurrentUser().isAuthenticated()) {
+                out.write("<a href=\"logout\" id=\"signin-link\"><em>"+userService.getCurrentUser().getUsername()+"</em><strong>Desconectar</strong><i class=\"signout\"></i></a>");
             } else { 
-            	out.write("<a href=\""+userService.createLoginURL("/")+"\" id=\"signin-link\"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>");
+            	out.write("<a href=\"login\" id=\"signin-link\"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>");
             } %>
             <!-- span id="loginbox"><a href="#" id="signin-link"><strong>Identificarse</strong><i></i></a></span-->
             </div>                

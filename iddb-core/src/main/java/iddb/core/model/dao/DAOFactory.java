@@ -18,23 +18,61 @@
  */
 package iddb.core.model.dao;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DAOFactory {
 
-	private static Map<String, Object> daoCache = new HashMap<String, Object>();
+	private static DAOFactory instance;
+	private static final Logger log = LoggerFactory.getLogger(DAOFactory.class);
 	
-	@SuppressWarnings("rawtypes")
-	public static Object forClass(Class claz) {
-		if (daoCache.containsKey(claz.getName())) {
-			return daoCache.get(claz.getName());
+	private Map<String, Object> daoCache = new HashMap<String, Object>();
+
+	private DAOFactory() {
+		Properties prop = new Properties();
+		try {
+			prop.load(this.getClass().getResourceAsStream("dao.properties"));
+			for (Entry<Object, Object> entry : prop.entrySet()) {
+				String key = (String) entry.getKey();
+				String value = (String) entry.getValue();
+				log.debug("Initializing {}", value);
+				try {
+					@SuppressWarnings({ "static-access", "rawtypes" })
+					Class cls = this.getClass().forName(value);
+					daoCache.put(key, cls.newInstance());
+				} catch (ClassNotFoundException e) {
+					log.error(e.getMessage());
+				} catch (InstantiationException e) {
+					log.error(e.getMessage());
+				} catch (IllegalAccessException e) {
+					log.error(e.getMessage());
+				}
+			}
+		} catch (IOException e) {
+			log.error(e.getMessage());
 		}
-		return null;
 	}
 	
-	public static ServerDAO getServerDAO() {
-		return (ServerDAO) forClass(ServerDAO.class);
+	public Map<String, Object> getDaoCache() {
+		return daoCache;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static Object forClass(Class claz) {
+		if (instance == null) {
+			instance = new DAOFactory();
+		}
+		Object dao = instance.getDaoCache().get(claz.getName());
+		if (dao == null) {
+			log.error("There is no DAO associated with {}", claz.getName());
+		}
+		return dao;
 	}
 	
 }
