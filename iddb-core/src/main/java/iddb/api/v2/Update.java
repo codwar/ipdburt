@@ -144,7 +144,6 @@ public class Update {
 						player.setClientId(playerInfo.getClientId());
 						player.setServer(server.getKey());
 						player.setBanInfo(null);
-						player.setBanInfoUpdated(null);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
 						player.setClientId(playerInfo.getClientId());
@@ -211,18 +210,12 @@ public class Update {
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
 		if (Events.BAN.equals(playerInfo.getEvent())) {
 			player.setBanInfo(playerInfo.getPenaltyInfo().getRawData());
-			if (playerInfo.getPenaltyInfo().getCreated() != null) {
-				player.setBanInfoUpdated(playerInfo.getPenaltyInfo().getCreated());	
-			} else {
-				player.setBanInfoUpdated(playerInfo.getUpdated());
-			}
 			player.setConnected(false);
 		} else if (Events.CONNECT.equals(playerInfo.getEvent())
 				|| Events.DISCONNECT.equals(playerInfo.getEvent())
 				|| Events.UNBAN.equals(playerInfo.getEvent())
 				|| Events.UPDATE.equals(playerInfo.getEvent())) {
 			player.setBanInfo(null);
-			player.setBanInfoUpdated(null);
 			if (Events.CONNECT.equals(playerInfo.getEvent()) || Events.UPDATE.equals(playerInfo.getEvent())) {
 				player.setConnected(true);
 			} else if (Events.DISCONNECT.equals(playerInfo.getEvent())) {

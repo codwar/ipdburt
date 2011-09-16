@@ -37,14 +37,6 @@ public final class AnonymousUser implements User {
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.security.User#isAnonymous()
-	 */
-	@Override
-	public boolean isAnonymous() {
-		return true;
-	}
-
-	/* (non-Javadoc)
 	 * @see iddb.core.security.User#isSuperAdmin()
 	 */
 	@Override

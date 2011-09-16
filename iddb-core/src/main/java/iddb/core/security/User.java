@@ -26,8 +26,6 @@ public interface User {
 	
 	public boolean isAuthenticated();
 	
-	public boolean isAnonymous();
-	
 	public boolean isSuperAdmin();
 	
 }

@@ -7,7 +7,7 @@
 		<groupId>iddb</groupId>
 		<version>0.8-SNAPSHOT</version>
 	</parent>
-	<artifactId>iddb-mysql-runtime</artifactId>
+	<artifactId>iddb-security-runtime</artifactId>
 	
 	<build>
 		<plugins>
@@ -30,19 +30,19 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>iddb-db-runtime</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
+			<artifactId>slf4j-api</artifactId>
 			<version>1.6.2</version>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.17</version>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 	</dependencies>
 

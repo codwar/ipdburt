@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.runtime.j2ee.model.dao.impl;
+package iddb.runtime.db.model.dao.impl.mysql;
 
 import iddb.core.model.Player;
 import iddb.core.model.dao.PlayerDAO;
@@ -133,9 +133,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				list.add(player);
 			}
 		} catch (SQLException e) {
-			logger.error("findBanned", e);
+			logger.error("findLatest", e);
 		} catch (IOException e) {
-			logger.error("findBanned", e);
+			logger.error("findLatest", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -222,7 +222,6 @@ public class PlayerDAOImpl implements PlayerDAO {
 		player.setGuid(rs.getString("GUID"));
 		player.setCreated(rs.getDate("CREATED"));
 		player.setUpdated(rs.getDate("UPDATED"));
-		player.setBanInfoUpdated(rs.getDate("BANINFOUPDATED"));
 		player.setBanInfo(rs.getString("BANINFO"));
 		player.setClientId(rs.getLong("CLIENTID"));
 		player.setLevel(rs.getLong("LEVEL"));
@@ -236,13 +235,12 @@ public class PlayerDAOImpl implements PlayerDAO {
 	public void save(Player player) {
 		String sql;
 		if (player.getKey() == null) {
-			sql = "INSERT INTO PLAYER (SERVERID, GUID, CREATED, UPDATED, BANINFOUPDATED, BANINFO, CLIENTID, LEVEL, NOTE, CONNECTED, NICKNAME, IP) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "INSERT INTO PLAYER (SERVERID, GUID, CREATED, UPDATED, BANINFO, CLIENTID, LEVEL, NOTE, CONNECTED, NICKNAME, IP) VALUES (?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "UPDATE PLAYER SET SERVERID = ?," +
 					"GUID = ?," +
 					"CREATED = ?," +
 					"UPDATED = ?," +
-					"BANINFOUPDATED = ?," +
 					"BANINFO = ?," +
 					"CLIENTID = ?" +
 					"LEVEL = ?" +
@@ -259,15 +257,14 @@ public class PlayerDAOImpl implements PlayerDAO {
 			st.setString(2, player.getGuid());
 			st.setDate(3, new java.sql.Date(player.getCreated().getTime()));
 			st.setDate(4, new java.sql.Date(player.getUpdated().getTime()));
-			st.setDate(5, new java.sql.Date(player.getBanInfoUpdated().getTime()));
-			st.setString(6, player.getBanInfo());
-			st.setLong(7, player.getClientId());
-			st.setLong(8, player.getLevel());
-			st.setString(9, player.getNote());
-			st.setBoolean(10, player.isConnected());
-			st.setString(11, player.getNickname());
-			st.setString(12, player.getIp());
-			if (player.getKey() != null) st.setLong(13, player.getKey());
+			st.setString(5, player.getBanInfo());
+			st.setLong(6, player.getClientId());
+			st.setLong(7, player.getLevel());
+			st.setString(8, player.getNote());
+			st.setBoolean(9, player.isConnected());
+			st.setString(10, player.getNickname());
+			st.setString(11, player.getIp());
+			if (player.getKey() != null) st.setLong(12, player.getKey());
 			st.executeUpdate();
 			if (player.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();

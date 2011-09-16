@@ -37,7 +37,7 @@ public final class DAOFactory {
 	private DAOFactory() {
 		Properties prop = new Properties();
 		try {
-			prop.load(this.getClass().getResourceAsStream("dao.properties"));
+			prop.load(this.getClass().getClassLoader().getResourceAsStream("dao.properties"));
 			for (Entry<Object, Object> entry : prop.entrySet()) {
 				String key = (String) entry.getKey();
 				String value = (String) entry.getValue();
@@ -68,6 +68,7 @@ public final class DAOFactory {
 		if (instance == null) {
 			instance = new DAOFactory();
 		}
+		log.debug("Lookup dao for {}", claz.getName());
 		Object dao = instance.getDaoCache().get(claz.getName());
 		if (dao == null) {
 			log.error("There is no DAO associated with {}", claz.getName());

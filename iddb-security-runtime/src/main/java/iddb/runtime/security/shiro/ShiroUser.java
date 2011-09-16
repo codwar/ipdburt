@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.runtime.j2ee.model.security;
+package iddb.runtime.security.shiro;
 
 import iddb.core.security.User;
 
@@ -47,19 +47,20 @@ public class ShiroUser implements User {
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.security.User#isAnonymous()
-	 */
-	@Override
-	public boolean isAnonymous() {
-		return false;
-	}
-
-	/* (non-Javadoc)
 	 * @see iddb.core.security.User#isSuperAdmin()
 	 */
 	@Override
 	public boolean isSuperAdmin() {
 		return this.superAdmin;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.security.User#getEmail()
+	 */
+	@Override
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

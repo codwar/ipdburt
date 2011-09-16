@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.runtime.j2ee.model.dao.impl;
+package iddb.runtime.db.model.dao.impl.mysql;
 
 import iddb.core.model.Penalty;
 import iddb.core.model.dao.PenaltyDAO;

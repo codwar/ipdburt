@@ -18,10 +18,45 @@
  */
 package iddb.core.security;
 
+import java.io.IOException;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UserServiceFactory {
 
+	private static final Logger log = LoggerFactory.getLogger(UserServiceFactory.class);
+	
+	private static UserServiceFactory instance;
+	private UserService userService;
+	
+	private UserServiceFactory() {
+		log.debug("Initializing UserServiceFactory");
+		Properties prop = new Properties();
+		try {
+			prop.load(this.getClass().getClassLoader().getResourceAsStream("security.properties"));
+			String us = prop.getProperty("userService");
+			log.debug("Create new instance of {}", us);
+			@SuppressWarnings({ "static-access", "rawtypes" })
+			Class cls = this.getClass().forName(us);
+			this.userService = (UserService) cls.newInstance();
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		} catch (InstantiationException e) {
+			log.error(e.getMessage());
+		} catch (IllegalAccessException e) {
+			log.error(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			log.error(e.getMessage());
+		}
+	}
+	
 	public static UserService getUserService() {
-		return null;
+		if (instance == null) {
+			instance = new UserServiceFactory();
+		}
+		return instance.userService;
 	}
 	
 }

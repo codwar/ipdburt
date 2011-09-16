@@ -7,9 +7,10 @@
 	<version>0.8-SNAPSHOT</version>
 	<name>iddb</name>
 	<modules>
-		<module>iddb-web</module>
 		<module>iddb-core</module>
-		<module>iddb-remote</module>
+		<module>iddb-db-runtime</module>
+		<module>iddb-security-runtime</module>
+		<module>iddb-web</module>
 	</modules>
 	
 	<scm>

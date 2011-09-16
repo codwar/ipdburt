@@ -26,26 +26,30 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class JIPDBSContextListener implements ServletContextListener {
 
+	private static Logger log = LoggerFactory.getLogger(JIPDBSContextListener.class);
+	
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		//JIPDBS app = (JIPDBS) event.getServletContext().getAttribute("jipdbs");
+		log.debug("Context destroyed");
 	}
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-
+		log.debug("Initializing listener");
 		ServletContext context = event.getServletContext();
 
 		Properties props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream("jipdbs.properties"));
 		} catch (Exception e) {
-			context.log("Unable to load context properties: " + e.getMessage());
+			log.warn("Unable to load context properties: ", e.getMessage());
 		}
-
 		context.setAttribute(Context.JIPDBS, new JIPDBS(props));
 	}
 }

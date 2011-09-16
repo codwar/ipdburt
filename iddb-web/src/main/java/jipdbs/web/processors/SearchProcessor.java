@@ -102,7 +102,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 			log.debug("Ban list");
 			list = app.bannedQuery(offset, limit, total);
 		} else if (StringUtils.isEmpty(query)) {
-			log.debug("Empty");
+			log.debug("Root");
 			list = app.rootQuery(offset, limit, total);
 		} else if (Validator.isValidSearchIp(query)) {
 			log.debug("Buscando IP " + query);
