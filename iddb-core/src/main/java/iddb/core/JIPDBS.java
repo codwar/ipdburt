@@ -20,11 +20,13 @@ package iddb.core;
 
 import iddb.core.model.Alias;
 import iddb.core.model.AliasIP;
+import iddb.core.model.Penalty;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.model.dao.DAOFactory;
+import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
 import iddb.core.security.UserServiceFactory;
@@ -58,6 +60,7 @@ public class JIPDBS {
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 	protected final AliasDAO aliasDAO = (AliasDAO) DAOFactory.forClass(AliasDAO.class);
 	protected final AliasIPDAO aliasIpDAO = (AliasIPDAO) DAOFactory.forClass(AliasIPDAO.class);
+	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
 
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
@@ -301,7 +304,7 @@ public class JIPDBS {
 		}
 		result.setLatest(player.getUpdated());
 		result.setPlaying(player.isConnected());
-		result.setNote(player.getNote());
+		result.setNote(player.getNote() != null);
 		result.setName(player.getNickname());
 		result.setServer(server);
 		result.setBanned(player.getBanInfo() != null);
@@ -310,9 +313,8 @@ public class JIPDBS {
 		return result;
 	}
 
-	public Player getPlayer(String player) throws EntityDoesNotExistsException {
-		// TODO manejar key
-		return playerDAO.get(Long.parseLong(player));
+	public Player getPlayer(Long player) throws EntityDoesNotExistsException {
+		return playerDAO.get(player);
 	}
 
 	public List<AliasResult> alias(String key, int offset, int limit,
@@ -436,4 +438,19 @@ public class JIPDBS {
 		}
 	}
 	
+	public Penalty getLastPenalty(Player player) {
+		Penalty p = null;
+		if (player.getBanInfo() != null) {
+			p = penaltyDAO.findLastActivePenalty(player.getKey(), Penalty.BAN);
+		}
+		return p;
+	}
+	
+	public Penalty getLastNotice(Player player) {
+		Penalty p = null;
+		if (player.getNote() != null) {
+			p = penaltyDAO.findLastActivePenalty(player.getKey(), Penalty.NOTICE);
+		}
+		return p;
+	}
 }

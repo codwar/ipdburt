@@ -44,7 +44,7 @@ public class SearchResult {
 
 	private boolean banned;
 
-	private String note;
+	private boolean note;
 
 	private long id;
 
@@ -141,11 +141,11 @@ public class SearchResult {
 		this.clientId = clientId;
 	}
 
-	public String getNote() {
+	public boolean getNote() {
 		return note;
 	}
 
-	public void setNote(String note) {
+	public void setNote(boolean note) {
 		this.note = note;
 	}
 

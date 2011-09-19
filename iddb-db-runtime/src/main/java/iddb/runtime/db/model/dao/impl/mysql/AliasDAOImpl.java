@@ -57,7 +57,7 @@ public class AliasDAOImpl implements AliasDAO {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			stC.setString(1, query);
+			st.setString(1, query);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();

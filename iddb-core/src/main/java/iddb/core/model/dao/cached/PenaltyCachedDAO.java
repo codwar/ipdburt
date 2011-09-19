@@ -125,4 +125,27 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 		return impl.findByPlayerAndType(player, type);
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#disable(java.util.List)
+	 */
+	@Override
+	public void disable(List<Penalty> list) {
+		impl.disable(list);
+		this.cache.clear();
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#findLastActivePenalty(java.lang.Long, java.lang.Long)
+	 */
+	@Override
+	public Penalty findLastActivePenalty(Long player, Long type) {
+		String key = "active-" + player.toString() + "T" + type.toString();;
+		Penalty penalty = (Penalty) this.cache.get(key);
+		if (penalty == null) {
+			penalty = impl.findLastActivePenalty(player, type);
+			if (penalty != null) this.cache.put(key, penalty);
+		}
+		return penalty;
+	}
+
 }

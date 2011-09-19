@@ -88,7 +88,7 @@
 </script>
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
-<legend>${fn:escapeXml(player.name)}
+<legend><a style="text-decoration: none;" href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a>
 <span class="icon
                 <c:choose>
                     <c:when test="${not empty player.banInfo}">

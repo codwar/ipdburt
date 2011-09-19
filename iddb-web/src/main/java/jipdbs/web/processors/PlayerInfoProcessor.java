@@ -19,14 +19,15 @@
 package jipdbs.web.processors;
 
 import iddb.core.JIPDBS;
+import iddb.core.model.Penalty;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.security.UserServiceFactory;
 import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
-import iddb.info.PenaltyInfo;
-import iddb.info.PlayerInfoView;
+import iddb.web.viewbean.PenaltyViewBean;
+import iddb.web.viewbean.PlayerViewBean;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -58,7 +59,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		
 		Player player;
 		try {
-			player = app.getPlayer(id);
+			player = app.getPlayer(Long.parseLong(id));
 		} catch (Exception e) {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
@@ -78,7 +79,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 			throw new ProcessorException(e);
 		}
 		
-		PlayerInfoView infoView = new PlayerInfoView();
+		PlayerViewBean infoView = new PlayerViewBean();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
 		if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
@@ -88,12 +89,42 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		}
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
-		// TODO cargar la info del ban
-		//infoView.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
+		Penalty ban = app.getLastPenalty(player);
+		if (ban != null) {
+			PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
+			penaltyViewBean.setCreated(ban.getCreated());
+			penaltyViewBean.setDuration(ban.getDuration());
+			penaltyViewBean.setReason(ban.getReason());
+			if (ban.getAdmin() != null) {
+				try {
+					Player admin = app.getPlayer(ban.getAdmin());
+					penaltyViewBean.setAdmin(admin.getNickname());
+				} catch (EntityDoesNotExistsException e) {
+					log.warn(e.getMessage());
+				}
+			}
+			infoView.setBanInfo(ban.toString());
+		}
+		
+		Penalty notice = app.getLastNotice(player);
+		if (notice != null) {
+			PenaltyViewBean noticeViewBean = new PenaltyViewBean();
+			noticeViewBean.setCreated(notice.getCreated());
+			noticeViewBean.setReason(notice.getReason());
+			if (notice.getAdmin() != null) {
+				try {
+					Player admin = app.getPlayer(notice.getAdmin());
+					noticeViewBean.setAdmin(admin.getNickname());
+				} catch (EntityDoesNotExistsException e) {
+					log.warn(e.getMessage());
+				}
+			}
+			infoView.setNote(notice.toString());
+		}
+		
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());
-		infoView.setNote(player.getNote());
 		if (player.getLevel() != null && player.getLevel() > 0 && player.getLevel() <= server.getMaxLevel()) {
 			infoView.setLevel(player.getLevel().toString());
 		} else {

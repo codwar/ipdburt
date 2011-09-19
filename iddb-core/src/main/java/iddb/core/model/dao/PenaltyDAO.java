@@ -40,6 +40,8 @@ public interface PenaltyDAO {
 
 	public abstract List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type);
 	
+	public abstract Penalty findLastActivePenalty(Long player, Long type);
+	
 	public abstract List<Penalty> findByPlayerAndType(Long player, Long type,
 			int offset, int limit, int[] count);
 
@@ -49,6 +51,8 @@ public interface PenaltyDAO {
 	 * @param list
 	 */
 	public abstract void save(List<Penalty> list);
+	
+	public abstract void disable(List<Penalty> list);
 	
 	public abstract void delete(List<Penalty> list);
 

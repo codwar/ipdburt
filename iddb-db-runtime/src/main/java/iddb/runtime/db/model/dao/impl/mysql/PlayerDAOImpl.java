@@ -226,7 +226,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		player.setBanInfo(rs.getDate("BANINFO"));
 		player.setClientId(rs.getLong("CLIENTID"));
 		player.setLevel(rs.getLong("LEVEL"));
-		player.setNote(rs.getString("NOTE"));
+		player.setNote(rs.getDate("NOTE"));
 		player.setConnected(rs.getBoolean("CONNECTED"));
 		player.setNickname(rs.getString("NICKNAME"));
 		player.setIp(rs.getString("IP"));
@@ -262,7 +262,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 			else st.setNull(5, Types.DATE);
 			st.setLong(6, player.getClientId());
 			st.setLong(7, player.getLevel());
-			st.setString(8, player.getNote());
+			if (player.getNote() != null) st.setDate(8, new java.sql.Date(player.getNote().getTime()));
+			else st.setNull(8, Types.DATE);			
 			st.setBoolean(9, player.isConnected());
 			st.setString(10, player.getNickname());
 			st.setString(11, player.getIp());

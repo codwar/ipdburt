@@ -34,7 +34,7 @@ public class Player implements Serializable {
 	private Date banInfo;
 	private Long clientId;
 	private Long level;
-	private String note;
+	private Date note;
 	private Boolean connected;
 	private String nickname;
 	private String ip;
@@ -132,11 +132,11 @@ public class Player implements Serializable {
 		return b.toString();
 	}
 
-	public String getNote() {
+	public Date getNote() {
 		return note;
 	}
 
-	public void setNote(String note) {
+	public void setNote(Date note) {
 		this.note = note;
 	}
 

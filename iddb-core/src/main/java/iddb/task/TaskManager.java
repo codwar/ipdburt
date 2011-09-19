@@ -30,7 +30,7 @@ public class TaskManager {
 	private static final Logger log = LoggerFactory.getLogger(TaskManager.class);
 
 	private int poolSize = 5;
-	private int maxPoolSize = 10;
+	private int maxPoolSize = 50;
 	private long keepAliveTime = 10;
 	
 	private ThreadPoolExecutor threadPool = null;

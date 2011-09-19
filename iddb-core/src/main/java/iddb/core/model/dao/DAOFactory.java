@@ -47,9 +47,9 @@ public final class DAOFactory {
 					Class cls = this.getClass().forName(value);
 					daoCache.put(key, cls.newInstance());
 				} catch (ClassNotFoundException e) {
-					log.error(e.getMessage());
+					log.error("{} not found", e.getMessage());
 				} catch (InstantiationException e) {
-					log.error(e.getMessage());
+					log.error("Cannot initialize {}", e.getMessage());
 				} catch (IllegalAccessException e) {
 					log.error(e.getMessage());
 				}

@@ -415,5 +415,65 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		return list;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#disable(java.util.List)
+	 */
+	@Override
+	public void disable(List<Penalty> list) {
+		String sql = "UPDATE PENALTY SET ACTIVE = ? WHERE ID = ?";
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			for (Penalty p : list) {
+				st.setBoolean(1, false);
+				st.setLong(2, p.getKey());
+				st.addBatch();
+			}
+			st.executeBatch();
+		} catch (SQLException e) {
+			logger.error("disable", e);
+		} catch (IOException e) {
+			logger.error("disable", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}		
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#findLastActivePenalty(java.lang.Long, java.lang.Long)
+	 */
+	@Override
+	public Penalty findLastActivePenalty(Long player, Long type) {
+		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? AND ACTIVE = ? ORDER BY UPDATED DESC LIMIT 1";
+		Connection conn = null;
+		Penalty penalty = null;
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, player);
+			st.setInt(2, type.intValue());
+			st.setBoolean(3, true);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				penalty = new Penalty();
+				loadPenalty(penalty, rs);
+			}
+		} catch (SQLException e) {
+			logger.error("findByPlayerAndTypeAndActive", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndTypeAndActive", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return penalty;
+	}
+
 
 }

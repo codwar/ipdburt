@@ -178,9 +178,6 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 			</c:choose>
 			<tr class="${rowStyle}" id="result-${rowCounter.count}">
 				<td style="text-align: right;">
-				<c:if test="${not empty player.note}">
-				<span class="icon information infoTip" alt="${player.note}">&nbsp;</span>
-				</c:if>
 				<a title="Mostrar más información" href="<url:url name="playerinfo"><url:param name="key" value="${player.key}"/></url:url>">${player.clientId}</a>
 				</td>
 				<td class="icon
@@ -198,7 +195,11 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a></span></td>
+				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a></span>
+				<c:if test="${player.note}">
+				<span class="icon information">&nbsp;</span>
+				</c:if>
+				</td>
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
