@@ -19,15 +19,27 @@
 package jipdbs.web.processors;
 
 import jipdbs.web.Flash;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
 import ar.sgt.resolver.processor.ResponseProcessor;
 
 public abstract class FlashResponseProcessor extends ResponseProcessor {
 
+	private static final Logger log = LoggerFactory.getLogger(FlashResponseProcessor.class);
+	
 	@Override
 	public String doProcess(ResolverContext context) throws ProcessorException {
-		String resp = processProcessor(context);
+		String resp = null;
+		try {
+			resp = processProcessor(context);	
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			Flash.error(context.getRequest(), e.getMessage());
+		}
 		context.getRequest().setAttribute("flash", Flash.clear(context.getRequest()));
 		return resp;
 	}

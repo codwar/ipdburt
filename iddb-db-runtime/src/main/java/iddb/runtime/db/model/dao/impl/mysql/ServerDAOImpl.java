@@ -56,6 +56,8 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setString(1, server.getUid());
 			st.setString(2, server.getName());
 			st.setString(3, server.getAdminEmail());
+			if (server.getCreated() == null) server.setCreated(new java.util.Date());
+			if (server.getUpdated() == null) server.setUpdated(new java.util.Date());
 			st.setDate(4, new Date(server.getCreated().getTime()));
 			st.setDate(5, new Date(server.getUpdated().getTime()));
 			st.setInt(6, server.getOnlinePlayers());
@@ -75,9 +77,9 @@ public class ServerDAOImpl implements ServerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save", e.getMessage());
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save", e.getMessage());
 		} finally {
 			try {
 				if (conn != null) conn.close();

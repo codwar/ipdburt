@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <table border="1">
     <thead>
@@ -21,11 +22,12 @@
                 <td>${server.adminEmail}</td>
                 <td>${server.address}</td>
                 <td>${server.pluginVersion}</td>
-                <td><a href="/admin/server/${server.key}/get/" class="icon edit"></a></td>
+                <td><a href="<url:url name="admin-getserver"><url:param name="key" value="${server.key}"/></url:url>" class="icon edit"></a></td>
             </tr>
         </c:forEach>
     </tbody>
 </table>
+
 
 <fieldset>
 <c:choose>
@@ -36,7 +38,7 @@
     <legend>Editando ${server.name}</legend>
   </c:otherwise>
 </c:choose>
-<form action="/admin/server/save/" method="post">
+<form action="<url:url name="admin-saveserver"/>" method="post">
 <input type="hidden" name="k" value="${server.key}"/>
 <label for="name">Nombre:</label><input type="text" value="${server.name}" name="name" /><br/>      
 <label for="admin">Contacto:</label><input type="text" value="${server.adminEmail}" name="admin" /><br/>

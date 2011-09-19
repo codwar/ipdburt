@@ -26,7 +26,7 @@ $(document).ready(
             
             $(".search").keypress(function(e) {
             	if ( e.which == 13 ) {
-            		window.location = dutils.urls.resolve('search', {'query': $(this).val()});
+            		if ($(this).val().length > 0) window.location = dutils.urls.resolve('search', {'query': $(this).val()});
             	}
             });
 /*

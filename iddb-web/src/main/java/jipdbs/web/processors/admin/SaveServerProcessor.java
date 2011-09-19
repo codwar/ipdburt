@@ -55,10 +55,10 @@ public class SaveServerProcessor extends RedirectProcessor {
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
 			String uid = GuidGenerator.generate(name);
 			app.addServer(name, admin, uid, ip);
-			Flash.info(req, "Server agregado.");
+			Flash.info(req, "Servidor agregado.");
 		} else {
 			app.saveServer(req.getParameter("k"), name, admin, ip);
-			Flash.info(req, "Server editado.");
+			Flash.info(req, "Servidor actualizado.");
 		}
 		
 		return null;

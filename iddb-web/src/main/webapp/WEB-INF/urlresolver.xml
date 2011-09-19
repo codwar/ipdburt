@@ -4,12 +4,12 @@
     <rule name="playerinfo" pattern="^/detail/($key[\w-_]+)/$"/>
   </processor>
   <processor class="jipdbs.web.processors.SearchProcessor" redirect="/page/search.jsp">
-    <rule pattern="^/$"/>
+    <rule name="home" pattern="^/$"/>
     <rule name="search" pattern="^/search/($query.+)/$"/>
     <rule name="banlist" pattern="^/banlist/$">
         <arg name="type" value="ban"/>
     </rule>
-    <rule name="serverfilter" pattern="^/server/($query[\w-_]+)/$">
+    <rule name="serverfilter" pattern="^/server/($query[\d]+)/$">
         <arg name="type" value="server"/>
     </rule>
   </processor>
@@ -20,19 +20,19 @@
     <rule name="serverinfo" pattern="^/info/server/$"/>
   </processor>  
   <processor class="jipdbs.web.processors.AliasProcessor" redirect="/json/alias.jsp">
-    <rule name="alias" pattern="^/alias/($key[\w-_]+)/$"/>
-    <rule name="alias-ip" pattern="^/alias/($key[\w-_]+)/ip/$">
+    <rule name="alias" pattern="^/alias/($key[\d]+)/$"/>
+    <rule name="alias-ip" pattern="^/alias/($key[\d]+)/ip/$">
         <arg name="ip" value="ip"/>
     </rule>
   </processor>
   <processor class="jipdbs.web.processors.ServerListProcessor" redirect="/admin/serverlist.jsp">
     <rule name="admin-serverlist" pattern="^/admin/servers/$"/>
   </processor>
-  <processor class="jipdbs.web.processors.admin.SaveServerProcessor" redirect="/admin/servers/">
+  <processor class="jipdbs.web.processors.admin.SaveServerProcessor" redirect="admin-serverlist">
     <rule name="admin-saveserver" pattern="^/admin/server/save/$"/>
   </processor>
   <processor class="jipdbs.web.processors.admin.LoadServerProcessor" redirect="/admin/serverlist.jsp">
-    <rule name="admin-getserver" pattern="^/admin/server/($key[\w-_]+)/get/$"/>
+    <rule name="admin-getserver" pattern="^/admin/server/($key[\d]+)/get/$"/>
   </processor>
   <forward-processor redirect="/page/donar.jsp">
     <rule name="donation" pattern="^/donate/$"/>
@@ -51,6 +51,7 @@
   </forward-processor>
   <!-- BACKWARD COMPATIBILITY -->
   <redirect>
+	<rule pattern="^/search//$" redirect="home"/>
 	<rule pattern="^/playerinfo.jsp/$" redirect="playerinfo">
 		<arg name="key" value="id"/>
 	</rule>
