@@ -185,8 +185,8 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				</td>
 				<td class="icon
 				<c:choose>
-                    <c:when test="${not empty player.banInfo}">
-                        banned infoTip
+                    <c:when test="${player.banned}">
+                        banned
                     </c:when>
                     <c:when test="${player.playing}">
                         online
@@ -195,7 +195,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
                         offline
                     </c:otherwise>
                 </c:choose>
-				" alt="${player.banInfo}"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
+				"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
 				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a></span></td>
@@ -217,10 +217,12 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
                 </c:choose --%>
                 <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>
-				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.keyString}"/></url:url>">${player.server.name}</a></td>
+				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a></td>
+				<%-- 
 				<c:if test="${not empty player.banInfo}">
 				<td style="display: none;">${player.banInfo}</td>
 				</c:if>
+				 --%>
 			</tr>
 			<tr style="display: none;">
 				<td colspan="6" style="padding: 20px;">

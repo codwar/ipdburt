@@ -88,7 +88,8 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		}
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
-		infoView.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
+		// TODO cargar la info del ban
+		//infoView.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
 		infoView.setAliases(list);
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());

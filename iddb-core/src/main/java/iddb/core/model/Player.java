@@ -31,7 +31,7 @@ public class Player implements Serializable {
 	private String guid;
 	private Date created;
 	private Date updated;
-	private String banInfo;
+	private Date banInfo;
 	private Long clientId;
 	private Long level;
 	private String note;
@@ -79,11 +79,11 @@ public class Player implements Serializable {
 		this.updated = updated;
 	}
 
-	public String getBanInfo() {
+	public Date getBanInfo() {
 		return banInfo;
 	}
 
-	public void setBanInfo(String banInfo) {
+	public void setBanInfo(Date banInfo) {
 		this.banInfo = banInfo;
 	}
 

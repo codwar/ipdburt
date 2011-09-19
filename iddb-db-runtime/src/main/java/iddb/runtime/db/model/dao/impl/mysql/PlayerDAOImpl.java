@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -150,8 +151,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * List banned players
 	 */
 	public List<Player> findBanned(int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE BANINFOUPDATED IS NOT NULL";
-		String sql = "SELECT * FROM PLAYER WHERE BANINFOUPDATED IS NOT NULL ORDER BY BANINFOUPDATED DESC LIMIT ?,?";
+		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE BANINFO IS NOT NULL";
+		String sql = "SELECT * FROM PLAYER WHERE BANINFO IS NOT NULL ORDER BY BANINFO DESC LIMIT ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
@@ -222,7 +223,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		player.setGuid(rs.getString("GUID"));
 		player.setCreated(rs.getDate("CREATED"));
 		player.setUpdated(rs.getDate("UPDATED"));
-		player.setBanInfo(rs.getString("BANINFO"));
+		player.setBanInfo(rs.getDate("BANINFO"));
 		player.setClientId(rs.getLong("CLIENTID"));
 		player.setLevel(rs.getLong("LEVEL"));
 		player.setNote(rs.getString("NOTE"));
@@ -257,7 +258,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 			st.setString(2, player.getGuid());
 			st.setDate(3, new java.sql.Date(player.getCreated().getTime()));
 			st.setDate(4, new java.sql.Date(player.getUpdated().getTime()));
-			st.setString(5, player.getBanInfo());
+			if (player.getBanInfo() != null) st.setDate(5, new java.sql.Date(player.getBanInfo().getTime()));
+			else st.setNull(5, Types.DATE);
 			st.setLong(6, player.getClientId());
 			st.setLong(7, player.getLevel());
 			st.setString(8, player.getNote());

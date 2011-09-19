@@ -13,10 +13,10 @@
 <div id="topnavigation">
     <ul class="topnav">
     <div id="donar">
-        <a href="<url:url name="donation"/>"><img width="80" src="/media/images/donar_es.gif" alt="Donar"/></a>
+        <a href="<url:url name="donation"/>"><img width="80" src="${pageContext.request.contextPath}/media/images/donar_es.gif" alt="Donar"/></a>
     </div>
     <div id="logo">
-        <a href="/">IPDB</a>
+        <a href="${pageContext.request.contextPath}">IPDB</a>
     </div>
         <li><!-- form id="search-form" method="get" action="/search/"-->
         <small><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>

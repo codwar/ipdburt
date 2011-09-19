@@ -42,7 +42,7 @@ public class SearchResult {
 	// Playing right now.
 	private boolean playing;
 
-	private String banInfo;
+	private boolean banned;
 
 	private String note;
 
@@ -58,12 +58,12 @@ public class SearchResult {
 		this.id = id;
 	}
 
-	public String getBanInfo() {
-		return banInfo;
+	public boolean isBanned() {
+		return banned;
 	}
 
-	public void setBanInfo(String banInfo) {
-		this.banInfo = banInfo;
+	public void setBanned(boolean banned) {
+		this.banned = banned;
 	}
 
 	public Long getKey() {

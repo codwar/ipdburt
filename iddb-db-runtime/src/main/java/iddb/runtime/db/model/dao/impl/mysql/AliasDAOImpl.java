@@ -52,7 +52,7 @@ public class AliasDAOImpl implements AliasDAO {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setString(1, query);
-			ResultSet rsC = stC.executeQuery(sqlCount);
+			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
@@ -132,7 +132,7 @@ public class AliasDAOImpl implements AliasDAO {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
-			ResultSet rsC = stC.executeQuery(sqlCount);
+			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}

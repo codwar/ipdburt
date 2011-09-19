@@ -6,7 +6,7 @@
 <json:object>
 	<json:array name="list" var="item" items="${list}">
 		<json:object>
-            <json:property name="key" value="${item.keyString}"/>
+            <json:property name="key" value="${item.key}"/>
             <json:property name="count" value="${item.onlinePlayers}"/>
             <json:property name="name" value="${item.name}"/>
 		</json:object>

@@ -45,8 +45,9 @@ public class PenaltyTask implements Runnable {
 		PenaltyDAO dao = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
 		PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 		
+		// TODO cambiar a un future statement al procesar
 		if (Events.BAN.equals(event) || Events.UNBAN.equals(event)) {
-			if (StringUtils.isEmpty(player.getBanInfo())) {
+			if (player.getBanInfo() == null) {
 				List<Penalty> penalties = dao.findByPlayerAndType(player.getKey(), Penalty.BAN);
 				if (penalties.size() > 0) dao.delete(penalties);
 			} else {
@@ -58,7 +59,7 @@ public class PenaltyTask implements Runnable {
 					penalty = new Penalty();
 					penalty.setPlayer(player.getKey());
 				}
-				PenaltyInfo penaltyInfo = new PenaltyInfo(player.getBanInfo());
+				PenaltyInfo penaltyInfo = new PenaltyInfo();
 				penalty.setType(Penalty.BAN);
 				penalty.setCreated(penaltyInfo.getCreated());
 				penalty.setUpdated(new Date());
@@ -80,7 +81,7 @@ public class PenaltyTask implements Runnable {
 				List<Penalty> penalties = dao.findByPlayerAndType(player.getKey(), Penalty.NOTICE);
 				if (penalties.size() > 0) dao.delete(penalties);
 			} else {
-				PenaltyInfo info = new PenaltyInfo(player.getBanInfo());
+				PenaltyInfo info = new PenaltyInfo();
 				Penalty penalty = new Penalty();
 				penalty.setPlayer(player.getKey());
 				penalty.setType(Penalty.NOTICE);

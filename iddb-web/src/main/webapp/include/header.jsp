@@ -14,7 +14,7 @@
 <meta name="author" content="author"/> 
 <link rel="search" type="application/opensearchdescription+xml" href="${pageContext.request.contextPath}/opensearch.xml" title="Buscar en IPDB" />
 <url rel="self" type="application/opensearchdescription+xml" template="${pageContext.request.contextPath}/opensearch.xml"/>
-<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/default.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/message.place.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/tipTip.css" media="screen"/>

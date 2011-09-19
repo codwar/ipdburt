@@ -145,7 +145,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
-			ResultSet rsC = stC.executeQuery(sqlCount);
+			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
@@ -188,7 +188,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, range[0]);
 			stC.setLong(2, range[1]);
-			ResultSet rsC = stC.executeQuery(sqlCount);
+			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}

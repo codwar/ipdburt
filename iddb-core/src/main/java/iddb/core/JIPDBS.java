@@ -32,7 +32,6 @@ import iddb.core.util.Functions;
 import iddb.core.util.MailManager;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
-import iddb.info.PenaltyInfo;
 import iddb.info.SearchResult;
 
 import java.io.PrintWriter;
@@ -305,7 +304,7 @@ public class JIPDBS {
 		result.setNote(player.getNote());
 		result.setName(player.getNickname());
 		result.setServer(server);
-		result.setBanInfo(PenaltyInfo.getDetail(player.getBanInfo()));
+		result.setBanned(player.getBanInfo() != null);
 		result.setClientId(player.getClientId() != null ? "@"
 				+ player.getClientId().toString() : "UID" + result.getId());
 		return result;

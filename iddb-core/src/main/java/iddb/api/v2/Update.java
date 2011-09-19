@@ -209,7 +209,7 @@ public class Update {
 	 */
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
 		if (Events.BAN.equals(playerInfo.getEvent())) {
-			player.setBanInfo(playerInfo.getPenaltyInfo().getRawData());
+			player.setBanInfo(playerInfo.getPenaltyInfo().getCreated());
 			player.setConnected(false);
 		} else if (Events.CONNECT.equals(playerInfo.getEvent())
 				|| Events.DISCONNECT.equals(playerInfo.getEvent())
