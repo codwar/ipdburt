@@ -359,12 +359,12 @@ public class PlayerDAOImpl implements PlayerDAO {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, clientId);
-			ResultSet rsC = stC.executeQuery(sqlCount);
+			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			stC.setLong(1, clientId);
+			st.setLong(1, clientId);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();

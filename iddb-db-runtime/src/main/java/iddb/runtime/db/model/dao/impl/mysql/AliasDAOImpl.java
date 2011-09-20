@@ -32,7 +32,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -82,45 +81,41 @@ public class AliasDAOImpl implements AliasDAO {
 
 	public List<Alias> findByNGrams(String query, int offset, int limit,
 			int[] count) {
-//		SELECT * FROM articles
-//	    -> WHERE MATCH (title,body) AGAINST ('database');
-		// TODO
-//		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE PLAYERID = ?";
-//		String sql = "SELECT * FROM ALIAS WHERE PLAYERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
-//
-//		Collection<String> ngrams = NGrams.ngrams(query);
-//
-//		if (ngrams.size() == 0)
-//			return Collections.emptyList();
-//		
-//		Connection conn = ConnectionFactory.getConnection();
-//		List<Alias> list = new ArrayList<Alias>();
-//		try {
-//			PreparedStatement stC = conn.prepareStatement(sqlCount);
-//			stC.setLong(1, player);
-//			ResultSet rsC = stC.executeQuery(sqlCount);
-//			if (rsC.next()) {
-//				count[0] = rsC.getInt(1);
-//			}
-//			PreparedStatement st = conn.prepareStatement(sql);
-//			st.setLong(1, player);
-//			st.setInt(2, offset);
-//			st.setInt(3, limit);
-//			ResultSet rs = st.executeQuery();
-//			while (rs.next()) {
-//				Alias alias = new Alias();
-//				loadAlias(alias, rs);
-//				list.add(alias);
-//			}
-//		} catch (SQLException e) {
-//			logger.error("findByPlayer", e);
-//		} finally {
-//			try {
-//				conn.close();
-//			} catch (Exception e) {
-//			}
-//		}
-		return Collections.emptyList();
+		// TODO MEJORAR
+		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE NGRAMS LIKE ? GROUP BY PLAYERID";
+		String sql = "SELECT * FROM ALIAS WHERE NGRAMS LIKE ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
+		List<Alias> list = new ArrayList<Alias>();
+		Connection conn = null;
+		try {
+			//String ngramQuery = Functions.join(NGrams.ngrams(query), " ");
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement stC = conn.prepareStatement(sqlCount);
+			stC.setString(1, "%" + query + "%");
+			ResultSet rsC = stC.executeQuery();
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, "%" + query + "%");
+			st.setInt(2, offset);
+			st.setInt(3, limit);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Alias alias = new Alias();
+				loadAlias(alias, rs);
+				list.add(alias);
+			}
+		} catch (SQLException e) {
+			logger.error("findByNGrams", e);
+		} catch (IOException e) {
+			logger.error("findByNGrams", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
 	}
 
 	public List<Alias> findByPlayer(Long player, int offset, int limit,
