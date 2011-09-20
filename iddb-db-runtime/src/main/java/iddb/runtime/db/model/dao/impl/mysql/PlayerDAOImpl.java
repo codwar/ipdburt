@@ -221,12 +221,12 @@ public class PlayerDAOImpl implements PlayerDAO {
 		player.setKey(rs.getLong("ID"));
 		player.setServer(rs.getLong("SERVERID"));
 		player.setGuid(rs.getString("GUID"));
-		player.setCreated(rs.getDate("CREATED"));
-		player.setUpdated(rs.getDate("UPDATED"));
-		player.setBanInfo(rs.getDate("BANINFO"));
+		player.setCreated(rs.getTimestamp("CREATED"));
+		player.setUpdated(rs.getTimestamp("UPDATED"));
+		player.setBanInfo(rs.getTimestamp("BANINFO"));
 		player.setClientId(rs.getLong("CLIENTID"));
 		player.setLevel(rs.getLong("LEVEL"));
-		player.setNote(rs.getDate("NOTE"));
+		player.setNote(rs.getTimestamp("NOTE"));
 		player.setConnected(rs.getBoolean("CONNECTED"));
 		player.setNickname(rs.getString("NICKNAME"));
 		player.setIp(rs.getString("IP"));
@@ -243,26 +243,26 @@ public class PlayerDAOImpl implements PlayerDAO {
 					"CREATED = ?," +
 					"UPDATED = ?," +
 					"BANINFO = ?," +
-					"CLIENTID = ?" +
-					"LEVEL = ?" +
-					"NOTE = ?" +
+					"CLIENTID = ?," +
+					"LEVEL = ?," +
+					"NOTE = ?," +
 					"CONNECTED = ?," +
-					"NICKNAME = ?" +
-					"IP = ? WHERE ID = ?";
+					"NICKNAME = ?," +
+					"IP = ? WHERE ID = ? LIMIT 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
+			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, player.getServer());
 			st.setString(2, player.getGuid());
-			st.setDate(3, new java.sql.Date(player.getCreated().getTime()));
-			st.setDate(4, new java.sql.Date(player.getUpdated().getTime()));
-			if (player.getBanInfo() != null) st.setDate(5, new java.sql.Date(player.getBanInfo().getTime()));
+			st.setTimestamp(3, new java.sql.Timestamp(player.getCreated().getTime()));
+			st.setTimestamp(4, new java.sql.Timestamp(player.getUpdated().getTime()));
+			if (player.getBanInfo() != null) st.setTimestamp(5, new java.sql.Timestamp(player.getBanInfo().getTime()));
 			else st.setNull(5, Types.DATE);
 			st.setLong(6, player.getClientId());
 			st.setLong(7, player.getLevel());
-			if (player.getNote() != null) st.setDate(8, new java.sql.Date(player.getNote().getTime()));
+			if (player.getNote() != null) st.setTimestamp(8, new java.sql.Timestamp(player.getNote().getTime()));
 			else st.setNull(8, Types.DATE);			
 			st.setBoolean(9, player.isConnected());
 			st.setString(10, player.getNickname());

@@ -8,7 +8,7 @@
 
 <head>
 <title>IPDB Sudamericana</title>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
@@ -63,10 +63,11 @@
 </div>
 <jsp:include page="/include/navigation.jsp"/>
 <%-- jsp:include page="/pages/login_box.jsp"/--%>
+<!-- 
 <div class="beta">
 	<img src="${pageContext.request.contextPath}/media/images/bimage.png" width="105" height="107"/>
 </div>
-
+ -->
 <div class="container">	
 
 <div class="clearer"><span></span></div>

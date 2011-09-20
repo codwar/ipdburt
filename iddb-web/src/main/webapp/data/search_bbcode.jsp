@@ -25,8 +25,8 @@
 				[td]${player.server.name}[/td]
 				[td]
                 <c:choose>
-                    <c:when test="${not empty player.banInfo}">
-                        ${player.banInfo}
+                    <c:when test="${player.banned}">
+                        Banned.
                     </c:when>
                     <c:otherwise>
                         -

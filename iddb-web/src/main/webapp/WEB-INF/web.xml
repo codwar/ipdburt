@@ -27,10 +27,6 @@
 		<filter-name>ResolverFilter</filter-name>
 		<filter-class>ar.sgt.resolver.filter.ResolverFilter</filter-class>
 		<init-param>
-			<param-name>root</param-name>
-			<param-value>/iddb-web-0.8-SNAPSHOT</param-value>
-		</init-param>
-		<init-param>
 			<param-name>exclude-path</param-name>
 			<param-value>/media</param-value>
 		</init-param>		
@@ -45,23 +41,6 @@
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>mailhandler</servlet-name>
-		<servlet-class>jipdbs.web.MailHandlerServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>keepalivehandler</servlet-name>
-		<servlet-class>jipdbs.web.KeepAliveServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>flash</servlet-name>
-		<servlet-class>jipdbs.web.FlashServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>cleanserver</servlet-name>
-		<servlet-class>jipdbs.web.task.CleanOnlinePlayerServlet
-		</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>httphandler</servlet-name>
 		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
 	</servlet>
@@ -69,23 +48,10 @@
 		<servlet-name>xmlrpc3</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>PenaltyTask</servlet-name>
-		<servlet-class>jipdbs.web.task.PenaltyTaskServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>flash</servlet-name>
-		<url-pattern>/flash</url-pattern>
-	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>xmlrpc2</servlet-name>
 		<url-pattern>/xmlrpc2</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>keepalivehandler</servlet-name>
-		<url-pattern>/cron/keepalive</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>httphandler</servlet-name>
@@ -94,16 +60,6 @@
 	<servlet-mapping>
 		<servlet-name>xmlrpc3</servlet-name>
 		<url-pattern>/api/v3/xmlrpc</url-pattern>
-	</servlet-mapping>
-
-	<!-- TASKS -->
-	<servlet-mapping>
-		<servlet-name>cleanserver</servlet-name>
-		<url-pattern>/admin/task/cleanserver</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>PenaltyTask</servlet-name>
-		<url-pattern>/admin/task/penalty</url-pattern>
 	</servlet-mapping>
 
 	<error-page>

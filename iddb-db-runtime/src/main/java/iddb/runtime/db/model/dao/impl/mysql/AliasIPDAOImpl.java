@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,16 +54,16 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 					"IP = ?," +
 					"CREATED = ?," +
 					"UPDATED = ?," +
-					"COUNT = ? WHERE ID = ?";
+					"COUNT = ? WHERE ID = ? LIMIT 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
+			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setLong(2, Functions.ipToDecimal(alias.getIp()));
-			st.setDate(3, new java.sql.Date(alias.getCreated().getTime()));
-			st.setDate(4, new java.sql.Date(alias.getUpdated().getTime()));
+			st.setTimestamp(3, new java.sql.Timestamp(alias.getCreated().getTime()));
+			st.setTimestamp(4, new java.sql.Timestamp(alias.getUpdated().getTime()));
 			st.setLong(5, alias.getCount());
 			if (alias.getKey() != null) st.setLong(6, alias.getKey());
 			st.executeUpdate();
@@ -126,8 +127,8 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 		alias.setKey(rs.getLong("ID"));
 		alias.setPlayer(rs.getLong("PLAYERID"));
 		alias.setIp(Functions.decimalToIp(rs.getLong("IP")));
-		alias.setCreated(rs.getDate("CREATED"));
-		alias.setUpdated(rs.getDate("UPDATED"));
+		alias.setCreated(rs.getTimestamp("CREATED"));
+		alias.setUpdated(rs.getTimestamp("UPDATED"));
 		alias.setCount(rs.getLong("COUNT"));
 	}
 

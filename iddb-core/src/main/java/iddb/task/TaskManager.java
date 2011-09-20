@@ -35,7 +35,7 @@ public class TaskManager {
 	
 	private ThreadPoolExecutor threadPool = null;
 	
-	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
+	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(20);
 	
 	private static TaskManager instance;
 	

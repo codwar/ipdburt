@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class Flash implements Serializable {
 
 	private static final long serialVersionUID = -1086167146182696335L;
@@ -36,6 +38,10 @@ public class Flash implements Serializable {
 	private final List<String> errors = new LinkedList<String>();
 	private final List<String> oks = new LinkedList<String>();
 
+	private static String escape(String msg) {
+		return StringEscapeUtils.escapeHtml(msg);
+	}
+	
 	public static void info(HttpServletRequest req, String msg) {
 
 		Flash flash = (Flash) req.getSession().getAttribute(SESSION_NAME);
@@ -44,7 +50,7 @@ public class Flash implements Serializable {
 			req.getSession().setAttribute(SESSION_NAME, flash);
 		}
 
-		flash.infos.add(msg);
+		flash.infos.add(escape(msg));
 	}
 
 	public static void ok(HttpServletRequest req, String msg) {
@@ -55,7 +61,7 @@ public class Flash implements Serializable {
 			req.getSession().setAttribute(SESSION_NAME, flash);
 		}
 
-		flash.oks.add(msg);
+		flash.oks.add(escape(msg));
 	}
 
 	public static void warn(HttpServletRequest req, String msg) {
@@ -66,7 +72,7 @@ public class Flash implements Serializable {
 			req.getSession().setAttribute(SESSION_NAME, flash);
 		}
 
-		flash.warns.add(msg);
+		flash.warns.add(escape(msg));
 	}
 
 	public static void error(HttpServletRequest req, String msg) {
@@ -77,7 +83,7 @@ public class Flash implements Serializable {
 			req.getSession().setAttribute(SESSION_NAME, flash);
 		}
 
-		flash.errors.add(msg);
+		flash.errors.add(escape(msg));
 	}
 
 	public static Flash clear(HttpServletRequest req) {

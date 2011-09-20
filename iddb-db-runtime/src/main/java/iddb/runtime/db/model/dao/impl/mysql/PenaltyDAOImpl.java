@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,12 +56,12 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 					"SYNCED = ?," +
 					"ACTIVE = ?," +
 					"CREATED = ?," +
-					"UPDATED = ? WHERE ID = ?";
+					"UPDATED = ? WHERE ID = ? LIMIT 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
+			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, penalty.getPlayer());
 			st.setLong(2, penalty.getAdmin());
 			st.setInt(3, penalty.getType().intValue());
@@ -68,8 +69,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(5, penalty.getDuration());
 			st.setBoolean(6, penalty.getSynced());
 			st.setBoolean(7, penalty.getActive());
-			st.setDate(8, new java.sql.Date(penalty.getCreated().getTime()));
-			st.setDate(9, new java.sql.Date(penalty.getUpdated().getTime()));
+			st.setTimestamp(8, new java.sql.Timestamp(penalty.getCreated().getTime()));
+			st.setTimestamp(9, new java.sql.Timestamp(penalty.getUpdated().getTime()));
 			if (penalty.getKey() != null) st.setLong(10, penalty.getKey());
 			st.executeUpdate();
 			if (penalty.getKey() == null) {
@@ -163,8 +164,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		penalty.setDuration(rs.getLong("DURATION"));
 		penalty.setSynced(rs.getBoolean("SYNCED"));
 		penalty.setActive(rs.getBoolean("ACTIVE"));
-		penalty.setCreated(rs.getDate("CREATED"));
-		penalty.setUpdated(rs.getDate("UPDATED"));
+		penalty.setCreated(rs.getTimestamp("CREATED"));
+		penalty.setUpdated(rs.getTimestamp("UPDATED"));
 	}
 
 	/* (non-Javadoc)

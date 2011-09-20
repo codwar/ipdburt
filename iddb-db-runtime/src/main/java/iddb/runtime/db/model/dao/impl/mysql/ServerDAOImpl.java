@@ -25,7 +25,6 @@ import iddb.runtime.db.ConnectionFactory;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,19 +46,19 @@ public class ServerDAOImpl implements ServerDAO {
 		if (server.getKey() == null) {
 			sql = "INSERT INTO SERVER (UID, NAME, ADMIN, CREATED, UPDATED, ONLINEPLAYERS, ADDRESS, PLUGINVERSION, MAXLEVEL, DIRTY, PERMISSION) VALUES (?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE SERVER SET UID = ?, NAME = ?, ADMIN = ?, CREATED = ?, UPDATED = ?, ONLINEPLAYERS = ?, ADDRESS = ?, PLUGINVERSION = ?, MAXLEVEL = ?, DIRTY = ?, PERMISSION = ? WHERE ID = ?";
+			sql = "UPDATE SERVER SET UID = ?, NAME = ?, ADMIN = ?, CREATED = ?, UPDATED = ?, ONLINEPLAYERS = ?, ADDRESS = ?, PLUGINVERSION = ?, MAXLEVEL = ?, DIRTY = ?, PERMISSION = ? WHERE ID = ? LIMIT 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
+			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, server.getUid());
 			st.setString(2, server.getName());
 			st.setString(3, server.getAdminEmail());
 			if (server.getCreated() == null) server.setCreated(new java.util.Date());
 			if (server.getUpdated() == null) server.setUpdated(new java.util.Date());
-			st.setDate(4, new Date(server.getCreated().getTime()));
-			st.setDate(5, new Date(server.getUpdated().getTime()));
+			st.setTimestamp(4, new Timestamp(server.getCreated().getTime()));
+			st.setTimestamp(5, new Timestamp(server.getUpdated().getTime()));
 			st.setInt(6, server.getOnlinePlayers());
 			st.setString(7, server.getAddress());
 			st.setString(8, server.getPluginVersion());
@@ -155,8 +154,8 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setUid(rs.getString("UID"));
 		server.setName(rs.getString("NAME"));
 		server.setAdminEmail(rs.getString("ADMIN"));
-		server.setCreated(rs.getDate("CREATED"));
-		server.setUpdated(rs.getDate("UPDATED"));
+		server.setCreated(rs.getTimestamp("CREATED"));
+		server.setUpdated(rs.getTimestamp("UPDATED"));
 		server.setOnlinePlayers(rs.getInt("ONLINEPLAYERS"));
 		server.setAddress(rs.getString("ADDRESS"));
 		server.setPluginVersion(rs.getString("PLUGINVERSION"));

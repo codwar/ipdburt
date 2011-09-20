@@ -18,6 +18,8 @@
  */
 package iddb.api;
 
+import org.apache.commons.lang.StringUtils;
+
 import iddb.core.model.Server;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.ServerDAO;
@@ -55,8 +57,7 @@ public class ServerManager {
 			throw new UnauthorizedUpdateException(message);
 		}
 
-		if (remoteAddress != null && server.getAddress() != null && server.getAddress().length() > 0
-		        && !remoteAddress.equals(server.getAddress())) {
+		if (StringUtils.isNotEmpty(remoteAddress) && StringUtils.isNotEmpty(server.getAddress()) && !remoteAddress.equals(server.getAddress())) {
 
 			// Compose.
 			StringBuilder builder = new StringBuilder(

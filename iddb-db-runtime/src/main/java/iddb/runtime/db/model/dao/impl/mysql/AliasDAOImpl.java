@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -163,8 +164,8 @@ public class AliasDAOImpl implements AliasDAO {
 		alias.setKey(rs.getLong("ID"));
 		alias.setPlayer(rs.getLong("PLAYERID"));
 		alias.setNickname(rs.getString("NICKNAME"));
-		alias.setCreated(rs.getDate("CREATED"));
-		alias.setUpdated(rs.getDate("UPDATED"));
+		alias.setCreated(rs.getTimestamp("CREATED"));
+		alias.setUpdated(rs.getTimestamp("UPDATED"));
 		alias.setCount(rs.getLong("COUNT"));
 		Collection<String> ngrams = Arrays.asList(StringUtils.split(rs.getString("NGRAMS"), " "));
 		alias.setNgrams(ngrams);
@@ -180,17 +181,17 @@ public class AliasDAOImpl implements AliasDAO {
 					"NGRAMS = ?," +
 					"CREATED = ?," +
 					"UPDATED = ?," +
-					"COUNT = ? WHERE ID = ?";
+					"COUNT = ? WHERE ID = ? LIMIT 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
+			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setString(2, alias.getNickname());
 			st.setString(3, Functions.join(alias.getNgrams(), " "));
-			st.setDate(4, new java.sql.Date(alias.getCreated().getTime()));
-			st.setDate(5, new java.sql.Date(alias.getUpdated().getTime()));
+			st.setTimestamp(4, new java.sql.Timestamp(alias.getCreated().getTime()));
+			st.setTimestamp(5, new java.sql.Timestamp(alias.getUpdated().getTime()));
 			st.setLong(6, alias.getCount());
 			if (alias.getKey() != null) st.setLong(7, alias.getKey());
 			st.executeUpdate();
