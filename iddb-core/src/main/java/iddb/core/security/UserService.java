@@ -18,8 +18,16 @@
  */
 package iddb.core.security;
 
+import iddb.core.security.exceptions.InvalidAccountException;
+import iddb.core.security.exceptions.InvalidCredentialsException;
+import iddb.core.security.exceptions.UserLockedException;
+
 public interface UserService {
 
 	public User getCurrentUser();
+
+	public void authenticate(String username, String password) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
+	
+	public void logout();
 	
 }
