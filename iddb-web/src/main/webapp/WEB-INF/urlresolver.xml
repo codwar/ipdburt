@@ -45,7 +45,13 @@
   </forward-processor>  
   <processor class="jipdbs.web.processors.ContactProcessor" redirect="/page/contact.jsp">
     <rule name="contact" pattern="^/contact/$"/>
-  </processor>  
+  </processor>
+  <processor class="jipdbs.web.processors.LoginProcessor" redirect="/page/login.jsp">
+    <rule name="login" pattern="^/account/login/$"/>
+    <rule name="logout" pattern="^/account/logout/$">
+        <arg name="type" value="logout"/>
+    </rule>    
+  </processor>    
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
   </forward-processor>

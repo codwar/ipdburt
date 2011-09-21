@@ -23,6 +23,7 @@ import iddb.core.security.User;
 public class ShiroUser implements User {
 
 	private String username;
+	private String email;
 	private boolean superAdmin;
 	
 	public ShiroUser(String username, boolean isSuperAdmin) {
@@ -54,13 +55,12 @@ public class ShiroUser implements User {
 		return this.superAdmin;
 	}
 
-	/* (non-Javadoc)
-	 * @see iddb.core.security.User#getEmail()
-	 */
-	@Override
 	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

@@ -5,6 +5,7 @@
 <%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
+<%@ taglib uri="/WEB-INF/tld/gravatar.tld" prefix="g"%>
 
 <script type="text/javascript">
     dutils.conf.urls.search = "<url:clean name="search"/>";
@@ -28,7 +29,7 @@
             UserService userService = UserServiceFactory.getUserService();
             if (userService.getCurrentUser().isSuperAdmin()) {
         %>
-        <li><a href="https://ipdburt.appspot.com/<url:url name="admin-serverlist"/>">Administrar</a></li>
+        <li><a href="<url:url name="admin-serverlist"/>">Administrar</a></li>
         <%      
             }
         %>
@@ -42,11 +43,11 @@
         <li style="float: right; margin-right: 20px;">
             <div id="session">
             <%
-            if (userService.getCurrentUser().isAuthenticated()) {
-                out.write("<a href=\"logout\" id=\"signin-link\"><em>"+userService.getCurrentUser().getUsername()+"</em><strong>Desconectar</strong><i class=\"signout\"></i></a>");
-            } else { 
-            	out.write("<a href=\"login\" id=\"signin-link\"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>");
-            } %>
+            if (userService.getCurrentUser().isAuthenticated()) { %>
+            	<a href="<url:url name="logout"/>" id="signin-link"><g:gravatar email="<%= userService.getCurrentUser().getEmail() %>" size="16"/> <em><%= userService.getCurrentUser().getUsername() %></em><strong>Desconectar</strong><i class="signout"></i></a>
+            <%} else { %>
+            	<a href="<url:url name="login"><url:param name="next" value="${pageContext.request.contextPath}"/></url:url>" id="signin-link"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>
+            <% } %>
             <!-- span id="loginbox"><a href="#" id="signin-link"><strong>Identificarse</strong><i></i></a></span-->
             </div>                
         </li>

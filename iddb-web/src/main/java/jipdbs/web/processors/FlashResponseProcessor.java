@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
+import ar.sgt.resolver.flow.ForceRedirect;
 import ar.sgt.resolver.processor.ResolverContext;
 import ar.sgt.resolver.processor.ResponseProcessor;
 
@@ -35,12 +36,15 @@ public abstract class FlashResponseProcessor extends ResponseProcessor {
 	public String doProcess(ResolverContext context) throws ProcessorException {
 		String resp = null;
 		try {
-			resp = processProcessor(context);	
+			resp = processProcessor(context);
+		} catch (ForceRedirect r) {
+			throw r;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			Flash.error(context.getRequest(), e.getMessage());
+		} finally {
+			context.getRequest().setAttribute("flash", Flash.clear(context.getRequest()));	
 		}
-		context.getRequest().setAttribute("flash", Flash.clear(context.getRequest()));
 		return resp;
 	}
 	

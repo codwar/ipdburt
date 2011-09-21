@@ -49,7 +49,9 @@ public class ShiroUserService implements UserService {
 		Subject subject = SecurityUtils.getSubject();
 		if (subject.isAuthenticated()) {
 			log.debug("User is authenticated");
-			return new ShiroUser(subject.getPrincipal().toString(), subject.hasRole("superadmin"));
+			ShiroUser u = new ShiroUser(subject.getPrincipal().toString(), subject.hasRole("superadmin"));
+			u.setEmail(u.getUsername());
+			return u;
 		}
 		log.debug("User is Anonymous");
 		return new AnonymousUser();
