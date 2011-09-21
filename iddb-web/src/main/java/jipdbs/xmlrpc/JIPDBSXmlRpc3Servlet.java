@@ -1,6 +1,6 @@
 package jipdbs.xmlrpc;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 
 import java.io.IOException;
 
@@ -23,11 +23,11 @@ public class JIPDBSXmlRpc3Servlet extends XmlRpcServlet {
 
 	private static ThreadLocal<String> clientIpAddress = new ThreadLocal<String>();
 	
-	private JIPDBS app;
+	private IDDBService app;
 
 	@Override
 	public void init() throws ServletException {
-		app = (JIPDBS) getServletContext().getAttribute("jipdbs");
+		app = (IDDBService) getServletContext().getAttribute("jipdbs");
 
 	}
 

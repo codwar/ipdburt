@@ -9,8 +9,11 @@
 	</listener>
 
 	<listener>
-		<listener-class>ar.sgt.resolver.listener.ResolverListener
-		</listener-class>
+		<listener-class>iddb.quartz.web.QuartzContextListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>ar.sgt.resolver.listener.ResolverListener</listener-class>
 	</listener>
 
 	<filter>

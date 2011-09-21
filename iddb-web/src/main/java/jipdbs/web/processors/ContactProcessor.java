@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.util.Validator;
 
 import java.security.Principal;
@@ -52,7 +52,7 @@ public class ContactProcessor extends FlashResponseProcessor {
 				return null;
 			}
 			
-			JIPDBS app = (JIPDBS) context.getServletContext().getAttribute("jipdbs");
+			IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 			
 			if (!app.isRecaptchaValid(req.getRemoteAddr(),
 					req.getParameter("recaptcha_challenge_field"),

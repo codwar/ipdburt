@@ -68,10 +68,9 @@ public final class DAOFactory {
 		if (instance == null) {
 			instance = new DAOFactory();
 		}
-		log.debug("Lookup dao for {}", claz.getName());
 		Object dao = instance.getDaoCache().get(claz.getName());
 		if (dao == null) {
-			log.error("There is no DAO associated with {}", claz.getName());
+			log.debug("Failed lookup dao for {}", claz.getName());
 		}
 		return dao;
 	}

@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors.admin;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.util.GuidGenerator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class SaveServerProcessor extends RedirectProcessor {
 	@Override
 	public String doProcess(ResolverContext context) throws ProcessorException {
 		
-		JIPDBS app = (JIPDBS) context.getServletContext().getAttribute("jipdbs");
+		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		
 		HttpServletRequest req = context.getRequest();
 

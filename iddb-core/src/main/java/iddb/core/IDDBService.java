@@ -49,12 +49,13 @@ import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JIPDBS {
+public class IDDBService {
 
-	private static final Logger log = LoggerFactory.getLogger(JIPDBS.class);
+	private static final Logger log = LoggerFactory.getLogger(IDDBService.class);
 
 	protected final ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
@@ -65,12 +66,19 @@ public class JIPDBS {
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
 
-	public JIPDBS(Properties props) {
-		recaptchaPublicKey = props.getProperty("recaptcha.public.key", "");
-		recaptchaPrivateKey = props.getProperty("recaptcha.private.key", "");
+	public IDDBService() {
+		this("","");
+	}
+	
+	public IDDBService(String captchaPublicKey, String captchaPrivateKey) {
+		recaptchaPublicKey = captchaPublicKey;
+		recaptchaPrivateKey = captchaPrivateKey;
 	}
 
 	public String getNewRecaptchaCode() {
+		if (StringUtils.isEmpty(recaptchaPrivateKey) || StringUtils.isEmpty(recaptchaPublicKey)) {
+			log.warn("reCaptcha has not been initialized correclty.");
+		}
 		ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey,
 				recaptchaPrivateKey, false);
 		Properties cProp = new Properties();

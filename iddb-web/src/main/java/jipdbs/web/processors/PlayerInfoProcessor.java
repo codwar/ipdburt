@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
@@ -51,7 +51,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 	@Override
 	public String processProcessor(ResolverContext context) throws ProcessorException {
 		
-		JIPDBS app = (JIPDBS) context.getServletContext().getAttribute("jipdbs");
+		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		
 		HttpServletRequest req = context.getRequest();
 

@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors.admin;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
 import jipdbs.web.processors.ServerListProcessor;
@@ -37,7 +37,7 @@ public class LoadServerProcessor extends ServerListProcessor {
 	public String doProcess(ResolverContext context) throws ProcessorException {
 		String resp = super.doProcess(context);
 		
-		JIPDBS app = (JIPDBS) context.getServletContext().getAttribute("jipdbs");
+		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 
 		Server server = null;
 		try {

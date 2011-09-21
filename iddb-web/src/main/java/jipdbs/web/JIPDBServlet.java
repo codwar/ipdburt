@@ -18,7 +18,7 @@
  */
 package jipdbs.web;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,11 +31,11 @@ public abstract class JIPDBServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 7720689580181419628L;
 	
-	protected JIPDBS app;
+	protected IDDBService app;
 	
 	@Override
 	public void init() throws ServletException {
-		app = (JIPDBS) getServletContext().getAttribute(Context.JIPDBS);
+		app = (IDDBService) getServletContext().getAttribute(Context.JIPDBS);
 	}
 	
 }

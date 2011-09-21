@@ -18,7 +18,7 @@
  */
 package jipdbs.web;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 
 import java.util.Properties;
 
@@ -50,6 +50,6 @@ public class JIPDBSContextListener implements ServletContextListener {
 		} catch (Exception e) {
 			log.warn("Unable to load context properties: ", e.getMessage());
 		}
-		context.setAttribute(Context.JIPDBS, new JIPDBS(props));
+		context.setAttribute(Context.JIPDBS, new IDDBService(props.getProperty("recaptcha.public.key", ""), props.getProperty("recaptcha.private.key", "")));
 	}
 }

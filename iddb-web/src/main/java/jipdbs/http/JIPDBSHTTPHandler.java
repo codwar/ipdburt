@@ -18,7 +18,7 @@
  */
 package jipdbs.http;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
 
@@ -40,11 +40,11 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 	private static final long serialVersionUID = 581879616460472029L;
 	private static final Logger log = LoggerFactory.getLogger(JIPDBSHTTPHandler.class);
 
-	private JIPDBS app;
+	private IDDBService app;
 
 	@Override
 	public void init() throws ServletException {
-		this.app = (JIPDBS) getServletContext().getAttribute("jipdbs");
+		this.app = (IDDBService) getServletContext().getAttribute("jipdbs");
 	}
 
 	@Override

@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.model.Server;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class ServerListProcessor extends FlashResponseProcessor {
 	@Override
 	public String processProcessor(ResolverContext context) throws ProcessorException {
 
-		JIPDBS app = (JIPDBS) context.getServletContext().getAttribute("jipdbs");
+		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		
 		int[] count = new int[1];
 		List<Server> servers = app.getServers(0, SERVER_LIMIT, count);

@@ -18,7 +18,7 @@
  */
 package jipdbs.web.processors;
 
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.PageLink;
 import iddb.core.Parameters;
 import iddb.core.util.Functions;
@@ -49,7 +49,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 
 		HttpServletRequest req = context.getRequest();
 
-		JIPDBS app = (JIPDBS) context.getServletContext()
+		IDDBService app = (IDDBService) context.getServletContext()
 				.getAttribute("jipdbs");
 
 		int page = 1;

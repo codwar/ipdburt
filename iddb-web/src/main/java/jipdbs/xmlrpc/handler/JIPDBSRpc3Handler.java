@@ -3,7 +3,7 @@ package jipdbs.xmlrpc.handler;
 import iddb.api.Events;
 import iddb.api.ServerManager;
 import iddb.api.v2.Update;
-import iddb.core.JIPDBS;
+import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Server;
 import iddb.exception.UnauthorizedUpdateException;
@@ -25,12 +25,12 @@ public class JIPDBSRpc3Handler {
 			.getName());
 
 	@SuppressWarnings("unused")
-	private final JIPDBS app;
+	private final IDDBService app;
 	private final Update updateApi;
 
 	private static final int maxListSize = 30;
 
-	public JIPDBSRpc3Handler(JIPDBS app) {
+	public JIPDBSRpc3Handler(IDDBService app) {
 		this.app = app;
 		this.updateApi = new Update();
 	}
