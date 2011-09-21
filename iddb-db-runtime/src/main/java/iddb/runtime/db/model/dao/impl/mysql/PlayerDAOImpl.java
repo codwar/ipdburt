@@ -32,6 +32,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -256,6 +257,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, player.getServer());
 			st.setString(2, player.getGuid());
+			if (player.getCreated() == null) player.setCreated(new Date());
+			if (player.getUpdated() == null) player.setUpdated(new Date());		
 			st.setTimestamp(3, new java.sql.Timestamp(player.getCreated().getTime()));
 			st.setTimestamp(4, new java.sql.Timestamp(player.getUpdated().getTime()));
 			if (player.getBanInfo() != null) st.setTimestamp(5, new java.sql.Timestamp(player.getBanInfo().getTime()));

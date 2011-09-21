@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.xmlrpc.handler.JIPDBSRpc3Handler;
+import jipdbs.xmlrpc.handler.RPC3Handler;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
@@ -48,7 +48,7 @@ public class JIPDBSXmlRpc3Servlet extends XmlRpcServlet {
 	@Override
 	protected XmlRpcHandlerMapping newXmlRpcHandlerMapping()
 			throws XmlRpcException {
-		return new InstanceHandlerMapping(new JIPDBSRpc3Handler(app));
+		return new InstanceHandlerMapping(new RPC3Handler(app));
 	}
 
 }

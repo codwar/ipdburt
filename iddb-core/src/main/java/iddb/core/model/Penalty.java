@@ -40,8 +40,8 @@ public class Penalty implements Serializable {
 	private Date updated;
 	private String reason;
 	private Long duration;
-	private Boolean synced;
-	private Boolean active;
+	private Boolean synced = true;
+	private Boolean active = true;
 
 	public Long getKey() {
 		return key;

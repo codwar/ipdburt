@@ -32,6 +32,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -185,6 +186,8 @@ public class AliasDAOImpl implements AliasDAO {
 			st.setLong(1, alias.getPlayer());
 			st.setString(2, alias.getNickname());
 			st.setString(3, Functions.join(alias.getNgrams(), " "));
+			if (alias.getCreated() == null) alias.setCreated(new Date());
+			if (alias.getUpdated() == null) alias.setUpdated(new Date());			
 			st.setTimestamp(4, new java.sql.Timestamp(alias.getCreated().getTime()));
 			st.setTimestamp(5, new java.sql.Timestamp(alias.getUpdated().getTime()));
 			st.setLong(6, alias.getCount());

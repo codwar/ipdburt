@@ -103,7 +103,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 					log.warn(e.getMessage());
 				}
 			}
-			infoView.setBanInfo(ban.toString());
+			infoView.setBanInfo(penaltyViewBean.toString());
 		}
 		
 		Penalty notice = app.getLastNotice(player);
@@ -119,7 +119,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 					log.warn(e.getMessage());
 				}
 			}
-			infoView.setNote(notice.toString());
+			infoView.setNote(noticeViewBean.toString());
 		}
 		
 		infoView.setAliases(list);

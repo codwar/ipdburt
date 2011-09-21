@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -62,6 +63,8 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setLong(2, Functions.ipToDecimal(alias.getIp()));
+			if (alias.getCreated() == null) alias.setCreated(new Date());
+			if (alias.getUpdated() == null) alias.setUpdated(new Date());			
 			st.setTimestamp(3, new java.sql.Timestamp(alias.getCreated().getTime()));
 			st.setTimestamp(4, new java.sql.Timestamp(alias.getUpdated().getTime()));
 			st.setLong(5, alias.getCount());

@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -66,9 +67,12 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(2, penalty.getAdmin());
 			st.setInt(3, penalty.getType().intValue());
 			st.setString(4, penalty.getReason());
+			if (penalty.getDuration() == null) penalty.setDuration(0L);
 			st.setLong(5, penalty.getDuration());
 			st.setBoolean(6, penalty.getSynced());
 			st.setBoolean(7, penalty.getActive());
+			if (penalty.getCreated() == null) penalty.setCreated(new Date());
+			if (penalty.getUpdated() == null) penalty.setUpdated(new Date());
 			st.setTimestamp(8, new java.sql.Timestamp(penalty.getCreated().getTime()));
 			st.setTimestamp(9, new java.sql.Timestamp(penalty.getUpdated().getTime()));
 			if (penalty.getKey() != null) st.setLong(10, penalty.getKey());
