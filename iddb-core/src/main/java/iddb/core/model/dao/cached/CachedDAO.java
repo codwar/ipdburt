@@ -40,6 +40,7 @@ public abstract class CachedDAO {
 	
 	@SuppressWarnings("unchecked")
 	protected Object getCachedList(String key, int[] count) {
+		if (cacheImpl == null) return null;
 		try {
 			Map<String, Object> map = (Map<String, Object>) cacheImpl.get(key);
 			if (map != null) {
@@ -49,16 +50,17 @@ public abstract class CachedDAO {
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 		return null;
 	}
 	
 	protected void putCachedList(String key, Object list, int[] count) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", list);
-		map.put("count", count[0]);
-		cacheImpl.put(key, map, SEARCH_EXPIRE);
+		if (cacheImpl != null) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("list", list);
+			map.put("count", count[0]);
+			cacheImpl.put(key, map, SEARCH_EXPIRE);
+		}
 	}
 
 	protected void createCache(String namespace) {
