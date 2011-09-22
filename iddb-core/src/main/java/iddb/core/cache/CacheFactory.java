@@ -18,27 +18,63 @@
  */
 package iddb.core.cache;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public final class CacheFactory {
 
+	/**
+	 * 
+	 */
+	private static final String CACHE_IMPL = "iddb.runtime.cache.impl.CacheImpl";
+
+	private static final Logger log = LoggerFactory.getLogger(CacheFactory.class);
+	
 	private static CacheFactory factory = null;
 	private Map<String, Cache> cacheMap;
+	private boolean disabled = false;
 	
 	private CacheFactory() {
 		this.cacheMap = Collections.synchronizedMap(new HashMap<String, Cache>());
-		this.cacheMap.put("default", getCacheImpl());
 	}
 
-	private Cache getCacheImpl() {
-		return null;
-	}
-
-	private Cache getCacheImpl(String namespace) {
-		return null;
+	@SuppressWarnings({ "static-access", "unchecked", "rawtypes" })
+	private Cache getCacheImpl(String namespace) throws UnavailableCacheException {
+		Object obj = null;
+		try {
+			Class impl = this.getClass().forName(CACHE_IMPL);
+			Constructor<String> cons = impl.getConstructor(String.class);
+			obj = cons.newInstance(new Object[] {namespace});
+		} catch (ClassNotFoundException e) {
+			log.warn(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (SecurityException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (NoSuchMethodException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (IllegalArgumentException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (InstantiationException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (IllegalAccessException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} catch (InvocationTargetException e) {
+			log.error(e.getMessage());
+			throw new UnavailableCacheException();
+		} 
+		return (Cache) obj;
 	}
 	
 	public static CacheFactory getInstance() {
@@ -54,18 +90,40 @@ public final class CacheFactory {
 		}
 	}
 	
-	public Cache getCache() {
-		return this.cacheMap.get("default");
+	/**
+	 * Check if there is a cache implementation available
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "static-access" })
+	public boolean verify() {
+		try {
+			@SuppressWarnings("unused")
+			Class impl = this.getClass().forName(CACHE_IMPL);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 	
-	public Cache getCache(String namespace) {
+	public Cache getCache() throws UnavailableCacheException {
+		return getCache("default");
+	}
+	
+	public Cache getCache(String namespace) throws UnavailableCacheException {
+		if (disabled) throw new UnavailableCacheException();
 		Cache cache = this.cacheMap.get(namespace);
 		if (cache == null) {
-			cache = getCacheImpl(namespace);
+			try {
+				cache = getCacheImpl(namespace);
+			} catch (UnavailableCacheException e) {
+				log.warn("Cache system is unavailable");
+				disabled = true;
+				throw e;
+			}
 			this.cacheMap.put(namespace, cache);
 		}
 		return cache;
 	}
-	
+
 }
 

@@ -16,9 +16,10 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.runtime.j2ee.cache.impl;
+package iddb.runtime.cache.impl;
 
 import iddb.core.cache.Cache;
+import iddb.core.cache.UnavailableCacheException;
 
 import java.net.InetSocketAddress;
 import java.util.Properties;
@@ -32,28 +33,30 @@ import net.spy.memcached.MemcachedClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MemcacheImpl implements Cache {
+public class CacheImpl implements Cache {
 
-	private static final Logger log = LoggerFactory.getLogger(MemcacheImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CacheImpl.class);
 	
 	private MemcachedClient client;
 	private Integer expiration = 3600;
 	private String namespace;
 	
-	public MemcacheImpl() {
+	public CacheImpl() throws UnavailableCacheException {
 		this("default");
 	}
 	
-	public MemcacheImpl(String namespace) {
+	public CacheImpl(String namespace) throws UnavailableCacheException {
 		Properties props = new Properties();
 		try {
-			props.load(getClass().getClassLoader().getResourceAsStream("mail.properties"));
+			props.load(getClass().getClassLoader().getResourceAsStream("memcache.properties"));
 			client = new MemcachedClient(new InetSocketAddress(props.getProperty("HOST"), Integer.parseInt(props.getProperty("PORT"))));
 			if (props.containsKey("EXPIRATION")) expiration = Integer.parseInt(props.getProperty("EXPIRATION"));
 		} catch (Exception e) {
 			log.error("Unable to load cache properties [{}]", e.getMessage());
+			throw new UnavailableCacheException();
 		}	
 		this.namespace = "iddb-" + namespace;
+		log.debug("Initialize memcache instance for namespace {}", namespace);
 	}
 	
 	/* (non-Javadoc)

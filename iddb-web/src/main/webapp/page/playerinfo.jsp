@@ -125,6 +125,7 @@
 		</tr>
 	</thead>
 	<tbody id="tablealias">
+	<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE; "><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif'/></td></tr>
 	</tbody>
 	<tfoot>
 		<tr>
@@ -143,6 +144,7 @@
 		</tr>
 	</thead>
 	<tbody id="tableip">
+		<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE;"><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif'/></td></tr>
 	</tbody>
 	<tfoot>
 		<tr>
@@ -153,8 +155,8 @@
 <script type="text/javascript">
 $(document).ready(
 	function() {
-		getAlias(1);
-		getAliasIP(1);
+		setTimeout("getAlias(1)", 500);
+		setTimeout("getAliasIP(1)", 1000);
 	}
 )
 </script>

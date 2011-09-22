@@ -19,12 +19,16 @@
 package iddb.core.model.dao;
 
 import iddb.core.model.Alias;
+import iddb.core.model.dao.cached.AliasDAOCached;
 
 import java.util.Collection;
 import java.util.List;
 
 public interface AliasDAO {
 
+	@SuppressWarnings("rawtypes")
+	public static final Class cached = AliasDAOCached.class;
+	
 	public abstract List<Alias> findByNickname(String query, int offset,
 			int limit, int[] count);
 

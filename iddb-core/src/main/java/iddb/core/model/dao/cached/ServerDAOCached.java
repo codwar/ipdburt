@@ -18,7 +18,6 @@
  */
 package iddb.core.model.dao.cached;
 
-import iddb.core.cache.CacheFactory;
 import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
@@ -26,20 +25,23 @@ import iddb.exception.EntityDoesNotExistsException;
 import java.util.Date;
 import java.util.List;
 
-public class ServerCachedDAO extends CachedDAO implements ServerDAO {
+public class ServerDAOCached extends CachedDAO implements ServerDAO {
 
 	private final ServerDAO impl;
 
-	public ServerCachedDAO(ServerDAO impl) {
+	public ServerDAOCached(ServerDAO impl) {
 		this.impl = impl;
 		this.initializeCache();
 	}
 
 	@Override
 	public void save(Server server) {
+		if (server.getKey() == null) {
+			// if the server is new, we clear the cache for the listed servers
+			cacheClear();
+		}
 		impl.save(server);
-		cache.clear();
-		cache.put(cacheKey(server.getUid()), server);
+		cachePut(cacheKey(server.getUid()), server);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 	@Override
 	public Server findByUid(String uid) {
 
-		Server server = (Server) cache.get(cacheKey(uid));
+		Server server = (Server) cacheGet(cacheKey(uid));
 
 		if (server != null)
 			return server;
@@ -66,7 +68,7 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 		server = impl.findByUid(uid);
 
 		if (server != null)
-			cache.put(cacheKey(server.getUid()), server);
+			cachePut(cacheKey(server.getUid()), server);
 
 		return server;
 	}
@@ -82,7 +84,7 @@ public class ServerCachedDAO extends CachedDAO implements ServerDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = CacheFactory.getInstance().getCache("server");
+		createCache("server");
 	}
 
 	/* (non-Javadoc)

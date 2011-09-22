@@ -25,11 +25,11 @@ import iddb.exception.EntityDoesNotExistsException;
 import java.util.List;
 
 
-public class UserServerCachedDAO implements UserServerDAO {
+public class UserServerDAOCached implements UserServerDAO {
 
 	private UserServerDAO impl;
 	
-	public UserServerCachedDAO(UserServerDAO impl) {
+	public UserServerDAOCached(UserServerDAO impl) {
 		this.impl = impl;
 	}
 	

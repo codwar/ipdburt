@@ -19,6 +19,8 @@
 package iddb.core.model.dao.cached;
 
 import iddb.core.cache.Cache;
+import iddb.core.cache.CacheFactory;
+import iddb.core.cache.UnavailableCacheException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +32,7 @@ public abstract class CachedDAO {
 
 	private static final Logger log = LoggerFactory.getLogger(CachedDAO.class);
 	
-	protected Cache cache;
+	private Cache cacheImpl;
 	
 	protected final Integer SEARCH_EXPIRE = 5;
 	
@@ -39,7 +41,7 @@ public abstract class CachedDAO {
 	@SuppressWarnings("unchecked")
 	protected Object getCachedList(String key, int[] count) {
 		try {
-			Map<String, Object> map = (Map<String, Object>) cache.get(key);
+			Map<String, Object> map = (Map<String, Object>) cacheImpl.get(key);
 			if (map != null) {
 				if (log.isDebugEnabled()) log.debug(map.toString());
 				count[0] = (Integer) map.get("count");
@@ -56,7 +58,47 @@ public abstract class CachedDAO {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list);
 		map.put("count", count[0]);
-		cache.put(key, map, SEARCH_EXPIRE);
+		cacheImpl.put(key, map, SEARCH_EXPIRE);
+	}
+
+	protected void createCache(String namespace) {
+		try {
+			this.cacheImpl = CacheFactory.getInstance().getCache("alias");
+		} catch (UnavailableCacheException e) {
+			this.cacheImpl = null;
+		}
+	}
+	
+	/**
+	 * Put object in cache
+	 * @param key
+	 * @param value
+	 */
+	protected void cachePut(String key, Object value) {
+		if (this.cacheImpl != null) this.cacheImpl.put(key, value); 
+	}
+
+	/**
+	 * Put object in cache with expiration time
+	 * @param key
+	 * @param value
+	 */
+	protected void cachePut(String key, Object value, Integer expire) {
+		if (this.cacheImpl != null) this.cacheImpl.put(key, value, expire); 
+	}
+	
+	/**
+	 * Get object from cache
+	 * @param key
+	 * @return Object
+	 */
+	protected Object cacheGet(String key) {
+		if (this.cacheImpl == null) return null;
+		return this.cacheImpl.get(key);
+	}
+	
+	protected void cacheClear() {
+		if (this.cacheImpl != null) this.cacheImpl.clear();
 	}
 	
 }

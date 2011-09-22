@@ -18,17 +18,16 @@
  */
 package iddb.core.model.dao.cached;
 
-import iddb.core.cache.CacheFactory;
 import iddb.core.model.AliasIP;
 import iddb.core.model.dao.AliasIPDAO;
 
 import java.util.List;
 
-public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
+public class AliasIPDAOCached extends CachedDAO implements AliasIPDAO {
 
 	private AliasIPDAO impl;
 	
-	public AliasIPCachedDAO(AliasIPDAO impl) {
+	public AliasIPDAOCached(AliasIPDAO impl) {
 		this.impl = impl;
 		this.initializeCache();
 	}
@@ -41,13 +40,13 @@ public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
 	public void save(AliasIP alias) {
 		impl.save(alias);
 		if (alias.getKey() != null) {
-			cache.put(cacheKey(alias.getPlayer(), alias.getIp()),alias);
+			cachePut(cacheKey(alias.getPlayer(), alias.getIp()),alias);
 		}
 	}
 
 	@Override
 	public AliasIP findByPlayerAndIp(Long player, String ip) {
-		AliasIP alias = (AliasIP) cache.get(cacheKey(player, ip));
+		AliasIP alias = (AliasIP) cacheGet(cacheKey(player, ip));
 
 		if (alias != null)
 			return alias;
@@ -55,7 +54,7 @@ public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
 		alias = impl.findByPlayerAndIp(player, ip);
 
 		if (alias != null)
-			cache.put(
+			cachePut(
 					cacheKey(alias.getPlayer(), alias.getIp()), alias);
 
 		return alias;
@@ -75,7 +74,7 @@ public class AliasIPCachedDAO extends CachedDAO implements AliasIPDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = CacheFactory.getInstance().getCache("aliasip");
+		createCache("aliasip");
 	}
 
 }

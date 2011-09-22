@@ -18,32 +18,31 @@
  */
 package iddb.core.model.dao.cached;
 
-import iddb.core.cache.CacheFactory;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 
 import java.util.Collection;
 import java.util.List;
 
-public class AliasCachedDAO extends CachedDAO implements AliasDAO {
+public class AliasDAOCached extends CachedDAO implements AliasDAO {
 
 	private final AliasDAO impl;
 
-	public AliasCachedDAO(AliasDAO impl) {
+	public AliasDAOCached(AliasDAO impl) {
 		this.impl = impl;
 		this.initializeCache();
 	}
 
 	@Override
 	protected void initializeCache() {
-		this.cache = CacheFactory.getInstance().getCache("alias");
+		createCache("alias");
 	}
 	
 	@Override
 	public void save(Alias alias, boolean commit) {
 		impl.save(alias, commit);
 		if (alias.getKey() != null) {
-			cache.put(cacheKey(alias.getPlayer(), alias.getNickname()),alias);
+			cachePut(cacheKey(alias.getPlayer(), alias.getNickname()),alias);
 		}
 	}
 
@@ -98,7 +97,7 @@ public class AliasCachedDAO extends CachedDAO implements AliasDAO {
 
 	@Override
 	public Alias findByPlayerAndNickname(Long player, String nickname) {
-		Alias alias = (Alias) cache.get(cacheKey(player, nickname));
+		Alias alias = (Alias) cacheGet(cacheKey(player, nickname));
 
 		if (alias != null)
 			return alias;
@@ -106,7 +105,7 @@ public class AliasCachedDAO extends CachedDAO implements AliasDAO {
 		alias = impl.findByPlayerAndNickname(player, nickname);
 
 		if (alias != null)
-			cache.put(cacheKey(alias.getPlayer(), alias.getNickname()), alias);
+			cachePut(cacheKey(alias.getPlayer(), alias.getNickname()), alias);
 
 		return alias;
 	}

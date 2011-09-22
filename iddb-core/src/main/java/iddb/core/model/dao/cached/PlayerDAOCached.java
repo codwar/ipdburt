@@ -18,7 +18,6 @@
  */
 package iddb.core.model.dao.cached;
 
-import iddb.core.cache.CacheFactory;
 import iddb.core.model.Player;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.exception.EntityDoesNotExistsException;
@@ -26,11 +25,11 @@ import iddb.exception.EntityDoesNotExistsException;
 import java.util.Collection;
 import java.util.List;
 
-public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
+public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 
 	private final PlayerDAO impl;
 
-	public PlayerCachedDAO(PlayerDAO impl) {
+	public PlayerDAOCached(PlayerDAO impl) {
 		this.impl = impl;
 		this.initializeCache();
 	}
@@ -38,13 +37,13 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@Override
 	public void save(Player player, boolean commit) {
 		impl.save(player, commit);
-		cache.put(cacheKey(player.getServer(), player.getGuid()), player);
+		cachePut(cacheKey(player.getServer(), player.getGuid()), player);
 	}
 
 	@Override
 	public Player findByServerAndGuid(Long server, String guid) {
 
-		Player player = (Player) cache.get(cacheKey(server, guid));
+		Player player = (Player) cacheGet(cacheKey(server, guid));
 
 		if (player != null)
 			return player;
@@ -52,7 +51,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 		player = impl.findByServerAndGuid(server, guid);
 
 		if (player != null)
-			cache.put(cacheKey(player.getServer(), player.getGuid()), player);
+			cachePut(cacheKey(player.getServer(), player.getGuid()), player);
 
 		return player;
 	}
@@ -82,10 +81,10 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 	@Override
 	public Player get(Long player) throws EntityDoesNotExistsException {
 		String k = "puid-" + player.toString();
-		Player p = (Player) cache.get(k);
+		Player p = (Player) cacheGet(k);
 		if (p != null) return p;
 		p = impl.get(player);
-		cache.put(k, p, 10);
+		cachePut(k, p, 10);
 		return p;
 	}
 
@@ -145,7 +144,7 @@ public class PlayerCachedDAO extends CachedDAO implements PlayerDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = CacheFactory.getInstance().getCache("player");
+		createCache("player");
 	}
 	
 }

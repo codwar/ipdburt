@@ -18,12 +18,16 @@
  */
 package iddb.core.model.dao;
 
+import iddb.core.cache.CacheFactory;
+
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +39,12 @@ public final class DAOFactory {
 	private Map<String, Object> daoCache = new HashMap<String, Object>();
 
 	private DAOFactory() {
+		// let see if we have a cache system available
+		boolean useCache = false;
+		if (CacheFactory.getInstance().verify()) {
+			log.debug("Cache system is available, will try to create cached DAO");
+			useCache = true;
+		}
 		Properties prop = new Properties();
 		try {
 			prop.load(this.getClass().getClassLoader().getResourceAsStream("dao.properties"));
@@ -45,7 +55,17 @@ public final class DAOFactory {
 				try {
 					@SuppressWarnings({ "static-access", "rawtypes" })
 					Class cls = this.getClass().forName(value);
-					daoCache.put(key, cls.newInstance());
+					Object daoImpl = cls.newInstance();
+					if (useCache) {
+						try {
+							daoCache.put(key, createCachedInstance(key, daoImpl));	
+						} catch (Exception e) {
+							log.error(e.getMessage());
+							daoCache.put(key, daoImpl);
+						}
+					} else {
+						daoCache.put(key, daoImpl);	
+					}
 				} catch (ClassNotFoundException e) {
 					log.error("{} not found", e.getMessage());
 				} catch (InstantiationException e) {
@@ -59,6 +79,29 @@ public final class DAOFactory {
 		}
 	}
 	
+	/**
+	 * @param key
+	 * @param value
+	 * @return
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked", "static-access" })
+	private Object createCachedInstance(String iface, Object impl) throws Exception {
+		String[] ifacePart = StringUtils.split(iface, ".");
+		String ifaceName = ifacePart[ifacePart.length-1];
+		log.debug("Getting cached instance for {}", ifaceName);
+		try {
+			Class clz = this.getClass().forName("iddb.core.model.dao.cached." + ifaceName + "Cached");
+			Constructor cons = clz.getConstructor(Class.forName(iface));
+			return cons.newInstance(new Object[] {impl});
+		} catch (Exception e) {
+			log.warn("No cached implementation found for {}", ifaceName);
+			throw e;
+		}
+	}
+
 	public Map<String, Object> getDaoCache() {
 		return daoCache;
 	}

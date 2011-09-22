@@ -18,18 +18,17 @@
  */
 package iddb.core.model.dao.cached;
 
-import iddb.core.cache.CacheFactory;
 import iddb.core.model.Penalty;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.exception.EntityDoesNotExistsException;
 
 import java.util.List;
 
-public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
+public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 
 	private PenaltyDAO impl;
 	
-	public PenaltyCachedDAO(PenaltyDAO impl) {
+	public PenaltyDAOCached(PenaltyDAO impl) {
 		this.impl = impl;
 		this.initializeCache();
 	}
@@ -41,15 +40,15 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@Override
 	public void save(Penalty penalty) {
 		impl.save(penalty);
-		cache.put(cacheKey(penalty.getKey()), penalty);
+		cachePut(cacheKey(penalty.getKey()), penalty);
 	}
 
 	@Override
 	public Penalty get(Long key) throws EntityDoesNotExistsException {
-		Penalty penalty = (Penalty) cache.get(cacheKey(key));
+		Penalty penalty = (Penalty) cacheGet(cacheKey(key));
 		if (penalty == null) {
 			penalty = impl.get(key);
-			if (penalty != null) cache.put(cacheKey(key), penalty);
+			if (penalty != null) cachePut(cacheKey(key), penalty);
 		}
 		return penalty;
 	}
@@ -63,10 +62,10 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@SuppressWarnings("unchecked")
 	public List<Penalty> findByPlayer(Long player, int limit) {
 		String cachekey = "ply-" + player.toString() + "L" + Integer.toString(limit);
-		List<Penalty> list = (List<Penalty>) cache.get(cachekey);
+		List<Penalty> list = (List<Penalty>) cacheGet(cachekey);
 		if (list != null) return list;
 		list = impl.findByPlayer(player, limit);
-		cache.put(cachekey, list);
+		cachePut(cachekey, list);
 		return list;
 	}
 
@@ -94,7 +93,7 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	protected void initializeCache() {
-		this.cache = CacheFactory.getInstance().getCache("penalty");
+		createCache("penalty");
 	}
 
 	@Override
@@ -105,14 +104,14 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@Override
 	public void delete(Penalty penalty) {
 		impl.delete(penalty);
-		this.cache.clear();
+		cacheClear();
 		
 	}
 
 	@Override
 	public void delete(List<Penalty> list) {
 		impl.delete(list);
-		this.cache.clear();
+		cacheClear();
 	}
 
 	@Override
@@ -131,7 +130,7 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@Override
 	public void disable(List<Penalty> list) {
 		impl.disable(list);
-		this.cache.clear();
+		cacheClear();
 	}
 
 	/* (non-Javadoc)
@@ -140,10 +139,10 @@ public class PenaltyCachedDAO extends CachedDAO implements PenaltyDAO {
 	@Override
 	public Penalty findLastActivePenalty(Long player, Long type) {
 		String key = "active-" + player.toString() + "T" + type.toString();;
-		Penalty penalty = (Penalty) this.cache.get(key);
+		Penalty penalty = (Penalty) cacheGet(key);
 		if (penalty == null) {
 			penalty = impl.findLastActivePenalty(player, type);
-			if (penalty != null) this.cache.put(key, penalty);
+			if (penalty != null) cachePut(key, penalty);
 		}
 		return penalty;
 	}
