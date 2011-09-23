@@ -45,8 +45,8 @@ public class AliasDAOImpl implements AliasDAO {
 	
 	public List<Alias> findByNickname(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE NICKNAME = ? GROUP BY PLAYERID";
-		String sql = "SELECT * FROM ALIAS WHERE NICKNAME = ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from alias where nickname = ? group by playerid";
+		String sql = "select * from alias where nickname = ? group by playerid order by updated desc limit ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
@@ -83,8 +83,8 @@ public class AliasDAOImpl implements AliasDAO {
 	public List<Alias> findByNGrams(String query, int offset, int limit,
 			int[] count) {
 		// TODO MEJORAR
-		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE NGRAMS LIKE ? GROUP BY PLAYERID";
-		String sql = "SELECT * FROM ALIAS WHERE NGRAMS LIKE ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from alias where ngrams like ? group by playerid";
+		String sql = "select * from alias where ngrams like ? group by playerid order by updated desc limit ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
@@ -121,8 +121,8 @@ public class AliasDAOImpl implements AliasDAO {
 
 	public List<Alias> findByPlayer(Long player, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM ALIAS WHERE PLAYERID = ?";
-		String sql = "SELECT * FROM ALIAS WHERE PLAYERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from alias where playerid = ?";
+		String sql = "select * from alias where playerid = ? order by updated desc limit ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
@@ -157,27 +157,27 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	private void loadAlias(Alias alias, ResultSet rs) throws SQLException {
-		alias.setKey(rs.getLong("ID"));
-		alias.setPlayer(rs.getLong("PLAYERID"));
-		alias.setNickname(rs.getString("NICKNAME"));
-		alias.setCreated(rs.getTimestamp("CREATED"));
-		alias.setUpdated(rs.getTimestamp("UPDATED"));
-		alias.setCount(rs.getLong("COUNT"));
-		Collection<String> ngrams = Arrays.asList(StringUtils.split(rs.getString("NGRAMS"), " "));
+		alias.setKey(rs.getLong("id"));
+		alias.setPlayer(rs.getLong("playerid"));
+		alias.setNickname(rs.getString("nickname"));
+		alias.setCreated(rs.getTimestamp("created"));
+		alias.setUpdated(rs.getTimestamp("updated"));
+		alias.setCount(rs.getLong("count"));
+		Collection<String> ngrams = Arrays.asList(StringUtils.split(rs.getString("ngrams"), " "));
 		alias.setNgrams(ngrams);
 	}
 	
 	public void save(Alias alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "INSERT INTO ALIAS (PLAYERID, NICKNAME, NGRAMS, CREATED, UPDATED, COUNT) VALUES (?,?,?,?,?,?)"; 
+			sql = "insert into alias (playerid, nickname, ngrams, created, updated, count) values (?,?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE ALIAS SET PLAYERID = ?," +
-					"NICKNAME = ?," +
-					"NGRAMS = ?," +
-					"CREATED = ?," +
-					"UPDATED = ?," +
-					"COUNT = ? WHERE ID = ? LIMIT 1";
+			sql = "update alias set playerid = ?," +
+					"nickname = ?," +
+					"ngrams = ?," +
+					"created = ?," +
+					"updated = ?," +
+					"count = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -220,7 +220,7 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	public Alias findByPlayerAndNickname(Long player, String nickname) {
-		String sql = "SELECT * FROM ALIAS WHERE PLAYERID = ? AND NICKNAME = ?";
+		String sql = "select * from alias where playerid = ? and nickname = ?";
 		Alias alias = null;
 		Connection conn = null;
 		try {

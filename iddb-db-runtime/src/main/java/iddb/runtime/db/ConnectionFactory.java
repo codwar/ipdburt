@@ -54,14 +54,14 @@ public final class ConnectionFactory {
 		//loadDriver();
 	}
 
-	private void loadDriver() throws IOException {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			log.error("Unable to load mysql driver");
-			throw new IOException(e);
-		}
-	}
+//	private void loadDriver() throws IOException {
+//		try {
+//			Class.forName("com.mysql.jdbc.Driver");
+//		} catch (ClassNotFoundException e) {
+//			log.error("Unable to load mysql driver");
+//			throw new IOException(e);
+//		}
+//	}
 	
 	public static Connection getConnection() throws IOException, SQLException {
 		if (instance == null) {

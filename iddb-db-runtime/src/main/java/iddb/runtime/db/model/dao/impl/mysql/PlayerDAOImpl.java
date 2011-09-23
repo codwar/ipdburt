@@ -44,7 +44,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 	
 	@Override
 	public Player findByServerAndGuid(Long server, String guid) {
-		String sql = "SELECT * FROM PLAYER WHERE SERVERID = ? AND GUID = ?";
+		String sql = "select * from player where serverid = ? and guid = ?";
 		Connection conn = null;
 		Player player = null;
 		try {
@@ -75,8 +75,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * 
 	 */
 	public List<Player> findByServer(Long key, int offset, int limit,int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE SERVERID = " + key;
-		String sql = "SELECT * FROM PLAYER WHERE SERVERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from player where serverid = " + key;
+		String sql = "select * from player where serverid = ? order by updated desc limit ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
@@ -114,8 +114,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * List players ordered by connected and updated first
 	 */
 	public List<Player> findLatest(int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER";
-		String sql = "SELECT * FROM PLAYER ORDER BY CONNECTED DESC, UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from player";
+		String sql = "select * from player order by connected desc, updated desc limit ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
@@ -152,8 +152,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * List banned players
 	 */
 	public List<Player> findBanned(int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE BANINFO IS NOT NULL";
-		String sql = "SELECT * FROM PLAYER WHERE BANINFO IS NOT NULL ORDER BY BANINFO DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from player where baninfo is not null";
+		String sql = "select * from player where baninfo is not null order by baninfo desc limit ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
@@ -187,7 +187,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 
 	@Override
 	public Player get(Long key) throws EntityDoesNotExistsException {
-		String sql = "SELECT * FROM PLAYER WHERE ID = ?";
+		String sql = "select * from player where id = ?";
 		Connection conn = null;
 		Player player = null;
 		try {
@@ -219,37 +219,37 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * @throws SQLException 
 	 */
 	private void loadPlayer(Player player, ResultSet rs) throws SQLException {
-		player.setKey(rs.getLong("ID"));
-		player.setServer(rs.getLong("SERVERID"));
-		player.setGuid(rs.getString("GUID"));
-		player.setCreated(rs.getTimestamp("CREATED"));
-		player.setUpdated(rs.getTimestamp("UPDATED"));
-		player.setBanInfo(rs.getTimestamp("BANINFO"));
-		player.setClientId(rs.getLong("CLIENTID"));
-		player.setLevel(rs.getLong("LEVEL"));
-		player.setNote(rs.getTimestamp("NOTE"));
-		player.setConnected(rs.getBoolean("CONNECTED"));
-		player.setNickname(rs.getString("NICKNAME"));
-		player.setIp(rs.getString("IP"));
+		player.setKey(rs.getLong("id"));
+		player.setServer(rs.getLong("serverid"));
+		player.setGuid(rs.getString("guid"));
+		player.setCreated(rs.getTimestamp("created"));
+		player.setUpdated(rs.getTimestamp("updated"));
+		player.setBanInfo(rs.getTimestamp("baninfo"));
+		player.setClientId(rs.getLong("clientid"));
+		player.setLevel(rs.getLong("level"));
+		player.setNote(rs.getTimestamp("note"));
+		player.setConnected(rs.getBoolean("connected"));
+		player.setNickname(rs.getString("nickname"));
+		player.setIp(rs.getString("ip"));
 	}
 
 	@Override
 	public void save(Player player) {
 		String sql;
 		if (player.getKey() == null) {
-			sql = "INSERT INTO PLAYER (SERVERID, GUID, CREATED, UPDATED, BANINFO, CLIENTID, LEVEL, NOTE, CONNECTED, NICKNAME, IP) VALUES (?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into player (serverid, guid, created, updated, baninfo, clientid, level, note, connected, nickname, ip) values (?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE PLAYER SET SERVERID = ?," +
-					"GUID = ?," +
-					"CREATED = ?," +
-					"UPDATED = ?," +
-					"BANINFO = ?," +
-					"CLIENTID = ?," +
-					"LEVEL = ?," +
-					"NOTE = ?," +
-					"CONNECTED = ?," +
-					"NICKNAME = ?," +
-					"IP = ? WHERE ID = ? LIMIT 1";
+			sql = "update player set serverid = ?," +
+					"guid = ?," +
+					"created = ?," +
+					"updated = ?," +
+					"baninfo = ?," +
+					"clientid = ?," +
+					"level = ?," +
+					"note = ?," +
+					"connected = ?," +
+					"nickname = ?," +
+					"ip = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -302,7 +302,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 
 	@Override
 	public void cleanConnected(Long server) {
-		String sql = "UPDATE PLAYER SET CONNECTED = ? WHERE CONNECTED = ? AND SERVERID = ?";
+		String sql = "update player set connected = ? where connected = ? and serverid = ?";
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
@@ -326,7 +326,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 
 	@Override
 	public int countConnected(Long key) {
-		String sql = "SELECT COUNT(ID) FROM PLAYER WHERE CONNECTED = ? AND SERVERID = ?";
+		String sql = "select count(id) from player where connected = ? and serverid = ?";
 		Connection conn = null;
 		int c = 0;
 		try {
@@ -354,8 +354,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	@Override
 	public List<Player> findByClientId(Long clientId, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PLAYER WHERE CLIENTID = ?";
-		String sql = "SELECT * FROM PLAYER WHERE CLIENTID = ? ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from player where clientid = ?";
+		String sql = "select * from player where clientid = ? order by updated desc limit ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {

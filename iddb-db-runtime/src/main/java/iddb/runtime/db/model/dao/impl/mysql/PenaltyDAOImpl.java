@@ -47,17 +47,17 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	public void save(Penalty penalty) {
 		String sql;
 		if (penalty.getKey() == null) {
-			sql = "INSERT INTO PENALTY (PLAYERID, ADMINID, TYPE, REASON, DURATION, SYNCED, ACTIVE, CREATED, UPDATED) VALUES (?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into penalty (playerid, adminid, type, reason, duration, synced, active, created, updated) values (?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE PENALTY SET PLAYERID = ?," +
-					"ADMINID = ?," +
-					"TYPE = ?," +
-					"REASON = ?," +
-					"DURATION = ?," +
-					"SYNCED = ?," +
-					"ACTIVE = ?," +
-					"CREATED = ?," +
-					"UPDATED = ? WHERE ID = ? LIMIT 1";
+			sql = "update penalty set playerid = ?," +
+					"adminid = ?," +
+					"type = ?," +
+					"reason = ?," +
+					"duration = ?," +
+					"synced = ?," +
+					"active = ?," +
+					"created = ?," +
+					"updated = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -102,7 +102,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public void delete(Penalty penalty) {
-		String sql = "DELETE FROM PENALTY WHERE ID = ?";
+		String sql = "delete from penalty where id = ?";
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
@@ -127,7 +127,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public Penalty get(Long key) throws EntityDoesNotExistsException {
-		String sql = "SELECT * FROM PENALTY WHERE ID = ?";
+		String sql = "select * from penalty where id = ?";
 		Connection conn = null;
 		Penalty penalty = null;
 		try {
@@ -160,16 +160,16 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @throws SQLException 
 	 */
 	private void loadPenalty(Penalty penalty, ResultSet rs) throws SQLException {
-		penalty.setKey(rs.getLong("ID"));
-		penalty.setPlayer(rs.getLong("PLAYERID"));
-		penalty.setAdmin(rs.getLong("ADMINID"));
-		penalty.setType(new Long((rs.getInt("TYPE"))));
-		penalty.setReason(rs.getString("REASON"));
-		penalty.setDuration(rs.getLong("DURATION"));
-		penalty.setSynced(rs.getBoolean("SYNCED"));
-		penalty.setActive(rs.getBoolean("ACTIVE"));
-		penalty.setCreated(rs.getTimestamp("CREATED"));
-		penalty.setUpdated(rs.getTimestamp("UPDATED"));
+		penalty.setKey(rs.getLong("id"));
+		penalty.setPlayer(rs.getLong("playerid"));
+		penalty.setAdmin(rs.getLong("adminid"));
+		penalty.setType(new Long((rs.getInt("type"))));
+		penalty.setReason(rs.getString("reason"));
+		penalty.setDuration(rs.getLong("duration"));
+		penalty.setSynced(rs.getBoolean("synced"));
+		penalty.setActive(rs.getBoolean("active"));
+		penalty.setCreated(rs.getTimestamp("created"));
+		penalty.setUpdated(rs.getTimestamp("updated"));
 	}
 
 	/* (non-Javadoc)
@@ -177,7 +177,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayer(Long player) {
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ?";
+		String sql = "select * from penalty where playerid = ?";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -208,7 +208,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayer(Long player, int limit) {
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? LIMIT ?";
+		String sql = "select * from penalty where playerid = ? limit ?";
 		List<Penalty> list = new ArrayList<Penalty>();
 		Connection conn = null;
 		try {
@@ -241,8 +241,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	@Override
 	public List<Penalty> findByType(Long type, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PENALTY WHERE TYPE = ?";
-		String sql = "SELECT * FROM PENALTY WHERE TYPE = ? ORDER BY CREATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from penalty where type = ?";
+		String sql = "select * from penalty where type = ? order by created desc limit ?,?";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -281,7 +281,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type) {
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? AND ACTIVE = ? ORDER BY CREATED DESC";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -314,8 +314,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayerAndType(Long player, Long type, int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM PENALTY WHERE PLAYERID = ? AND TYPE = ?";
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? ORDER BY CREATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from penalty where playerid = ? and type = ?";
+		String sql = "select * from penalty where playerid = ? and type = ? order by created desc limit ?,?";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -366,7 +366,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public void delete(List<Penalty> list) {
-		String sql = "DELETE FROM PENALTY WHERE ID = ?";
+		String sql = "delete from penalty where id = ?";
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
@@ -393,7 +393,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayerAndType(Long player, Long type) {
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? ORDER BY CREATED DESC";
+		String sql = "select * from penalty where playerid = ? and type = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -425,7 +425,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public void disable(List<Penalty> list) {
-		String sql = "UPDATE PENALTY SET ACTIVE = ? WHERE ID = ?";
+		String sql = "update penalty set active = ? where id = ?";
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
@@ -453,7 +453,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public Penalty findLastActivePenalty(Long player, Long type) {
-		String sql = "SELECT * FROM PENALTY WHERE PLAYERID = ? AND TYPE = ? AND ACTIVE = ? ORDER BY UPDATED DESC LIMIT 1";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by updated desc limit 1";
 		Connection conn = null;
 		Penalty penalty = null;
 		try {

@@ -49,13 +49,13 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	public void save(AliasIP alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "INSERT INTO ALIASIP (PLAYERID, IP, CREATED, UPDATED, COUNT) VALUES (?,?,?,?,?)"; 
+			sql = "insert into aliasip (playerid, ip, created, updated, count) values (?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE ALIASIP SET PLAYERID = ?," +
-					"IP = ?," +
-					"CREATED = ?," +
-					"UPDATED = ?," +
-					"COUNT = ? WHERE ID = ? LIMIT 1";
+			sql = "update aliasip set playerid = ?," +
+					"ip = ?," +
+					"created = ?," +
+					"updated = ?," +
+					"count = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -95,7 +95,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	 */
 	@Override
 	public AliasIP findByPlayerAndIp(Long player, String ip) {
-		String sql = "SELECT * FROM ALIASIP WHERE PLAYERID = ? AND IP = ?";
+		String sql = "select * from aliasip where playerid = ? and ip = ?";
 		Connection conn = null;
 		AliasIP alias = null;
 		try {
@@ -127,12 +127,12 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	 * @throws SQLException 
 	 */
 	private void loadAlias(AliasIP alias, ResultSet rs) throws SQLException {
-		alias.setKey(rs.getLong("ID"));
-		alias.setPlayer(rs.getLong("PLAYERID"));
-		alias.setIp(Functions.decimalToIp(rs.getLong("IP")));
-		alias.setCreated(rs.getTimestamp("CREATED"));
-		alias.setUpdated(rs.getTimestamp("UPDATED"));
-		alias.setCount(rs.getLong("COUNT"));
+		alias.setKey(rs.getLong("id"));
+		alias.setPlayer(rs.getLong("playerid"));
+		alias.setIp(Functions.decimalToIp(rs.getLong("ip")));
+		alias.setCreated(rs.getTimestamp("created"));
+		alias.setUpdated(rs.getTimestamp("updated"));
+		alias.setCount(rs.getLong("count"));
 	}
 
 	/* (non-Javadoc)
@@ -141,8 +141,8 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	@Override
 	public List<AliasIP> findByPlayer(Long player, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM ALIASIP WHERE PLAYERID = ?";
-		String sql = "SELECT * FROM ALIASIP WHERE PLAYERID = ? ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from aliasip where playerid = ?";
+		String sql = "select * from aliasip where playerid = ? order by updated desc limit ?,?";
 		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {
@@ -182,8 +182,8 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	@Override
 	public List<AliasIP> findByIP(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM ALIASIP WHERE IP BETWEEN ? AND ? GROUP BY PLAYERID";
-		String sql = "SELECT * FROM ALIASIP WHERE IP BETWEEN ? AND ? GROUP BY PLAYERID ORDER BY UPDATED DESC LIMIT ?,?";
+		String sqlCount = "select count(id) from aliasip where ip between ? and ? group by playerid";
+		String sql = "select * from aliasip where ip between ? and ? group by playerid order by updated desc limit ?,?";
 		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {

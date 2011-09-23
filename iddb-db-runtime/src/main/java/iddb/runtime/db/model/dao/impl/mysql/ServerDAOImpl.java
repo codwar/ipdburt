@@ -44,9 +44,9 @@ public class ServerDAOImpl implements ServerDAO {
 	public void save(Server server) {
 		String sql;
 		if (server.getKey() == null) {
-			sql = "INSERT INTO SERVER (UID, NAME, ADMIN, CREATED, UPDATED, ONLINEPLAYERS, ADDRESS, PLUGINVERSION, MAXLEVEL, DIRTY, PERMISSION) VALUES (?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission) values (?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "UPDATE SERVER SET UID = ?, NAME = ?, ADMIN = ?, CREATED = ?, UPDATED = ?, ONLINEPLAYERS = ?, ADDRESS = ?, PLUGINVERSION = ?, MAXLEVEL = ?, DIRTY = ?, PERMISSION = ? WHERE ID = ? LIMIT 1";
+			sql = "update server set uid = ?, name = ?, admin = ?, created = ?, updated = ?, onlineplayers = ?, address = ?, pluginversion = ?, maxlevel = ?, isdirty = ?, permission = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -89,8 +89,8 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public List<Server> findAll(int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(ID) FROM SERVER";
-		String sql = "SELECT * FROM SERVER LIMIT ?,?";
+		String sqlCount = "select count(id) from server";
+		String sql = "select * from server limit ?,?";
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
@@ -124,7 +124,7 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public Server findByUid(String uid) {
-		String sql = "SELECT * FROM SERVER WHERE UID = ?";
+		String sql = "select * from server where uid = ?";
 		Connection conn = null;
 		Server server = null;
 		try {
@@ -150,23 +150,23 @@ public class ServerDAOImpl implements ServerDAO {
 	}
 
 	private void loadServer(Server server, ResultSet rs) throws SQLException {
-		server.setKey(rs.getLong("ID"));
-		server.setUid(rs.getString("UID"));
-		server.setName(rs.getString("NAME"));
-		server.setAdminEmail(rs.getString("ADMIN"));
-		server.setCreated(rs.getTimestamp("CREATED"));
-		server.setUpdated(rs.getTimestamp("UPDATED"));
-		server.setOnlinePlayers(rs.getInt("ONLINEPLAYERS"));
-		server.setAddress(rs.getString("ADDRESS"));
-		server.setPluginVersion(rs.getString("PLUGINVERSION"));
-		server.setMaxLevel(rs.getLong("MAXLEVEL"));
-		server.setDirty(rs.getBoolean("DIRTY"));
-		server.setPermission(rs.getInt("PERMISSION"));
+		server.setKey(rs.getLong("id"));
+		server.setUid(rs.getString("uid"));
+		server.setName(rs.getString("name"));
+		server.setAdminEmail(rs.getString("admin"));
+		server.setCreated(rs.getTimestamp("created"));
+		server.setUpdated(rs.getTimestamp("updated"));
+		server.setOnlinePlayers(rs.getInt("onlineplayers"));
+		server.setAddress(rs.getString("address"));
+		server.setPluginVersion(rs.getString("pluginversion"));
+		server.setMaxLevel(rs.getLong("maxlevel"));
+		server.setDirty(rs.getBoolean("isdirty"));
+		server.setPermission(rs.getInt("permission"));
 	}
 
 	@Override
 	public Server get(Long key) throws EntityDoesNotExistsException {
-		String sql = "SELECT * FROM SERVER WHERE ID = ?";
+		String sql = "select * from server where id = ?";
 		Connection conn = null;
 		Server server = null;
 		try {
@@ -198,7 +198,7 @@ public class ServerDAOImpl implements ServerDAO {
 	 */
 	@Override
 	public List<Server> listNotUpdatedSince(java.util.Date date) {
-		String sql = "SELECT * FROM SERVER WHERE UPDATED <= ?";
+		String sql = "select * from server where updated <= ?";
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
