@@ -15,11 +15,11 @@ public final class ConnectionFactory {
 	private static final Logger log = LoggerFactory.getLogger(ConnectionFactory.class);
 	
 	private static ConnectionFactory instance;
-	private Properties props;
 	private DataSource dataSource;
 	
 	private ConnectionFactory() throws IOException {
 		log.debug("Initializing ConnectionFactory");
+		Properties props;
 		props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream("db.properties"));
@@ -29,10 +29,10 @@ public final class ConnectionFactory {
 		}
 		
 		PoolProperties p = new PoolProperties();
-        p.setUrl("jdbc:mysql://166.40.231.124:3306/test?autoReconnect=true");
-        p.setDriverClassName("com.mysql.jdbc.Driver");
-        p.setUsername("test");
-        p.setPassword("test");
+        p.setUrl(props.getProperty("url"));
+        p.setDriverClassName(props.getProperty("driver"));
+        p.setUsername(props.getProperty("username"));
+        p.setPassword(props.getProperty("password"));
         p.setJmxEnabled(true);
         p.setTestWhileIdle(false);
         p.setTestOnBorrow(true);
