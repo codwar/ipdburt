@@ -48,7 +48,7 @@ public class ShiroUserService implements UserService {
 	public User getCurrentUser() {
 		Subject subject = SecurityUtils.getSubject();
 		if (subject.isAuthenticated()) {
-			log.debug("User is authenticated");
+			log.debug("User is authenticated as {}", subject.getPrincipal().toString());
 			ShiroUser u = new ShiroUser(subject.getPrincipal().toString(), subject.hasRole("superadmin"));
 			u.setEmail(u.getUsername());
 			return u;

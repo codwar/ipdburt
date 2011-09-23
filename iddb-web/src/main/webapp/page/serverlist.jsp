@@ -33,9 +33,17 @@
 				</c:otherwise>
 				</c:choose>
 				</td>
-				<td style="text-align: right;"><c:if test="${server.offline}"><span class="icon exclamation">&nbsp;</span></c:if><fmt:formatDate type="both"
-					timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss"
-					value="${server.updated}" /></td>
+				<td style="text-align: right;">
+				<c:choose>
+				<c:when test="${empty server.updated}">
+					<span style="font-weight: bold;">Nunca</span>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${server.offline}"><span class="icon exclamation">&nbsp;</span></c:if>
+					<fmt:formatDate type="both"	timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss" value="${server.updated}" />
+				</c:otherwise>
+				</c:choose>
+				</td>
 			</tr>
 		</c:forEach>
 	</tbody>

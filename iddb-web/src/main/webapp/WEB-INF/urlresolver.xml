@@ -51,7 +51,10 @@
     <rule name="logout" pattern="^/account/logout/$">
         <arg name="type" value="logout"/>
     </rule>    
-  </processor>    
+  </processor>
+  <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
+    <rule name="openid" pattern="^/openid/$"/>
+  </processor>      
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
   </forward-processor>

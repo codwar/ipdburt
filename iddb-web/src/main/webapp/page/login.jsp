@@ -8,5 +8,5 @@
 <div style='display:none'><input type="hidden" value="${next}"/></div>
 <label for="username">Usuario:</label><input type="text" name="username" value="" /><br/>
 <label for="password">Contraseña:</label><input type="password" name="password" value="" /><br/>
-<input type="submit" value="Enviar" /></form>
+<input type="submit" value="Enviar" />
 </form>
