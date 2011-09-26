@@ -90,7 +90,7 @@ public class ServerDAOImpl implements ServerDAO {
 	@Override
 	public List<Server> findAll(int offset, int limit, int[] count) {
 		String sqlCount = "select count(id) from server";
-		String sql = "select * from server limit ?,?";
+		String sql = "select * from server order by updated limit ?,?";
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {

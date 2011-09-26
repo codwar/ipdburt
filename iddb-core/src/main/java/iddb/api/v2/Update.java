@@ -19,12 +19,15 @@
 package iddb.api.v2;
 
 import iddb.api.ServerManager;
+import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.User;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
+import iddb.core.model.dao.UserDAO;
 import iddb.core.util.MailManager;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.info.PlayerInfo;
@@ -126,8 +129,29 @@ public class Update {
 	 * @since 0.5
 	 */
 	public void updatePlayer(Server server, List<PlayerInfo> list) throws Exception {
-		log.info("Processing server: " + server.getName());
+		log.info("Processing server: {}", server.getName());
 		TaskManager.getInstance().runTask(new UpdateTask(server, list));
+	}
+
+	/**
+	 * @param server
+	 * @param userid
+	 * @param playerInfo
+	 */
+	public boolean linkUser(Server server, String userid, PlayerInfo playerInfo) throws Exception {
+		log.info("Linking player {} with user {}", playerInfo.getName(), userid);
+		
+		Player player = playerDAO.findByServerAndGuid(server.getKey(), playerInfo.getGuid());
+		if (player == null) {
+			player = new Player();
+			// CREATE PLAYER AND ALIAS
+		}
+		
+
+//		UserDAO userDAO = DAOFactory.forClass(UserDAO.class);
+//		userDAO.get(key)
+		
+		return false;
 	}
 
 }

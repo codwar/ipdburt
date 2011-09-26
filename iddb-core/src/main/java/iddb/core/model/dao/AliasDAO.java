@@ -32,7 +32,7 @@ public interface AliasDAO {
 	public abstract List<Alias> findByNickname(String query, int offset,
 			int limit, int[] count);
 
-	public abstract List<Alias> findByNGrams(String query, int offset,
+	public abstract List<Alias> findBySimilar(String query, int offset,
 			int limit, int[] count);
 
 	public abstract List<Alias> findByPlayer(Long player, int offset,

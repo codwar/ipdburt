@@ -19,7 +19,6 @@
 package iddb.core.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 
 public class Alias implements Serializable {
@@ -31,7 +30,6 @@ public class Alias implements Serializable {
 	private Long server;
 
 	private String nickname;
-	private Collection<String> ngrams;
 	private Date created;
 	private Date updated;
 	private Long count;
@@ -82,14 +80,6 @@ public class Alias implements Serializable {
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
-	}
-
-	public Collection<String> getNgrams() {
-		return ngrams;
-	}
-
-	public void setNgrams(Collection<String> ngrams) {
-		this.ngrams = ngrams;
 	}
 
 	public Long getServer() {

@@ -217,7 +217,7 @@ public class IDDBService {
 					&& query.length() <= Parameters.MAX_ALIAS_QUERY) {
 				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query
 						: query.substring(0, Parameters.MAX_NGRAM_QUERY);
-				aliasses = aliasDAO.findByNGrams(query,
+				aliasses = aliasDAO.findBySimilar(query,
 						Parameters.NGRAMS_OFFSET, Parameters.NGRAMS_LIMIT,
 						count);
 				exactMatch[0] = false;

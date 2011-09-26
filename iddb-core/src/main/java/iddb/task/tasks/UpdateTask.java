@@ -68,6 +68,19 @@ public class UpdateTask implements Runnable {
 		}
 	}
 
+	public Player createPlayer(Server server, PlayerInfo playerInfo) {
+		Player player = new Player();
+		player.setCreated(new Date());
+		player.setGuid(playerInfo.getGuid());
+		player.setLevel(playerInfo.getLevel());
+		player.setClientId(playerInfo.getClientId());
+		player.setServer(server.getKey());
+		player.setBanInfo(null);
+		player.setNickname(playerInfo.getName());
+		player.setIp(playerInfo.getIp());
+		return player;
+	}
+	
 	public void updatePlayer(Server server, List<PlayerInfo> list) throws Exception {
 		try {
 			for (PlayerInfo playerInfo : list) {
@@ -76,15 +89,11 @@ public class UpdateTask implements Runnable {
 					Player player = playerDAO.findByServerAndGuid(server.getKey(),
 							playerInfo.getGuid());
 					if (player == null) {
-						player = new Player();
-						player.setCreated(new Date());
-						player.setGuid(playerInfo.getGuid());
-						player.setLevel(playerInfo.getLevel());
-						player.setClientId(playerInfo.getClientId());
-						player.setServer(server.getKey());
-						player.setBanInfo(null);
+						player = createPlayer(server, playerInfo);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
+						player.setNickname(playerInfo.getName());
+						player.setIp(playerInfo.getIp());
 						player.setClientId(playerInfo.getClientId());
 						player.setLevel(playerInfo.getLevel());
 						if (player.getClientId() == null || player.getClientId() == 0) {
@@ -92,8 +101,6 @@ public class UpdateTask implements Runnable {
 						}
 						playerLastUpdate = player.getUpdated();
 					}
-					player.setNickname(playerInfo.getName());
-					player.setIp(playerInfo.getIp());
 					if (player.getUpdated() == null || playerInfo.getUpdated().after(player.getUpdated())) {
 						player.setUpdated(playerInfo.getUpdated());	
 					}

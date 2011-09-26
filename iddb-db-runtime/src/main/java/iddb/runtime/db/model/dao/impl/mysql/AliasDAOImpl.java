@@ -30,12 +30,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,24 +78,22 @@ public class AliasDAOImpl implements AliasDAO {
 		return list;
 	}
 
-	public List<Alias> findByNGrams(String query, int offset, int limit,
+	public List<Alias> findBySimilar(String query, int offset, int limit,
 			int[] count) {
-		// TODO MEJORAR
-		String sqlCount = "select count(id) from alias where ngrams like ? group by playerid";
-		String sql = "select * from alias where ngrams like ? group by playerid order by updated desc limit ?,?";
+		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid";
+		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid LIMIT ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
-			//String ngramQuery = Functions.join(NGrams.ngrams(query), " ");
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setString(1, "%" + query + "%");
+			stC.setString(1, query);
 			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, "%" + query + "%");
+			st.setString(1, query);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();
@@ -107,9 +103,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findByNGrams", e);
+			logger.error("findBySimilar", e);
 		} catch (IOException e) {
-			logger.error("findByNGrams", e);
+			logger.error("findBySimilar", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -163,18 +159,15 @@ public class AliasDAOImpl implements AliasDAO {
 		alias.setCreated(rs.getTimestamp("created"));
 		alias.setUpdated(rs.getTimestamp("updated"));
 		alias.setCount(rs.getLong("count"));
-		Collection<String> ngrams = Arrays.asList(StringUtils.split(rs.getString("ngrams"), " "));
-		alias.setNgrams(ngrams);
 	}
 	
 	public void save(Alias alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "insert into alias (playerid, nickname, ngrams, created, updated, count) values (?,?,?,?,?,?)"; 
+			sql = "insert into alias (playerid, nickname, created, updated, count, normalized) values (?, ?,?,?,?,?)"; 
 		} else {
 			sql = "update alias set playerid = ?," +
 					"nickname = ?," +
-					"ngrams = ?," +
 					"created = ?," +
 					"updated = ?," +
 					"count = ? where id = ? limit 1";
@@ -185,13 +178,16 @@ public class AliasDAOImpl implements AliasDAO {
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setString(2, alias.getNickname());
-			st.setString(3, Functions.join(alias.getNgrams(), " "));
 			if (alias.getCreated() == null) alias.setCreated(new Date());
 			if (alias.getUpdated() == null) alias.setUpdated(new Date());			
-			st.setTimestamp(4, new java.sql.Timestamp(alias.getCreated().getTime()));
-			st.setTimestamp(5, new java.sql.Timestamp(alias.getUpdated().getTime()));
-			st.setLong(6, alias.getCount());
-			if (alias.getKey() != null) st.setLong(7, alias.getKey());
+			st.setTimestamp(3, new java.sql.Timestamp(alias.getCreated().getTime()));
+			st.setTimestamp(4, new java.sql.Timestamp(alias.getUpdated().getTime()));
+			st.setLong(5, alias.getCount());
+			if (alias.getKey() != null) {
+				st.setLong(6, alias.getKey());
+			} else {
+				st.setString(6, Functions.normalize(alias.getNickname()));
+			}
 			st.executeUpdate();
 			if (alias.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();

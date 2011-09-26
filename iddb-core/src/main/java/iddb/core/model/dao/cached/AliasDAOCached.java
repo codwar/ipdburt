@@ -59,12 +59,12 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Alias> findByNGrams(String query, int offset, int limit,
+	public List<Alias> findBySimilar(String query, int offset, int limit,
 			int[] count) {
 		String key = "gram" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
 		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
-		aliasses = impl.findByNGrams(query, offset, limit, count);
+		aliasses = impl.findBySimilar(query, offset, limit, count);
 		putCachedList(key, aliasses, count);
 		return aliasses;
 	}

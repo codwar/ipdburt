@@ -24,7 +24,6 @@ import iddb.core.model.Player;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.model.dao.DAOFactory;
-import iddb.core.util.NGrams;
 
 import java.util.Date;
 
@@ -45,7 +44,6 @@ public class AliasManager {
 			alias.setCreated(new Date());
 			alias.setNickname(player.getNickname());
 			alias.setServer(player.getServer());
-			alias.setNgrams(NGrams.ngrams(player.getNickname()));
 		} else {
 			if (update) {
 				alias.setCount(alias.getCount() + 1L);

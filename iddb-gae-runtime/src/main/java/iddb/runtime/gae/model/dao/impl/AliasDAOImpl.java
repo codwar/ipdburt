@@ -143,7 +143,7 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	@Override
-	public List<Alias> findByNGrams(String query, int offset, int limit,
+	public List<Alias> findBySimilar(String query, int offset, int limit,
 			int[] count) {
 
 		DatastoreService service = DatastoreServiceFactory

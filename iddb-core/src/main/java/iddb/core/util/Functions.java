@@ -20,7 +20,6 @@ package iddb.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -151,33 +150,73 @@ public class Functions {
 		return result;
 	}
 	
+	public static String normalize(String text) {
+		// TODO agregar lo que vaya siendo necesario
+		String s = text.toLowerCase();
+		s = s.replace("@", "a");
+		s = s.replace("`", "");
+		s = s.replace("*", "");
+		s = s.replace("<", "");
+		s = s.replace(">", "");
+		s = s.replace("&", "");
+		s = s.replace("_", " ");
+		s = s.replace("-", " ");
+		s = s.replace("+", " ");
+		s = s.replace("{", "");
+		s = s.replace("}", "");
+		s = s.replace("'", "");
+		s = s.replace("|", "");
+		s = s.replace("!", "");
+		s = s.replace("[", "");
+		s = s.replace("]", "");
+		s = s.replace(".", "");
+		s = s.replace(",", "");
+		s = s.replace(":", "");
+		// reemplazamos los numeros por posibles usos como letras
+		s = s.replace("0", "o");
+		s = s.replace("1", "i");
+		s = s.replace("3", "e");
+		s = s.replace("4", "a");
+		s = s.replace("5", "s");
+		s = s.replace("7", "t");
+		return s;
+	}
+	
 	public static void main(String[] args) {
-		String s = "125.68.67.66";
-		Long v = ipToDecimal(s);
-		System.out.println(s);
-		System.out.println(v);
-		System.out.println(decimalToIp(v));
-		System.out.println(getIpRange("127.0.0.*"));
-		System.out.println(range(0, -10));
-
-		for (int i : Range.range(0, 2000, 100)) {
-			System.out.println(i);
-		}
-		
-		List<String> list = new ArrayList<String>();
-		list.add("1");
-		list.add("2");
-		list.add("3");
-		list.add("4");
-		list.add("5");
-		list.add("6");
-		list.add("7");
-		list.add("8");
-		list.add("9");
-		
-		for (Iterator<?> it = sublist(list, 5).iterator(); it.hasNext();) {
-			System.out.println(it.next());
-		}
+		System.out.println(normalize(">pr0.frankillo"));
+		System.out.println(normalize("H'ace"));
+		System.out.println(normalize("Fatal1ty"));
+		System.out.println(normalize("[Her0]-.{T0bA_1"));
+		System.out.println(normalize("pok_lol!!!"));
+		System.out.println(normalize("Ca|*Sniper_Depre"));
+		System.out.println(normalize("P3P3"));
+		System.out.println(normalize("R0S4M0N73"));
+//		String s = "125.68.67.66";
+//		Long v = ipToDecimal(s);
+//		System.out.println(s);
+//		System.out.println(v);
+//		System.out.println(decimalToIp(v));
+//		System.out.println(getIpRange("127.0.0.*"));
+//		System.out.println(range(0, -10));
+//
+//		for (int i : Range.range(0, 2000, 100)) {
+//			System.out.println(i);
+//		}
+//		
+//		List<String> list = new ArrayList<String>();
+//		list.add("1");
+//		list.add("2");
+//		list.add("3");
+//		list.add("4");
+//		list.add("5");
+//		list.add("6");
+//		list.add("7");
+//		list.add("8");
+//		list.add("9");
+//		
+//		for (Iterator<?> it = sublist(list, 5).iterator(); it.hasNext();) {
+//			System.out.println(it.next());
+//		}
 		
 	}
 }

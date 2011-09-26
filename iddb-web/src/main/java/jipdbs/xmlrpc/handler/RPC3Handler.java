@@ -42,6 +42,35 @@ public class RPC3Handler {
 				(Integer) data[1], JIPDBSXmlRpc3Servlet.getClientIpAddress());
 	}
 
+	public boolean register(String key, String userid, Object[] data) throws Exception {
+		try {
+			Server server = ServerManager.getAuthorizedServer(key,
+					JIPDBSXmlRpc3Servlet.getClientIpAddress());
+			
+			PlayerInfo playerInfo = new PlayerInfo("register",
+													(String) data[0],
+													(String) data[1],
+													parseLong(data[2]),
+													(String) data[3],
+													parseLong(data[4]));
+			
+			return this.updateApi.linkUser(server, userid, playerInfo);
+			
+		} catch (UnauthorizedUpdateException e) {
+			log.error(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.error(w.getBuffer().toString());
+			throw new Exception(e.getMessage());
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.error(w.getBuffer().toString());
+			throw e;
+		}
+	}
+	
 	public void update(String key, Object[] plist) throws Exception {
 
 		try {
