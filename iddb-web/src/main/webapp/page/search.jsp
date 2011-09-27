@@ -17,7 +17,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 </script>
 
 <script type="text/javascript">
-    function pagination(parent, offset, hasMore, pages, func) {
+    function pagination(parent, offset, hasMore, pages, total, func) {
         prev = $(parent).find("#prev-alias");
         $(prev).unbind('click');
     	if (offset == 1) {
@@ -34,7 +34,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
     	} else {
     	    $(next).removeClass('next').addClass('next-na');
     	}
+    	if (pages == 0) offset = 0;
     	$(parent).find("#curr-alias").html("{0}-{1}".format(offset,pages));
+    	$("#total-alias").html(total);
     }
 	function getAlias(key, offset, callback) {
 		url = dutils.urls.resolve('alias', { key: key}) + "?o=" + offset;
@@ -55,7 +57,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				html += "</tr>";
 				rows[key] = $(html);
 			});
-			callback(data.offset, rows, data.hasMore, data.pages);
+			callback(data.offset, rows, data.hasMore, data.pages, data.total);
 		});
 	}
 	function getAliasIP(key, offset, callback) {
@@ -79,7 +81,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				html += "</tr>";
 				rows[key] = $(html);
 			});
-			callback(data.offset, rows, data.hasMore, data.pages);
+			callback(data.offset, rows, data.hasMore, data.pages, data.total);
 		});
 	}
 	
@@ -103,7 +105,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 				var minus = elem.next();
 				var sibling = elem.parent().parent().next();
 
-				var updateFun = function(offset, rows, hasMore, pages) {
+				var updateFun = function(offset, rows, hasMore, pages, total) {
 
 					var table = sibling.find("table");
 
@@ -120,7 +122,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 						}
 					};
 
-					pagination(table, offset, hasMore, pages, func);
+					pagination(table, offset, hasMore, pages, total, func);
 					
 					elem.hide();
 					minus.show();
@@ -243,7 +245,9 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
+							<td colspan="3">
+							<span style="font-size: smaller;">Total: <span id="total-alias">0</span></span>
+							<div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
 						</tr>
 					</tfoot>
 				</table>

@@ -1,11 +1,10 @@
+<%@page import="iddb.core.util.SystemProperties"%>
 <%@page import="java.util.Properties"%>
 <div class="footer">
      <%
-     	String version = null;
+     	String version;
      	try {
-         	Properties prop = new Properties();
-         	prop.load(this.getClass().getClassLoader().getResourceAsStream("release.properties"));
-         	version = prop.getProperty("version") + "." + prop.getProperty("build");
+         	version = SystemProperties.applicationVersion().getVersion() + "." + SystemProperties.applicationVersion().getBuild();
      	} catch (Exception e) {
      		version = "-";
      	}

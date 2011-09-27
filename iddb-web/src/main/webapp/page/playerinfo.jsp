@@ -13,7 +13,7 @@
 
 <script type="text/javascript">
 	var clientKey = '${player.key}';
-    function pagination(key, offset, hasMore, pages) {
+    function pagination(key, offset, hasMore, pages, total) {
         prev = $("#prev-"+key);
         $(prev).unbind('click');
     	if (offset == 1) {
@@ -30,7 +30,9 @@
     	} else {
     	    $(next).removeClass('next').addClass('next-na');
     	}
+    	if (pages == 0) offset = 0;
     	$("#curr-"+key).html("{0}-{1}".format(offset,pages));
+    	$("#total-"+key).html(total);
     }
     function getHTML(key, offset) {
     	if (key == 'alias') {
@@ -58,7 +60,7 @@
 				html += "</tr>";
 				$("#tablealias").append(html);
 			});
-			pagination('alias', data.offset, data.hasMore, data.pages);
+			pagination('alias', data.offset, data.hasMore, data.pages, data.total);
 		});
 	}
 	function getAliasIP(offset) {
@@ -82,7 +84,7 @@
 				html += "</tr>";
 				$("#tableip").append(html);
 			});
-			pagination('ip', data.offset, data.hasMore, data.pages);
+			pagination('ip', data.offset, data.hasMore, data.pages, data.total);
 		});
 	}
 </script>
@@ -129,7 +131,9 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
+			<td colspan="3">
+			<span style="font-size: smaller;">Total: <span id="total-alias">0</span></span>
+			<div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
 		</tr>
 	</tfoot>
 </table>
@@ -148,7 +152,9 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3"><div class='pagination'><span class='prev-na' id='prev-ip'><a>&laquo; Anterior</a></span><span class='curr' id='curr-ip'>-</span><span id='next-ip' class='next-na'><a>Siguiente &raquo;</a></span></td>
+			<td colspan="3">
+			<span style="font-size: smaller;">Total: <span id="total-ip">0</span></span>
+			<div class='pagination'><span class='prev-na' id='prev-ip'><a>&laquo; Anterior</a></span><span class='curr' id='curr-ip'>-</span><span id='next-ip' class='next-na'><a>Siguiente &raquo;</a></span></td>
 		</tr>
 	</tfoot>
 </table>
