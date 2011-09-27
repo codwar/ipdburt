@@ -203,7 +203,7 @@
 				<configuration>
 				<!--  TOMCAT 6
 					<url>http://localhost:8080/manager</url>-->
-					<url>http://localhost:8080/manager/text</url> <!-- TOMCAT 7 -->
+					<url>http://166.40.231.124:8080/manager/text</url> <!-- TOMCAT 7 -->
 					<server>TomcatServer</server>
 				</configuration>
 			</plugin>

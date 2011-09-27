@@ -28,14 +28,14 @@ public class Penalty implements Serializable {
 	 */
 	private static final long serialVersionUID = -1204044149724053986L;
 
-	public static final Long BAN = 0L;
-	public static final Long NOTICE = 1L;
+	public static final Integer BAN = 0;
+	public static final Integer NOTICE = 1;
 
 	private Long key;
 	private Long player;
 	private Long admin;
 
-	private Long type;
+	private Integer type;
 	private Date created;
 	private Date updated;
 	private String reason;
@@ -51,11 +51,11 @@ public class Penalty implements Serializable {
 		this.key = key;
 	}
 
-	public Long getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(Long type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

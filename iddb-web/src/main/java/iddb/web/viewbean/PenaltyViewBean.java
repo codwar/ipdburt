@@ -41,12 +41,12 @@ public class PenaltyViewBean implements Serializable {
 	private String reason;
 	private Long duration;
 	private String admin;
-	private Long type;
+	private Integer type;
 	
-	public Long getType() {
+	public Integer getType() {
 		return type;
 	}
-	public void setType(Long type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 	public Date getCreated() {
@@ -88,13 +88,13 @@ public class PenaltyViewBean implements Serializable {
 			format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
 			
 			s.append("Baneado el ").append(format.format(this.getCreated()));
-			if (StringUtils.isNotEmpty(this.getReason())) {
-				s.append(" por ").append(this.getReason());
-			}
 			if (this.getDuration() > 0) {
 				DateFormat format2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				format2.setTimeZone(TimeZone.getTimeZone("GMT-3"));
 				s.append(" hasta ").append(format2.format(this.getExpires()));
+			}
+			if (StringUtils.isNotEmpty(this.getReason())) {
+				s.append(". Motivo: ").append(this.getReason());
 			}
 			if (StringUtils.isNotEmpty(this.getAdmin())) {
 				s.append(" (").append(getAdmin()).append(")");

@@ -33,7 +33,7 @@ public class PenaltyInfo implements Serializable {
 	private Date created;
 	private String reason;
 	private Long duration;
-	private Long type;
+	private Integer type;
 	private String adminId;
 	private String admin;
 	
@@ -58,11 +58,11 @@ public class PenaltyInfo implements Serializable {
 	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
-	public Long getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(Long type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 	

@@ -38,11 +38,11 @@ public interface PenaltyDAO {
 	public abstract List<Penalty> findByType(Long type, int offset,
 			int limit, int[] count);
 
-	public abstract List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type);
+	public abstract List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type);
 	
-	public abstract Penalty findLastActivePenalty(Long player, Long type);
+	public abstract Penalty findLastActivePenalty(Long player, Integer type);
 	
-	public abstract List<Penalty> findByPlayerAndType(Long player, Long type,
+	public abstract List<Penalty> findByPlayerAndType(Long player, Integer type,
 			int offset, int limit, int[] count);
 
 	/**
@@ -56,6 +56,6 @@ public interface PenaltyDAO {
 	
 	public abstract void delete(List<Penalty> list);
 
-	public abstract List<Penalty> findByPlayerAndType(Long player, Long type);
+	public abstract List<Penalty> findByPlayerAndType(Long player, Integer type);
 
 }

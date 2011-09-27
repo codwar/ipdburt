@@ -82,7 +82,7 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Penalty> findByPlayerAndType(Long player, Long type, int offset, int limit, int[] count) {
+	public List<Penalty> findByPlayerAndType(Long player, Integer type, int offset, int limit, int[] count) {
 		String key = "ptype-" + player.toString() + "T" + type.toString() + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);;
 		List<Penalty> list = (List<Penalty>) getCachedList(key, count);
 		if (list != null) return list;
@@ -115,12 +115,12 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 	}
 
 	@Override
-	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type) {
+	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type) {
 		return impl.findByPlayerAndTypeAndActive(player, type);
 	}
 
 	@Override
-	public List<Penalty> findByPlayerAndType(Long player, Long type) {
+	public List<Penalty> findByPlayerAndType(Long player, Integer type) {
 		return impl.findByPlayerAndType(player, type);
 	}
 
@@ -137,7 +137,7 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 	 * @see iddb.core.model.dao.PenaltyDAO#findLastActivePenalty(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public Penalty findLastActivePenalty(Long player, Long type) {
+	public Penalty findLastActivePenalty(Long player, Integer type) {
 		String key = "active-" + player.toString() + "T" + type.toString();;
 		Penalty penalty = (Penalty) cacheGet(key);
 		if (penalty == null) {

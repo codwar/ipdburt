@@ -163,7 +163,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		penalty.setKey(rs.getLong("id"));
 		penalty.setPlayer(rs.getLong("playerid"));
 		penalty.setAdmin(rs.getLong("adminid"));
-		penalty.setType(new Long((rs.getInt("type"))));
+		penalty.setType(rs.getInt("type"));
 		penalty.setReason(rs.getString("reason"));
 		penalty.setDuration(rs.getLong("duration"));
 		penalty.setSynced(rs.getBoolean("synced"));
@@ -280,7 +280,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see jipdbs.dao.PenaltyDAO#findByPlayerAndTypeAndActive(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Long type) {
+	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type) {
 		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
@@ -313,7 +313,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see jipdbs.dao.PenaltyDAO#findByPlayerAndType(java.lang.Long, java.lang.Long, int, int, int[])
 	 */
 	@Override
-	public List<Penalty> findByPlayerAndType(Long player, Long type, int offset, int limit, int[] count) {
+	public List<Penalty> findByPlayerAndType(Long player, Integer type, int offset, int limit, int[] count) {
 		String sqlCount = "select count(id) from penalty where playerid = ? and type = ?";
 		String sql = "select * from penalty where playerid = ? and type = ? order by created desc limit ?,?";
 		Connection conn = null;
@@ -392,7 +392,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see jipdbs.dao.PenaltyDAO#findByPlayerAndType(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public List<Penalty> findByPlayerAndType(Long player, Long type) {
+	public List<Penalty> findByPlayerAndType(Long player, Integer type) {
 		String sql = "select * from penalty where playerid = ? and type = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
@@ -452,7 +452,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 * @see iddb.core.model.dao.PenaltyDAO#findLastActivePenalty(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public Penalty findLastActivePenalty(Long player, Long type) {
+	public Penalty findLastActivePenalty(Long player, Integer type) {
 		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by updated desc limit 1";
 		Connection conn = null;
 		Penalty penalty = null;

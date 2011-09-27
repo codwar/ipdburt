@@ -92,6 +92,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		Penalty ban = app.getLastPenalty(player);
 		if (ban != null) {
 			PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
+			penaltyViewBean.setType(Penalty.BAN);
 			penaltyViewBean.setCreated(ban.getCreated());
 			penaltyViewBean.setDuration(ban.getDuration());
 			penaltyViewBean.setReason(ban.getReason());
@@ -109,6 +110,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		Penalty notice = app.getLastNotice(player);
 		if (notice != null) {
 			PenaltyViewBean noticeViewBean = new PenaltyViewBean();
+			noticeViewBean.setType(Penalty.NOTICE);
 			noticeViewBean.setCreated(notice.getCreated());
 			noticeViewBean.setReason(notice.getReason());
 			if (notice.getAdmin() != null) {

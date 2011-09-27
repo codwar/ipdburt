@@ -172,6 +172,7 @@ public class Functions {
 		s = s.replace(".", "");
 		s = s.replace(",", "");
 		s = s.replace(":", "");
+		s = s.replace("#", "");
 		// reemplazamos los numeros por posibles usos como letras
 		s = s.replace("0", "o");
 		s = s.replace("1", "i");
