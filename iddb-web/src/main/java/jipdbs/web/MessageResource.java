@@ -16,26 +16,25 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.model.dao;
+package jipdbs.web;
 
-import iddb.core.model.Server;
-import iddb.exception.EntityDoesNotExistsException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-import java.util.Date;
-import java.util.List;
+/**
+ * @author 12072245
+ *
+ */
+public class MessageResource {
 
-public interface ServerDAO {
-
-	public abstract void save(Server server);
-
-	public abstract List<Server> findAll(int offset, int limit, int[] count);
-
-	public abstract Server findByUid(String uid);
-
-	public abstract Server get(Long server) throws EntityDoesNotExistsException;
+	private static ResourceBundle bundle;
 	
-	public abstract List<Server> listNotUpdatedSince(Date date); 
+	static {
+		bundle = ResourceBundle.getBundle("messages", new Locale("es", "AR"));
+	}
 	
-	public abstract List<Server> findEnabled(int offset, int limit, int[] count); 
-
+	public static String getMessage(String key) {
+		return bundle.getString(key);
+	}
+	
 }

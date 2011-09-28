@@ -99,7 +99,7 @@ public class IDDBService {
 		return reCaptchaResponse.isValid();
 	}
 
-	public void addServer(String name, String admin, String uid, String ip) {
+	public void addServer(String name, String admin, String uid, String ip, boolean disabled) {
 
 		Server server = new Server();
 		server.setAdminEmail(admin);
@@ -108,6 +108,8 @@ public class IDDBService {
 		server.setName(name);
 		server.setOnlinePlayers(0);
 		server.setAddress(ip);
+		server.setDisabled(disabled);
+		server.setPermission(0);
 		serverDAO.save(server);
 	}
 
@@ -120,12 +122,13 @@ public class IDDBService {
 		return serverDAO.get(key);
 	}
 
-	public void saveServer(String key, String name, String admin, String ip) {
+	public void saveServer(String key, String name, String admin, String ip, boolean disabled) {
 		try {
 			Server server = getServer(key);
 			server.setName(name);
 			server.setAdminEmail(admin);
 			server.setAddress(ip);
+			server.setDisabled(disabled);
 			serverDAO.save(server);
 		} catch (EntityDoesNotExistsException e) {
 			log.error(e.toString());
@@ -137,6 +140,16 @@ public class IDDBService {
 		return getServers(0, 1000, count);
 	}
 
+	public List<Server> getActiveServers(int offset, int limit, int[] count) {
+		try {
+			return serverDAO.findEnabled(offset, limit, count);
+		} catch (Exception e) {
+			log.error("Unable to fetch servers [{}]", e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+	
 	public List<Server> getServers(int offset, int limit, int[] count) {
 		try {
 			return serverDAO.findAll(offset, limit, count);

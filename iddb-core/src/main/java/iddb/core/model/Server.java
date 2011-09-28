@@ -43,6 +43,15 @@ public class Server implements Serializable {
 	private Long maxLevel;
 	private Boolean dirty;
 	private Integer permission;
+	private Boolean disabled;
+
+	public Boolean getDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
 
 	public Server() {
 	}
@@ -150,11 +159,6 @@ public class Server implements Serializable {
 	public void setDirty(Boolean dirty) {
 		this.dirty = dirty;
 	}
-
-	//
-	// public String getKeyString() {
-	// return KeyFactory.keyToString(this.getKey());
-	// }
 
 	public Boolean getOffline() {
 		Date today = new Date();

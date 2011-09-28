@@ -19,12 +19,12 @@
 package jipdbs.web;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class Flash implements Serializable {
 
@@ -33,13 +33,38 @@ public class Flash implements Serializable {
 	private static final String SESSION_NAME = Flash.class.getCanonicalName()
 			+ "___flash___";
 
+	private static final Map<Integer, String> charsetMap;
+	
 	private final List<String> infos = new LinkedList<String>();
 	private final List<String> warns = new LinkedList<String>();
 	private final List<String> errors = new LinkedList<String>();
 	private final List<String> oks = new LinkedList<String>();
-
+	
+	
+	static {
+		charsetMap = new HashMap<Integer, String>();
+		charsetMap.put(225, "&aacute;");
+		charsetMap.put(233, "&eacute;");
+		charsetMap.put(237, "&iacute;");
+		charsetMap.put(243, "&oacute;");
+		charsetMap.put(250, "&uacute;");
+		charsetMap.put(241, "&ntilde;");
+		charsetMap.put(241, "&ntilde;");
+	}
+	
 	private static String escape(String msg) {
-		return StringEscapeUtils.escapeHtml(msg);
+		StringBuffer b = new StringBuffer();
+		char[] values = msg.toCharArray();
+		String v;
+		for (char c : values) {
+			v = charsetMap.get((int) c);
+			if (v != null) {
+				b.append(v);
+			} else {
+				b.append(c);
+			}
+		}
+		return b.toString();
 	}
 	
 	public static void info(HttpServletRequest req, String msg) {
@@ -116,4 +141,5 @@ public class Flash implements Serializable {
 	public int getCount() {
 		return infos.size() + warns.size() + errors.size() + oks.size(); 
 	}
+
 }

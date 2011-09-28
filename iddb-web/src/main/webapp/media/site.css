@@ -710,3 +710,6 @@ input.search {
 #signin_menu #openid_username {
     width: 90px;	
 }
+.dialog {
+	color: #000;
+}

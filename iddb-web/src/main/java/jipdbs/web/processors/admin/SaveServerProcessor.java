@@ -24,6 +24,7 @@ import iddb.core.util.GuidGenerator;
 import javax.servlet.http.HttpServletRequest;
 
 import jipdbs.web.Flash;
+import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -43,22 +44,23 @@ public class SaveServerProcessor extends RedirectProcessor {
 		String name = req.getParameter("name");
 		String admin = req.getParameter("admin");
 		String ip = req.getParameter("ip");
-
+		String disabled = req.getParameter("disable") == null ? "off" : req.getParameter("disable");
+		
 		if (StringUtils.isEmpty(name) || StringUtils.isEmpty(admin)) {
-			Flash.error(req, "Falta nombre o admin del server.");
+			Flash.error(req, MessageResource.getMessage("save_server_noname"));
 			return null;
 		}
-
+		
 		if (StringUtils.isEmpty(ip))
-			Flash.warn(req, "No se indicó dirección IP. No se realizará comprobación del origen de los datos.");
+			Flash.warn(req, MessageResource.getMessage("save_server_noip"));
 
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
 			String uid = GuidGenerator.generate(name);
-			app.addServer(name, admin, uid, ip);
-			Flash.info(req, "Servidor agregado.");
+			app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
+			Flash.info(req, MessageResource.getMessage("save_server_added"));
 		} else {
-			app.saveServer(req.getParameter("k"), name, admin, ip);
-			Flash.info(req, "Servidor actualizado.");
+			app.saveServer(req.getParameter("k"), name, admin, ip, disabled.equalsIgnoreCase("on"));
+			Flash.info(req, MessageResource.getMessage("save_server_updated"));
 		}
 		
 		return null;

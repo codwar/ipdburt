@@ -36,7 +36,7 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
     	}
     	if (pages == 0) offset = 0;
     	$(parent).find("#curr-alias").html("{0}-{1}".format(offset,pages));
-    	$("#total-alias").html(total);
+    	$(parent).find("#total-alias").html(total);
     }
 	function getAlias(key, offset, callback) {
 		url = dutils.urls.resolve('alias', { key: key}) + "?o=" + offset;
@@ -210,14 +210,6 @@ $("[name=q]").val("<c:out value="${queryValue}"/>");
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
 				<td style="text-align: right;">
-                <%-- c:choose>
-                    <c:when test="${player.playing}">
-                        Conectado
-                    </c:when>
-                    <c:otherwise>
-                        <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
-                    </c:otherwise>
-                </c:choose --%>
                 <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>
 				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a></td>

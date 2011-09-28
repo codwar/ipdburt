@@ -58,6 +58,19 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public List<Server> findEnabled(int offset, int limit, int[] count) {
+		String key = "enabled" + Integer.toString(offset) + "L"
+				+ Integer.toString(limit);
+		List<Server> servers = (List<Server>) getCachedList(key, count);
+		if (servers != null)
+			return servers;
+		servers = impl.findEnabled(offset, limit, count);
+		putCachedList(key, servers, count);
+		return servers;
+	}
+	
+	@Override
 	public Server findByUid(String uid) {
 
 		Server server = (Server) cacheGet(cacheKey(uid));

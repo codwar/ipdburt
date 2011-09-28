@@ -8,7 +8,13 @@
 		<version>0.8-SNAPSHOT</version>
 	</parent>
 	<artifactId>iddb-db-runtime</artifactId>
-	
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<downloadSources>false</downloadSources>
+		<skipTests>true</skipTests>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>

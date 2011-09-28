@@ -44,9 +44,9 @@ public class ServerDAOImpl implements ServerDAO {
 	public void save(Server server) {
 		String sql;
 		if (server.getKey() == null) {
-			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission) values (?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled) values (?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "update server set uid = ?, name = ?, admin = ?, created = ?, updated = ?, onlineplayers = ?, address = ?, pluginversion = ?, maxlevel = ?, isdirty = ?, permission = ? where id = ? limit 1";
+			sql = "update server set uid = ?, name = ?, admin = ?, created = ?, updated = ?, onlineplayers = ?, address = ?, pluginversion = ?, maxlevel = ?, isdirty = ?, permission = ?, disabled = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -65,7 +65,8 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setLong(9, server.getMaxLevel());
 			st.setBoolean(10, server.getDirty());
 			st.setInt(11, server.getPermission());
-			if (server.getKey() != null) st.setLong(12, server.getKey());
+			st.setBoolean(12, server.getDisabled());
+			if (server.getKey() != null) st.setLong(13, server.getKey());
 			st.executeUpdate();
 			if (server.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -162,6 +163,7 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setMaxLevel(rs.getLong("maxlevel"));
 		server.setDirty(rs.getBoolean("isdirty"));
 		server.setPermission(rs.getInt("permission"));
+		server.setDisabled(rs.getBoolean("disabled"));
 	}
 
 	@Override
@@ -224,4 +226,39 @@ public class ServerDAOImpl implements ServerDAO {
 		return list;
 	}
 
+	@Override
+	public List<Server> findEnabled(int offset, int limit, int[] count) {
+		String sqlCount = "select count(id) from server where disabled = 0";
+		String sql = "select * from server where disabled = 0 order by updated desc limit ?,?";
+		Connection conn = null;
+		List<Server> list = new ArrayList<Server>();
+		try {
+			conn = ConnectionFactory.getConnection();
+			Statement stC = conn.createStatement();
+			ResultSet rsC = stC.executeQuery(sqlCount);
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, offset);
+			st.setInt(2, limit);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Server server = new Server();
+				loadServer(server, rs);
+				list.add(server);
+			}
+		} catch (SQLException e) {
+			logger.error("findEnabled", e);
+		} catch (IOException e) {
+			logger.error("findEnabled", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+	
 }

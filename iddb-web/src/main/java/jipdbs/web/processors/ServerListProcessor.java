@@ -33,7 +33,7 @@ public class ServerListProcessor extends FlashResponseProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(ServerListProcessor.class);
 	
-	public static final int SERVER_LIMIT = 50;
+	public static final int SERVER_LIMIT = 100;
 	
 	@Override
 	public String processProcessor(ResolverContext context) throws ProcessorException {
@@ -41,7 +41,13 @@ public class ServerListProcessor extends FlashResponseProcessor {
 		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		
 		int[] count = new int[1];
-		List<Server> servers = app.getServers(0, SERVER_LIMIT, count);
+		List<Server> servers;
+		
+		if (context.hasParameter("all")) {
+			servers = app.getServers(0, SERVER_LIMIT, count);
+		} else {
+			servers = app.getActiveServers(0, SERVER_LIMIT, count);
+		}
 		
 		log.info("Listing " + servers.size() + " servers");
 		log.debug(">>>> COUNT " + count[0]);
