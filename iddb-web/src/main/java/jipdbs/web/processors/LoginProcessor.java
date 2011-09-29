@@ -18,13 +18,14 @@
  */
 package jipdbs.web.processors;
 
-import iddb.core.security.User;
-import iddb.core.security.UserService;
-import iddb.core.security.UserServiceFactory;
-import iddb.core.security.exceptions.InvalidAccountException;
-import iddb.core.security.exceptions.InvalidCredentialsException;
-import iddb.core.security.exceptions.UserLockedException;
+import iddb.web.security.Subject;
+import iddb.web.security.UserService;
+import iddb.web.security.UserServiceFactory;
+import iddb.web.security.exceptions.InvalidAccountException;
+import iddb.web.security.exceptions.InvalidCredentialsException;
+import iddb.web.security.exceptions.UserLockedException;
 import jipdbs.web.Flash;
+import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -44,22 +45,22 @@ public class LoginProcessor extends FlashResponseProcessor {
 			throws ProcessorException {
 		UserService userService = UserServiceFactory.getUserService();
 		if ("logout".equals(context.getParameter("type"))) {
-			userService.logout();
+			userService.logout(context.getRequest());
 			throw new ForceRedirect(context.getRequest().getContextPath());
 		} else {
-			User user = userService.getCurrentUser();
+			Subject user = userService.getCurrentUser();
 			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? context.getRequest().getContextPath() : context.getRequest().getParameter("next");
 			if (user.isAuthenticated()) return next;
 			if (context.isPost()) {
 				try {
-					userService.authenticate(context.getRequest().getParameter("username"), context.getRequest().getParameter("password"));
+					user = userService.authenticate(context.getRequest(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"));
 					throw new ForceRedirect(next);
 				} catch (InvalidAccountException e) {
-					Flash.error(context.getRequest(), "Usuario o contraseña no válidos.");
+					Flash.error(context.getRequest(), MessageResource.getMessage("invalid_user_or_password")); 
 				} catch (InvalidCredentialsException e) {
-					Flash.error(context.getRequest(), "Usuario o contraseña no válidos.");
+					Flash.error(context.getRequest(), MessageResource.getMessage("invalid_user_or_password"));
 				} catch (UserLockedException e) {
-					Flash.error(context.getRequest(), "Su cuenta se encuentra bloqueada.");
+					Flash.error(context.getRequest(), MessageResource.getMessage("locked_acount"));
 				}
 			}
 			context.getRequest().setAttribute("next", next);

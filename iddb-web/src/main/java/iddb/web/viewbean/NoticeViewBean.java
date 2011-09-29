@@ -18,12 +18,37 @@
  */
 package iddb.web.viewbean;
 
-import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
-/**
- * @author 12072245
- *
- */
-public class NoticeViewBean implements Serializable {
+import org.apache.commons.lang.StringUtils;
 
+import iddb.core.model.Penalty;
+
+public class NoticeViewBean extends PenaltyViewBean {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4441805241968582376L;
+	
+	public Integer getType() {
+		return Penalty.NOTICE;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
+		
+		s.append(getReason()).append(". ");
+		s.append("Agregado el ").append(format.format(this.getCreated()));
+		if (StringUtils.isNotEmpty(this.getAdmin())) {
+			s.append(" por ").append(getAdmin());
+		}
+		return s.toString();
+	}
+	
 }

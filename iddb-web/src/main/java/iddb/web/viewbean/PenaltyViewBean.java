@@ -41,14 +41,11 @@ public class PenaltyViewBean implements Serializable {
 	private String reason;
 	private Long duration;
 	private String admin;
-	private Integer type;
 	
 	public Integer getType() {
-		return type;
+		return Penalty.BAN;
 	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
+	
 	public Date getCreated() {
 		return created;
 	}
@@ -83,31 +80,20 @@ public class PenaltyViewBean implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		if (Penalty.BAN.equals(getType())) {
-			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
-			
-			s.append("Baneado el ").append(format.format(this.getCreated()));
-			if (this.getDuration() > 0) {
-				DateFormat format2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-				format2.setTimeZone(TimeZone.getTimeZone("GMT-3"));
-				s.append(" hasta ").append(format2.format(this.getExpires()));
-			}
-			if (StringUtils.isNotEmpty(this.getReason())) {
-				s.append(". Motivo: ").append(this.getReason());
-			}
-			if (StringUtils.isNotEmpty(this.getAdmin())) {
-				s.append(" (").append(getAdmin()).append(")");
-			}
-		} else {
-			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
-			
-			s.append(getReason()).append(". ");
-			s.append("Agregado el ").append(format.format(this.getCreated()));
-			if (StringUtils.isNotEmpty(this.getAdmin())) {
-				s.append(" por ").append(getAdmin());
-			}
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		format.setTimeZone(TimeZone.getTimeZone("GMT-3"));
+		
+		s.append("Baneado el ").append(format.format(this.getCreated()));
+		if (this.getDuration() > 0) {
+			DateFormat format2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			format2.setTimeZone(TimeZone.getTimeZone("GMT-3"));
+			s.append(" hasta ").append(format2.format(this.getExpires()));
+		}
+		if (StringUtils.isNotEmpty(this.getReason())) {
+			s.append(". Motivo: ").append(this.getReason());
+		}
+		if (StringUtils.isNotEmpty(this.getAdmin())) {
+			s.append(" (").append(getAdmin()).append(")");
 		}
 		return s.toString();
 	}	

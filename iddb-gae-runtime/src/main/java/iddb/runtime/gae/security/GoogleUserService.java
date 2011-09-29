@@ -18,9 +18,9 @@
  */
 package iddb.runtime.gae.security;
 
-import iddb.core.security.AnonymousUser;
-import iddb.core.security.User;
-import iddb.core.security.UserService;
+import iddb.web.security.AnonymousUser;
+import iddb.web.security.User;
+import iddb.web.security.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

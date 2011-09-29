@@ -16,13 +16,13 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.security.exceptions;
+package iddb.web.security.exceptions;
 
-public class UserLockedException extends Exception {
+public class InvalidAccountException extends Exception {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8863014722215449392L;
+	private static final long serialVersionUID = -6021021723192368928L;
 
 }

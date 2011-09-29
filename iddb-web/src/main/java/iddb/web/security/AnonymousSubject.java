@@ -16,40 +16,21 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.security;
+package iddb.web.security;
 
-public final class AnonymousUser implements User {
+public class AnonymousSubject extends Subject {
 
-	/* (non-Javadoc)
-	 * @see iddb.core.security.User#getUsername()
+	/**
+	 * 
 	 */
-	@Override
-	public String getUsername() {
-		return null;
-	}
+	private static final long serialVersionUID = 7847765586409282862L;
 
-	/* (non-Javadoc)
-	 * @see iddb.core.security.User#isAuthenticated()
-	 */
-	@Override
 	public boolean isAuthenticated() {
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see iddb.core.security.User#isSuperAdmin()
-	 */
-	@Override
+	
 	public boolean isSuperAdmin() {
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see iddb.core.security.User#getEmail()
-	 */
-	@Override
-	public String getEmail() {
-		return null;
-	}
-
+	
 }

@@ -681,35 +681,100 @@ input.search {
     font-variant : small-caps;
     border : 1px solid #aaa;
 }
-#openidbox {
-    width: 400px;
-    margin-left: auto;
-    margin-right: auto;	
-}
-#logincontainer {
-    position: absolute;
-    right: 10px;
-    top: 20px;    
-}
-#signin_menu {
-    background: repeat scroll 0 0 #333333;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    border: none;
-    border-radius: 0 0 9px 9px
-}
-#signin_menu p {
-    color: white;
-    font-size: 12px !important;
-}
-#signin_menu a {
-    padding: 0 !important;
-}
-#signin_menu input {
-    font-size: 10px !important;
-}
-#signin_menu #openid_username {
-    width: 90px;	
-}
 .dialog {
 	color: #000;
+}
+#signin_menu {
+	border: 1px none transparent;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+	/*color: #778899;*/
+	font-size: 11px;
+	margin-right: 0;
+	margin-top: 5px;
+	padding: 12px;
+	position: absolute;
+	right: 0;
+	text-align: left;
+	top: 24.5px;
+	width: 210px;
+	z-index: 100;
+  	-webkit-box-shadow: 0 0 10px rgb(0,0,0);
+  	-moz-box-shadow: 0 0 10px rgb(0,0,0);
+  	box-shadow: 0 0 5px rgb(0,0,0);
+  	display: none;
+}
+
+#signin_form {
+	width: 230px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#signin_menu input[type=text], #signin_menu input[type=password] {
+    display:block;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border:1px solid #ACE;
+    font-size:13px;
+    margin:0 0 5px;
+    padding:5px;
+    width:203px;
+}
+#signin_form input[type=text], #signin_form input[type=password] {
+    display:block;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border:1px solid #ACE;
+    font-size:13px;
+    margin:0 0 5px;
+    width:203px;
+}
+#signin_form h3 {
+	padding-bottom: 10px;
+}
+#signin_menu p, #signin_form p {
+    margin:0;
+}
+#signin_menu a, #signin_form p {
+    color:#6AC;
+}
+#signin_menu label, #signin_form label {
+    font-weight:normal;
+}
+#signin_menu p.remember,
+#signin_form p.signin_form {
+    padding:10px 0;
+}
+#signin_form .remember {
+	float: right;
+}
+#signin_menu p.forgot, #signin_menu p.complete,
+#signin_form p.forgot, #signin_form p.complete {
+    clear:both;
+    margin:5px 0;
+}
+#signin_menu p a, #signin_form p a {
+    color:#27B!important;
+}
+#signin_submit {
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    background:#39d url('media/images/bg-btn-blue.png') repeat-x scroll 0 0;
+    border:1px solid #39D;
+    color:#fff;
+    text-shadow:0 -1px 0 #39d;
+    padding:4px 10px 5px;
+    font-size:11px;
+    margin:0 5px 0 0;
+    font-weight:bold;
+}
+#signin_submit::-moz-focus-inner {
+padding:0;
+border:0;
+}
+#signin_submit:hover, #signin_submit:focus {
+    background-position:0 -5px;
+    cursor:pointer;
 }

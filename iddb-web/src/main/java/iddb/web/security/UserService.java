@@ -16,18 +16,27 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.security;
+package iddb.web.security;
 
-import iddb.core.security.exceptions.InvalidAccountException;
-import iddb.core.security.exceptions.InvalidCredentialsException;
-import iddb.core.security.exceptions.UserLockedException;
+import iddb.web.security.exceptions.InvalidAccountException;
+import iddb.web.security.exceptions.InvalidCredentialsException;
+import iddb.web.security.exceptions.UserLockedException;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface UserService {
 
-	public User getCurrentUser();
+	/**
+	 * 
+	 */
+	public static final String SUBJECT = "user-service-subject";
 
-	public void authenticate(String username, String password) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
+	public Subject getCurrentUser();
+
+	public Subject authenticate(HttpServletRequest request, String username, String password) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
 	
-	public void logout();
+	public void logout(HttpServletRequest request);
+	
+	//public void createUser(User user);
 	
 }

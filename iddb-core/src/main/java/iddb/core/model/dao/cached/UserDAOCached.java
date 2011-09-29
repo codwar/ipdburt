@@ -43,21 +43,24 @@ public class UserDAOCached implements UserDAO {
 	}
 
 	@Override
-	public User findByEmail(String email) {
-		return this.impl.findByEmail(email);
-	}
-
-	@Override
 	public User get(Long key) throws EntityDoesNotExistsException {
 		return this.impl.get(key);
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.UserDAO#authenticate(iddb.core.model.User, java.lang.String)
+	 * @see iddb.core.model.dao.UserDAO#get(java.lang.String)
 	 */
 	@Override
-	public boolean authenticate(User user, String password) {
-		return this.impl.authenticate(user, password);
+	public User get(String loginId) throws EntityDoesNotExistsException {
+		return this.impl.get(loginId);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#set_password(iddb.core.model.User, java.lang.String)
+	 */
+	@Override
+	public void set_password(User user, String password) {
+		this.impl.set_password(user, password);
 	}
 
 }

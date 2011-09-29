@@ -18,7 +18,6 @@
  */
 package iddb.runtime.security.shiro;
 
-import iddb.core.security.User;
 
 public class ShiroUser implements User {
 

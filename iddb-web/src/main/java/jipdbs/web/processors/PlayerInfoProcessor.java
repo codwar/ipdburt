@@ -22,10 +22,11 @@ import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
-import iddb.core.security.UserServiceFactory;
 import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
+import iddb.web.security.UserServiceFactory;
+import iddb.web.viewbean.NoticeViewBean;
 import iddb.web.viewbean.PenaltyViewBean;
 import iddb.web.viewbean.PlayerViewBean;
 
@@ -92,7 +93,6 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		Penalty ban = app.getLastPenalty(player);
 		if (ban != null) {
 			PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
-			penaltyViewBean.setType(Penalty.BAN);
 			penaltyViewBean.setCreated(ban.getCreated());
 			penaltyViewBean.setDuration(ban.getDuration());
 			penaltyViewBean.setReason(ban.getReason());
@@ -109,8 +109,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		
 		Penalty notice = app.getLastNotice(player);
 		if (notice != null) {
-			PenaltyViewBean noticeViewBean = new PenaltyViewBean();
-			noticeViewBean.setType(Penalty.NOTICE);
+			NoticeViewBean noticeViewBean = new NoticeViewBean();
 			noticeViewBean.setCreated(notice.getCreated());
 			noticeViewBean.setReason(notice.getReason());
 			if (notice.getAdmin() != null) {

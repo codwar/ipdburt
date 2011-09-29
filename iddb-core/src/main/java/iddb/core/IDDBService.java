@@ -29,8 +29,6 @@ import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
-import iddb.core.security.UserServiceFactory;
-import iddb.core.util.Functions;
 import iddb.core.util.MailManager;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
@@ -114,7 +112,6 @@ public class IDDBService {
 	}
 
 	public Server getServer(String key) throws EntityDoesNotExistsException {
-		// TODO usar para obtener relacion key con long
 		return getServer(Long.parseLong(key));
 	}
 
@@ -277,7 +274,6 @@ public class IDDBService {
 		try {
 			List<SearchResult> results = new ArrayList<SearchResult>();
 
-			// TODO trabajar la key
 			Server server = serverDAO.get(serverId);
 			if (server != null) {
 				for (Player player : playerDAO.findByServer(serverId, offset,
@@ -318,11 +314,7 @@ public class IDDBService {
 		SearchResult result = new SearchResult();
 		result.setId(player.getKey());
 		result.setKey(player.getKey());
-		if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
-			result.setIp(player.getIp());
-		} else {
-			result.setIp(Functions.maskIpAddress(player.getIp()));
-		}
+		result.setIp(player.getIp());
 		result.setLatest(player.getUpdated());
 		result.setPlaying(player.isConnected());
 		result.setNote(player.getNote() != null);
@@ -344,7 +336,6 @@ public class IDDBService {
 		try {
 			List<AliasResult> result = new ArrayList<AliasResult>();
 
-			// TODO manejar key
 			Player player = playerDAO.get(Long.parseLong(key));
 
 			if (player != null) {
@@ -375,7 +366,7 @@ public class IDDBService {
 
 		try {
 			List<AliasResult> result = new ArrayList<AliasResult>();
-			// TODO manejar key
+
 			Player player = playerDAO.get(Long.parseLong(key));
 
 			if (player != null) {
@@ -385,11 +376,7 @@ public class IDDBService {
 				for (AliasIP alias : aliasses) {
 					AliasResult item = new AliasResult();
 					item.setCount(alias.getCount().intValue());
-					if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
-						item.setIp(alias.getIp());
-					} else {
-						item.setIp(Functions.maskIpAddress(alias.getIp()));
-					}
+					item.setIp(alias.getIp());
 					item.setNickname(null);
 					item.setUpdated(alias.getUpdated());
 					result.add(item);

@@ -3,22 +3,42 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
-<fieldset id="signin_form">
-	<form method="post" id="signin">
-		<h3>Iniciar sesi&oacute;n</h3>
-		<div style='display:none'><input type="hidden" name="next" value="${next}"/>"/></div>
+<script type="text/javascript">
+ $(document).ready(function() {
+
+     $("#signin-link").click(function(e) {
+         e.preventDefault();
+         $("fieldset#signin_menu").toggle();
+         $("#signin-link").toggleClass("menu-open");
+         $("#username").focus();
+     });
+
+     $("fieldset#signin_menu").mouseup(function() {
+         return false
+     });
+     $(document).mouseup(function(e) {
+         if($(e.target).parent("a#signin-link").length==0) {
+             $("#signin-link").removeClass("menu-open");
+             $("fieldset#signin_menu").hide();
+         }
+     });            
+
+ });
+</script>
+
+<fieldset id="signin_menu">
+	<form method="post" id="signin" action="<url:url name="login"/>">
+		<div style='display:none'><input type="hidden" name="next" value="${pageContext.request.contextPath}"/>"/></div>
 		<p>
-			<label for="username">
-			<span>Usuario</span>
+			<label for="username">Usuario</label>
 			<input id="username" name="username" value="" title="username" tabindex="4" type="text">
-			</label>
 		</p>
 		<p>
-			<label for="password">
-			<span>Contraseña</span>
+			<label for="password">Contraseña</label>
 			<input id="password" name="password" value="" title="password" tabindex="5"	type="password">
-			</label>
 		</p>
 		<p class="remember">
 			<input id="signin_submit" value="Aceptar" tabindex="6" type="submit">

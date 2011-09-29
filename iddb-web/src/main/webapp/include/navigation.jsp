@@ -1,5 +1,6 @@
-<%@page import="iddb.core.security.UserServiceFactory"%>
-<%@page import="iddb.core.security.UserService"%>
+<%@page import="iddb.web.security.UserServiceFactory"%>
+<%@page import="iddb.web.security.UserService"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
@@ -42,13 +43,14 @@
         </li>
         <li style="float: right; margin-right: 20px;">
             <div id="session">
-            <%
-            if (userService.getCurrentUser().isAuthenticated()) { %>
-            	<a href="<url:url name="logout"/>" id="signin-link"><g:gravatar email="<%= userService.getCurrentUser().getEmail() %>" size="16"/> <em><%= userService.getCurrentUser().getUsername() %></em><strong>Desconectar</strong><i class="signout"></i></a>
-            <%} else { %>
-            	<a href="<url:url name="login"><url:param name="next" value="${pageContext.request.contextPath}"/></url:url>" id="signin-link"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>
+            <% if (userService.getCurrentUser().isAuthenticated()) { %>
+            	<a href="<url:url name="logout"/>" id="signin-link"><g:gravatar email="<%= userService.getCurrentUser().getLoginId() %>" size="16"/> <em><%= userService.getCurrentUser().getLoginId() %></em><strong>Desconectar</strong><i class="signout"></i></a>
+            <% } else { %>
+				<c:if test="${pageContext.request.requestURI!='/iddb-web/page/login.jsp'}"><!-- awful hack -->            
+            	<a href="#" id="signin-link"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>
+            	<jsp:include page="/include/login.jsp"/>
+            	</c:if>
             <% } %>
-            <!-- span id="loginbox"><a href="#" id="signin-link"><strong>Identificarse</strong><i></i></a></span-->
             </div>                
         </li>
     </div>

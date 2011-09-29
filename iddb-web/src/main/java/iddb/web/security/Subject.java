@@ -16,36 +16,23 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.scheduller;
+package iddb.web.security;
 
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Timer;
+import iddb.core.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Subject extends User {
 
-public class JobScheduller {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8553739759968034511L;
 
-	private static final Logger log = LoggerFactory.getLogger(JobScheduller.class);
-	
-	public void setup() {
-		Properties prop = new Properties();
-		// TODO load cron.properties
-		/*
-		 * className=0 5 * * * (crontab format)
-		 */
-		
-		for (Entry<Object, Object> entry : prop.entrySet()) {
-			String jobClass = (String) entry.getKey();
-			String timePattern = (String) entry.getValue();
-			String[] tp = timePattern.split("\\s");
-			if (tp.length == 5) {
-				Timer timer = new Timer();
-			} else {
-				log.error("Invalid time entry {}", timePattern);
-			}
-		}
-		
+	public boolean isAuthenticated() {
+		return true;
 	}
+	
+	public boolean isSuperAdmin() {
+		return getSuperAdmin();
+	}
+	
 }

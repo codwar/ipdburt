@@ -20,12 +20,12 @@ package iddb.runtime.security.shiro;
 
 
 
-import iddb.core.security.AnonymousUser;
-import iddb.core.security.User;
-import iddb.core.security.UserService;
-import iddb.core.security.exceptions.InvalidAccountException;
-import iddb.core.security.exceptions.InvalidCredentialsException;
-import iddb.core.security.exceptions.UserLockedException;
+import iddb.web.security.AnonymousUser;
+import iddb.web.security.User;
+import iddb.web.security.UserService;
+import iddb.web.security.exceptions.InvalidAccountException;
+import iddb.web.security.exceptions.InvalidCredentialsException;
+import iddb.web.security.exceptions.UserLockedException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;

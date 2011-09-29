@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.security;
+package iddb.web.security;
 
 import java.io.IOException;
 import java.util.Properties;

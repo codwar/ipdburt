@@ -17,6 +17,16 @@
 	</listener>
 
 	<filter>
+		<filter-name>UserServiceFilter</filter-name>
+		<filter-class>iddb.web.security.UserServiceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UserServiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+<!-- 
+	<filter>
 		<filter-name>ShiroFilter</filter-name>
 		<filter-class>org.apache.shiro.web.servlet.IniShiroFilter
 		</filter-class>
@@ -25,7 +35,7 @@
 		<filter-name>ShiroFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
+-->
 	<filter>
 		<filter-name>ResolverFilter</filter-name>
 		<filter-class>ar.sgt.resolver.filter.ResolverFilter</filter-class>
@@ -65,6 +75,7 @@
 		<url-pattern>/api/v3/xmlrpc</url-pattern>
 	</servlet-mapping>
 
+     
 	<error-page>
 		<error-code>403</error-code>
 		<location>/page/error.jsp</location>
@@ -73,10 +84,10 @@
 		<error-code>404</error-code>
 		<location>/page/error.jsp</location>
 	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/page/error.jsp</location>
-	</error-page>
+	<!-- error-page>
+		<exception-type>java.lang.Exception</exception-type>
+       	<location>/page/error.jsp</location>
+	</error-page-->
 	
 	<jsp-config>
 		<jsp-property-group>

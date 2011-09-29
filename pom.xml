@@ -9,7 +9,6 @@
 	<modules>
 		<module>iddb-core</module>
 		<module>iddb-db-runtime</module>
-		<module>iddb-security-runtime</module>
 		<module>iddb-web</module>
 	</modules>
 	

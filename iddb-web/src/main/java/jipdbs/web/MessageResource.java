@@ -19,6 +19,7 @@
 package jipdbs.web;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -34,7 +35,11 @@ public class MessageResource {
 	}
 	
 	public static String getMessage(String key) {
-		return bundle.getString(key);
+		try {
+			return bundle.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
 	}
 	
 }

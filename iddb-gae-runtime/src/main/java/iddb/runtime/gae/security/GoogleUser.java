@@ -18,7 +18,7 @@
  */
 package iddb.runtime.gae.security;
 
-import iddb.core.security.User;
+import iddb.web.security.User;
 
 /**
  * @author 12072245

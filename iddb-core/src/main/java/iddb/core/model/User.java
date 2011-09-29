@@ -28,7 +28,17 @@ public class User implements Serializable {
 	private static final long serialVersionUID = -5587024051766779262L;
 
 	private Long key;
-	private String email;
+	private String loginId;
+	private Boolean superAdmin;
+	private String password;
+	
+	public Boolean getSuperAdmin() {
+		return superAdmin;
+	}
+
+	public void setSuperAdmin(Boolean superAdmin) {
+		this.superAdmin = superAdmin;
+	}
 
 	public Long getKey() {
 		return key;
@@ -38,16 +48,20 @@ public class User implements Serializable {
 		this.key = key;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getLoginId() {
+		return loginId;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
 	}
-	
-	public boolean isSuperAdmin() {
-		return false;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

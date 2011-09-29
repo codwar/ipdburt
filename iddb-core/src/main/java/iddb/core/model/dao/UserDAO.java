@@ -29,10 +29,10 @@ public interface UserDAO {
 
 	public abstract List<User> findAll(int offset, int limit, int[] count);
 
-	public abstract User findByEmail(String email);
-
 	public abstract User get(Long key) throws EntityDoesNotExistsException;
 	
-	public abstract boolean authenticate(User user, String password);
+	public abstract User get(String loginId) throws EntityDoesNotExistsException;
 
+	public abstract void set_password(User user, String password);
+	
 }

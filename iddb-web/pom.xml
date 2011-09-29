@@ -27,11 +27,13 @@
 			<artifactId>iddb-db-runtime</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>iddb-security-runtime</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>iddb-memcached-runtime</artifactId>
