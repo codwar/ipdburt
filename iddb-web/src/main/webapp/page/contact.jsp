@@ -1,6 +1,7 @@
-<%@page import="iddb.core.security.User"%>
-<%@page import="iddb.core.security.UserServiceFactory"%>
-<%@page import="iddb.core.security.UserService"%>
+<%@page import="iddb.web.security.service.UserServiceFactory"%>
+<%@page import="iddb.web.security.service.UserService"%>
+<%@page import="iddb.web.security.subject.Subject"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -14,12 +15,12 @@ envíanos un mensaje.</p>
 <div>
 <%
 	UserService userService = UserServiceFactory.getUserService();
-	User user = userService.getCurrentUser();
+	Subject user = userService.getCurrentUser();
 %>
 
 <label for="m">E-mail:</label>
 <% if (user.isAuthenticated()) { %>
-<input type="text" name="m" value="<%= user.getEmail() %>" />
+<input type="text" name="m" value="<%= user.getLoginId() %>" />
 <% } else { %>
 <input type="text" name="m" value="" />
 <% } %>

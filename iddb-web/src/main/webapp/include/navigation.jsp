@@ -1,5 +1,5 @@
-<%@page import="iddb.web.security.UserServiceFactory"%>
-<%@page import="iddb.web.security.UserService"%>
+<%@page import="iddb.web.security.service.UserServiceFactory"%>
+<%@page import="iddb.web.security.service.UserService"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false" session="true"%>

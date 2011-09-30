@@ -19,6 +19,7 @@
 package iddb.core.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public class User implements Serializable {
 
@@ -29,17 +30,9 @@ public class User implements Serializable {
 
 	private Long key;
 	private String loginId;
-	private Boolean superAdmin;
+	private Set<String> roles;
 	private String password;
 	
-	public Boolean getSuperAdmin() {
-		return superAdmin;
-	}
-
-	public void setSuperAdmin(Boolean superAdmin) {
-		this.superAdmin = superAdmin;
-	}
-
 	public Long getKey() {
 		return key;
 	}
@@ -58,6 +51,14 @@ public class User implements Serializable {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public Set<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<String> roles) {
+		this.roles = roles;
 	}
 
 	public void setPassword(String password) {

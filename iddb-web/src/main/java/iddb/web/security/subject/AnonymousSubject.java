@@ -16,27 +16,21 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.subject;
 
-import iddb.web.security.exceptions.InvalidAccountException;
-import iddb.web.security.exceptions.InvalidCredentialsException;
-import iddb.web.security.exceptions.UserLockedException;
-
-import javax.servlet.http.HttpServletRequest;
-
-public interface UserService {
+public class AnonymousSubject extends Subject {
 
 	/**
 	 * 
 	 */
-	public static final String SUBJECT = "user-service-subject";
+	private static final long serialVersionUID = 7847765586409282862L;
 
-	public Subject getCurrentUser();
-
-	public Subject authenticate(HttpServletRequest request, String username, String password) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
+	public boolean isAuthenticated() {
+		return false;
+	}
 	
-	public void logout(HttpServletRequest request);
-	
-	//public void createUser(User user);
+	public boolean isSuperAdmin() {
+		return false;
+	}
 	
 }

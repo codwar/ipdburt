@@ -9,6 +9,7 @@
 	<modules>
 		<module>iddb-core</module>
 		<module>iddb-db-runtime</module>
+		<module>iddb-memcached-runtime</module>
 		<module>iddb-web</module>
 	</modules>
 	

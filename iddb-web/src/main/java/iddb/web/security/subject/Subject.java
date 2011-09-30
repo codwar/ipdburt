@@ -16,7 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.subject;
 
 import iddb.core.model.User;
 
@@ -27,12 +27,20 @@ public class Subject extends User {
 	 */
 	private static final long serialVersionUID = -8553739759968034511L;
 
+	public boolean hasRole(String rolename) {
+		return this.getRoles().contains(rolename);
+	}
+	
 	public boolean isAuthenticated() {
 		return true;
 	}
-	
+
+	/**
+	 * Convenient method to see if use has admin role
+	 * @return
+	 */
 	public boolean isSuperAdmin() {
-		return getSuperAdmin();
+		return hasRole("admin");
 	}
 	
 }

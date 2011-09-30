@@ -20,6 +20,7 @@ package iddb.runtime.db.model.dao.impl.mysql;
 
 import iddb.core.model.User;
 import iddb.core.model.dao.UserDAO;
+import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.runtime.db.ConnectionFactory;
 
@@ -31,7 +32,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -48,10 +51,10 @@ public class UserDAOImpl implements UserDAO {
 	public void save(User user) {
 		String sql;
 		if (user.getKey() == null) {
-			sql = "insert into user (loginid, superadmin, updated, created, password) values (?,?,?,?,?)"; 
+			sql = "insert into user (loginid, roles, updated, created, password) values (?,?,?,?,?)"; 
 		} else {
 			sql = "update user set loginid = ?," +
-					"superadmin = ?," +
+					"roles = ?," +
 					"updated = ? where id = ? limit 1";
 		}
 		Connection conn = null;
@@ -59,7 +62,7 @@ public class UserDAOImpl implements UserDAO {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, user.getLoginId());
-			st.setBoolean(2, user.getSuperAdmin());
+			st.setString(2, Functions.join(user.getRoles(), ","));
 			st.setTimestamp(3, new Timestamp(new Date().getTime()));
 			if (user.getKey() != null) {
 				st.setLong(4, user.getKey());
@@ -135,7 +138,7 @@ public class UserDAOImpl implements UserDAO {
 		user.setKey(rs.getLong("id"));
 		user.setLoginId(rs.getString("loginid"));
 		user.setPassword(rs.getString("password"));
-		user.setSuperAdmin(rs.getBoolean("superadmin"));
+		user.setRoles(new LinkedHashSet<String>(Arrays.asList(rs.getString("roles").split(","))) );
 	}
 
 	/* (non-Javadoc)

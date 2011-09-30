@@ -4,6 +4,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#username").focus();
+ });
+</script>
+
 <fieldset id="signin_form">
 	<form method="post" id="signin">
 		<h3>Iniciar sesi&oacute;n</h3>

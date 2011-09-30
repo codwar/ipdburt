@@ -16,10 +16,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.service;
 
-import java.io.IOException;
-import java.util.Properties;
+import iddb.web.security.SecurityConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +32,15 @@ public class UserServiceFactory {
 	
 	private UserServiceFactory() {
 		log.debug("Initializing UserServiceFactory");
-		Properties prop = new Properties();
+		//Properties prop = new Properties();
 		try {
-			prop.load(this.getClass().getClassLoader().getResourceAsStream("security.properties"));
-			String us = prop.getProperty("userService");
-			log.debug("Create new instance of {}", us);
+			//prop.load(this.getClass().getClassLoader().getResourceAsStream("security.properties"));
+			//String us = prop.getProperty("userService");
+			String us = SecurityConfig.getInstance().getValue("service", "userService");
+			log.trace("Create new instance of {}", us);
 			@SuppressWarnings({ "static-access", "rawtypes" })
 			Class cls = this.getClass().forName(us);
 			this.userService = (UserService) cls.newInstance();
-		} catch (IOException e) {
-			log.error(e.getMessage());
 		} catch (InstantiationException e) {
 			log.error(e.getMessage());
 		} catch (IllegalAccessException e) {

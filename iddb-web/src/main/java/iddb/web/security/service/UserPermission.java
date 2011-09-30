@@ -16,21 +16,14 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.service;
 
-public class AnonymousSubject extends Subject {
+public interface UserPermission {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7847765586409282862L;
-
-	public boolean isAuthenticated() {
-		return false;
-	}
-	
-	public boolean isSuperAdmin() {
-		return false;
-	}
+	public static final Integer LEVEL_MOD = 20;
+	public static final Integer LEVEL_ADMIN = 40;
+	public static final Integer LEVEL_FULL_ADMIN = 60;
+	public static final Integer LEVEL_SENIOR_ADMIN = 80;
+	public static final Integer LEVEL_SUPERADMIN = 100;
 	
 }

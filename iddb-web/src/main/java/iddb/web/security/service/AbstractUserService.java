@@ -16,7 +16,10 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.service;
+
+import iddb.web.security.ThreadContext;
+import iddb.web.security.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

@@ -18,6 +18,9 @@
  */
 package iddb.web.security;
 
+import iddb.web.security.subject.AnonymousSubject;
+import iddb.web.security.subject.Subject;
+
 
 public class ThreadContext {
 

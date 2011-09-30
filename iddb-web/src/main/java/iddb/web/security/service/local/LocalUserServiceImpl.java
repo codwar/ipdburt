@@ -16,11 +16,16 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.web.security;
+package iddb.web.security.service.local;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
+import iddb.web.security.service.AbstractUserService;
+import iddb.web.security.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,11 +43,35 @@ public class LocalUserServiceImpl extends AbstractUserService {
 			s.setLoginId("admin");
 			s.setPassword("admin");
 			s.setKey(1L);
-			s.setSuperAdmin(true);
+			s.setRoles(new HashSet<String>(Arrays.asList(new String[]{"admin"})));
 			createUserSession(request, s);
 			return s;
+		} else if (username.equals("user") && password.equals("user")) {
+			Subject s = new Subject();
+			s.setLoginId("user");
+			s.setPassword("user");
+			s.setKey(2L);
+			s.setRoles(new HashSet<String>(Arrays.asList(new String[]{"user"})));
+			createUserSession(request, s);
+			return s;			
 		}
 		throw new InvalidCredentialsException();
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#hasPermission(java.lang.Long)
+	 */
+	@Override
+	public boolean hasPermission(Long server) {
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#hasPersmission(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public boolean hasPersmission(Long server, Integer level) {
+		return true;
 	}
 
 }

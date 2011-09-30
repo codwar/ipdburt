@@ -25,7 +25,7 @@ import iddb.core.model.Server;
 import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
-import iddb.web.security.UserServiceFactory;
+import iddb.web.security.service.UserServiceFactory;
 import iddb.web.viewbean.NoticeViewBean;
 import iddb.web.viewbean.PenaltyViewBean;
 import iddb.web.viewbean.PlayerViewBean;

@@ -18,7 +18,7 @@
 
 	<filter>
 		<filter-name>UserServiceFilter</filter-name>
-		<filter-class>iddb.web.security.UserServiceFilter</filter-class>
+		<filter-class>iddb.web.security.service.UserServiceFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>UserServiceFilter</filter-name>
@@ -84,6 +84,10 @@
 		<error-code>404</error-code>
 		<location>/page/error.jsp</location>
 	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/page/error.jsp</location>
+	</error-page>	
 	<!-- error-page>
 		<exception-type>java.lang.Exception</exception-type>
        	<location>/page/error.jsp</location>

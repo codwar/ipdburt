@@ -18,12 +18,12 @@
  */
 package jipdbs.web.processors;
 
-import iddb.web.security.Subject;
-import iddb.web.security.UserService;
-import iddb.web.security.UserServiceFactory;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
+import iddb.web.security.service.UserService;
+import iddb.web.security.service.UserServiceFactory;
+import iddb.web.security.subject.Subject;
 import jipdbs.web.Flash;
 import jipdbs.web.MessageResource;
 
