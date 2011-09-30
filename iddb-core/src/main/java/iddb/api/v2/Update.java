@@ -21,12 +21,19 @@ package iddb.api.v2;
 import iddb.api.ServerManager;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.User;
+import iddb.core.model.UserServer;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
+import iddb.core.model.dao.UserDAO;
+import iddb.core.model.dao.UserServerDAO;
 import iddb.core.util.MailManager;
+import iddb.core.util.PasswordUtils;
+import iddb.core.util.Validator;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.info.PlayerInfo;
 import iddb.task.TaskManager;
@@ -34,7 +41,9 @@ import iddb.task.tasks.UpdateTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -145,11 +154,46 @@ public class Update {
 			// CREATE PLAYER AND ALIAS
 		}
 		
-
-//		UserDAO userDAO = DAOFactory.forClass(UserDAO.class);
-//		userDAO.get(key)
+		if (Validator.isValidEmail(userid)) {
+			throw new Exception("This is not a valid e-mail address");
+		}
 		
-		return false;
+		UserServerDAO serverDAO = (UserServerDAO) DAOFactory.forClass(UserServerDAO.class);
+		try {
+			serverDAO.findByPlayerAndServer(player.getKey(), server.getKey());
+		} catch (EntityDoesNotExistsException e) {
+			throw new Exception("Player already linked");
+		}
+		
+		UserDAO userDAO = (UserDAO) DAOFactory.forClass(UserDAO.class);
+		User user;
+		String password = null;
+		try {
+			user = userDAO.get(userid);
+		} catch (EntityDoesNotExistsException e) {
+			password = PasswordUtils.getRandomString();
+			user = new User();
+			user.setPassword(password);
+			user.setLoginId(userid);
+			user.setRoles(new HashSet<String>(Arrays.asList(new String[]{"user"})));
+			userDAO.save(user);
+		}
+		if (password != null) {
+			// TODO send password by mail
+		}
+		UserServer userServer;
+		try {
+			userServer = serverDAO.findByUserAndServer(user.getKey(), server.getKey());
+		} catch (EntityDoesNotExistsException e) {
+			userServer = new UserServer();
+			userServer.setUser(user.getKey());
+			userServer.setServer(server.getKey());
+			userServer.setOwner(false);
+		}
+		userServer.setPlayer(player.getKey());
+		serverDAO.save(userServer);
+		
+		return true;
 	}
 
 }

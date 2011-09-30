@@ -35,4 +35,6 @@ public interface UserServerDAO {
 
 	public abstract UserServer findByUserAndServer(Long user, Long server) throws EntityDoesNotExistsException;
 
+	public abstract UserServer findByPlayerAndServer(Long player, Long server) throws EntityDoesNotExistsException;
+	
 }

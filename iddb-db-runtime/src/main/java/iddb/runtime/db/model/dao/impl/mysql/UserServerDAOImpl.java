@@ -233,4 +233,38 @@ public class UserServerDAOImpl implements UserServerDAO {
 		return userServer;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#findByPlayerAndServer(java.lang.Long, java.lang.Long)
+	 */
+	@Override
+	public UserServer findByPlayerAndServer(Long player, Long server)
+			throws EntityDoesNotExistsException {
+		String sql = "select * from userserver where playerid = ? and serverid = ? limit 1";
+		UserServer userServer = null;
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, player);
+			st.setLong(2, server);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				userServer = new UserServer();
+				loadUserServer(userServer, rs);
+			} else {
+				throw new EntityDoesNotExistsException("UserServer with for player %s and server %s was not found", player, server);
+			}
+		} catch (SQLException e) {
+			logger.error("findByPlayerAndServer", e);
+		} catch (IOException e) {
+			logger.error("findByPlayerAndServer", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return userServer;
+	}
+
 }

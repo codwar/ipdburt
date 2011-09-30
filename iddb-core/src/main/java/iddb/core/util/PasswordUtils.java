@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 
 public final class PasswordUtils {
 
+	private static final String charset = "0123456789abcdefghijklmnopqrstuvwxyz";
+	
 	public static boolean checkPassword(String raw_password, String encoded_password) {
 		if (StringUtils.isEmpty(encoded_password) || StringUtils.isEmpty(raw_password)) return false;
 		if (!encoded_password.contains("$")) return false;
@@ -39,5 +41,16 @@ public final class PasswordUtils {
 		String hashedPassword = GuidGenerator.getSHA1Hash(salt + raw_password);
 		return salt + "$" + hashedPassword;
 	}
+	
+    public static String getRandomString() {
+    	int length = 10;
+        Random rand = new Random(System.currentTimeMillis());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int pos = rand.nextInt(charset.length());
+            sb.append(charset.charAt(pos));
+        }
+        return sb.toString();
+    }
 	
 }
