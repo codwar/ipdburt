@@ -25,12 +25,13 @@ import iddb.exception.EntityDoesNotExistsException;
 import java.util.List;
 
 
-public class UserServerDAOCached implements UserServerDAO {
+public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 
 	private UserServerDAO impl;
 	
 	public UserServerDAOCached(UserServerDAO impl) {
 		this.impl = impl;
+		initializeCache();
 	}
 	
 	@Override
@@ -50,12 +51,24 @@ public class UserServerDAOCached implements UserServerDAO {
 
 	@Override
 	public UserServer findByUserAndServer(Long user, Long server) throws EntityDoesNotExistsException {
-		return this.impl.findByUserAndServer(user, server);
+		UserServer userServer = (UserServer) cacheGet("u-" + user.toString() + "s" + server.toString());
+		if (userServer != null) return userServer;
+		userServer = this.impl.findByUserAndServer(user, server);
+		cachePut("u-" + user.toString() + "s" + server.toString(), userServer);
+		return userServer;
 	}
 
 	@Override
 	public List<UserServer> findByServer(Long server) {
 		return this.impl.findByServer(server);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.cached.CachedDAO#initializeCache()
+	 */
+	@Override
+	protected void initializeCache() {
+		createCache("userserver");
 	}
 
 }

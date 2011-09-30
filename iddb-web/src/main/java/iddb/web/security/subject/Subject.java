@@ -18,6 +18,8 @@
  */
 package iddb.web.security.subject;
 
+import org.apache.commons.lang.StringUtils;
+
 import iddb.core.model.User;
 
 public class Subject extends User {
@@ -27,6 +29,21 @@ public class Subject extends User {
 	 */
 	private static final long serialVersionUID = -8553739759968034511L;
 
+	private String screenName;
+	
+	public String getScreenName() {
+		return screenName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see iddb.core.model.User#setLoginId(java.lang.String)
+	 */
+	@Override
+	public void setLoginId(String loginId) {
+		super.setLoginId(loginId);
+		String[] p = StringUtils.split(loginId, "@");
+		this.screenName = p[0];
+	}
 	public boolean hasRole(String rolename) {
 		return this.getRoles().contains(rolename);
 	}

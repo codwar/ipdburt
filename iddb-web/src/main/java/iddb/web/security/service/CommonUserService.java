@@ -19,13 +19,16 @@
 package iddb.web.security.service;
 
 import iddb.web.security.ThreadContext;
+import iddb.web.security.exceptions.InvalidAccountException;
+import iddb.web.security.exceptions.InvalidCredentialsException;
+import iddb.web.security.exceptions.UserLockedException;
 import iddb.web.security.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
-public abstract class AbstractUserService implements UserService {
+public abstract class CommonUserService implements UserService {
 
 	private static ThreadContext context = new ThreadContext();
 	
@@ -45,6 +48,18 @@ public abstract class AbstractUserService implements UserService {
 		context.removeSubject();
 	}
 	
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#authenticate(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Subject authenticate(HttpServletRequest request, String username,
+			String password) throws InvalidAccountException,
+			InvalidCredentialsException, UserLockedException {
+		Subject subject = doAuthenticate(request, username, password);
+		createUserSession(request, subject);
+		return subject;
+	}
+	
 	protected void createUserSession(HttpServletRequest request, Subject subject) {
 		HttpSession session = request.getSession(true);
 		session.setAttribute(UserService.SUBJECT, subject);
@@ -60,13 +75,17 @@ public abstract class AbstractUserService implements UserService {
 		}		
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see iddb.web.security.UserService#logout(javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public void logout(HttpServletRequest request) {
+		doLogout(request);
 		invalidateUserSession(request);
 	}
+
+	protected abstract void doLogout(HttpServletRequest request);
+	
+	protected abstract Subject doAuthenticate(HttpServletRequest request, String username, String password) throws InvalidAccountException,	InvalidCredentialsException, UserLockedException;
 	
 }

@@ -65,7 +65,8 @@ ul.topnav li ul.subnav {
     -webkit-border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    border: 1px solid #111;    
+    border: 1px solid #111;
+    z-index: 1000;    
 }
 ul.topnav li ul.subnav li{
     margin: 0; padding: 0;

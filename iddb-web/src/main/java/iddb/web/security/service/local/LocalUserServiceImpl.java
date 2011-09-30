@@ -24,18 +24,18 @@ import java.util.HashSet;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
-import iddb.web.security.service.AbstractUserService;
+import iddb.web.security.service.CommonUserService;
 import iddb.web.security.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class LocalUserServiceImpl extends AbstractUserService {
+public class LocalUserServiceImpl extends CommonUserService {
 
 	/* (non-Javadoc)
 	 * @see iddb.web.security.UserService#authenticate(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Subject authenticate(HttpServletRequest request, String username,
+	protected Subject doAuthenticate(HttpServletRequest request, String username,
 			String password) throws InvalidAccountException,
 			InvalidCredentialsException, UserLockedException {
 		if (username.equals("admin") && password.equals("admin")) {
@@ -72,6 +72,14 @@ public class LocalUserServiceImpl extends AbstractUserService {
 	@Override
 	public boolean hasPersmission(Long server, Integer level) {
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#doLogout(javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected void doLogout(HttpServletRequest request) {
+		// do nothing
 	}
 
 }

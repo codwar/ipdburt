@@ -75,7 +75,7 @@ public class GravatarTag extends TagSupport {
 
 		StringBuilder img = new StringBuilder("<img");
 		if (getClaz() != null) img.append(" class=\"").append(getClaz()).append("\"");
-		img.append(" border=\"0\" src=\"").append(url).append("\" with=\"").append(size).append("px\" />");
+		img.append(" border=\"0\" align=\"top\" src=\"").append(url).append("\" with=\"").append(size).append("px\" />");
 		try {
 			out.write(img.toString());
 		} catch (IOException e) {

@@ -24,17 +24,19 @@ import iddb.exception.EntityDoesNotExistsException;
 
 import java.util.List;
 
-public class UserDAOCached implements UserDAO {
+public class UserDAOCached extends CachedDAO implements UserDAO {
 
 	private UserDAO impl;
 	
 	public UserDAOCached(UserDAO impl) {
 		this.impl = impl;
+		initializeCache();
 	}
 	
 	@Override
 	public void save(User user) {
 		this.impl.save(user);
+		cachePut(user.getLoginId(), user, 10);
 	}
 
 	@Override
@@ -52,15 +54,29 @@ public class UserDAOCached implements UserDAO {
 	 */
 	@Override
 	public User get(String loginId) throws EntityDoesNotExistsException {
-		return this.impl.get(loginId);
+		User user = (User) cacheGet(loginId);
+		if (user != null) return user;
+		user = this.impl.get(loginId);
+		cachePut(loginId, user, 10);
+		return user;
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see iddb.core.model.dao.UserDAO#set_password(iddb.core.model.User, java.lang.String)
 	 */
 	@Override
-	public void set_password(User user, String password) {
-		this.impl.set_password(user, password);
+	public void change_password(User user) {
+		this.impl.change_password(user);
+		cachePut(user.getLoginId(), user, 10);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.cached.CachedDAO#initializeCache()
+	 */
+	@Override
+	protected void initializeCache() {
+		createCache("user");
 	}
 
 }

@@ -54,6 +54,9 @@
         <arg name="type" value="logout"/>
     </rule>    
   </processor>
+  <processor class="jipdbs.web.processors.ChangePasswordProcessor" redirect="/page/change_password.jsp">
+    <rule name="change_password" pattern="^/account/update/$"/>
+  </processor>  
   <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
     <rule name="openid" pattern="^/openid/$"/>
   </processor>      

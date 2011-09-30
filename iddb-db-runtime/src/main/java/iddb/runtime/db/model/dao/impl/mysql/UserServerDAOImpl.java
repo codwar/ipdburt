@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +38,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author 12072245
- *
- */
 public class UserServerDAOImpl implements UserServerDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(UserServerDAOImpl.class);
@@ -52,10 +49,11 @@ public class UserServerDAOImpl implements UserServerDAO {
 	public void save(UserServer userServer) {
 		String sql;
 		if (userServer.getKey() == null) {
-			sql = "insert into userserver (userid, serverid, owner, updated, created) values (?,?,?,?,?)"; 
+			sql = "insert into userserver (userid, serverid, playerid, owner, updated, created) values (?,?,?,?,?,?)"; 
 		} else {
 			sql = "update usersever set userid = ?," +
 					"serverid = ?," +
+					"playerid = ?," +
 					"owner = ?, updated = ? where id = ? limit 1";
 		}
 		Connection conn = null;
@@ -64,12 +62,14 @@ public class UserServerDAOImpl implements UserServerDAO {
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, userServer.getUser());
 			st.setLong(2, userServer.getServer());
-			st.setBoolean(3, userServer.getOwner());
-			st.setTimestamp(4, new Timestamp(new Date().getTime()));
+			if (userServer.getPlayer() == null) st.setNull(3, Types.INTEGER);
+			else st.setLong(3, userServer.getServer());
+			st.setBoolean(4, userServer.getOwner());
+			st.setTimestamp(5, new Timestamp(new Date().getTime()));
 			if (userServer.getKey() != null) {
-				st.setLong(5, userServer.getKey());
+				st.setLong(6, userServer.getKey());
 			} else {
-				st.setTimestamp(5, new Timestamp(new Date().getTime()));
+				st.setTimestamp(6, new Timestamp(new Date().getTime()));
 			}
 			st.executeUpdate();
 			if (userServer.getKey() == null) {
@@ -133,6 +133,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		userServer.setServer(rs.getLong("serverid"));
 		userServer.setOwner(rs.getBoolean("owner"));
 		userServer.setKey(rs.getLong("id"));
+		userServer.setPlayer(rs.getLong("playerid"));
 	}
 
 	/* (non-Javadoc)

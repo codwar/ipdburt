@@ -560,7 +560,7 @@ a#signin-link {
 }
 a#signin-link em {
   font-size: 10px;
-  font-style: normal;
+  font-style: normal !important;
   margin-right: 4px;
 }
 a#signin-link strong {
@@ -691,11 +691,11 @@ input.search {
     border-radius: 5px;
 	/*color: #778899;*/
 	font-size: 11px;
-	margin-right: 0;
+	/*margin-right: 0;*/
 	margin-top: 5px;
 	padding: 12px;
 	position: absolute;
-	right: 0;
+	/*right: 0;*/
 	text-align: left;
 	top: 24.5px;
 	width: 210px;
@@ -777,4 +777,7 @@ border:0;
 #signin_submit:hover, #signin_submit:focus {
     background-position:0 -5px;
     cursor:pointer;
+}
+.usermenu {
+	margin-right: 80px;
 }

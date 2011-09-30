@@ -33,6 +33,6 @@ public interface UserDAO {
 	
 	public abstract User get(String loginId) throws EntityDoesNotExistsException;
 
-	public abstract void set_password(User user, String password);
+	public abstract void change_password(User user);
 	
 }

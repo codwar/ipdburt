@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +139,7 @@ public class UserDAOImpl implements UserDAO {
 		user.setKey(rs.getLong("id"));
 		user.setLoginId(rs.getString("loginid"));
 		user.setPassword(rs.getString("password"));
-		user.setRoles(new LinkedHashSet<String>(Arrays.asList(rs.getString("roles").split(","))) );
+		user.setRoles(new LinkedHashSet<String>(Arrays.asList(StringUtils.split(rs.getString("roles"), ","))));
 	}
 
 	/* (non-Javadoc)
@@ -209,7 +210,7 @@ public class UserDAOImpl implements UserDAO {
 	 * @see iddb.core.model.dao.UserDAO#set_password(iddb.core.model.User, java.lang.String)
 	 */
 	@Override
-	public void set_password(User user, String password) {
+	public void change_password(User user) {
 		String sql;
 		sql = "update user set password = ?, updated = ? where id = ? limit 1";
 		Connection conn = null;

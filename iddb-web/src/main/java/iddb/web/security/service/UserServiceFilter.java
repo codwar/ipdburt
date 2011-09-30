@@ -83,7 +83,7 @@ public class UserServiceFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		HttpSession session = ((HttpServletRequest) request).getSession(false);
-		AbstractUserService service = (AbstractUserService) UserServiceFactory.getUserService();
+		CommonUserService service = (CommonUserService) UserServiceFactory.getUserService();
 		Subject s = null;
 		if (session != null) {
 			s = (Subject) session.getAttribute(UserService.SUBJECT);
@@ -131,7 +131,7 @@ public class UserServiceFilter implements Filter {
 		if (s.isAuthenticated()) {
 			Set<String> r = urls.get(p);
 			for (String role : r) {
-				if (s.hasRole(role)) {
+				if ("*".equals(role) || s.hasRole(role)) {
 					return true;
 				}
 				resp.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -156,7 +156,7 @@ public class UserServiceFilter implements Filter {
 	 */
 	@Override
 	public void destroy() {
-		AbstractUserService service = (AbstractUserService) UserServiceFactory.getUserService();
+		CommonUserService service = (CommonUserService) UserServiceFactory.getUserService();
 		service.removeLocal();
 	}
 
