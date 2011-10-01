@@ -97,7 +97,11 @@ public class UserServiceFilter implements Filter {
 		}
 		if (s == null) s = new AnonymousSubject();
 		if (haveAccess(s, (HttpServletRequest) request, (HttpServletResponse) response)) {
-			chain.doFilter(request, response);	
+			try {
+				chain.doFilter(request, response);
+			} finally {
+				service.removeLocal();
+			}
 		}
 	}
 
@@ -156,8 +160,7 @@ public class UserServiceFilter implements Filter {
 	 */
 	@Override
 	public void destroy() {
-		CommonUserService service = (CommonUserService) UserServiceFactory.getUserService();
-		service.removeLocal();
+		UserServiceFactory.destroy();
 	}
 
 }

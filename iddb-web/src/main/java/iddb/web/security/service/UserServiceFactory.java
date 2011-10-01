@@ -56,5 +56,24 @@ public class UserServiceFactory {
 		}
 		return instance.userService;
 	}
+
+	public static void cleanup() {
+		try {
+			((CommonUserService) instance.userService).removeLocal();
+		} catch (Exception e) {
+			// do nothing
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static void destroy() {
+		// user service use threadlocal, is wise to destroy it to force gc to remove it and avoid memory leak
+		if (instance != null && instance.userService != null) {
+			instance.userService = null;
+		}
+		
+	}
 	
 }

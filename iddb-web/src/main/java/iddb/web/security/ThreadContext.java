@@ -25,7 +25,6 @@ import iddb.web.security.subject.Subject;
 public class ThreadContext {
 
 	private ThreadLocal<Subject> subject;
-	//private ThreadContext instance;
 	
 	private class SubjectThreadLocal<T extends Subject> extends InheritableThreadLocal<Subject> {
 		
@@ -42,13 +41,6 @@ public class ThreadContext {
 		subject = new SubjectThreadLocal<Subject>();
 	}
 	
-//	private ThreadContext getInstance() {
-//		if (instance == null) {
-//			instance = new ThreadContext();			
-//		}
-//		return instance;
-//	}
-//	
 	public Subject getSubject() {
 		return this.subject.get();
 	}
@@ -61,4 +53,13 @@ public class ThreadContext {
 		this.subject.remove();
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		this.subject.remove();
+		this.subject = null;
+		super.finalize();
+	}
 }

@@ -84,6 +84,14 @@ public abstract class CommonUserService implements UserService {
 		invalidateUserSession(request);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		context = null;
+	}
+	
 	protected abstract void doLogout(HttpServletRequest request);
 	
 	protected abstract Subject doAuthenticate(HttpServletRequest request, String username, String password) throws InvalidAccountException,	InvalidCredentialsException, UserLockedException;
