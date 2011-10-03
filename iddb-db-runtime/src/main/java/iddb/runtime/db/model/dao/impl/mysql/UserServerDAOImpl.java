@@ -58,7 +58,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, userServer.getUser());
 			st.setLong(2, userServer.getServer());
@@ -101,7 +101,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, user);
 			ResultSet rs = st.executeQuery();
@@ -145,7 +145,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, server);
 			ResultSet rs = st.executeQuery();
@@ -176,7 +176,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		UserServer userServer = null;
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -209,7 +209,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		UserServer userServer = null;
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, user);
 			st.setLong(2, server);
@@ -243,7 +243,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		UserServer userServer = null;
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setLong(2, server);

@@ -61,7 +61,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, penalty.getPlayer());
 			st.setLong(2, penalty.getAdmin());
@@ -105,7 +105,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		String sql = "delete from penalty where id = ?";
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, penalty.getKey());
 			int r = st.executeUpdate();
@@ -131,7 +131,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		Penalty penalty = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -181,7 +181,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			ResultSet rs = st.executeQuery();
@@ -212,7 +212,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		List<Penalty> list = new ArrayList<Penalty>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, limit);
@@ -246,7 +246,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setInt(1, type.intValue());
 			ResultSet rsC = stC.executeQuery(sqlCount);
@@ -285,7 +285,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
@@ -319,7 +319,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			stC.setInt(2, type.intValue());
@@ -369,7 +369,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		String sql = "delete from penalty where id = ?";
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			for (Penalty p : list) {
 				st.setLong(1, p.getKey());
@@ -397,7 +397,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
@@ -428,7 +428,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		String sql = "update penalty set active = ? where id = ?";
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			for (Penalty p : list) {
 				st.setBoolean(1, false);
@@ -457,7 +457,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		Connection conn = null;
 		Penalty penalty = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());

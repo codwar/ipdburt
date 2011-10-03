@@ -48,7 +48,7 @@ public class AliasDAOImpl implements AliasDAO {
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setString(1, query);
 			ResultSet rsC = stC.executeQuery();
@@ -85,7 +85,7 @@ public class AliasDAOImpl implements AliasDAO {
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setString(1, query);
 			ResultSet rsC = stC.executeQuery();
@@ -122,7 +122,7 @@ public class AliasDAOImpl implements AliasDAO {
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			ResultSet rsC = stC.executeQuery();
@@ -174,7 +174,7 @@ public class AliasDAOImpl implements AliasDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setString(2, alias.getNickname());
@@ -220,7 +220,7 @@ public class AliasDAOImpl implements AliasDAO {
 		Alias alias = null;
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setString(2, nickname);

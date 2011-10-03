@@ -60,7 +60,7 @@ public class UserDAOImpl implements UserDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, user.getLoginId());
 			st.setString(2, Functions.join(user.getRoles(), ","));
@@ -102,7 +102,7 @@ public class UserDAOImpl implements UserDAO {
 		List<User> list = new ArrayList<User>();
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -151,7 +151,7 @@ public class UserDAOImpl implements UserDAO {
 		Connection conn = null;
 		User user = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -183,7 +183,7 @@ public class UserDAOImpl implements UserDAO {
 		Connection conn = null;
 		User user = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, loginId);
 			ResultSet rs = st.executeQuery();
@@ -215,7 +215,7 @@ public class UserDAOImpl implements UserDAO {
 		sql = "update user set password = ?, updated = ? where id = ? limit 1";
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, user.getPassword());
 			st.setTimestamp(2, new Timestamp(new Date().getTime()));

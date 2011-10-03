@@ -50,7 +50,7 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, server.getUid());
 			st.setString(2, server.getName());
@@ -95,7 +95,7 @@ public class ServerDAOImpl implements ServerDAO {
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -129,7 +129,7 @@ public class ServerDAOImpl implements ServerDAO {
 		Connection conn = null;
 		Server server = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, uid);
 			ResultSet rs = st.executeQuery();
@@ -172,7 +172,7 @@ public class ServerDAOImpl implements ServerDAO {
 		Connection conn = null;
 		Server server = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -204,7 +204,7 @@ public class ServerDAOImpl implements ServerDAO {
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setTimestamp(1, new Timestamp(date.getTime()));
 			ResultSet rs = st.executeQuery();
@@ -233,7 +233,7 @@ public class ServerDAOImpl implements ServerDAO {
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {

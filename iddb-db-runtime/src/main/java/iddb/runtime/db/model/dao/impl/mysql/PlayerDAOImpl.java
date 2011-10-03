@@ -48,7 +48,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		Player player = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, server);
 			st.setString(2, guid);
@@ -80,7 +80,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -119,7 +119,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -157,7 +157,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Statement stC = conn.createStatement();
 			ResultSet rsC = stC.executeQuery(sqlCount);
 			if (rsC.next()) {
@@ -191,7 +191,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		Player player = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, key);
 			ResultSet rs = st.executeQuery();
@@ -253,7 +253,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, player.getServer());
 			st.setString(2, player.getGuid());
@@ -305,7 +305,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		String sql = "update player set connected = ? where connected = ? and serverid = ?";
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setBoolean(1, false);
 			st.setBoolean(2, true);
@@ -330,7 +330,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		int c = 0;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setBoolean(1, true);
 			st.setLong(2, key);
@@ -359,7 +359,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, clientId);
 			ResultSet rsC = stC.executeQuery();

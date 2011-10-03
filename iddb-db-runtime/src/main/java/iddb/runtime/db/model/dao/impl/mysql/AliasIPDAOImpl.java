@@ -59,7 +59,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 		}
 		Connection conn = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, alias.getPlayer());
 			st.setLong(2, Functions.ipToDecimal(alias.getIp()));
@@ -99,7 +99,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 		Connection conn = null;
 		AliasIP alias = null;
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			st.setLong(2, Functions.ipToDecimal(ip));
@@ -146,7 +146,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, player);
 			ResultSet rsC = stC.executeQuery();
@@ -187,7 +187,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();
 		try {
-			conn = ConnectionFactory.getConnection();
+			conn = ConnectionFactory.getSecondaryConnection();
 			Long[] range = Functions.getIpRange(query);
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
 			stC.setLong(1, range[0]);

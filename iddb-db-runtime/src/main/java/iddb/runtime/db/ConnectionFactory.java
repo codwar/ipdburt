@@ -15,7 +15,8 @@ public final class ConnectionFactory {
 	private static final Logger log = LoggerFactory.getLogger(ConnectionFactory.class);
 	
 	private static ConnectionFactory instance;
-	private DataSource dataSource;
+	private DataSource masterDataSource;
+	private DataSource slaveDataSource;
 	
 	private ConnectionFactory() throws IOException {
 		log.debug("Initializing ConnectionFactory");
@@ -27,7 +28,14 @@ public final class ConnectionFactory {
 			log.error("Unable to load db.properties. {}", e.getMessage());
 			throw e;
 		}
-		
+		masterDataSource = null;
+		slaveDataSource = null;
+		initializeMasterDatasource(props);
+		initializeSlaveDatasource(props);
+	}
+
+	private void initializeMasterDatasource(Properties props) {
+		log.debug("Initializing Master DataSource");
 		PoolProperties p = new PoolProperties();
         p.setUrl(props.getProperty("url"));
         p.setDriverClassName(props.getProperty("driver"));
@@ -49,25 +57,56 @@ public final class ConnectionFactory {
         p.setLogAbandoned(true);
         p.setRemoveAbandoned(true);
         p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
-        
-        dataSource = new DataSource(p);
-		//loadDriver();
+        masterDataSource = new DataSource(p);
 	}
 
-//	private void loadDriver() throws IOException {
-//		try {
-//			Class.forName("com.mysql.jdbc.Driver");
-//		} catch (ClassNotFoundException e) {
-//			log.error("Unable to load mysql driver");
-//			throw new IOException(e);
-//		}
-//	}
+	private void initializeSlaveDatasource(Properties props) {
+		if (props.containsKey("slave.url")) {
+			log.debug("Initializing Slave DataSource");
+			PoolProperties p = new PoolProperties();
+	        p.setUrl(props.getProperty("slave.url"));
+	        p.setDriverClassName(props.getProperty("slave.driver"));
+	        p.setUsername(props.getProperty("slave.username"));
+	        p.setPassword(props.getProperty("slave.password"));
+	        p.setJmxEnabled(true);
+	        p.setTestWhileIdle(false);
+	        p.setTestOnBorrow(true);
+	        p.setValidationQuery("SELECT 1");
+	        p.setTestOnReturn(false);
+	        p.setValidationInterval(30000);
+	        p.setTimeBetweenEvictionRunsMillis(30000);
+	        p.setMaxActive(100);
+	        p.setInitialSize(5);
+	        p.setMaxWait(10000);
+	        p.setRemoveAbandonedTimeout(60);
+	        p.setMinEvictableIdleTimeMillis(30000);
+	        p.setMinIdle(10);
+	        p.setLogAbandoned(true);
+	        p.setRemoveAbandoned(true);
+	        p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+	        slaveDataSource = new DataSource(p);			
+		} else {
+			log.trace("No Slave DataSource specified.");
+		}
+
+	}
 	
-	public static Connection getConnection() throws IOException, SQLException {
+	public static Connection getMasterConnection() throws IOException, SQLException {
 		if (instance == null) {
 			instance = new ConnectionFactory();
 		}
-		//return DriverManager.getConnection("jdbc:mysql://localhost/test", "test", "test");
-		return instance.dataSource.getConnection();
+		return instance.masterDataSource.getConnection();
 	}
+
+	public static Connection getSecondaryConnection() throws IOException, SQLException {
+		if (instance == null) {
+			instance = new ConnectionFactory();
+		}
+		if (instance.slaveDataSource != null) {
+			return instance.slaveDataSource.getConnection();
+		} else {
+			return instance.masterDataSource.getConnection();	
+		}
+	}	
+	
 }
