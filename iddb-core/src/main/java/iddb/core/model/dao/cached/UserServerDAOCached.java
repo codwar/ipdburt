@@ -71,4 +71,17 @@ public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 		createCache("userserver");
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#findByPlayerAndServer(java.lang.Long, java.lang.Long)
+	 */
+	@Override
+	public UserServer findByPlayerAndServer(Long player, Long server)
+			throws EntityDoesNotExistsException {
+		UserServer userServer = (UserServer) cacheGet("p-" + player.toString() + "s" + server.toString());
+		if (userServer != null) return userServer;
+		userServer = this.impl.findByPlayerAndServer(player, server);
+		cachePut("p-" + player.toString() + "s" + server.toString(), userServer);
+		return userServer;
+	}
+
 }

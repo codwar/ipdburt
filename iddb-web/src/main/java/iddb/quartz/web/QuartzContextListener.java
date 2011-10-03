@@ -68,7 +68,10 @@ public class QuartzContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent sce) {
 		log.debug("Shutting down quartz engine");
 		try {
-			if (scheduler != null) scheduler.shutdown();
+			if (scheduler != null) {
+				scheduler.clear();
+				scheduler.shutdown();
+			}
 		} catch (SchedulerException e) {
 			log.error(e.getMessage());
 		}

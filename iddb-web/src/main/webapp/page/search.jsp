@@ -7,11 +7,6 @@
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
-<!--
-$("[name=q]").val("<c:out value="${queryValue}"/>");
-//-->
-</script>
-<script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
     dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
 </script>
