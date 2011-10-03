@@ -57,6 +57,21 @@ public class ServerManager {
 			throw new UnauthorizedUpdateException(message);
 		}
 
+		if (server.getDisabled()) {
+			// Compose.
+			StringBuilder builder = new StringBuilder(
+					"Intento de actualizar servidor deshabilitado.\n");
+			builder.append("Key: " + key).append("\n");
+			if (serverName != null)
+				builder.append("Nombre: " + serverName).append("\n");
+			if (remoteAddress != null)
+				builder.append("IP: " + remoteAddress).append("\n");
+			String message = builder.toString();
+
+			// Throw.
+			throw new UnauthorizedUpdateException(message);
+		}
+		
 		if (StringUtils.isNotEmpty(remoteAddress) && StringUtils.isNotEmpty(server.getAddress()) && !remoteAddress.equals(server.getAddress())) {
 
 			// Compose.
