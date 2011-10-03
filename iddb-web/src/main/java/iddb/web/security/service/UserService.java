@@ -70,6 +70,10 @@ public interface UserService {
 	 */
 	public boolean hasPersmission(Long server, Integer level);
 	
-	//public void createUser(User user);
+	/**
+	 * Check if the user has level permission on any server
+	 * @return
+	 */
+	public boolean hasAnyServer(Integer level);
 	
 }

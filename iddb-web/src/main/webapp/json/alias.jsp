@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="util"%>
 
 <json:object>
 	<json:property name="hasMore" value="${hasMore}" />
@@ -19,7 +21,8 @@
                 </c:when>
                 <c:otherwise>
                     <url:url name="search" var="url"><url:param name="query" value="${item.ipSearch}"/></url:url>
-                    <json:property name="ip" value="${item.ip}" />
+                    <util:maskip value="${item.ip}" var="ip"/>
+                    <json:property name="ip" value="${ip}" />
                     <json:property name="ip_url" value="${url}" />
                 </c:otherwise>
             </c:choose>

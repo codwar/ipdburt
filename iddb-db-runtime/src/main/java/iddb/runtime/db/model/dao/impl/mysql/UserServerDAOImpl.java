@@ -267,4 +267,92 @@ public class UserServerDAOImpl implements UserServerDAO {
 		return userServer;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#existsAny(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public Boolean existsAny(Long user, Integer level) {
+		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.userid = ? AND p.level >= ? limit 1";
+		Boolean res = Boolean.FALSE;
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, user);
+			st.setInt(2, level);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				res = Boolean.TRUE;
+			}
+		} catch (SQLException e) {
+			logger.error("existsAny", e);
+		} catch (IOException e) {
+			logger.error("existsAny", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return res;
+	}
+
+	@Override
+	public List<UserServer> listUserServers(Long user, Integer level) {
+		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.userid = ? AND p.level >= ?";
+		List<UserServer> list = new ArrayList<UserServer>();
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, user);
+			st.setInt(2, level);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				UserServer userServer = new UserServer();
+				loadUserServer(userServer, rs);
+				list.add(userServer);
+			}
+		} catch (SQLException e) {
+			logger.error("listUserServers", e);
+		} catch (IOException e) {
+			logger.error("listUserServers", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+	
+	@Override
+	public List<UserServer> findServerAdmins(Long server, Integer level) {
+		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.serverid = ? AND p.level >= ?";
+		List<UserServer> list = new ArrayList<UserServer>();
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, server);
+			st.setInt(2, level);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				UserServer userServer = new UserServer();
+				loadUserServer(userServer, rs);
+				list.add(userServer);
+			}
+		} catch (SQLException e) {
+			logger.error("findServerAdmins", e);
+		} catch (IOException e) {
+			logger.error("findServerAdmins", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+	
 }

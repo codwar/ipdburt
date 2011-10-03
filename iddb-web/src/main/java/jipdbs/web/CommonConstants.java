@@ -23,4 +23,6 @@ public interface CommonConstants {
 	public static final int DEFAULT_PAGE_SIZE = 20;
 	public static final int DEFAULT_AJAX_PAGE_LIMIT = 10;
 	
+	public static final int ADMIN_LEVEL = 20;
+	
 }

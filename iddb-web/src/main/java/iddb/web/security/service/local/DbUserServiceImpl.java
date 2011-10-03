@@ -146,4 +146,15 @@ public class DbUserServiceImpl extends CommonUserService {
 		// do nothing
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#hasAnyServer(java.lang.Integer)
+	 */
+	@Override
+	public boolean hasAnyServer(Integer level) {
+		Subject subject = this.getCurrentUser();
+		if (!subject.isAuthenticated()) return false;
+		if (subject.isSuperAdmin()) return true;
+		return serverDAO.existsAny(subject.getKey(), level);
+	}
+
 }

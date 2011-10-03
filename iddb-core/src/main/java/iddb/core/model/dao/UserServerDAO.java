@@ -37,4 +37,10 @@ public interface UserServerDAO {
 
 	public abstract UserServer findByPlayerAndServer(Long player, Long server) throws EntityDoesNotExistsException;
 	
+	public abstract Boolean existsAny(Long user, Integer level);
+	
+	public List<UserServer> listUserServers(Long user, Integer level);
+
+	public List<UserServer> findServerAdmins(Long server, Integer level);
+	
 }

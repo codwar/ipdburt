@@ -33,10 +33,12 @@ import iddb.web.viewbean.PlayerViewBean;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jipdbs.web.CommonConstants;
+import jipdbs.web.MessageResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +70,6 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 			throw new HttpError(HttpServletResponse.SC_NOT_FOUND);
 		}
 		
-		List<AliasResult> list = new ArrayList<AliasResult>();
-		
 		Server server;
 		try {
 			server = app.getServer(player.getServer());
@@ -79,54 +79,61 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 			log.error(w.getBuffer().toString());
 			throw new ProcessorException(e);
 		}
-		
+
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL); 
 		PlayerViewBean infoView = new PlayerViewBean();
 		infoView.setKey(id);
 		infoView.setName(player.getNickname());
-		if (UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
+		if (hasAdmin) {
 			infoView.setIp(player.getIp());	
 		} else {
 			infoView.setIp(Functions.maskIpAddress(player.getIp()));
 		}
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
-		Penalty ban = app.getLastPenalty(player);
-		if (ban != null) {
-			PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
-			penaltyViewBean.setCreated(ban.getCreated());
-			penaltyViewBean.setDuration(ban.getDuration());
-			penaltyViewBean.setReason(ban.getReason());
-			if (ban.getAdmin() != null) {
-				try {
-					Player admin = app.getPlayer(ban.getAdmin());
-					penaltyViewBean.setAdmin(admin.getNickname());
-				} catch (EntityDoesNotExistsException e) {
-					log.warn(e.getMessage());
-				}
-			}
-			infoView.setBanInfo(penaltyViewBean.toString());
-		}
 		
-		Penalty notice = app.getLastNotice(player);
-		if (notice != null) {
-			NoticeViewBean noticeViewBean = new NoticeViewBean();
-			noticeViewBean.setCreated(notice.getCreated());
-			noticeViewBean.setReason(notice.getReason());
-			if (notice.getAdmin() != null) {
-				try {
-					Player admin = app.getPlayer(notice.getAdmin());
-					noticeViewBean.setAdmin(admin.getNickname());
-				} catch (EntityDoesNotExistsException e) {
-					log.warn(e.getMessage());
+		if (hasAdmin) {
+			Penalty ban = app.getLastPenalty(player);
+			if (ban != null) {
+				PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
+				penaltyViewBean.setCreated(ban.getCreated());
+				penaltyViewBean.setDuration(ban.getDuration());
+				penaltyViewBean.setReason(ban.getReason());
+				if (ban.getAdmin() != null) {
+					try {
+						Player admin = app.getPlayer(ban.getAdmin());
+						penaltyViewBean.setAdmin(admin.getNickname());
+					} catch (EntityDoesNotExistsException e) {
+						log.warn(e.getMessage());
+					}
 				}
+				infoView.setBanInfo(penaltyViewBean.toString());
 			}
-			infoView.setNote(noticeViewBean.toString());
+			Penalty notice = app.getLastNotice(player);
+			if (notice != null) {
+				NoticeViewBean noticeViewBean = new NoticeViewBean();
+				noticeViewBean.setCreated(notice.getCreated());
+				noticeViewBean.setReason(notice.getReason());
+				if (notice.getAdmin() != null) {
+					try {
+						Player admin = app.getPlayer(notice.getAdmin());
+						noticeViewBean.setAdmin(admin.getNickname());
+					} catch (EntityDoesNotExistsException e) {
+						log.warn(e.getMessage());
+					}
+				}
+				infoView.setNote(noticeViewBean.toString());
+			}			
+		} else {
+			if (player.getBanInfo() != null) {
+				infoView.setBanInfo(MessageResource.getMessage("banned"));
+			}
 		}
-		
-		infoView.setAliases(list);
+		infoView.setAliases(new ArrayList<AliasResult>());
 		infoView.setClientId(player.getClientId() != null ? "@" + player.getClientId().toString() : "-");
 		infoView.setPlaying(player.isConnected());
-		if (player.getLevel() != null && player.getLevel() > 0 && player.getLevel() <= server.getMaxLevel()) {
+		
+		if (hasAdmin && player.getLevel() != null) {
 			infoView.setLevel(player.getLevel().toString());
 		} else {
 			infoView.setLevel("-");

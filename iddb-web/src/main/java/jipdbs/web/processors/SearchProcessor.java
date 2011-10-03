@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import jipdbs.web.CommonConstants;
 import jipdbs.web.Flash;
+import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -124,18 +125,13 @@ public class SearchProcessor extends FlashResponseProcessor {
 				exactMatch[0] = true;
 				list = app.aliasSearch(query, offset, limit, total, exactMatch);
 				if (!exactMatch[0] && list.size() > 0) {
-					Flash.info(
-							req,
-							"No se encontraron resultados precisos. "
-									+ "Los resultados mostrados son variaciones del nombre.");
+					Flash.info(req,MessageResource.getMessage("no_exact_match"));
 					if (total[0] > Parameters.MAX_NGRAM_QUERY / 2) {
-						Flash.warn(req,
-								"Su búsqueda arroja demasiados resultados."
-										+ " Por favor, sea más específico.");
+						Flash.warn(req,MessageResource.getMessage("too_many_results"));
 					}
 				}
 			} else
-				Flash.error(req, "Consulta inválida. Caracteres inválidos.");
+				Flash.error(req, MessageResource.getMessage("invalid_search"));
 		}
 
 		time = System.currentTimeMillis() - time;

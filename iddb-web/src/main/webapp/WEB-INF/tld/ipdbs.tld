@@ -34,5 +34,21 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>		
 	</tag>
+	<tag>
+		<name>maskip</name>
+		<tagclass>jipdbs.tag.IpMasker</tagclass>
+	    <bodycontent>empty</bodycontent>
+		<info>Mask IP</info>
+	    <attribute>
+			<name>value</name>
+	        <required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	    <attribute>
+			<name>var</name>
+	        <required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>	
 </taglib>
 

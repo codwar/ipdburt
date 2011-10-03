@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="util"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
@@ -200,7 +200,7 @@
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.ipSearch}"/></url:url>">${player.ip}</a>&nbsp;<a
+				<a href="<url:url name="search"><url:param name="query" value="${player.ipSearch}"/></url:url>"><util:maskip value="${player.ip}"/></a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
@@ -271,7 +271,7 @@
                 <c:set var="url" value="/"/>
             </c:otherwise>
             </c:choose>
-            <pag:paginator
+            <util:paginator
                 totalPages="${pageLink.totalPages}"
                 currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
                 url="${url}" />            

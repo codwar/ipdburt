@@ -32,10 +32,7 @@ public class UserServiceFactory {
 	
 	private UserServiceFactory() {
 		log.debug("Initializing UserServiceFactory");
-		//Properties prop = new Properties();
 		try {
-			//prop.load(this.getClass().getClassLoader().getResourceAsStream("security.properties"));
-			//String us = prop.getProperty("userService");
 			String us = SecurityConfig.getInstance().getValue("service", "userService");
 			log.trace("Create new instance of {}", us);
 			@SuppressWarnings({ "static-access", "rawtypes" })

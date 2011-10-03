@@ -60,7 +60,12 @@ public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 
 	@Override
 	public List<UserServer> findByServer(Long server) {
-		return this.impl.findByServer(server);
+		@SuppressWarnings("unchecked")
+		List<UserServer> l = (List<UserServer>) cacheGet("list" + server.toString());
+		if (l != null) return l;
+		l = this.impl.findByServer(server);
+		if (l.size() > 0) cachePut("list" + server.toString(), l);
+		return l;
 	}
 
 	/* (non-Javadoc)
@@ -82,6 +87,44 @@ public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 		userServer = this.impl.findByPlayerAndServer(player, server);
 		cachePut("p-" + player.toString() + "s" + server.toString(), userServer);
 		return userServer;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#existsAny(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public Boolean existsAny(Long user, Integer level) {
+		Boolean r = (Boolean) cacheGet("any" + user.toString() + "l" + level.toString());
+		if (r != null) return r;
+		r = this.impl.existsAny(user, level);
+		cachePut("any" + user.toString() + "l" + level.toString(), r, 5);
+		return r;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#listUserServers(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public List<UserServer> listUserServers(Long user, Integer level) {
+		@SuppressWarnings("unchecked")
+		List<UserServer> l = (List<UserServer>) cacheGet("liu" + user.toString() + "l" + level.toString());
+		if (l != null) return l;
+		l = this.impl.listUserServers(user, level);
+		if (l.size() > 0) cachePut("liu" + user.toString() + "l" + level.toString(), l, 5);
+		return l;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserServerDAO#findServerAdmins(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public List<UserServer> findServerAdmins(Long server, Integer level) {
+		@SuppressWarnings("unchecked")
+		List<UserServer> l = (List<UserServer>) cacheGet("lis" + server.toString() + "l" + level.toString());
+		if (l != null) return l;
+		l = this.impl.findServerAdmins(server, level);
+		if (l.size() > 0) cachePut("lis" + server.toString() + "l" + level.toString(), l, 5);
+		return l;
 	}
 
 }

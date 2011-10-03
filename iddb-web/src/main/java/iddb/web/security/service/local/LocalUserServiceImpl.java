@@ -82,4 +82,12 @@ public class LocalUserServiceImpl extends CommonUserService {
 		// do nothing
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#hasAnyServer(java.lang.Integer)
+	 */
+	@Override
+	public boolean hasAnyServer(Integer level) {
+		return false;
+	}
+
 }
