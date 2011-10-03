@@ -18,10 +18,12 @@
  */
 package iddb.core.util;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,14 +52,7 @@ public class MailManager {
 		return instance;
 	}
 	
-	public void sendAdminMail(String subject, String message) throws Exception {
-		if (props == null) throw new Exception("Unable to access email subsystem.");
-		Email email = new SimpleEmail();
-		email.setSubject(subject);
-		email.setMsg(message);
-		for (String adr : props.getProperty("ADMIN").split(";")) {
-			email.addTo(adr);
-		}
+	private void setEmailProps(Email email) throws EmailException {
 		email.setFrom(props.getProperty("FROM"), "IPDB");
 		if (props.containsKey("BOUNCE")) email.setBounceAddress(props.getProperty("BOUNCE"));
 		if (props.containsKey("HOST")) email.setHostName(props.getProperty("HOST"));
@@ -66,8 +61,30 @@ public class MailManager {
 		if (props.containsKey("SSL") && props.getProperty("SSL").equalsIgnoreCase("true")) email.setSSL(true);
 		if (props.containsKey("TLS") && props.getProperty("TLS").equalsIgnoreCase("true")) email.setTLS(true);
 		if (props.containsKey("DEBUG") && props.getProperty("DEBUG").equalsIgnoreCase("true")) email.setDebug(true);
-		
+	}
+	
+	public void sendAdminMail(String subject, String message) throws Exception {
+		if (props == null) throw new Exception("Unable to access email subsystem.");
+		Email email = new SimpleEmail();
+		email.setSubject(subject);
+		email.setMsg(message);
+		for (String adr : props.getProperty("ADMIN").split(";")) {
+			email.addTo(adr);
+		}
+		setEmailProps(email);
 		email.send();
+	}
+	
+	public void sendMail(String subject, String template, String[] dest, Map<String, String> args) throws Exception {
+		if (props == null) throw new Exception("Unable to access email subsystem.");
+		Email email = new SimpleEmail();
+		email.setSubject(subject);
+		email.setMsg(TemplateManager.getTemplate(template, args));
+		for (String adr : dest) {
+			email.addTo(adr);
+		}
+		setEmailProps(email);
+		email.send();		
 	}
 
 }

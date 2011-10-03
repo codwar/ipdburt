@@ -53,7 +53,7 @@
                 <li><a href="<url:url name="faq"/>">FAQ</a></li>
             </ul>  
         </li>
-    	<div id="logo" style="float: right;">
+    	<div id="logo" style="float: right; margin-right: 20px;">
 	        <a href="${pageContext.request.contextPath}">IPDB</a>
     	</div>
          <div id="donar" style="float: right;">

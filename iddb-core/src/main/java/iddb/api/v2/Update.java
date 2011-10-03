@@ -43,8 +43,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,8 +152,7 @@ public class Update {
 		
 		Player player = playerDAO.findByServerAndGuid(server.getKey(), playerInfo.getGuid());
 		if (player == null) {
-			player = new Player();
-			// CREATE PLAYER AND ALIAS
+			throw new Exception("Sorry, you are unsynced. Please, try again after some minutes.");
 		}
 		
 		if (Validator.isValidEmail(userid)) {
@@ -178,9 +179,6 @@ public class Update {
 			user.setRoles(new HashSet<String>(Arrays.asList(new String[]{"user"})));
 			userDAO.save(user);
 		}
-		if (password != null) {
-			// TODO send password by mail
-		}
 		UserServer userServer;
 		try {
 			userServer = serverDAO.findByUserAndServer(user.getKey(), server.getKey());
@@ -192,7 +190,14 @@ public class Update {
 		}
 		userServer.setPlayer(player.getKey());
 		serverDAO.save(userServer);
-		
+
+		if (password != null) {
+			Map<String, String> pw = new HashMap<String, String>();
+			pw.put("password", password);
+			MailManager manager = MailManager.getInstance();
+			manager.sendMail("Nuevo usuario", "newuser", new String[] { userid }, pw);
+		}
+
 		return true;
 	}
 
