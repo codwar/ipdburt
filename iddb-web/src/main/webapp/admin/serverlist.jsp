@@ -30,7 +30,7 @@
                 <td>
 	                <c:choose>
 	                    <c:when test="${server.disabled}">
-	                        No
+							<span style="font-weight: bold;">No</span>
 	                    </c:when>
 	                    <c:otherwise>
 	                        Si

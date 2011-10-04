@@ -46,11 +46,11 @@ public final class Validator {
 	}
 
 	public static boolean isValidPlayerName(String value) {
-		if (StringUtils.isEmpty(value)) return false;
-
-		for (int i = 0; i < value.length(); i++)
-			if (!validPlayerNameChar(value.charAt(i)))
-				return false;
+		if (StringUtils.isEmpty(value) || value.contains(" ")) return false;
+		
+//		for (int i = 0; i < value.length(); i++)
+//			if (!validPlayerNameChar(value.charAt(i)))
+//				return false;
 		return true;
 	}
 
