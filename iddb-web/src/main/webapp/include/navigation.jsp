@@ -3,7 +3,6 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isELIgnored="false" session="true"%>
-<%@ taglib uri='/WEB-INF/tld/template.tld' prefix='template' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 <%@ taglib uri="/WEB-INF/tld/gravatar.tld" prefix="g"%>
@@ -24,9 +23,8 @@
 	                <li><a href="<url:url name="change_password"/>">Cambiar contrase&ntilde;a</a></li>
 	                <li><a href="<url:url name="logout"/>">Desconectar</a></li>
 	            </ul>            
-            	<!-- a href="<url:url name="logout"/>" id="signin-link"><g:gravatar email="<%= userService.getCurrentUser().getLoginId() %>" size="16"/> <em><%= userService.getCurrentUser().getScreenName() %></em><strong>Desconectar</strong><i class="signout"></i></a-->
             <% } else { %>
-				<c:if test="${pageContext.request.requestURI!='/iddb-web/page/login.jsp'}"><!-- awful hack -->            
+				<c:if test="${empty next}"><!-- awful hack -->            
             	<a href="#" id="signin-link"><em>&iquest;Tienes una cuenta?</em><strong>Identificarse</strong><i></i></a>
             	<jsp:include page="/include/login.jsp"/>
             	</c:if>

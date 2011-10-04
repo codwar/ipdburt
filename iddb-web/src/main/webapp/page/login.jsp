@@ -6,6 +6,8 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+	$("#signin-link").hide();
+	$("#signin_menu").remove();
 	$("#username").focus();
  });
 </script>
@@ -13,7 +15,7 @@ $(document).ready(function() {
 <fieldset id="signin_form">
 	<form method="post" id="signin">
 		<h3>Iniciar sesi&oacute;n</h3>
-		<div style='display:none'><input type="hidden" name="next" value="${next}"/>"/></div>
+		<div style='display:none'><input type="hidden" name="next" value="${next}"/></div>
 		<p>
 			<label for="username">
 			<span>Usuario</span>

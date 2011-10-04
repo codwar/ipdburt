@@ -28,6 +28,8 @@ import jipdbs.web.Flash;
 import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.flow.ForceRedirect;
@@ -35,7 +37,7 @@ import ar.sgt.resolver.processor.ResolverContext;
 
 public class LoginProcessor extends FlashResponseProcessor {
 
-	//private static final Logger log = LoggerFactory.getLogger(LoginProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(LoginProcessor.class);
 	
 	/* (non-Javadoc)
 	 * @see jipdbs.web.processors.FlashResponseProcessor#processProcessor(ar.sgt.resolver.processor.ResolverContext)
@@ -43,16 +45,22 @@ public class LoginProcessor extends FlashResponseProcessor {
 	@Override
 	public String processProcessor(ResolverContext context)
 			throws ProcessorException {
+		String contextPath = context.getRequest().getContextPath().isEmpty() ? "/" : context.getRequest().getContextPath(); 
 		UserService userService = UserServiceFactory.getUserService();
 		if ("logout".equals(context.getParameter("type"))) {
+			log.debug("Do logout. Redirect {}", contextPath);
 			userService.logout(context.getRequest());
-			throw new ForceRedirect(context.getRequest().getContextPath());
+			throw new ForceRedirect(contextPath);
 		} else {
 			Subject user = userService.getCurrentUser();
-			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? context.getRequest().getContextPath() : context.getRequest().getParameter("next");
-			if (user.isAuthenticated()) return next;
+			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? contextPath : context.getRequest().getParameter("next");
+			if (user.isAuthenticated()) {
+				log.debug("User is already authenticated. Redirect {}", next);
+				return next;
+			}
 			if (context.isPost()) {
 				try {
+					log.debug("Do login. Redirect {}", next);
 					user = userService.authenticate(context.getRequest(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"));
 					throw new ForceRedirect(next);
 				} catch (InvalidAccountException e) {
