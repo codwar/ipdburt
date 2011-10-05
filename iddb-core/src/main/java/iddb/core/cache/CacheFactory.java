@@ -18,12 +18,12 @@
  */
 package iddb.core.cache;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,20 +45,16 @@ public final class CacheFactory {
 		this.cacheMap = Collections.synchronizedMap(new HashMap<String, Cache>());
 	}
 
-	@SuppressWarnings({ "static-access", "unchecked", "rawtypes" })
+	@SuppressWarnings({ "static-access", "rawtypes" })
 	private Cache getCacheImpl(String namespace) throws UnavailableCacheException {
 		Object obj = null;
 		try {
 			Class impl = this.getClass().forName(CACHE_IMPL);
-			Constructor<String> cons = impl.getConstructor(String.class);
-			obj = cons.newInstance(new Object[] {namespace});
+			obj = impl.newInstance();
 		} catch (ClassNotFoundException e) {
 			log.warn(e.getMessage());
 			throw new UnavailableCacheException();
 		} catch (SecurityException e) {
-			log.error(e.getMessage());
-			throw new UnavailableCacheException();
-		} catch (NoSuchMethodException e) {
 			log.error(e.getMessage());
 			throw new UnavailableCacheException();
 		} catch (IllegalArgumentException e) {
@@ -70,10 +66,16 @@ public final class CacheFactory {
 		} catch (IllegalAccessException e) {
 			log.error(e.getMessage());
 			throw new UnavailableCacheException();
+		}
+		try {
+			PropertyUtils.setProperty(obj, "namespace", namespace);
+		} catch (IllegalAccessException e) {
+			log.error(e.getMessage());
 		} catch (InvocationTargetException e) {
 			log.error(e.getMessage());
-			throw new UnavailableCacheException();
-		} 
+		} catch (NoSuchMethodException e) {
+			log.warn(e.getMessage());
+		}
 		return (Cache) obj;
 	}
 	

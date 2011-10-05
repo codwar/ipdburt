@@ -42,23 +42,27 @@ public class CacheImpl implements Cache {
 	private String namespace;
 	
 	public CacheImpl() throws UnavailableCacheException {
-		this("default");
-	}
-	
-	public CacheImpl(String namespace) throws UnavailableCacheException {
 		Properties props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream("memcache.properties"));
-			client = new MemcachedClient(new InetSocketAddress(props.getProperty("HOST"), Integer.parseInt(props.getProperty("PORT"))));
-			if (props.containsKey("EXPIRATION")) expiration = Integer.parseInt(props.getProperty("EXPIRATION"));
+			client = new MemcachedClient(new InetSocketAddress(props.getProperty("host"), Integer.parseInt(props.getProperty("port"))));
+			if (props.containsKey("expiration")) expiration = Integer.parseInt(props.getProperty("expiration"));
 		} catch (Exception e) {
 			log.error("Unable to load cache properties [{}]", e.getMessage());
 			throw new UnavailableCacheException();
 		}	
-		this.namespace = "iddb-" + namespace;
-		log.debug("Initialize memcache instance for namespace {}", namespace);
+		setNamespace("default");
+		log.debug("Initialized memcache instance.");
 	}
 	
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = "iddb-" + namespace;
+	}
+
 	/* (non-Javadoc)
 	 * @see iddb.core.cache.Cache#clear()
 	 */

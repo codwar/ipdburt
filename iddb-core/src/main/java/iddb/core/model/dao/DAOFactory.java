@@ -22,6 +22,7 @@ import iddb.core.cache.CacheFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,7 +36,7 @@ public final class DAOFactory {
 
 	private static DAOFactory instance;
 	private static final Logger log = LoggerFactory.getLogger(DAOFactory.class);
-	
+
 	private Map<String, Object> daoCache = new HashMap<String, Object>();
 
 	private DAOFactory() {
@@ -47,7 +48,8 @@ public final class DAOFactory {
 		}
 		Properties prop = new Properties();
 		try {
-			prop.load(this.getClass().getClassLoader().getResourceAsStream("dao.properties"));
+			prop.load(this.getClass().getClassLoader()
+					.getResourceAsStream("dao.properties"));
 			for (Entry<Object, Object> entry : prop.entrySet()) {
 				String key = (String) entry.getKey();
 				String value = (String) entry.getValue();
@@ -58,13 +60,14 @@ public final class DAOFactory {
 					Object daoImpl = cls.newInstance();
 					if (useCache) {
 						try {
-							daoCache.put(key, createCachedInstance(key, daoImpl));	
+							daoCache.put(key,
+									createCachedInstance(key, daoImpl));
 						} catch (Exception e) {
 							log.error(e.getMessage());
 							daoCache.put(key, daoImpl);
 						}
 					} else {
-						daoCache.put(key, daoImpl);	
+						daoCache.put(key, daoImpl);
 					}
 				} catch (ClassNotFoundException e) {
 					log.error("{} not found", e.getMessage());
@@ -78,28 +81,59 @@ public final class DAOFactory {
 			log.error(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * @param key
 	 * @param value
 	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws Exception
+	 * @throws ClassNotFoundException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked", "static-access" })
-	private Object createCachedInstance(String iface, Object impl) throws Exception {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Object createCachedInstance(String iface, Object impl)
+			throws Exception {
 		String[] ifacePart = StringUtils.split(iface, ".");
-		String ifaceName = ifacePart[ifacePart.length-1];
-		log.debug("Getting cached instance for {}", ifaceName);
+		String ifaceName = ifacePart[ifacePart.length - 1];
+		log.debug("Getting cached instance for {} - {}", iface, ifaceName);
+		ClassLoader loader = this.getClass().getClassLoader();
+
 		try {
-			Class clz = this.getClass().forName("iddb.core.model.dao.cached." + ifaceName + "Cached");
-			Constructor cons = clz.getConstructor(Class.forName(iface));
-			return cons.newInstance(new Object[] {impl});
-		} catch (Exception e) {
-			log.warn("No cached implementation found for {}", ifaceName);
-			throw e;
+			Class clz = loader.loadClass("iddb.core.model.dao.cached." + ifaceName + "Cached");
+			Constructor cons = clz.getConstructor(new Class[] { Class.forName(iface) });
+			return cons.newInstance(impl);
+		} catch (SecurityException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (IllegalArgumentException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (ClassNotFoundException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (NoSuchMethodException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (InstantiationException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (IllegalAccessException e) {
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			log.warn("No cached implementation found for {} - {}", ifaceName,
+					e.getMessage());
+			throw new Exception(e);
 		}
+
 	}
 
 	public Map<String, Object> getDaoCache() {
@@ -117,5 +151,5 @@ public final class DAOFactory {
 		}
 		return dao;
 	}
-	
+
 }
