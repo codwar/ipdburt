@@ -52,7 +52,7 @@
             </ul>  
         </li>
     	<div id="logo" style="float: right; margin-right: 20px;">
-	        <a href="${pageContext.request.contextPath}">IPDB</a>
+	        <a href="<url:url name="home"/>">IPDB</a>
     	</div>
          <div id="donar" style="float: right;">
         	<a href="<url:url name="donation"/>"><img width="80" src="${pageContext.request.contextPath}/media/images/donar_es.gif" alt="Donar"/></a>
