@@ -43,6 +43,10 @@ import ar.sgt.resolver.processor.ResolverContext;
 
 public class SearchProcessor extends FlashResponseProcessor {
 
+	/**
+	 * 
+	 */
+	private static final int MIN_LENGTH_QUERY = 4;
 	private static final Logger log = LoggerFactory.getLogger(SearchProcessor.class);
 
 	@Override
@@ -120,18 +124,22 @@ public class SearchProcessor extends FlashResponseProcessor {
 			}
 		} else {
 			log.debug("Buscando Alias " + query);
-			if (Validator.isValidPlayerName(query)) {
-				boolean[] exactMatch = new boolean[1];
-				exactMatch[0] = true;
-				list = app.aliasSearch(query, offset, limit, total, exactMatch);
-				if (!exactMatch[0] && list.size() > 0) {
-					Flash.info(req,MessageResource.getMessage("no_exact_match"));
-					if (total[0] > Parameters.MAX_NGRAM_QUERY / 2) {
-						Flash.warn(req,MessageResource.getMessage("too_many_results"));
+			if (query.length() >= MIN_LENGTH_QUERY) {
+				if (Validator.isValidPlayerName(query)) {
+					boolean[] exactMatch = new boolean[1];
+					exactMatch[0] = true;
+					list = app.aliasSearch(query, offset, limit, total, exactMatch);
+					if (!exactMatch[0] && list.size() > 0) {
+						Flash.info(req,MessageResource.getMessage("no_exact_match"));
+						if (total[0] > Parameters.MAX_NGRAM_QUERY / 2) {
+							Flash.warn(req,MessageResource.getMessage("too_many_results"));
+						}
 					}
-				}
-			} else
-				Flash.error(req, MessageResource.getMessage("invalid_search"));
+				} else
+					Flash.error(req, MessageResource.getMessage("invalid_search"));
+			} else {
+				Flash.error(req, MessageResource.getMessage("query_too_short"));
+			}
 		}
 
 		time = System.currentTimeMillis() - time;

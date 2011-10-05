@@ -163,12 +163,12 @@ public class Functions {
 		s = s.replace("<", "");
 		s = s.replace(">", "");
 		s = s.replace("&", "");
-		s = s.replace("_", " ");
-		s = s.replace("-", " ");
-		s = s.replace("+", " ");
+		//s = s.replace("_", " ");
+		//s = s.replace("-", "_");
+		//s = s.replace("+", " ");
 		s = s.replace("{", "");
 		s = s.replace("}", "");
-		s = s.replace("'", "");
+		//s = s.replace("'", "");
 		s = s.replace("|", "");
 		s = s.replace("!", "");
 		s = s.replace("[", "");
@@ -184,6 +184,7 @@ public class Functions {
 		s = s.replace("4", "a");
 		s = s.replace("5", "s");
 		s = s.replace("7", "t");
+		s = s.replace(" ", "_");
 		return s;
 	}
 	

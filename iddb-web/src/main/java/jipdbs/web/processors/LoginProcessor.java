@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
-import ar.sgt.resolver.flow.ForceRedirect;
 import ar.sgt.resolver.processor.ResolverContext;
 
 public class LoginProcessor extends FlashResponseProcessor {
@@ -50,7 +49,9 @@ public class LoginProcessor extends FlashResponseProcessor {
 		if ("logout".equals(context.getParameter("type"))) {
 			log.debug("Do logout. Redirect {}", contextPath);
 			userService.logout(context.getRequest());
-			throw new ForceRedirect(contextPath);
+			context.getRequest().setAttribute("redirect", contextPath);
+			return "/include/redirect.jsp";
+			//throw new ForceRedirect(contextPath);
 		} else {
 			Subject user = userService.getCurrentUser();
 			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? contextPath : context.getRequest().getParameter("next");
@@ -62,7 +63,9 @@ public class LoginProcessor extends FlashResponseProcessor {
 				try {
 					log.debug("Do login. Redirect {}", next);
 					user = userService.authenticate(context.getRequest(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"));
-					throw new ForceRedirect(next);
+					context.getRequest().setAttribute("redirect", next);
+					//throw new ForceRedirect(next);
+					return "/include/redirect.jsp";
 				} catch (InvalidAccountException e) {
 					Flash.error(context.getRequest(), MessageResource.getMessage("invalid_user_or_password")); 
 				} catch (InvalidCredentialsException e) {

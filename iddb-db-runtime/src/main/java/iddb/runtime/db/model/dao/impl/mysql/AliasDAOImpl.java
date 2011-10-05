@@ -21,6 +21,7 @@ package iddb.runtime.db.model.dao.impl.mysql;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
+import iddb.core.util.NGrams;
 import iddb.runtime.db.ConnectionFactory;
 
 import java.io.IOException;
@@ -186,7 +187,16 @@ public class AliasDAOImpl implements AliasDAO {
 			if (alias.getKey() != null) {
 				st.setLong(6, alias.getKey());
 			} else {
-				st.setString(6, Functions.normalize(alias.getNickname()));
+				String na;
+				if (alias.getNickname().length() > 4) {
+					Collection<String> n = NGrams.ngrams(alias.getNickname(), 4);
+					n.addAll(NGrams.ngrams(Functions.normalize(alias.getNickname()), 4));
+					n.add(Functions.normalize(alias.getNickname()));
+					na = Functions.join(n, " ");
+				} else {
+					na = Functions.normalize(alias.getNickname());
+				}
+				st.setString(6, na);
 			}
 			st.executeUpdate();
 			if (alias.getKey() == null) {
