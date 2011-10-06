@@ -74,12 +74,7 @@ public final class NGrams {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(ngrams("TextoDePrueba1"));
-		System.out.println(ngrams("TextoDePrueba1",2));
-		System.out.println(ngrams("TextoDePrueba1",3));
-		System.out.println(ngrams("TextoDePrueba1",4));
-		System.out.println(ngrams("TextoDePrueba1",5));
-		System.out.println(ngrams("Texto", 5));
+		System.out.println(ngrams("[xXxXx]heXen", 4));
 	}
 
 }

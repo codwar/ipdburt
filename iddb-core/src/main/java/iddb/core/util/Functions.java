@@ -20,6 +20,7 @@ package iddb.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,36 +157,110 @@ public class Functions {
 	
 	public static String normalize(String text) {
 		// TODO agregar lo que vaya siendo necesario
-		String s = text.toLowerCase();
-		s = s.replace("@", "a");
-		s = s.replace("`", "");
-		s = s.replace("*", "");
-		s = s.replace("<", "");
-		s = s.replace(">", "");
-		s = s.replace("&", "");
-		//s = s.replace("_", " ");
-		//s = s.replace("-", "_");
-		//s = s.replace("+", " ");
-		s = s.replace("{", "");
-		s = s.replace("}", "");
-		//s = s.replace("'", "");
-		s = s.replace("|", "");
-		s = s.replace("!", "");
-		s = s.replace("[", "");
-		s = s.replace("]", "");
-		s = s.replace(".", "");
-		s = s.replace(",", "");
-		s = s.replace(":", "");
-		s = s.replace("#", "");
+//		String s = text.toLowerCase();
+//		s = s.replace("@", "a");
+//		s = s.replace("`", "");
+//		s = s.replace("*", "");
+//		s = s.replace("<", "");
+//		s = s.replace(">", "");
+//		s = s.replace("&", "");
+//		//s = s.replace("_", " ");
+//		//s = s.replace("-", "_");
+//		//s = s.replace("+", " ");
+//		s = s.replace("{", "");
+//		s = s.replace("}", "");
+//		//s = s.replace("'", "");
+//		s = s.replace("|", "");
+//		s = s.replace("!", "");
+//		s = s.replace("[", "");
+//		s = s.replace("]", "");
+//		s = s.replace(".", "");
+//		s = s.replace(",", "");
+//		s = s.replace(":", "");
+//		s = s.replace("#", "");
 		// reemplazamos los numeros por posibles usos como letras
-		s = s.replace("0", "o");
-		s = s.replace("1", "i");
-		s = s.replace("3", "e");
-		s = s.replace("4", "a");
-		s = s.replace("5", "s");
-		s = s.replace("7", "t");
-		s = s.replace(" ", "_");
-		return s;
+//		s = s.replace("0", "o");
+//		s = s.replace("1", "i");
+//		s = s.replace("3", "e");
+//		s = s.replace("4", "a");
+//		s = s.replace("5", "s");
+//		s = s.replace("7", "t");
+//		s = s.replace(" ", "_");
+		// buscamos caracteres repetidos y los eliminas
+		char[] v = text.toLowerCase().toCharArray();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < v.length ; i++) {
+			char c = v[i];
+			char r;
+			switch (c) {
+			case '@':
+				r = 'a';
+				break;
+			case ' ':
+			case '`':
+			case '*':
+			case '>':
+			case '<':
+			case '{':
+			case '}':
+			case '[':
+			case ']':
+			case '.':
+			case ',':
+			case ':':
+			case '_':
+			case '-':
+			case '"':
+			case '\'':
+			case '#':
+				r = '\b';
+				break;
+			case '|':
+			case '!':
+				r = 'i';
+				break;
+			case '&':
+				r = 'y';
+				break;
+			case '0':
+				r = 'o';
+				break;
+			case '1':
+				r = 'i';
+				break;
+			case '3':
+				r = 'e';
+				break;
+			case '4':
+				r = 'a';
+				break;
+			case '5':
+				r = 's';
+				break;
+			case '7':
+				r = 't';
+				break;
+			default:
+				r = c;
+			}
+			if (r != '\b') {
+				if (i > 0) {
+					if (c != v[i-1]) {
+						sb.append(r);
+					}
+				} else {
+					sb.append(r);
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String createNameIndex(String name) {
+		Collection<String> n = NGrams.ngrams(name, 4);
+		n.addAll(NGrams.ngrams(Functions.normalize(name), 4));
+		n.add(Functions.normalize(name));
+		return Functions.join(new HashSet<String>(n), " ");		
 	}
 	
 	public static void main(String[] args) {
@@ -197,6 +272,10 @@ public class Functions {
 		System.out.println(normalize("Ca|*Sniper_Depre"));
 		System.out.println(normalize("P3P3"));
 		System.out.println(normalize("R0S4M0N73"));
+		System.out.println(normalize("[xXxXx]heXen"));
+		System.out.println(normalize("Macca*_____*"));
+		System.out.println(normalize("lVZLAl#VCTR#"));
+		System.out.println(createNameIndex("&amp;amp;gt;WD&amp;amp;gt;Mr.Popo"));
 //		String s = "125.68.67.66";
 //		Long v = ipToDecimal(s);
 //		System.out.println(s);

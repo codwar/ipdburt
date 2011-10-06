@@ -21,7 +21,6 @@ package iddb.runtime.db.model.dao.impl.mysql;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
-import iddb.core.util.NGrams;
 import iddb.runtime.db.ConnectionFactory;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -81,20 +81,24 @@ public class AliasDAOImpl implements AliasDAO {
 
 	public List<Alias> findBySimilar(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid";
-		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid LIMIT ?,?";
+//		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid";
+//		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid LIMIT ?,?";
+		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (?) GROUP BY playerid";
+		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (?) GROUP BY playerid LIMIT ?,?";
+		
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
 		try {
+			String nquery = query + " " + Functions.normalize(query);
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setString(1, query);
+			stC.setString(1, nquery);
 			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, query);
+			st.setString(1, nquery);
 			st.setInt(2, offset);
 			st.setInt(3, limit);
 			ResultSet rs = st.executeQuery();
@@ -165,38 +169,31 @@ public class AliasDAOImpl implements AliasDAO {
 	public void save(Alias alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "insert into alias (playerid, nickname, created, updated, count, normalized) values (?, ?,?,?,?,?)"; 
+			sql = "insert into alias (updated, count, playerid, nickname, created, normalized, textindex) values (?, ?,?,?,?,?)"; 
 		} else {
-			sql = "update alias set playerid = ?," +
-					"nickname = ?," +
-					"created = ?," +
-					"updated = ?," +
+			sql = "update alias set updated = ?," +
 					"count = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			st.setLong(1, alias.getPlayer());
-			st.setString(2, alias.getNickname());
 			if (alias.getCreated() == null) alias.setCreated(new Date());
 			if (alias.getUpdated() == null) alias.setUpdated(new Date());			
-			st.setTimestamp(3, new java.sql.Timestamp(alias.getCreated().getTime()));
-			st.setTimestamp(4, new java.sql.Timestamp(alias.getUpdated().getTime()));
-			st.setLong(5, alias.getCount());
+			st.setTimestamp(1, new java.sql.Timestamp(alias.getUpdated().getTime()));
+			st.setLong(2, alias.getCount());
 			if (alias.getKey() != null) {
-				st.setLong(6, alias.getKey());
+				st.setLong(3, alias.getKey());
 			} else {
-				String na;
+				st.setLong(3, alias.getPlayer());
+				st.setString(4, alias.getNickname());
+				st.setTimestamp(5, new java.sql.Timestamp(alias.getCreated().getTime()));
+				st.setString(6, Functions.normalize(alias.getNickname()));
 				if (alias.getNickname().length() > 4) {
-					Collection<String> n = NGrams.ngrams(alias.getNickname(), 4);
-					n.addAll(NGrams.ngrams(Functions.normalize(alias.getNickname()), 4));
-					n.add(Functions.normalize(alias.getNickname()));
-					na = Functions.join(n, " ");
+					st.setString(7, Functions.createNameIndex(alias.getNickname()));
 				} else {
-					na = Functions.normalize(alias.getNickname());
+					st.setNull(7, Types.VARCHAR);
 				}
-				st.setString(6, na);
 			}
 			st.executeUpdate();
 			if (alias.getKey() == null) {
