@@ -11,7 +11,9 @@
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
-<meta http-equiv="pragma" content="nocache"/>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="-1" />
+<meta http-equiv="cache-control" content="no-cache" />
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/default.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/site.css" media="screen"/>
