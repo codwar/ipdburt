@@ -1,18 +1,19 @@
 CREATE TABLE IF NOT EXISTS `alias` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `playerid` int(11) unsigned NOT NULL,
-  `count` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `count` int(11) unsigned NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `nickname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `normalized` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `nickname` varchar(75) COLLATE utf8_unicode_ci NOT NULL,
+  `normalized` varchar(75) COLLATE utf8_unicode_ci NOT NULL,
+  `textindex` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `playerid` (`playerid`,`nickname`),
   KEY `playerid_2` (`playerid`,`updated`,`nickname`),
   KEY `playerid_3` (`playerid`),
   KEY `playerid_4` (`playerid`,`updated`),
-  FULLTEXT KEY `alias_search` (`nickname`,`normalized`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+  FULLTEXT KEY `alias_search` (`nickname`,`normalized`,`textindex`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `aliasip` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `playerid` int(11) unsigned NOT NULL,
   `ip` int(11) unsigned NOT NULL,
-  `count` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `count` int(11) unsigned NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
