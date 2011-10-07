@@ -15,7 +15,7 @@
 		<json:object>
             <c:choose>
                 <c:when test="${not empty item.nickname}">
-                    <url:url name="search" var="url"><url:param name="query" value="${item.nickname}"/></url:url>
+                    <url:url name="search" var="url"><url:param name="query" value="${item.nickname}"/><url:param name="match" value="exact"/></url:url>
                     <json:property name="nickname" value="${item.nickname}"/>
                     <json:property name="nickname_url" value="${url}"/>
                 </c:when>

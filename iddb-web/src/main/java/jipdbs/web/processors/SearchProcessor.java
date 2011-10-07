@@ -62,6 +62,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 		String query = null;
 		String type = null;
 		String mode = null;
+		String match = null;
 		
 		if (context.getParameter("query") != null) {
 			query = context.getParameter("query");
@@ -71,7 +72,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 		}
 		if (req.getParameter("mode") != null) {
 			mode = req.getParameter("mode");
-		}		
+		}
 		if (req.getParameter("p") != null) {
 			try {
 				page = Integer.parseInt(req.getParameter("p"));
@@ -84,7 +85,8 @@ public class SearchProcessor extends FlashResponseProcessor {
 			} catch (NumberFormatException e) {
 			}
 		}
-
+		match = req.getParameter("match");
+		
 		int offset = (page - 1) * pageSize;
 		int limit = Math.min(pageSize, Parameters.MAX_ENTITY_LIMIT);
 		int[] total = new int[1];
@@ -126,14 +128,9 @@ public class SearchProcessor extends FlashResponseProcessor {
 			log.debug("Buscando Alias " + query);
 			if (query.length() >= MIN_LENGTH_QUERY) {
 				if (Validator.isValidPlayerName(query)) {
-					boolean[] exactMatch = new boolean[1];
-					exactMatch[0] = true;
-					list = app.aliasSearch(query, offset, limit, total, exactMatch);
-					if (!exactMatch[0] && list.size() > 0) {
-						Flash.info(req,MessageResource.getMessage("no_exact_match"));
-						if (total[0] > Parameters.MAX_NGRAM_QUERY / 2) {
-							Flash.warn(req,MessageResource.getMessage("too_many_results"));
-						}
+					list = app.aliasSearch(query, offset, limit, total, "exact".equals(match));
+					if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
+						Flash.warn(req,MessageResource.getMessage("too_many_results"));
 					}
 				} else
 					Flash.error(req, MessageResource.getMessage("invalid_search"));

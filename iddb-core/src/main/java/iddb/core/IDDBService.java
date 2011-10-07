@@ -211,26 +211,16 @@ public class IDDBService {
 	}
 
 	public List<SearchResult> aliasSearch(String query, int offset, int limit,
-			int[] count, boolean[] exactMatch) {
+			int[] count, boolean exactMatch) {
 
 		try {
 			List<Alias> aliasses = new ArrayList<Alias>();
 
-			if (query.length() <= Parameters.MAX_SINGLE_QUERY)
-				aliasses = aliasDAO.findByNickname(query, offset, limit, count);
-
-			exactMatch[0] = true;
-
-			// No exact match, try ngrams.
-			if (aliasses.size() == 0
-					&& query.length() >= Parameters.MIN_NGRAM_QUERY
-					&& query.length() <= Parameters.MAX_ALIAS_QUERY) {
-				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query
-						: query.substring(0, Parameters.MAX_NGRAM_QUERY);
-				aliasses = aliasDAO.findBySimilar(query,
-						Parameters.NGRAMS_OFFSET, Parameters.NGRAMS_LIMIT,
-						count);
-				exactMatch[0] = false;
+			if (exactMatch) {
+				aliasses = aliasDAO.findByNickname(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
+			} else if (query.length() >= Parameters.MIN_NGRAM_QUERY && query.length() <= Parameters.MAX_NGRAM_QUERY) {
+				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query.substring(0, Parameters.MAX_NGRAM_QUERY);
+				aliasses = aliasDAO.findBySimilar(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
 			}
 
 			return marshall(aliasses);

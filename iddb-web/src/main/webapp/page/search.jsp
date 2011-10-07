@@ -192,7 +192,7 @@
 				"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a></span>
+				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a></span>
 				<c:if test="${player.note}">
 				<span class="icon information">&nbsp;</span>
 				</c:if>

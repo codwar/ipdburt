@@ -90,11 +90,11 @@
 </script>
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
-<legend><a style="text-decoration: none;" href="<url:url name="search"><url:param name="query" value="${player.name}"/></url:url>">${fn:escapeXml(player.name)}</a>
+<legend>${fn:escapeXml(player.name)}
 <span class="icon
                 <c:choose>
                     <c:when test="${not empty player.banInfo}">
-                        banned infoTip
+                        banned
                     </c:when>
                     <c:when test="${player.playing}">
                         online
