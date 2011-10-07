@@ -90,9 +90,7 @@
 </script>
 
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
-<legend>${fn:escapeXml(player.name)}
-<span class="icon
-                <c:choose>
+<legend>${fn:escapeXml(player.name)}<span class="icon <c:choose>
                     <c:when test="${not empty player.banInfo}">
                         banned
                     </c:when>
@@ -102,9 +100,7 @@
                     <c:otherwise>
                         offline
                     </c:otherwise>
-                </c:choose>
-"></span>
-</legend>
+                </c:choose>"></span></legend>
 	<strong>Id:</strong> ${player.clientId}<br />
 	<strong>Visto:</strong> <fmt:formatDate	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />
