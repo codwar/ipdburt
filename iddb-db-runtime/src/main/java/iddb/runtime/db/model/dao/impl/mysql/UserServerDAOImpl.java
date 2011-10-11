@@ -51,7 +51,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 		if (userServer.getKey() == null) {
 			sql = "insert into userserver (userid, serverid, playerid, owner, updated, created) values (?,?,?,?,?,?)"; 
 		} else {
-			sql = "update usersever set userid = ?," +
+			sql = "update userserver set userid = ?," +
 					"serverid = ?," +
 					"playerid = ?," +
 					"owner = ?, updated = ? where id = ? limit 1";

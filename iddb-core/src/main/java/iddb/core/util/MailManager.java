@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 public class MailManager {
 
-	//private static final String FROM_ADDR = "sys@ipdburt.appspotmail.com";
 	private static final Logger log = LoggerFactory.getLogger(MailManager.class);
 	
 	private static MailManager instance;
@@ -53,14 +52,14 @@ public class MailManager {
 	}
 	
 	private void setEmailProps(Email email) throws EmailException {
-		email.setFrom(props.getProperty("FROM"), "IPDB");
-		if (props.containsKey("BOUNCE")) email.setBounceAddress(props.getProperty("BOUNCE"));
-		if (props.containsKey("HOST")) email.setHostName(props.getProperty("HOST"));
-		if (props.containsKey("PORT")) email.setSmtpPort(Integer.parseInt(props.getProperty("PORT")));
-		if (props.containsKey("USERNAME")) email.setAuthenticator(new DefaultAuthenticator(props.getProperty("USERNAME"), props.getProperty("PASSWORD")));
-		if (props.containsKey("SSL") && props.getProperty("SSL").equalsIgnoreCase("true")) email.setSSL(true);
-		if (props.containsKey("TLS") && props.getProperty("TLS").equalsIgnoreCase("true")) email.setTLS(true);
-		if (props.containsKey("DEBUG") && props.getProperty("DEBUG").equalsIgnoreCase("true")) email.setDebug(true);
+		email.setFrom(props.getProperty("from"), "IPDB");
+		if (props.containsKey("bounce")) email.setBounceAddress(props.getProperty("bounce"));
+		if (props.containsKey("host")) email.setHostName(props.getProperty("host"));
+		if (props.containsKey("port")) email.setSmtpPort(Integer.parseInt(props.getProperty("port")));
+		if (props.containsKey("username")) email.setAuthenticator(new DefaultAuthenticator(props.getProperty("username"), props.getProperty("password")));
+		if (props.containsKey("ssl") && props.getProperty("ssl").equalsIgnoreCase("true")) email.setSSL(true);
+		if (props.containsKey("tls") && props.getProperty("tls").equalsIgnoreCase("true")) email.setTLS(true);
+		if (props.containsKey("debug") && props.getProperty("debug").equalsIgnoreCase("true")) email.setDebug(true);
 	}
 	
 	public void sendAdminMail(String subject, String message) throws Exception {
@@ -68,7 +67,7 @@ public class MailManager {
 		Email email = new SimpleEmail();
 		email.setSubject(subject);
 		email.setMsg(message);
-		for (String adr : props.getProperty("ADMIN").split(";")) {
+		for (String adr : props.getProperty("admin").split(";")) {
 			email.addTo(adr);
 		}
 		setEmailProps(email);
