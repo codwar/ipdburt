@@ -771,8 +771,8 @@ input.search {
     font-weight:bold;
 }
 #signin_submit::-moz-focus-inner {
-padding:0;
-border:0;
+	padding:0;
+	border:0;
 }
 #signin_submit:hover, #signin_submit:focus {
     background-position:0 -5px;

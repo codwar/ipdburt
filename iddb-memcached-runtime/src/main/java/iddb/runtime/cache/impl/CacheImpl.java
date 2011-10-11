@@ -40,6 +40,7 @@ public class CacheImpl implements Cache {
 	private MemcachedClient client;
 	private Integer expiration = 3600;
 	private String namespace;
+	private String prefix;
 	
 	public CacheImpl() throws UnavailableCacheException {
 		Properties props = new Properties();
@@ -47,6 +48,8 @@ public class CacheImpl implements Cache {
 			props.load(getClass().getClassLoader().getResourceAsStream("memcache.properties"));
 			client = new MemcachedClient(new InetSocketAddress(props.getProperty("host"), Integer.parseInt(props.getProperty("port"))));
 			if (props.containsKey("expiration")) expiration = Integer.parseInt(props.getProperty("expiration"));
+			if (props.containsKey("prefix")) prefix = props.getProperty("prefix");
+			else prefix = "ipdb";
 		} catch (Exception e) {
 			log.error("Unable to load cache properties [{}]", e.getMessage());
 			throw new UnavailableCacheException();
@@ -60,7 +63,7 @@ public class CacheImpl implements Cache {
 	}
 
 	public void setNamespace(String namespace) {
-		this.namespace = "iddb-" + namespace;
+		this.namespace = this.prefix + "-" + namespace;
 	}
 
 	/* (non-Javadoc)
