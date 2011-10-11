@@ -1,6 +1,9 @@
 <%@page import="iddb.core.util.SystemProperties"%>
 <%@page import="java.util.Properties"%>
 <div class="footer">
+	<div id="ffox">
+		<a href='http://www.mozilla.org/firefox?WT.mc_id=aff_en05&WT.mc_ev=click'><img src='http://www.mozilla.org/contribute/buttons/110x32bubble_g.png' alt='Firefox Download Button' border='0' /></a>
+	</div>
      <%
      	String version;
      	try {
