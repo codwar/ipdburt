@@ -8,3 +8,5 @@ test
 jipdbs.properties
 .pydevproject
 pom.xml.versionsBackup
+**/profile/prod/resources/*.properties
+**/profile/prod/resources/*.xml

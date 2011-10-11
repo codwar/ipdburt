@@ -256,4 +256,30 @@
 		</plugins>
 	</build>
 
+	<profiles>
+	  <profile>
+	    <id>prod</id>
+	    <activation>
+	      <activeByDefault>false</activeByDefault>
+	    </activation>
+	    <build>
+			<resources>
+				<resource>
+					<directory>profile/prod/resources</directory>
+					<filtering>true</filtering>
+				</resource>
+			</resources>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<configuration>
+						<warName>ROOT</warName>
+					</configuration>
+				</plugin>
+			</plugins>
+	    </build>
+	  </profile>
+	</profiles>
+
 </project>

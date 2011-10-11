@@ -1,5 +1,9 @@
 package jipdbs.xmlrpc;
 
+import iddb.exception.UpdateApiException;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -7,10 +11,13 @@ import org.apache.xmlrpc.XmlRpcHandler;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcNoSuchHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 
 	private final Object instance;
+	private static final Logger log = LoggerFactory.getLogger(InstanceHandlerMapping.class);
 
 	public InstanceHandlerMapping(Object instance) {
 		this.instance = instance;
@@ -46,8 +53,13 @@ public class InstanceHandlerMapping implements XmlRpcHandlerMapping {
 					Object result = method.invoke(instance, args);
 
 					return result != null ? result : "";
-
 				} catch (Exception e) {
+					if (!(e instanceof UpdateApiException)) {
+						log.error(e.getMessage());
+						StringWriter w = new StringWriter();
+						e.printStackTrace(new PrintWriter(w));
+						log.error(w.getBuffer().toString());					
+					}
 					throw new XmlRpcException(e.getMessage());
 				}
 			}

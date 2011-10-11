@@ -35,6 +35,7 @@ import iddb.core.util.PasswordUtils;
 import iddb.core.util.Validator;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.exception.UnauthorizedUpdateException;
+import iddb.exception.UpdateApiException;
 import iddb.info.PlayerInfo;
 import iddb.task.TaskManager;
 import iddb.task.tasks.UpdateTask;
@@ -91,9 +92,9 @@ public class Update {
 				log.error(me.getMessage());
 			}
 			log.error(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.error(w.getBuffer().toString());
+//			StringWriter w = new StringWriter();
+//			e.printStackTrace(new PrintWriter(w));
+//			log.error(w.getBuffer().toString());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
@@ -147,23 +148,27 @@ public class Update {
 	 * @param userid
 	 * @param playerInfo
 	 */
-	public boolean linkUser(Server server, String userid, PlayerInfo playerInfo) throws Exception {
+	public Integer linkUser(Server server, String userid, PlayerInfo playerInfo) throws UpdateApiException, Exception {
 		log.info("Linking player {} with user {}", playerInfo.getName(), userid);
 		
 		Player player = playerDAO.findByServerAndGuid(server.getKey(), playerInfo.getGuid());
 		if (player == null) {
-			throw new Exception("Sorry, you are unsynced. Please, try again after some minutes.");
+			log.debug("Player is unsynced.");
+			return 1;
 		}
 		
-		if (Validator.isValidEmail(userid)) {
-			throw new Exception("This is not a valid e-mail address");
+		if (!Validator.isValidEmail(userid)) {
+			log.debug("Invalid userid "+ userid);
+			return 2;
 		}
 		
 		UserServerDAO serverDAO = (UserServerDAO) DAOFactory.forClass(UserServerDAO.class);
 		try {
 			serverDAO.findByPlayerAndServer(player.getKey(), server.getKey());
+			// already linked
+			return 3;
 		} catch (EntityDoesNotExistsException e) {
-			throw new Exception("Player already linked");
+			// do nothing
 		}
 		
 		UserDAO userDAO = (UserDAO) DAOFactory.forClass(UserDAO.class);
@@ -174,7 +179,7 @@ public class Update {
 		} catch (EntityDoesNotExistsException e) {
 			password = PasswordUtils.getRandomString();
 			user = new User();
-			user.setPassword(password);
+			user.setPassword(PasswordUtils.hashPassword(password));
 			user.setLoginId(userid);
 			user.setRoles(new HashSet<String>(Arrays.asList(new String[]{"user"})));
 			userDAO.save(user);
@@ -192,13 +197,17 @@ public class Update {
 		serverDAO.save(userServer);
 
 		if (password != null) {
-			Map<String, String> pw = new HashMap<String, String>();
-			pw.put("password", password);
-			MailManager manager = MailManager.getInstance();
-			manager.sendMail("Nuevo usuario", "newuser", new String[] { userid }, pw);
+			try {
+				Map<String, String> pw = new HashMap<String, String>();
+				pw.put("password", password);
+				MailManager manager = MailManager.getInstance();
+				manager.sendMail("Nuevo usuario", "newuser", new String[] { userid }, pw);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 		}
 
-		return true;
+		return 0;
 	}
 
 }

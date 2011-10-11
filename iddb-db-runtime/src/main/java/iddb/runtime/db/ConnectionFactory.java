@@ -91,14 +91,14 @@ public final class ConnectionFactory {
 
 	}
 	
-	public static Connection getMasterConnection() throws IOException, SQLException {
+	public static synchronized Connection getMasterConnection() throws IOException, SQLException {
 		if (instance == null) {
 			instance = new ConnectionFactory();
 		}
 		return instance.masterDataSource.getConnection();
 	}
 
-	public static Connection getSecondaryConnection() throws IOException, SQLException {
+	public static synchronized Connection getSecondaryConnection() throws IOException, SQLException {
 		if (instance == null) {
 			instance = new ConnectionFactory();
 		}

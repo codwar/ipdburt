@@ -7,6 +7,7 @@ import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Server;
 import iddb.exception.UnauthorizedUpdateException;
+import iddb.exception.UpdateApiException;
 import iddb.info.PenaltyInfo;
 import iddb.info.PlayerInfo;
 
@@ -42,7 +43,7 @@ public class RPC3Handler {
 				(Integer) data[1], JIPDBSXmlRpc3Servlet.getClientIpAddress());
 	}
 
-	public boolean register(String key, String userid, Object[] data) throws Exception {
+	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key,
 					JIPDBSXmlRpc3Servlet.getClientIpAddress());
@@ -57,11 +58,11 @@ public class RPC3Handler {
 			return this.updateApi.linkUser(server, userid, playerInfo);
 			
 		} catch (UnauthorizedUpdateException e) {
-			log.error(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.error(w.getBuffer().toString());
-			throw new Exception(e.getMessage());
+			log.warn(e.getMessage());
+//			StringWriter w = new StringWriter();
+//			e.printStackTrace(new PrintWriter(w));
+//			log.error(w.getBuffer().toString());
+			throw new UpdateApiException(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
@@ -71,7 +72,7 @@ public class RPC3Handler {
 		}
 	}
 	
-	public void update(String key, Object[] plist) throws Exception {
+	public void update(String key, Object[] plist) throws UpdateApiException, Exception {
 
 		try {
 			Server server = ServerManager.getAuthorizedServer(key,
@@ -101,10 +102,11 @@ public class RPC3Handler {
 				}
 			}
 		} catch (UnauthorizedUpdateException e) {
-			log.error(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.error(w.getBuffer().toString());
+			log.warn(e.getMessage());
+//			StringWriter w = new StringWriter();
+//			e.printStackTrace(new PrintWriter(w));
+//			log.error(w.getBuffer().toString());
+//			throw new ApplicationHandlerException(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();

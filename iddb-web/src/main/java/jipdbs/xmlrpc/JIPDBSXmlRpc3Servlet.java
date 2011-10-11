@@ -27,8 +27,8 @@ public class JIPDBSXmlRpc3Servlet extends XmlRpcServlet {
 
 	@Override
 	public void init() throws ServletException {
+		super.init();
 		app = (IDDBService) getServletContext().getAttribute("jipdbs");
-
 	}
 
 	/**

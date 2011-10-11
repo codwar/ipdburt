@@ -169,7 +169,7 @@ public class AliasDAOImpl implements AliasDAO {
 	public void save(Alias alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "insert into alias (updated, count, playerid, nickname, created, normalized, textindex) values (?, ?,?,?,?,?)"; 
+			sql = "insert into alias (updated, count, playerid, nickname, created, normalized, textindex) values (?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update alias set updated = ?," +
 					"count = ? where id = ? limit 1";
