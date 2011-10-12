@@ -96,7 +96,7 @@ public class RPC3Handler {
 				}
 				updateApi.updatePlayer(server, list);
 			} else {
-				if (server.getOnlinePlayers() > 0) {
+				if (server.getOnlinePlayers() > 0 || server.getDirty()) {
 					log.debug("Cleaning server " + server.getName());
 					updateApi.cleanServer(server);
 				}
@@ -118,7 +118,7 @@ public class RPC3Handler {
 
 	private PlayerInfo processEventInfo(Object o) throws Exception {
 		Object[] values = ((Object[]) o);
-		if (log.isDebugEnabled()) log.debug(Arrays.toString(values));
+		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
 		String event = (String) values[0];
 		PlayerInfo playerInfo = new PlayerInfo(event,
 												(String) values[1],
@@ -142,7 +142,7 @@ public class RPC3Handler {
 		}
 		if (Events.BAN.equals(event)) {
 			Object[] data = (Object[]) values[7];
-			if (log.isDebugEnabled()) log.debug(Arrays.toString(data));
+			if (log.isDebugEnabled()) log.debug("BanInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.BAN);
 			penalty.setCreated(parseLong(data[1]));
@@ -153,7 +153,7 @@ public class RPC3Handler {
 			playerInfo.setPenaltyInfo(penalty);
 		} else if (Events.ADDNOTE.equals(event)) {
 			Object[] data = (Object[]) values[7];
-			if (log.isDebugEnabled()) log.debug(Arrays.toString(data));
+			if (log.isDebugEnabled()) log.debug("NoteInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.NOTICE);
 			penalty.setCreated(parseLong(data[0]));
