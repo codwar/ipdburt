@@ -4,6 +4,13 @@
 	<groupId>iddb-cli</groupId>
 	<artifactId>iddb-cli</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<downloadSources>false</downloadSources>
+		<skipTests>true</skipTests>
+	</properties>
+		
 	<dependencies>
 		<dependency>
 			<groupId>iddb</groupId>
