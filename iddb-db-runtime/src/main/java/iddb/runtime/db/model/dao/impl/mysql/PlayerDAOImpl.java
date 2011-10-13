@@ -409,4 +409,36 @@ public class PlayerDAOImpl implements PlayerDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PlayerDAO#findByOldKey(java.lang.String)
+	 */
+	@Override
+	public Player findByOldKey(String key) throws EntityDoesNotExistsException {
+		String sql = "select * from player where gaekey = ?";
+		Connection conn = null;
+		Player player = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, key);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				player = new Player();
+				loadPlayer(player, rs);
+			} else {
+				throw new EntityDoesNotExistsException("Player with key %s was not found", key);
+			}
+		} catch (SQLException e) {
+			logger.error("findByOldKey", e);
+		} catch (IOException e) {
+			logger.error("findByOldKey", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return player;
+	}
+
 }

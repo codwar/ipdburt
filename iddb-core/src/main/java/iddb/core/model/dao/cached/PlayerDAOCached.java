@@ -146,5 +146,13 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 	protected void initializeCache() {
 		createCache("player");
 	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PlayerDAO#findByOldKey(java.lang.String)
+	 */
+	@Override
+	public Player findByOldKey(String key) throws EntityDoesNotExistsException {
+		return this.impl.findByOldKey(key);
+	}
 	
 }

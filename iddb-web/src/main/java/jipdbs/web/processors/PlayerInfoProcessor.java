@@ -62,7 +62,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		
 		Player player;
 		try {
-			player = app.getPlayer(Long.parseLong(id));
+			player = app.getPlayer(id);
 		} catch (Exception e) {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
@@ -82,7 +82,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 
 		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL); 
 		PlayerViewBean infoView = new PlayerViewBean();
-		infoView.setKey(id);
+		infoView.setKey(player.getKey().toString());
 		infoView.setName(player.getNickname());
 		if (hasAdmin) {
 			infoView.setIp(player.getIp());	

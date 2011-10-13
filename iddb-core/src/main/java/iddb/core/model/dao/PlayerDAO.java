@@ -37,6 +37,8 @@ public interface PlayerDAO {
 
 	public abstract Player get(Long player) throws EntityDoesNotExistsException;
 
+	public abstract Player findByOldKey(String key) throws EntityDoesNotExistsException;
+	
 	public abstract void save(Player player);
 
 	public abstract void save(Collection<Player> players);

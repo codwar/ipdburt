@@ -320,6 +320,16 @@ public class IDDBService {
 		return playerDAO.get(player);
 	}
 
+	public Player getPlayer(String key) throws EntityDoesNotExistsException {
+		try {
+			Long id = Long.parseLong(key);
+			return getPlayer(id);
+		} catch (NumberFormatException e) {
+			log.debug("Key {} is an old format", key);
+			return playerDAO.findByOldKey(key);
+		}
+	}
+	
 	public List<AliasResult> alias(String key, int offset, int limit,
 			int[] count) {
 
@@ -451,4 +461,5 @@ public class IDDBService {
 		}
 		return p;
 	}
+
 }
