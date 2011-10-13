@@ -113,8 +113,14 @@ public class UserServiceFilter implements Filter {
 	 */
 	private boolean haveAccess(Subject s, HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String path = req.getRequestURI();
-		if (!"/".equals(req.getContextPath())) {
+		log.debug("Check path {}", path);
+		if (!req.getContextPath().isEmpty()) {
 			path = StringUtils.removeStartIgnoreCase(path, req.getContextPath());
+		}
+		if (!path.startsWith("/")) {
+			path = "/" + path;
+		} else if (path.startsWith("//")) {
+			path = path.substring(1);
 		}
 		for (String p : urls.keySet()) {
 			if (p.endsWith("**")) {
@@ -136,11 +142,14 @@ public class UserServiceFilter implements Filter {
 			Set<String> r = urls.get(p);
 			for (String role : r) {
 				if ("*".equals(role) || s.hasRole(role)) {
+					log.debug("Allowed");
 					return true;
 				}
+				log.debug("Forbidden");
 				resp.sendError(HttpServletResponse.SC_FORBIDDEN);
 			}
 		} else {
+			log.debug("Redirect to Login");
 			UrlReverse reverse = new UrlReverse(this.context);
 			try {
 				resp.sendRedirect(req.getContextPath() + reverse.resolve("login") + "?next=" + URLEncoder.encode(req.getRequestURI(), "UTF-8"));
