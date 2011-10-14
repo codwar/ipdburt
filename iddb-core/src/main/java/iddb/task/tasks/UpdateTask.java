@@ -36,12 +36,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UpdateTask implements Runnable {
 
-	private static final Logger log = LoggerFactory.getLogger(UpdateTask.class); 
+	private static final Logger log = LoggerFactory.getLogger(UpdateTask.class);
+
+	private static final int GRACE_PERIOD = -10; 
 
 	protected final ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
@@ -197,6 +200,7 @@ public class UpdateTask implements Runnable {
 	 * @param player
 	 */
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
+		Date grace = DateUtils.addMinutes(new Date(), GRACE_PERIOD);
 		if (Events.BAN.equals(playerInfo.getEvent())) {
 			player.setBanInfo(playerInfo.getPenaltyInfo().getCreated());
 			player.setConnected(false);
@@ -205,9 +209,11 @@ public class UpdateTask implements Runnable {
 				|| Events.UNBAN.equals(playerInfo.getEvent())
 				|| Events.UPDATE.equals(playerInfo.getEvent())) {
 			player.setBanInfo(null);
-			if (Events.CONNECT.equals(playerInfo.getEvent()) || Events.UPDATE.equals(playerInfo.getEvent())) {
+			if (playerInfo.getUpdated().after(grace) && 
+					(Events.CONNECT.equals(playerInfo.getEvent()) 
+							|| Events.UPDATE.equals(playerInfo.getEvent()))) {
 				player.setConnected(true);
-			} else if (Events.DISCONNECT.equals(playerInfo.getEvent())) {
+			} else {
 				player.setConnected(false);
 			}
 		} else if (Events.ADDNOTE.equals(playerInfo.getEvent())) {

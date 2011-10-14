@@ -63,7 +63,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 			st.setLong(1, userServer.getUser());
 			st.setLong(2, userServer.getServer());
 			if (userServer.getPlayer() == null) st.setNull(3, Types.INTEGER);
-			else st.setLong(3, userServer.getServer());
+			else st.setLong(3, userServer.getPlayer());
 			st.setBoolean(4, userServer.getOwner());
 			st.setTimestamp(5, new Timestamp(new Date().getTime()));
 			if (userServer.getKey() != null) {

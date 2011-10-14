@@ -32,7 +32,7 @@ public class CleanOnlinePlayersWorker extends TimerTask {
 	@Override
 	public void run() {
 		ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
-		List<Server> servers = serverDAO.listNotUpdatedSince(new Date(new Date().getTime()-7200000)); // 2 horas
+		List<Server> servers = serverDAO.listNotUpdatedSince(new Date(new Date().getTime()-3600000)); // 1 hora
 		for (Server server : servers) {
 			if (server.getOnlinePlayers()>0) {
 				Update api = new Update();

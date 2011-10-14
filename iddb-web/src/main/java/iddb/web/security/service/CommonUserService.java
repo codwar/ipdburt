@@ -45,7 +45,10 @@ public abstract class CommonUserService implements UserService {
 	}
 	
 	protected void removeLocal() {
-		context.removeSubject();
+		try {
+			context.removeSubject();
+		} catch (Exception e) {
+		}
 	}
 	
 	/* (non-Javadoc)
