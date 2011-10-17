@@ -147,4 +147,12 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 		return penalty;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#findExpired()
+	 */
+	@Override
+	public List<Penalty> findExpired() {
+		return impl.findExpired();
+	}
+
 }

@@ -23,7 +23,6 @@ import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +44,6 @@ public class ServerInfoProcessor extends FlashResponseProcessor {
 		
 		HttpServletRequest req = context.getRequest();
 		
-		System.out.println(Arrays.toString(req.getParameterMap().keySet().toArray()));
 		String[] keys = req.getParameterValues("key");
 
 		List<Server> list = new ArrayList<Server>();

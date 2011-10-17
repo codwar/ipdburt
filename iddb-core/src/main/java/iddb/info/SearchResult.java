@@ -46,6 +46,16 @@ public class SearchResult {
 
 	private boolean note;
 
+	private String baninfo;
+
+	public String getBaninfo() {
+		return baninfo;
+	}
+
+	public void setBaninfo(String baninfo) {
+		this.baninfo = baninfo;
+	}
+
 	private long id;
 
 	private String clientId;

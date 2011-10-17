@@ -26,7 +26,14 @@
 				[td]
                 <c:choose>
                     <c:when test="${player.banned}">
-                        Banned.
+						<c:choose>
+	                    <c:when test="${empty player.baninfo}">
+	                        Baneado
+	                    </c:when>
+	                    <c:otherwise>
+	                        ${player.baninfo}
+	                    </c:otherwise>
+	                	</c:choose>
                     </c:when>
                     <c:otherwise>
                         -
@@ -37,8 +44,10 @@
 		</c:forEach>
 [/table]
 </div>
+<!-- 
 <script type="text/javascript">
 $(function() {
 	$("#copycontent").click(function() {SelectText("copycontent")});
 });
 </script>
+ -->

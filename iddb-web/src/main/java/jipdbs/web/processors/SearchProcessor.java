@@ -21,9 +21,14 @@ package jipdbs.web.processors;
 import iddb.core.IDDBService;
 import iddb.core.PageLink;
 import iddb.core.Parameters;
+import iddb.core.model.Penalty;
+import iddb.core.model.Player;
 import iddb.core.util.Functions;
 import iddb.core.util.Validator;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.SearchResult;
+import iddb.web.security.service.UserServiceFactory;
+import iddb.web.viewbean.PenaltyViewBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +150,29 @@ public class SearchProcessor extends FlashResponseProcessor {
 
 		int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL); 
+		if (hasAdmin) {
+			for (SearchResult result : list) {
+				if (result.isBanned()) {
+					Penalty ban = app.getLastPenalty(result.getKey());
+					if (ban != null) {
+						PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
+						penaltyViewBean.setCreated(ban.getCreated());
+						penaltyViewBean.setDuration(ban.getDuration());
+						penaltyViewBean.setReason(ban.getReason());
+						if (ban.getAdmin() != null) {
+							try {
+								Player admin = app.getPlayer(ban.getAdmin());
+								penaltyViewBean.setAdmin(admin.getNickname());
+							} catch (EntityDoesNotExistsException e) {
+								log.warn(e.getMessage());
+							}
+						}
+						result.setBaninfo(penaltyViewBean.toString());
+					}					
+				}
+			}
+		}
 		req.setAttribute("list", list);
 		req.setAttribute("count", totalElements);
 		req.setAttribute("time", time);

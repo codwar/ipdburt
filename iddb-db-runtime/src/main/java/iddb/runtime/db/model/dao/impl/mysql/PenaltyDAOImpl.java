@@ -29,11 +29,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +50,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	public void save(Penalty penalty) {
 		String sql;
 		if (penalty.getKey() == null) {
-			sql = "insert into penalty (playerid, adminid, type, reason, duration, synced, active, created, updated) values (?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into penalty (playerid, adminid, type, reason, duration, synced, active, created, updated, expires) values (?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update penalty set playerid = ?," +
 					"adminid = ?," +
@@ -58,7 +60,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 					"synced = ?," +
 					"active = ?," +
 					"created = ?," +
-					"updated = ? where id = ? limit 1";
+					"updated = ?," +
+					"expires = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -78,7 +81,8 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			if (penalty.getUpdated() == null) penalty.setUpdated(new Date());
 			st.setTimestamp(8, new java.sql.Timestamp(penalty.getCreated().getTime()));
 			st.setTimestamp(9, new java.sql.Timestamp(penalty.getUpdated().getTime()));
-			if (penalty.getKey() != null) st.setLong(10, penalty.getKey());
+			st.setTimestamp(10, new Timestamp(DateUtils.addMinutes(penalty.getCreated(), penalty.getDuration().intValue()).getTime()));
+			if (penalty.getKey() != null) st.setLong(11, penalty.getKey());
 			st.executeUpdate();
 			if (penalty.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -481,6 +485,37 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		}
 		return penalty;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#findExpired()
+	 */
+	@Override
+	public List<Penalty> findExpired() {
+		String sql = "select * from penalty where type = ? and duration > 0 and expires < CURRENT_TIMESTAMP";
+		Connection conn = null;
+		List<Penalty> list = new ArrayList<Penalty>();
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, Penalty.BAN);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Penalty penalty = new Penalty();
+				loadPenalty(penalty, rs);
+				list.add(penalty);
+			}
+		} catch (SQLException e) {
+			logger.error("findExpired", e);
+		} catch (IOException e) {
+			logger.error("findExpired", e);			
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
 	}
 
 

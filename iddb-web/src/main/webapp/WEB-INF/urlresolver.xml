@@ -18,7 +18,12 @@
   </processor>
   <processor class="jipdbs.web.processors.ServerInfoProcessor" redirect="/json/server.jsp">
     <rule name="serverinfo" pattern="^/info/server/$"/>
-  </processor>  
+  </processor>
+<!--   
+  <processor class="jipdbs.web.processors.PenaltyInfoProcessor" redirect="/json/penalty.jsp">
+    <rule name="penaltyinfo" pattern="^/info/penalty/$"/>
+  </processor>
+-->
   <processor class="jipdbs.web.processors.AliasProcessor" redirect="/json/alias.jsp">
     <rule name="alias" pattern="^/alias/($key[\d]+)/$"/>
     <rule name="alias-ip" pattern="^/alias/($key[\d]+)/ip/$">

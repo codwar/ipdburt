@@ -49,7 +49,7 @@ public class ServerListProcessor extends FlashResponseProcessor {
 			servers = app.getActiveServers(0, SERVER_LIMIT, count);
 		}
 		
-		log.info("Listing " + servers.size() + " servers");
+		log.debug("Listing " + servers.size() + " servers");
 		log.debug(">>>> COUNT " + count[0]);
 		
 		context.getRequest().setAttribute("servers", servers);

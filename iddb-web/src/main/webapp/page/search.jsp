@@ -1,3 +1,5 @@
+<%@page import="jipdbs.web.CommonConstants"%>
+<%@page import="iddb.web.security.service.UserServiceFactory"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -9,6 +11,7 @@
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
     dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
+    dutils.conf.urls.penaltyinfo = "<url:clean name="penaltyinfo"/>";
 </script>
 
 <script type="text/javascript">
@@ -147,12 +150,25 @@
 			});
 		});
 
-        $(".infoTip").tipTip({attribute: "alt", defaultPosition: "right"});
-
+		$("#copycontent").click(function() {SelectText("copycontent")});
+		
         $('.bbcode').nyroModal();
-
+        <%
+    	if (UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL)) {
+    	%>
+        $(".banned").tipTip({attribute: "alt", defaultPosition: "right"});
+        /*
+        $(".banned").click(function() {
+        	url = dutils.urls.resolve('penaltyinfo') + "?key=" + $(this).attr('alt');
+    		$.getJSON(url, function(data) {
+    			$("#tiptip_content").html(data.data);
+    			$(this).attr("info", data.data);
+    		});        	
+        });*/
+        <% } %>
 	});
 </script>
+
 <table id="search-result">
 	<thead>
 		<tr>
@@ -189,7 +205,7 @@
                         offline
                     </c:otherwise>
                 </c:choose>
-				"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
+				" alt="${player.baninfo}"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
 				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a></span>
@@ -208,11 +224,6 @@
                 <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>
 				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a></td>
-				<%-- 
-				<c:if test="${not empty player.banInfo}">
-				<td style="display: none;">${player.banInfo}</td>
-				</c:if>
-				 --%>
 			</tr>
 			<tr style="display: none;">
 				<td colspan="6" style="padding: 20px;">
@@ -279,4 +290,8 @@
 		</tr>
 	</tfoot>
 </table>
-<a href="${url}?mode=code&p" class="button icon code bbcode">Código para foros</a>
+<!-- a href="${url}?mode=code&p" class="button icon code bbcode">Código para foros</a-->
+<a href="#bbcode" class="button icon code bbcode">Código para foros</a>
+<div style="display: none;" id="bbcode">
+<jsp:include page="/data/search_bbcode.jsp"></jsp:include>
+</div>

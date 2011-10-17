@@ -22,23 +22,31 @@ import iddb.api.v2.Update;
 import iddb.core.model.Server;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.ServerDAO;
+import iddb.scheduller.Worker;
 
 import java.util.Date;
 import java.util.List;
-import java.util.TimerTask;
 
-public class CleanOnlinePlayersWorker extends TimerTask {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class CleanOnlinePlayersWorker implements Worker {
+
+	private static final Logger log = LoggerFactory.getLogger(CleanOnlinePlayersWorker.class);
+	
 	@Override
-	public void run() {
+	public void execute() {
 		ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 		List<Server> servers = serverDAO.listNotUpdatedSince(new Date(new Date().getTime()-3600000)); // 1 hora
+		int c = 0;
+		Update api = new Update();
 		for (Server server : servers) {
 			if (server.getOnlinePlayers()>0) {
-				Update api = new Update();
+				c++;
 				api.cleanServer(server, false);
 			}
 		}
+		log.info("Servers cleanded {}", c);
 	}
 
 }

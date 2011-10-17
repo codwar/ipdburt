@@ -18,13 +18,8 @@
  */
 package iddb.quartz.job;
 
-import iddb.api.v2.Update;
-import iddb.core.model.Server;
-import iddb.core.model.dao.DAOFactory;
-import iddb.core.model.dao.ServerDAO;
-
-import java.util.Date;
-import java.util.List;
+import iddb.scheduller.Worker;
+import iddb.scheduller.jobs.CleanOnlinePlayersWorker;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -41,24 +36,9 @@ public class CleanServerJob implements Job {
 	 */
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
 		log.debug("Running clean server job");
-		
-		Update api = new Update();
-		
-		ServerDAO dao = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
-		List<Server> servers = dao.listNotUpdatedSince(new Date(new Date().getTime()-7200000)); // 2 horas
-		
-		int c = 0;
-		for (Server server : servers) {
-			if (server.getOnlinePlayers() > 0) {
-				c++;
-				api.cleanServer(server, false);
-			}
-		}
-		
-		log.info("Servers cleanded {}", c);
-		
+		Worker worker = new CleanOnlinePlayersWorker();
+		worker.execute();
 	}
 
 }

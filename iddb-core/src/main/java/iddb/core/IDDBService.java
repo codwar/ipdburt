@@ -445,11 +445,15 @@ public class IDDBService {
 			return Collections.emptyList();
 		}
 	}
+
+	public Penalty getLastPenalty(Long key) {
+		return penaltyDAO.findLastActivePenalty(key, Penalty.BAN);
+	}
 	
 	public Penalty getLastPenalty(Player player) {
 		Penalty p = null;
 		if (player.getBanInfo() != null) {
-			p = penaltyDAO.findLastActivePenalty(player.getKey(), Penalty.BAN);
+			p = getLastPenalty(player.getKey());
 		}
 		return p;
 	}
