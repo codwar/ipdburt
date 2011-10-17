@@ -54,6 +54,8 @@ public interface PenaltyDAO {
 	
 	public abstract void disable(List<Penalty> list);
 	
+	public abstract void deletePlayerPenalty(Long player, Integer type);
+	
 	public abstract void delete(List<Penalty> list);
 
 	public abstract List<Penalty> findByPlayerAndType(Long player, Integer type);

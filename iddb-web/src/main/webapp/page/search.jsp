@@ -11,7 +11,6 @@
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
     dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
-    dutils.conf.urls.penaltyinfo = "<url:clean name="penaltyinfo"/>";
 </script>
 
 <script type="text/javascript">

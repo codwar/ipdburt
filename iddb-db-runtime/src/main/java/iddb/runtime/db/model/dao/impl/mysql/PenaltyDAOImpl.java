@@ -118,9 +118,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			int r = st.executeUpdate();
 			logger.debug("{} penalty removed", r);
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("delete", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("delete", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -454,7 +454,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 		}		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see iddb.core.model.dao.PenaltyDAO#findLastActivePenalty(java.lang.Long, java.lang.Long)
 	 */
@@ -492,13 +492,14 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findExpired() {
-		String sql = "select * from penalty where type = ? and duration > 0 and expires < CURRENT_TIMESTAMP";
+		String sql = "select * from penalty where type = ? and duration > 0 and expires < CURRENT_TIMESTAMP and active = ?";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setInt(1, Penalty.BAN);
+			st.setBoolean(2, true);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Penalty penalty = new Penalty();
@@ -518,5 +519,27 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		return list;
 	}
 
+	@Override
+	public void deletePlayerPenalty(Long player, Integer type) {
+		String sql = "delete from penalty where playerid = ? and type = ?";
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, player);
+			st.setInt(2, type);
+			int r = st.executeUpdate();
+			logger.debug("{} penalties removed", r);
+		} catch (SQLException e) {
+			logger.error("deletePlayerPenalty", e);
+		} catch (IOException e) {
+			logger.error("deletePlayerPenalty", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+	}
 
 }

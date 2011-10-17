@@ -149,8 +149,9 @@ public class UpdateTask implements Runnable {
 			|| Events.DELNOTE.equals(playerInfo.getEvent())) {
 			
 			if (Events.UNBAN.equals(playerInfo.getEvent())) {
-				List<Penalty> penalties = penaltyDAO.findByPlayerAndType(player.getKey(), Penalty.BAN);
-				if (penalties.size() > 0) penaltyDAO.disable(penalties);
+				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
+//				List<Penalty> penalties = penaltyDAO.findByPlayerAndType(player.getKey(), Penalty.BAN);
+//				if (penalties.size() > 0) penaltyDAO.disable(penalties);
 			} else if (Events.BAN.equals(playerInfo.getEvent())) {
 				Penalty penalty = new Penalty();
 				penalty.setPlayer(player.getKey());
@@ -169,6 +170,7 @@ public class UpdateTask implements Runnable {
 						log.error(e.getMessage());
 					}
 				}
+				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
 				penaltyDAO.save(penalty);
 			} else if (Events.ADDNOTE.equals(playerInfo.getEvent())) {
 				Penalty penalty = new Penalty();
