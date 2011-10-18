@@ -48,7 +48,7 @@ public class LoginProcessor extends FlashResponseProcessor {
 		UserService userService = UserServiceFactory.getUserService();
 		if ("logout".equals(context.getParameter("type"))) {
 			log.debug("Do logout. Redirect {}", contextPath);
-			userService.logout(context.getRequest());
+			userService.logout(context.getRequest(), context.getResponse());
 			context.getRequest().setAttribute("redirect", contextPath);
 			return "/include/redirect.jsp";
 			//throw new ForceRedirect(contextPath);
@@ -62,7 +62,8 @@ public class LoginProcessor extends FlashResponseProcessor {
 			if (context.isPost()) {
 				try {
 					log.debug("Do login. Redirect {}", next);
-					user = userService.authenticate(context.getRequest(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"));
+					boolean remember = "on".equals(context.getRequest().getParameter("remember"));
+					user = userService.authenticate(context.getRequest(), context.getResponse(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"), remember);
 					context.getRequest().setAttribute("redirect", next);
 					//throw new ForceRedirect(next);
 					return "/include/redirect.jsp";

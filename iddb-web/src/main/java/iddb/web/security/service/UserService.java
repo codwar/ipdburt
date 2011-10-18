@@ -24,6 +24,7 @@ import iddb.web.security.exceptions.UserLockedException;
 import iddb.web.security.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface UserService {
 
@@ -33,10 +34,31 @@ public interface UserService {
 	public static final String SUBJECT = "user-service-subject";
 
 	/**
+	 * How long will be the cookie expire when remember is enabled
+	 * (in seconds)
+	 */
+	public static final Integer COOKIE_EXPIRE_REMEMBER = 60 * 60 * 24 * 14;
+
+	/**
+	 * How long a session will be considered valid
+	 * (in days)
+	 */
+	public static final Integer SESSION_LIFE = 14;
+	
+	public static final String SESSION_KEY = "user-session-key";
+	
+	/**
 	 * Get current authenticated user or Anonymous
 	 */
 	public Subject getCurrentUser();
 
+	/**
+	 * Find user from session or session db
+	 * @param request
+	 * @return
+	 */
+	public Subject findUserSession(HttpServletRequest request);
+	
 	/**
 	 * Lookup user and authenticate
 	 * @param request
@@ -47,13 +69,13 @@ public interface UserService {
 	 * @throws InvalidCredentialsException
 	 * @throws UserLockedException
 	 */
-	public Subject authenticate(HttpServletRequest request, String username, String password) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
+	public Subject authenticate(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean remember) throws InvalidAccountException, InvalidCredentialsException, UserLockedException;
 	
 	/**
 	 * Logout the current authenticated user and remove any session trace
 	 * @param request
 	 */
-	public void logout(HttpServletRequest request);
+	public void logout(HttpServletRequest request, HttpServletResponse response);
 	
 	/**
 	 * Check if user has access to the specified server
@@ -75,5 +97,10 @@ public interface UserService {
 	 * @return
 	 */
 	public boolean hasAnyServer(Integer level);
+
+	/**
+	 * Remove local data to avoid leeks
+	 */
+	public void cleanUp();
 	
 }

@@ -41,7 +41,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -82,25 +81,21 @@ public class UserServiceFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		HttpSession session = ((HttpServletRequest) request).getSession(false);
+		HttpServletResponse resp = (HttpServletResponse) response;
+		HttpServletRequest req = (HttpServletRequest) request;
+		
 		CommonUserService service = (CommonUserService) UserServiceFactory.getUserService();
-		Subject s = null;
-		if (session != null) {
-			s = (Subject) session.getAttribute(UserService.SUBJECT);
-			if (s != null) {
-				service.saveLocal(s);
-			} else {
-				service.removeLocal();
-			}
-		} else {
-			service.removeLocal();
+		Subject s = service.findUserSession(req); 
+		if (s == null) {
+			log.debug("No authenticated session found");
+			service.cleanUp();
+			s = new AnonymousSubject();
 		}
-		if (s == null) s = new AnonymousSubject();
-		if (haveAccess(s, (HttpServletRequest) request, (HttpServletResponse) response)) {
+		if (haveAccess(s, (HttpServletRequest) request, resp)) {
 			try {
 				chain.doFilter(request, response);
 			} finally {
-				service.removeLocal();
+				service.cleanUp();
 			}
 		}
 	}

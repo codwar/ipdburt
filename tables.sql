@@ -164,3 +164,18 @@ CREATE TABLE IF NOT EXISTS `userserver` (
   KEY `serverid` (`serverid`),
   KEY `userid_2` (`userid`,`serverid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--
+-- Table structure for table `user_session`
+--
+
+CREATE TABLE IF NOT EXISTS `user_session` (
+  `id` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `userid` int(11) unsigned NOT NULL,
+  `ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `created` (`created`),
+  KEY `key` (`id`,`userid`,`ip`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

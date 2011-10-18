@@ -27,6 +27,8 @@ import iddb.core.model.dao.UserDAO;
 import iddb.core.model.dao.UserServerDAO;
 import iddb.core.util.PasswordUtils;
 import iddb.exception.EntityDoesNotExistsException;
+import iddb.web.security.dao.Session;
+import iddb.web.security.dao.SessionDAO;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
@@ -45,10 +47,17 @@ public class DbUserServiceImpl extends CommonUserService {
 	private UserServerDAO serverDAO = (UserServerDAO) DAOFactory.forClass(UserServerDAO.class);
 	private PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 	
+	private SessionDAO sessionDAO;
+	
 	private static Logger log = LoggerFactory.getLogger(DbUserServiceImpl.class);
 	
 	public DbUserServiceImpl() {
 		log.debug("Initialize DbUserServiceImpl");
+		try {
+			sessionDAO = new SessionDAO();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -76,12 +85,17 @@ public class DbUserServiceImpl extends CommonUserService {
 			throw new InvalidCredentialsException();
 		}
 
+		Subject subject = buildSubject(user);
+
+		return subject;
+	}
+
+	private Subject buildSubject(User user) {
 		Subject subject = new Subject();
 		subject.setKey(user.getKey());
 		subject.setLoginId(user.getLoginId());
 		subject.setPassword(user.getPassword());
 		subject.setRoles(user.getRoles());
-
 		return subject;
 	}
 
@@ -155,6 +169,55 @@ public class DbUserServiceImpl extends CommonUserService {
 		if (!subject.isAuthenticated()) return false;
 		if (subject.isSuperAdmin()) return true;
 		return serverDAO.existsAny(subject.getKey(), level);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#findSession(java.lang.String, java.lang.Long, java.lang.String)
+	 */
+	@Override
+	protected Session findSession(String key, Long userId, String ip) {
+		Session s = null;
+		try {
+			s = sessionDAO.get(key, userId, ip);
+		} catch (EntityDoesNotExistsException e) {
+			log.debug(e.getMessage());
+		}
+		return s;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#createSession(java.lang.String, java.lang.Long, java.lang.String)
+	 */
+	@Override
+	protected void createSession(String key, Long userId, String ip) {
+		Session session = new Session();
+		session.setKey(key);
+		session.setUserId(userId);
+		session.setIp(ip);
+		sessionDAO.insert(session);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#removeSession(java.lang.String)
+	 */
+	@Override
+	protected void removeSession(String key) {
+		sessionDAO.delete(key);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#findUser(java.lang.Long)
+	 */
+	@Override
+	protected Subject findUser(Long key) {
+		User u;
+		try {
+			u = userDAO.get(key);
+		} catch (EntityDoesNotExistsException e) {
+			log.error(e.getMessage());
+			return null;
+		}
+		return buildSubject(u);
 	}
 
 }

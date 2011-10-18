@@ -18,14 +18,15 @@
  */
 package iddb.web.security.service.local;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
+import iddb.web.security.dao.Session;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
 import iddb.web.security.service.CommonUserService;
 import iddb.web.security.subject.Subject;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,7 +45,7 @@ public class LocalUserServiceImpl extends CommonUserService {
 			s.setPassword("admin");
 			s.setKey(1L);
 			s.setRoles(new HashSet<String>(Arrays.asList(new String[]{"admin"})));
-			createUserSession(request, s);
+			//createUserSession(request, s);
 			return s;
 		} else if (username.equals("user") && password.equals("user")) {
 			Subject s = new Subject();
@@ -52,7 +53,7 @@ public class LocalUserServiceImpl extends CommonUserService {
 			s.setPassword("user");
 			s.setKey(2L);
 			s.setRoles(new HashSet<String>(Arrays.asList(new String[]{"user"})));
-			createUserSession(request, s);
+			//createUserSession(request, s);
 			return s;			
 		}
 		throw new InvalidCredentialsException();
@@ -88,6 +89,42 @@ public class LocalUserServiceImpl extends CommonUserService {
 	@Override
 	public boolean hasAnyServer(Integer level) {
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#findSession(java.lang.String, java.lang.Long, java.lang.String)
+	 */
+	@Override
+	protected Session findSession(String key, Long userId, String ip) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#createSession(java.lang.String, java.lang.Long, java.lang.String)
+	 */
+	@Override
+	protected void createSession(String key, Long userId, String ip) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#removeSession(java.lang.String)
+	 */
+	@Override
+	protected void removeSession(String key) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.CommonUserService#findUser(java.lang.Long)
+	 */
+	@Override
+	protected Subject findUser(Long key) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
