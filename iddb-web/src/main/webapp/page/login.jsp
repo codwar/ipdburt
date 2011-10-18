@@ -30,7 +30,7 @@ $(document).ready(function() {
 		</p>
 		<p class="remember">
 			<input id="signin_submit" value="Aceptar" tabindex="6" type="submit">
-			<!--  <input id="remember" name="remember_me" value="1" tabindex="7" type="checkbox"> <label for="remember">Remember me</label> -->
+			<input id="remember" name="remember" value="1" tabindex="7" type="checkbox"> <label for="remember">Recordarme</label>
 		</p>
 		<!-- 
 		<p class="forgot">

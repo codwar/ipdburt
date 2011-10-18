@@ -62,7 +62,7 @@ public class LoginProcessor extends FlashResponseProcessor {
 			if (context.isPost()) {
 				try {
 					log.debug("Do login. Redirect {}", next);
-					boolean remember = "on".equals(context.getRequest().getParameter("remember"));
+					boolean remember = "1".equals(context.getRequest().getParameter("remember"));
 					user = userService.authenticate(context.getRequest(), context.getResponse(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"), remember);
 					context.getRequest().setAttribute("redirect", next);
 					//throw new ForceRedirect(next);
