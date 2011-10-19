@@ -31,6 +31,7 @@
 
 <fieldset id="signin_menu">
 	<form method="post" id="signin" action="<url:url name="login"/>">
+		<div style='display:none'><input type="hidden" name="next" value="${current_path}"/></div>
 		<p>
 			<label for="username">Usuario</label>
 			<input id="username" name="username" value="" title="username" tabindex="4" type="text">

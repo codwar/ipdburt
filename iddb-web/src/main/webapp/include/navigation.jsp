@@ -49,7 +49,7 @@
             <ul class="subnav">
                 <li><a href="<url:url name="contact"/>">Contacto</a></li>
                 <li><a href="<url:url name="faq"/>">FAQ</a></li>
-            </ul>  
+            </ul>
         </li>
     	<div id="logo" style="float: right; margin-right: 20px;">
 	        <a href="<url:url name="home"/>">IPDB</a>
