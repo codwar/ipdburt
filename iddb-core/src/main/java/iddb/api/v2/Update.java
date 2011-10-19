@@ -68,22 +68,48 @@ public class Update {
 	 * Invoked by the servers when they change their public server name.
 	 * 
 	 * @param key
-	 *            the server uid.
+	 *          the server uid.
 	 * @param name
-	 *            the server's new name.
+	 *          the server's new name.
+	 * @param version
+	 * 			plugin version number
+	 * @param permission
+	 * 			allowed actions for server admins
 	 * @param remoteAddr
 	 *            the server's remote address.
-	 * @param version
-	 *            the server's B3 plugin version. Can be null.
 	 * @since 0.5
 	 */
 	public void updateName(String key, String name, String version,	Integer permission, String remoteAddr) {
+		updateName(key, name, version, permission, 40, remoteAddr);
+	}
+
+	/**
+	 * Updates the name of a server given its uid.
+	 * <p>
+	 * Invoked by the servers when they change their public server name.
+	 * 
+	 * @param key
+	 *          the server uid.
+	 * @param name
+	 *          the server's new name.
+	 * @param version
+	 * 			plugin version number
+	 * @param permission
+	 * 			allowed actions for server admins
+	 * @param adminLevel
+	 * 			minimum level for remote actions  
+	 * @param remoteAddr
+	 *            the server's remote address.
+	 * @since 0.8
+	 */
+	public void updateName(String key, String name, String version,	Integer permission, Integer adminLevel, String remoteAddr) {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, remoteAddr,name);
 			server.setName(name);
 			server.setPermission(permission);
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
+			server.setAdminLevel(adminLevel);
 			serverDAO.save(server);
 		} catch (UnauthorizedUpdateException e) {
 			try {
@@ -92,9 +118,6 @@ public class Update {
 				log.error(me.getMessage());
 			}
 			log.error(e.getMessage());
-//			StringWriter w = new StringWriter();
-//			e.printStackTrace(new PrintWriter(w));
-//			log.error(w.getBuffer().toString());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
@@ -103,17 +126,6 @@ public class Update {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param name
-	 * @param version
-	 * @param remoteAddr
-	 */
-	public void updateName(String key, String name, String version,	String remoteAddr) {
-		updateName(key, name, version, 0, remoteAddr);
-	}
-
 	public void cleanServer(Server server) {
 		cleanServer(server, true);
 	}

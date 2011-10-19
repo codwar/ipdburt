@@ -137,6 +137,11 @@ public class IDDBService {
 		return getServers(0, 1000, count);
 	}
 
+	public List<Server> getActiveServers() {
+		int[] count = new int[1];
+		return getActiveServers(0, 1000, count);
+	}
+	
 	public List<Server> getActiveServers(int offset, int limit, int[] count) {
 		try {
 			return serverDAO.findEnabled(offset, limit, count);
@@ -466,4 +471,31 @@ public class IDDBService {
 		return p;
 	}
 
+	/**
+	 * 
+	 * @param query
+	 * @param server
+	 * @param offset
+	 * @param limit
+	 * @param count
+	 * @return
+	 */
+	public List<SearchResult> aliasAdvSearch(String query, String server, int offset, int limit, int[] count) {
+		try {
+			List<Alias> aliasses = new ArrayList<Alias>();
+			Long serverkey = null;
+			if (server != null) {
+				serverkey = Long.parseLong(server);
+				aliasses = aliasDAO.booleanSearchByServer(query, serverkey, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
+			} else {
+				aliasses = aliasDAO.booleanSearch(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
+			}
+			return marshall(aliasses);
+		} catch (Exception e) {
+			log.error("Unable to fetch players: [{}]", e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+	
 }

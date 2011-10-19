@@ -51,4 +51,16 @@ public class JIPDBSXmlRpc3Servlet extends XmlRpcServlet {
 		return new InstanceHandlerMapping(new RPC3Handler(app));
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#destroy()
+	 */
+	@Override
+	public void destroy() {
+		try {
+			clientIpAddress.remove();
+		} catch (Exception e) {
+		}
+		super.destroy();
+	}
+
 }

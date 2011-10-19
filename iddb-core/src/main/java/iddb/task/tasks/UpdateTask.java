@@ -44,7 +44,7 @@ public class UpdateTask implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(UpdateTask.class);
 
-	private static final int GRACE_PERIOD = -10; 
+	public static final int GRACE_PERIOD = 15;
 
 	protected final ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
@@ -202,7 +202,7 @@ public class UpdateTask implements Runnable {
 	 * @param player
 	 */
 	private void handlePlayerEvent(PlayerInfo playerInfo, Player player) {
-		Date grace = DateUtils.addMinutes(new Date(), GRACE_PERIOD);
+		Date grace = DateUtils.addMinutes(new Date(), GRACE_PERIOD * -1);
 		if (Events.BAN.equals(playerInfo.getEvent())) {
 			player.setBanInfo(playerInfo.getPenaltyInfo().getCreated());
 			player.setConnected(false);

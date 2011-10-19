@@ -8,15 +8,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.xmlrpc.handler.RPC2Handler;
+import jipdbs.xmlrpc.handler.RPC4Handler;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.webserver.XmlRpcServlet;
 
-public class JIPDBSXmlRpc2Servlet extends XmlRpcServlet {
+public class JIPDBSXmlRpc4Servlet extends XmlRpcServlet {
 
-	private static final long serialVersionUID = 3170443339068764438L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -472531421906415406L;
 
 	private static ThreadLocal<String> clientIpAddress = new ThreadLocal<String>();
 	
@@ -24,8 +27,8 @@ public class JIPDBSXmlRpc2Servlet extends XmlRpcServlet {
 
 	@Override
 	public void init() throws ServletException {
+		super.init();
 		app = (IDDBService) getServletContext().getAttribute("jipdbs");
-
 	}
 
 	/**
@@ -45,7 +48,18 @@ public class JIPDBSXmlRpc2Servlet extends XmlRpcServlet {
 	@Override
 	protected XmlRpcHandlerMapping newXmlRpcHandlerMapping()
 			throws XmlRpcException {
-		return new InstanceHandlerMapping(new RPC2Handler(app));
+		return new InstanceHandlerMapping(new RPC4Handler(app));
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#destroy()
+	 */
+	@Override
+	public void destroy() {
+		try {
+			clientIpAddress.remove();
+		} catch (Exception e) {
+		}
+		super.destroy();
+	}
 }

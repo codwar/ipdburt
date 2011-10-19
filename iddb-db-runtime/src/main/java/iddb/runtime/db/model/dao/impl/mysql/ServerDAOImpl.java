@@ -44,9 +44,21 @@ public class ServerDAOImpl implements ServerDAO {
 	public void save(Server server) {
 		String sql;
 		if (server.getKey() == null) {
-			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled) values (?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled, adminlevel) values (?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
-			sql = "update server set uid = ?, name = ?, admin = ?, created = ?, updated = ?, onlineplayers = ?, address = ?, pluginversion = ?, maxlevel = ?, isdirty = ?, permission = ?, disabled = ? where id = ? limit 1";
+			sql = "update server set uid = ?, " +
+					"name = ?, " +
+					"admin = ?, " +
+					"created = ?, " +
+					"updated = ?, " +
+					"onlineplayers = ?, " +
+					"address = ?, " +
+					"pluginversion = ?, " +
+					"maxlevel = ?, " +
+					"isdirty = ?, " +
+					"permission = ?, " +
+					"disabled = ?, " +
+					"adminlevel = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -62,11 +74,12 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setInt(6, server.getOnlinePlayers());
 			st.setString(7, server.getAddress());
 			st.setString(8, server.getPluginVersion());
-			st.setLong(9, server.getMaxLevel());
+			st.setInt(9, server.getMaxLevel());
 			st.setBoolean(10, server.getDirty());
 			st.setInt(11, server.getPermission());
 			st.setBoolean(12, server.getDisabled());
-			if (server.getKey() != null) st.setLong(13, server.getKey());
+			st.setInt(13, server.getAdminLevel());
+			if (server.getKey() != null) st.setLong(14, server.getKey());
 			st.executeUpdate();
 			if (server.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -160,10 +173,11 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setOnlinePlayers(rs.getInt("onlineplayers"));
 		server.setAddress(rs.getString("address"));
 		server.setPluginVersion(rs.getString("pluginversion"));
-		server.setMaxLevel(rs.getLong("maxlevel"));
+		server.setMaxLevel(rs.getInt("maxlevel"));
 		server.setDirty(rs.getBoolean("isdirty"));
 		server.setPermission(rs.getInt("permission"));
 		server.setDisabled(rs.getBoolean("disabled"));
+		server.setAdminLevel(rs.getInt("adminlevel"));
 	}
 
 	@Override

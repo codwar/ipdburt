@@ -61,11 +61,11 @@
 		<servlet-name>xmlrpc3</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>xmlrpc4</servlet-name>
+		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc4Servlet</servlet-class>
+	</servlet>	
 
-	<servlet-mapping>
-		<servlet-name>xmlrpc2</servlet-name>
-		<url-pattern>/xmlrpc2</url-pattern>
-	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>httphandler</servlet-name>
 		<url-pattern>/app/*</url-pattern>
@@ -73,6 +73,10 @@
 	<servlet-mapping>
 		<servlet-name>xmlrpc3</servlet-name>
 		<url-pattern>/api/v3/xmlrpc</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>xmlrpc4</servlet-name>
+		<url-pattern>/api/v4/xmlrpc</url-pattern>
 	</servlet-mapping>
 
      

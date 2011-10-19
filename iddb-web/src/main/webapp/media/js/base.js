@@ -29,6 +29,8 @@ $(document).ready(
             		if ($(this).val().length > 0) window.location = dutils.urls.resolve('search', {'query': $(this).val()});
             	}
             });
+            
+            $(".tip").tipTip({delay: 200});
 /*
            $(":checkbox").change(checkElements);
            $("#multiselect").click(function(){

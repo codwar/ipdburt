@@ -2,6 +2,7 @@ package iddb.cli.command;
 
 import iddb.cli.Command;
 import iddb.cli.ConnectionFactory;
+import iddb.core.Parameters;
 import iddb.core.util.Functions;
 
 import java.sql.Connection;
@@ -18,7 +19,6 @@ public class BuildAliasIndex extends Command {
 	/**
 	 * 
 	 */
-	private static final int MIN_LENGTH_GRAM = 4;
 	static int count = 0;
 
 	@Override
@@ -37,7 +37,7 @@ public class BuildAliasIndex extends Command {
 				count++;
 				String nickname = rs.getString("nickname");
 				pst.setString(1, Functions.normalize(nickname));
-				if (nickname.length() > MIN_LENGTH_GRAM) {
+				if (nickname.length() > Parameters.INDEX_MIN_LENGTH) {
 					pst.setString(2, Functions.createNameIndex(nickname));
 				} else {
 					pst.setNull(2, Types.VARCHAR);

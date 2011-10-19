@@ -31,9 +31,8 @@
             <% } %>
             </div>                
         </li>   
-        <li><!-- form id="search-form" method="get" action="/search/"-->
-        <small><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
-        <!-- /form-->
+        <li>
+        <small><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small><span class="advsearch"><a href='<url:url name="advsearch"/>' class="icon tip clean_menu" title="Búsqueda avanzada"></a></span>
         </li>    
         <li><a href="<url:url name="banlist"/>">Baneados</a></li>
         <li><a href="<url:url name="serverlist"/>">Servidores</a></li>

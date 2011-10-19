@@ -38,14 +38,6 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 		createCache("alias");
 	}
 	
-	@Override
-	public void save(Alias alias, boolean commit) {
-		impl.save(alias, commit);
-		if (alias.getKey() != null) {
-			cachePut(cacheKey(alias.getPlayer(), alias.getNickname()),alias);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Alias> findByNickname(String query, int offset, int limit, int[] count) {
@@ -80,19 +72,16 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 	}
 
 	@Override
-	public void save(Collection<Alias> aliasses, boolean commit) {
-		for (Alias alias : aliasses)
-			save(alias, commit);
-	}
-
-	@Override
 	public void save(Alias alias) {
-		save(alias, true);
+		impl.save(alias);
+		if (alias.getKey() != null) {
+			cachePut(cacheKey(alias.getPlayer(), alias.getNickname()),alias);
+		}
 	}
 
 	@Override
 	public void save(Collection<Alias> aliasses) {
-		save(aliasses, true);
+		for (Alias alias : aliasses) save(alias);
 	}
 
 	@Override
@@ -108,5 +97,34 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 			cachePut(cacheKey(alias.getPlayer(), alias.getNickname()), alias);
 
 		return alias;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.AliasDAO#booleanSearchByServer(java.lang.String, java.lang.Long, int, int, int[])
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Alias> booleanSearchByServer(String query, Long serverkey, int offset, int limit, int[] count) {
+		String key = "boos" + query + "S" + serverkey.toString() + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.booleanSearchByServer(query, serverkey, offset, limit, count);
+		putCachedList(key, aliasses, count);
+		return aliasses;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.AliasDAO#booleanSearch(java.lang.String, int, int, int[])
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Alias> booleanSearch(String query, int offset, int limit,
+			int[] count) {
+		String key = "bool" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.booleanSearch(query, offset, limit, count);
+		putCachedList(key, aliasses, count);
+		return aliasses;
 	}
 }

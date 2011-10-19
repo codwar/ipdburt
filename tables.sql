@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `updated` timestamp NULL DEFAULT NULL,
   `onlineplayers` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `pluginversion` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `adminlevel` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `maxlevel` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `isdirty` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',

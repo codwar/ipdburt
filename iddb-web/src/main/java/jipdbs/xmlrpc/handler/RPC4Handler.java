@@ -2,7 +2,6 @@ package jipdbs.xmlrpc.handler;
 
 import iddb.api.Events;
 import iddb.api.ServerManager;
-import iddb.api.v2.Update;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Server;
@@ -10,6 +9,8 @@ import iddb.exception.UnauthorizedUpdateException;
 import iddb.exception.UpdateApiException;
 import iddb.info.PenaltyInfo;
 import iddb.info.PlayerInfo;
+import iddb.legacy.python.date.DateUtils;
+import iddb.task.tasks.UpdateTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -18,61 +19,35 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet;
+import jipdbs.xmlrpc.JIPDBSXmlRpc4Servlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RPC3Handler {
+public class RPC4Handler extends RPC3Handler {
 
-	private static final Logger log = LoggerFactory.getLogger(RPC3Handler.class);
+	private static final Logger log = LoggerFactory.getLogger(RPC4Handler.class);
 	
-	protected final IDDBService app;
-	protected final Update updateApi;
-
-	protected static final int maxListSize = 100;
-
-	public RPC3Handler(IDDBService app) {
-		this.app = app;
-		this.updateApi = new Update();
+	/**
+	 * @param app
+	 */
+	public RPC4Handler(IDDBService app) {
+		super(app);
 	}
 
-	@Deprecated
-	public void updateName(String key, String name, Object[] data) {
-		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
-	}
-
+	/* (non-Javadoc)
+	 * @see jipdbs.xmlrpc.handler.RPC3Handler#getClientAddress()
+	 */
+	@Override
 	public String getClientAddress() {
-		return JIPDBSXmlRpc3Servlet.getClientIpAddress();
+		return JIPDBSXmlRpc4Servlet.getClientIpAddress();
 	}
 	
-	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
-		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-			
-			PlayerInfo playerInfo = new PlayerInfo("register",
-													(String) data[0],
-													(String) data[1],
-													parseLong(data[2]),
-													(String) data[3],
-													parseLong(data[4]));
-			
-			return this.updateApi.linkUser(server, userid, playerInfo);
-			
-		} catch (UnauthorizedUpdateException e) {
-			log.warn(e.getMessage());
-			throw new UpdateApiException(e.getMessage());
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			StringWriter w = new StringWriter();
-			e.printStackTrace(new PrintWriter(w));
-			log.error(w.getBuffer().toString());
-			throw e;
-		}
+	public void updateName(String key, String name, Object[] data) {
+		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], (Integer) data[2], getClientAddress());
 	}
 	
-	@Deprecated
-	public void update(String key, Object[] plist) throws UpdateApiException, Exception {
+	public void update(String key, Object[] plist, Long timestamp) throws UpdateApiException, Exception {
 
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
@@ -80,7 +55,7 @@ public class RPC3Handler {
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				try {
-					list.add(processEventInfo(o));
+					list.add(processEventInfo(o, timestamp));
 				} catch (Exception e) {
 					log.error(e.getMessage());
 				}
@@ -111,8 +86,7 @@ public class RPC3Handler {
 		}
 	}
 
-	@Deprecated
-	protected PlayerInfo processEventInfo(Object o) throws Exception {
+	protected PlayerInfo processEventInfo(Object o, Long timestamp) throws Exception {
 		Object[] values = ((Object[]) o);
 		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
 		String event = (String) values[0];
@@ -135,6 +109,13 @@ public class RPC3Handler {
 				}
 			}
 			playerInfo.setUpdated(updated);
+		}
+		if (Events.CONNECT.equals(event)) {
+			if (Math.abs(timestamp - DateUtils.dateToTimestamp(playerInfo.getUpdated())) > UpdateTask.GRACE_PERIOD) {
+				playerInfo.setEvent(Events.DISCONNECT);
+			} else {
+				playerInfo.setUpdated(new Date());
+			}
 		}
 		if (Events.BAN.equals(event)) {
 			Object[] data = (Object[]) values[7];
@@ -161,30 +142,4 @@ public class RPC3Handler {
 		return playerInfo;
 	}
 
-	/**
-	 * @param object
-	 * @return
-	 */
-	protected String smartCast(Object obj) {
-		if (obj instanceof Number) {
-			return ((Number) obj).toString();
-		} else if (obj instanceof String) {
-			return (String) obj;
-		}
-		return null;
-	}
-
-	protected Long parseLong(Object s) {
-		try {
-			if (s instanceof String) {
-				return Long.parseLong((String) s);
-			} else if (s instanceof Number) {
-				return ((Number) s).longValue();
-			}
-			return null;
-		} catch (NumberFormatException e) {
-			log.trace(e.getMessage());
-			return null;
-		}
-	}
 }

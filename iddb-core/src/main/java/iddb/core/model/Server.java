@@ -28,7 +28,7 @@ public class Server implements Serializable {
 	 */
 	private static final long serialVersionUID = 1356474862304251338L;
 
-	private static final Long DEFAULT_MAX_LEVEL = 2L;
+	private static final Integer DEFAULT_MAX_LEVEL = 2;
 
 	private Long key;
 
@@ -40,11 +40,12 @@ public class Server implements Serializable {
 	private int onlinePlayers;
 	private String address;
 	private String pluginVersion;
-	private Long maxLevel;
+	private Integer maxLevel;
 	private Boolean dirty;
 	private Integer permission;
 	private Boolean disabled;
-
+	private Integer adminLevel;
+	
 	public Boolean getDisabled() {
 		return disabled;
 	}
@@ -138,14 +139,14 @@ public class Server implements Serializable {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public Long getMaxLevel() {
+	public Integer getMaxLevel() {
 		if (maxLevel == null) {
 			return DEFAULT_MAX_LEVEL;
 		}
 		return maxLevel;
 	}
 
-	public void setMaxLevel(Long maxLevel) {
+	public void setMaxLevel(Integer maxLevel) {
 		this.maxLevel = maxLevel;
 	}
 
@@ -175,6 +176,14 @@ public class Server implements Serializable {
 
 	public void setPermission(Integer permission) {
 		this.permission = permission;
+	}
+
+	public Integer getAdminLevel() {
+		return adminLevel;
+	}
+
+	public void setAdminLevel(Integer adminLevel) {
+		this.adminLevel = adminLevel;
 	}
 
 }

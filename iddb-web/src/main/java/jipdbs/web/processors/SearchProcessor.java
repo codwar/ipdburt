@@ -116,13 +116,20 @@ public class SearchProcessor extends FlashResponseProcessor {
 		} else if (StringUtils.isEmpty(query)) {
 			log.debug("Root");
 			list = app.rootQuery(offset, limit, total);
+		} else if ("adv".equals(mode)) {
+			String server = req.getParameter("server");
+			log.debug("Advanced search - query: {} - server: {}", query, server);
+			list = app.aliasAdvSearch(query, server, offset, limit, total);
+			if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
+				Flash.warn(req,MessageResource.getMessage("too_many_results"));
+			}
 		} else if (Validator.isValidSearchIp(query)) {
-			log.debug("Buscando IP " + query);
+			log.debug("Buscando IP {}", query);
 			query = Functions.fixIp(query);
 			queryValue = query;
 			list = app.ipSearch(query, offset, limit, total);
 		} else if (Validator.isValidClientId(query)) {
-			log.debug("Buscando Client ID " + query);
+			log.debug("Buscando Client ID {}", query);
 			try {
 				Long clientId = Long.parseLong(query.substring(1));
 				list = app.clientIdSearch(clientId, offset, limit, total);

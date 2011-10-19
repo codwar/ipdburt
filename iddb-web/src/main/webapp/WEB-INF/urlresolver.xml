@@ -64,7 +64,10 @@
   </processor>  
   <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
     <rule name="openid" pattern="^/openid/$"/>
-  </processor>      
+  </processor>
+  <processor class="jipdbs.web.processors.AdvancedSearchProcessor" redirect="/page/advsearch.jsp">
+    <rule name="advsearch" pattern="^/adv/search/$"/>
+  </processor>  
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
   </forward-processor>

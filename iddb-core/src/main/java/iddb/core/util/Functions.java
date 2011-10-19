@@ -18,6 +18,8 @@
  */
 package iddb.core.util;
 
+import iddb.core.Parameters;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -257,8 +259,8 @@ public class Functions {
 	}
 	
 	public static String createNameIndex(String name) {
-		Collection<String> n = NGrams.ngrams(name, 4);
-		n.addAll(NGrams.ngrams(Functions.normalize(name), 4));
+		Collection<String> n = NGrams.ngrams(name, Parameters.INDEX_MIN_LENGTH);
+		n.addAll(NGrams.ngrams(Functions.normalize(name), Parameters.INDEX_MIN_LENGTH));
 		n.add(Functions.normalize(name));
 		return Functions.join(new HashSet<String>(n), " ");		
 	}

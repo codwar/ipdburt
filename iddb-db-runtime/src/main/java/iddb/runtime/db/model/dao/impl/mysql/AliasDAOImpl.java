@@ -18,6 +18,7 @@
  */
 package iddb.runtime.db.model.dao.impl.mysql;
 
+import iddb.core.Parameters;
 import iddb.core.model.Alias;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
@@ -189,7 +190,7 @@ public class AliasDAOImpl implements AliasDAO {
 				st.setString(4, alias.getNickname());
 				st.setTimestamp(5, new java.sql.Timestamp(alias.getCreated().getTime()));
 				st.setString(6, Functions.normalize(alias.getNickname()));
-				if (alias.getNickname().length() > 4) {
+				if (alias.getNickname().length() > Parameters.INDEX_MIN_LENGTH) {
 					st.setString(7, Functions.createNameIndex(alias.getNickname()));
 				} else {
 					st.setNull(7, Types.VARCHAR);
@@ -250,23 +251,89 @@ public class AliasDAOImpl implements AliasDAO {
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#save(iddb.core.model.Alias, boolean)
+	 * @see iddb.core.model.dao.AliasDAO#booleanSearchByServer(java.lang.String, java.lang.Long, int, int, int[])
 	 */
 	@Override
-	public void save(Alias alias, boolean commit) {
-		if (commit) {
-			save(alias);
+	public List<Alias> booleanSearchByServer(String query, Long serverkey,
+			int offset, int limit, int[] count) {
+		String sqlCount = "SELECT COUNT(a.id) FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid";
+		String sql = "SELECT a.* FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid LIMIT ?,?";
+		
+		List<Alias> list = new ArrayList<Alias>();
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement stC = conn.prepareStatement(sqlCount);
+			stC.setLong(1, serverkey);
+			stC.setString(2, query);
+			ResultSet rsC = stC.executeQuery();
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, serverkey);
+			st.setString(2, query);
+			st.setInt(3, offset);
+			st.setInt(4, limit);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Alias alias = new Alias();
+				loadAlias(alias, rs);
+				list.add(alias);
+			}
+		} catch (SQLException e) {
+			logger.error("booleanSearchByServer", e);
+		} catch (IOException e) {
+			logger.error("booleanSearchByServer", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
 		}
+		return list;
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#save(java.util.Collection, boolean)
+	 * @see iddb.core.model.dao.AliasDAO#booleanSearch(java.lang.String, int, int, int[])
 	 */
 	@Override
-	public void save(Collection<Alias> aliasses, boolean commit) {
-		if (commit) {
-			save(aliasses);
+	public List<Alias> booleanSearch(String query, int offset, int limit,
+			int[] count) {
+		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid";
+		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid LIMIT ?,?";
+		
+		List<Alias> list = new ArrayList<Alias>();
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement stC = conn.prepareStatement(sqlCount);
+			stC.setString(1, query);
+			ResultSet rsC = stC.executeQuery();
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, query);
+			st.setInt(2, offset);
+			st.setInt(3, limit);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Alias alias = new Alias();
+				loadAlias(alias, rs);
+				list.add(alias);
+			}
+		} catch (SQLException e) {
+			logger.error("booleanSearch", e);
+		} catch (IOException e) {
+			logger.error("booleanSearch", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
 		}
+		return list;
 	}
 
 }

@@ -29,23 +29,80 @@ public interface AliasDAO {
 	@SuppressWarnings("rawtypes")
 	public static final Class cached = AliasDAOCached.class;
 	
+	/**
+	 * List aliases by nickname
+	 * @param query
+	 * @param offset
+	 * @param limit
+	 * @param count
+	 * @return
+	 */
 	public abstract List<Alias> findByNickname(String query, int offset,
 			int limit, int[] count);
 
+	/**
+	 * List aliases with similar name
+	 * @param query
+	 * @param offset
+	 * @param limit
+	 * @param count
+	 * @return
+	 */
 	public abstract List<Alias> findBySimilar(String query, int offset,
 			int limit, int[] count);
 
+	/**
+	 * List aliases for player id
+	 * @param player
+	 * @param offset
+	 * @param limit
+	 * @param count
+	 * @return
+	 */
 	public abstract List<Alias> findByPlayer(Long player, int offset,
 			int limit, int[] count);
 
+	/**
+	 * Save alias. Commit by default
+	 * @param alias
+	 */
 	public abstract void save(Alias alias);
 
+	/**
+	 * Save alias
+	 * @param aliasses
+	 */
 	public abstract void save(Collection<Alias> aliasses);
 
-	public abstract void save(Alias alias, boolean commit);
-
-	public abstract void save(Collection<Alias> aliasses, boolean commit);
-
+	/**
+	 * List by nickname for player id
+	 * @param player
+	 * @param nickname
+	 * @return
+	 */
 	public abstract Alias findByPlayerAndNickname(Long player, String nickname);
+
+	/**
+	 * List aliases using boolean search filtering by server
+	 * @param query
+	 * @param serverkey
+	 * @param offset
+	 * @param i
+	 * @param count
+	 * @return
+	 */
+	public abstract List<Alias> booleanSearchByServer(String query,
+			Long serverkey, int offset, int limit, int[] count);
+
+	/**
+	 * List aliases using boolean search
+	 * @param query
+	 * @param offset
+	 * @param i
+	 * @param count
+	 * @return
+	 */
+	public abstract List<Alias> booleanSearch(String query, int offset, int limit,
+			int[] count);
 
 }

@@ -44,6 +44,15 @@
 <!--[if IE 6]>
     <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.nm-ie6.min.js"></script>
 <![endif]-->
+<style type="text/css">
+.clean_menu {
+    display: inline !important;
+    float: none !important;
+}
+.clean_menu a:hover {
+	background: inherit !important;
+}
+</style>
 <script type="text/javascript">
     $(document).ready(function() {
         //openid.init('openid_identifier');
