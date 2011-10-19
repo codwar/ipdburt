@@ -12,7 +12,13 @@
     <rule name="serverfilter" pattern="^/server/($query[\d]+)/$">
         <arg name="type" value="server"/>
     </rule>
+    <rule name="advsearch-do" pattern="^/adv/search/($query.+)/$">
+    	<arg name="type" value="adv"/>
+    </rule>
   </processor>
+  <processor class="jipdbs.web.processors.AdvancedSearchProcessor" redirect="/page/advsearch.jsp">
+    <rule name="advsearch" pattern="^/adv/search/$"/>
+  </processor>  
   <processor class="jipdbs.web.processors.ServerListProcessor" redirect="/page/serverlist.jsp">
     <rule name="serverlist" pattern="^/servers/$"/>
   </processor>
@@ -65,9 +71,6 @@
   <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
     <rule name="openid" pattern="^/openid/$"/>
   </processor>
-  <processor class="jipdbs.web.processors.AdvancedSearchProcessor" redirect="/page/advsearch.jsp">
-    <rule name="advsearch" pattern="^/adv/search/$"/>
-  </processor>  
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
   </forward-processor>

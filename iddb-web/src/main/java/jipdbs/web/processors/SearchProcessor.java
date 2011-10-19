@@ -116,7 +116,7 @@ public class SearchProcessor extends FlashResponseProcessor {
 		} else if (StringUtils.isEmpty(query)) {
 			log.debug("Root");
 			list = app.rootQuery(offset, limit, total);
-		} else if ("adv".equals(mode)) {
+		} else if ("adv".equals(type)) {
 			String server = req.getParameter("server");
 			log.debug("Advanced search - query: {} - server: {}", query, server);
 			list = app.aliasAdvSearch(query, server, offset, limit, total);

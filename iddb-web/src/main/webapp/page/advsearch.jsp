@@ -7,8 +7,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
-<form id="advsearch">
+<div id="advsearch">
 <fieldset><legend>Búsqueda avanzada</legend>
 <label for="aq">Buscar palabras clave:</label><input placeholder="Ingrese consulta" class="focus" type="text" name="aq" value=""/>&nbsp;<input type="button" value="Buscar" />
 <br/>
@@ -22,18 +23,26 @@
 </c:forEach>
 </ul>
 </fieldset>
-</form>
+</div>
 
 <script type="text/javascript">
-$("#advsearch").find(":button").click(function() {
-	var query = $("#advsearch").find('input[name=aq]').val();
-	var server = $("#advsearch").find("input[name='server']:checked").val();
-	if (query.length > 0) {
-		var url = dutils.urls.resolve('search', {'query': query}) + "?mode=adv";
-		if (server != undefined) {
-			url = url + "&server=" + server; 	
+dutils.conf.urls.advsearch = '<url:clean name="advsearch-do"/>';
+$(document).ready(function() {
+	$("#advsearch").find('input[name=aq]').keypress(function(e) {
+		if ( e.which == 13 ) {
+			$("#advsearch").find(":button").click();
 		}
-		window.location = url;
-	}
+	});
+	$("#advsearch").find(":button").click(function() {
+		var query = $("#advsearch").find('input[name=aq]').val();
+		var server = $("#advsearch").find("input[name='server']:checked").val();
+		if (query.length > 0) {
+			var url = dutils.urls.resolve('advsearch', {'query': query});
+			if (server != undefined) {
+				url = url + "?server=" + server; 	
+			}
+			window.location = url;
+		}
+	});
 });
 </script>
