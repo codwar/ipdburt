@@ -4,8 +4,11 @@ import iddb.api.Events;
 import iddb.api.ServerManager;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
+import iddb.core.model.PenaltyHistory;
+import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.util.HashUtils;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.exception.UpdateApiException;
 import iddb.info.PenaltyInfo;
@@ -166,4 +169,61 @@ public class RPC4Handler extends RPC3Handler {
 		return playerInfo;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List eventQueue(String key) {
+		List list = new ArrayList();
+		try {
+			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			List<Penalty> penalties = app.listPendingEvents(server.getKey());
+			for (Penalty p : penalties) {
+				String adminId = "0";
+				PenaltyHistory his = app.getLastPenaltyHistory(p);
+				Player client;
+				try {
+					client = app.getPlayer(p.getPlayer());
+				} catch (EntityDoesNotExistsException e) {
+					log.error(e.getMessage());
+					continue;
+				}
+				try {
+					Player admin = app.getPlayer(p.getAdmin());
+					adminId = admin.getClientId().toString();
+				} catch (EntityDoesNotExistsException e) {
+					log.error(e.getMessage());
+				}
+				String[] values;
+				if (p.getType() == Penalty.BAN) {
+					if (p.getActive()) {
+						values = new String[]{Events.BAN, his.getKey(), client.getClientId().toString(), p.getDuration().toString(), p.getReason(), adminId};	
+					} else {
+						values = new String[]{Events.UNBAN, his.getKey(), client.getClientId().toString()};
+					}
+				} else {
+					if (p.getActive()) {
+						values = new String[]{Events.ADDNOTE, his.getKey(), client.getClientId().toString(), p.getReason(), adminId};
+					} else {
+						values = new String[]{Events.DELNOTE, his.getKey()};
+					}
+				}
+				list.add(values);
+			}
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+		}
+		return list;
+	}
+	
+	public void confirmEvent(String key, Object[] list) {
+		try {
+			@SuppressWarnings("unused")
+			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			for (Object o : list) {
+				Object[] data = (Object[]) o;
+				app.confirmRemoteEvent(parseLong(data[0]), (String) data[1]);	
+			}
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+		}
+		
+	}
 }

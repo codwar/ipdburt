@@ -542,4 +542,44 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#findPendingPenalties(java.lang.Long)
+	 */
+	@Override
+	public List<Penalty> findPendingPenalties(Long serverId) {
+		String sql = "select p.* from penalty p, player pa, penalty_history h where p.id = h.penaltyid and p.playerid = pa.id and p.synced = 0 and h.status = 0 and p.serverid = ?";
+		Connection conn = null;
+		List<Penalty> list = new ArrayList<Penalty>();
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, serverId);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				Penalty penalty = new Penalty();
+				loadPenalty(penalty, rs);
+				list.add(penalty);
+			}
+		} catch (SQLException e) {
+			logger.error("findPendingPenalties", e);
+		} catch (IOException e) {
+			logger.error("findPendingPenalties", e);			
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#resetLongPendingPenalties(java.lang.Long, java.lang.Integer)
+	 */
+	@Override
+	public void resetLongPendingPenalties(Long serverId, Integer days) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

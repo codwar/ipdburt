@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -186,4 +187,10 @@ public class RPC3Handler {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public List eventQueue(String key) {
+		return Collections.EMPTY_LIST;
+	}
+	
 }

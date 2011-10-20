@@ -61,5 +61,10 @@ public interface PenaltyDAO {
 	public abstract List<Penalty> findByPlayerAndType(Long player, Integer type);
 	
 	public abstract List<Penalty> findExpired();
+	
+	public abstract List<Penalty> findPendingPenalties(Long serverId);
+	
+	public abstract void resetLongPendingPenalties(Long serverId, Integer days);
+	
 
 }

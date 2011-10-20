@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS `alias` (
   `normalized` varchar(75) COLLATE utf8_unicode_ci NOT NULL,
   `textindex` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `playerid` (`playerid`,`nickname`),
-  KEY `playerid_2` (`playerid`,`updated`,`nickname`),
-  KEY `playerid_3` (`playerid`),
-  KEY `playerid_4` (`playerid`,`updated`),
+  KEY `playerid` (`playerid`),
+  KEY `playerid_up_nick` (`playerid`,`updated`,`nickname`),
+  KEY `playerid_nick` (`playerid`,`nickname`),
+  KEY `playerid_upd` (`playerid`,`updated`),
   FULLTEXT KEY `alias_search` (`nickname`,`normalized`,`textindex`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `penalty` (
   PRIMARY KEY (`id`),
   KEY `playerid` (`playerid`),
   KEY `type` (`type`),
+  KEY `synced` (`synced`),
   KEY `type_ct` (`type`,`created`),
   KEY `playerid_type_st` (`playerid`,`type`,`active`),
   KEY `playerid_type` (`playerid`,`type`),
@@ -181,4 +182,18 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   PRIMARY KEY (`id`),
   KEY `created` (`created`),
   KEY `sessionkey` (`id`,`userid`,`ip`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `penalty_history` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `penaltyid` int(11) unsigned NOT NULL,
+  `adminid` int(11) unsigned NOT NULL,
+  `status` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `error` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`,`penaltyid`),
+  KEY `penaltyid` (`penaltyid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

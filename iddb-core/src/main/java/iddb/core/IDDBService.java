@@ -21,12 +21,14 @@ package iddb.core;
 import iddb.core.model.Alias;
 import iddb.core.model.AliasIP;
 import iddb.core.model.Penalty;
+import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PenaltyDAO;
+import iddb.core.model.dao.PenaltyHistoryDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
 import iddb.core.util.MailManager;
@@ -60,7 +62,8 @@ public class IDDBService {
 	protected final AliasDAO aliasDAO = (AliasDAO) DAOFactory.forClass(AliasDAO.class);
 	protected final AliasIPDAO aliasIpDAO = (AliasIPDAO) DAOFactory.forClass(AliasIPDAO.class);
 	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
-
+	protected final PenaltyHistoryDAO penaltyHistoryDAO = (PenaltyHistoryDAO) DAOFactory.forClass(PenaltyHistoryDAO.class);
+	
 	private final String recaptchaPublicKey;
 	private final String recaptchaPrivateKey;
 
@@ -496,6 +499,49 @@ public class IDDBService {
 			count[0] = 0;
 			return Collections.emptyList();
 		}
+	}
+	
+	public List<Penalty> listPendingEvents(Long serverId) {
+		return penaltyDAO.findPendingPenalties(serverId);
+	}
+
+	public PenaltyHistory confirmRemoteEvent(Long eventId, String msg) {
+		try {
+			PenaltyHistory his = penaltyHistoryDAO.get(eventId);
+			if (msg == null || "".equals(msg)) {
+				his.setStatus(PenaltyHistory.ST_DONE);
+			} else {
+				his.setStatus(PenaltyHistory.ST_ERROR);
+				his.setError(msg);
+			}
+			his.setUpdated(new Date());
+			penaltyHistoryDAO.save(his);
+			return his;
+		} catch (EntityDoesNotExistsException e) {
+			log.error(e.getMessage());
+		}
+		return null;
+	}
+	
+	public void updatePenaltyHistory(List<PenaltyHistory> list) {
+		// TODO TaskManager.getInstance().runTask(new UpdateTask(server, list));
+	}
+	
+	public PenaltyHistory getLastPenaltyHistory(Penalty penalty) {
+		PenaltyHistory his;
+		try {
+			his = penaltyHistoryDAO.getLastByPenalty(penalty.getKey());
+		} catch (EntityDoesNotExistsException e) {
+			log.error(e.getMessage());
+			his = new PenaltyHistory();
+			his.setStatus(PenaltyHistory.ST_PENDING);
+			his.setAdminId(penalty.getAdmin());
+			his.setCreated(new Date());
+			his.setUpdated(new Date());
+			his.setPenaltyId(penalty.getKey());
+			penaltyHistoryDAO.save(his);
+		}
+		return his;
 	}
 	
 }
