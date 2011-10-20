@@ -5,12 +5,12 @@ import iddb.api.ServerManager;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Server;
+import iddb.core.util.HashUtils;
 import iddb.exception.UnauthorizedUpdateException;
 import iddb.exception.UpdateApiException;
 import iddb.info.PenaltyInfo;
 import iddb.info.PlayerInfo;
 import iddb.legacy.python.date.DateUtils;
-import iddb.task.tasks.UpdateTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -46,16 +46,20 @@ public class RPC4Handler extends RPC3Handler {
 	public void updateName(String key, String name, Object[] data) {
 		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], (Integer) data[2], getClientAddress());
 	}
+
+	public String getClientHash(String key, String guid) {
+		if (guid == null || "".equals(guid)) return "";
+		return HashUtils.getSHA1Hash(guid + key);
+	}
 	
 	public void update(String key, Object[] plist, Long timestamp) throws UpdateApiException, Exception {
-
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				try {
-					list.add(processEventInfo(o, timestamp));
+					list.add(processEventInfo(server.getUid(), o, timestamp));
 				} catch (Exception e) {
 					log.error(e.getMessage());
 				}
@@ -86,23 +90,50 @@ public class RPC4Handler extends RPC3Handler {
 		}
 	}
 
-	protected PlayerInfo processEventInfo(Object o, Long timestamp) throws Exception {
+	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
+		try {
+			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			PlayerInfo playerInfo = new PlayerInfo(Events.REGISTER);
+			playerInfo.setName((String) data[0]);
+			playerInfo.setGuid((String) data[1]);
+			playerInfo.setClientId(parseLong(data[2]));
+			playerInfo.setIp((String) data[3]);
+			playerInfo.setLevel(parseLong(data[4]));
+			playerInfo.setHash(getClientHash(server.getUid(), playerInfo.getGuid()));
+			
+			return this.updateApi.linkUser(server, userid, playerInfo);
+			
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+			throw new UpdateApiException(e.getMessage());
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.error(w.getBuffer().toString());
+			throw e;
+		}
+	}
+	
+	protected PlayerInfo processEventInfo(String uid, Object o, Long timestamp) throws Exception {
+		Long timediff = DateUtils.dateToTimestamp(new Date()) - timestamp;
 		Object[] values = ((Object[]) o);
 		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
 		String event = (String) values[0];
-		PlayerInfo playerInfo = new PlayerInfo(event,
-												(String) values[1],
-												(String) values[2],
-												parseLong(values[3]),
-												(String) values[4],
-												parseLong(values[5]));
+		PlayerInfo playerInfo = new PlayerInfo(event);
+		playerInfo.setName((String) values[1]);
+		playerInfo.setGuid((String) values[2]);
+		playerInfo.setClientId(parseLong(values[3]));
+		playerInfo.setIp((String) values[4]);
+		playerInfo.setLevel(parseLong(values[5]));
+		playerInfo.setHash(getClientHash(uid, playerInfo.getGuid()));
 		if (values.length > 6) {
 			Date updated;
 			if (values[6] instanceof Date) {
 				updated = (Date) values[6];
 			} else {
 				try {
-					updated = new Date((Integer) values[6] * 1000L);
+					updated = DateUtils.timestampToDate((Integer) values[6] + timediff); 
 				} catch (Exception e) {
 					log.error(e.getMessage());
 					updated = new Date();
@@ -110,33 +141,26 @@ public class RPC4Handler extends RPC3Handler {
 			}
 			playerInfo.setUpdated(updated);
 		}
-		if (Events.CONNECT.equals(event)) {
-			if (Math.abs(timestamp - DateUtils.dateToTimestamp(playerInfo.getUpdated())) > UpdateTask.GRACE_PERIOD) {
-				playerInfo.setEvent(Events.DISCONNECT);
-			} else {
-				playerInfo.setUpdated(new Date());
-			}
-		}
 		if (Events.BAN.equals(event)) {
 			Object[] data = (Object[]) values[7];
 			if (log.isDebugEnabled()) log.debug("BanInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.BAN);
-			penalty.setCreated(parseLong(data[1]));
+			penalty.setCreated(DateUtils.timestampToDate(parseLong(data[1]) + timediff));
 			penalty.setDuration(parseLong(data[2]));
 			penalty.setReason((String) data[3]);
 			penalty.setAdmin((String) data[4]);
-			penalty.setAdminId(smartCast(data[5]));
+			penalty.setAdminId(getClientHash(uid, smartCast(data[5])));
 			playerInfo.setPenaltyInfo(penalty);
 		} else if (Events.ADDNOTE.equals(event)) {
 			Object[] data = (Object[]) values[7];
 			if (log.isDebugEnabled()) log.debug("NoteInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.NOTICE);
-			penalty.setCreated(parseLong(data[0]));
+			penalty.setCreated(DateUtils.timestampToDate(parseLong(data[0]) + timediff));
 			penalty.setReason((String) data[1]);
 			penalty.setAdmin((String) data[2]);
-			penalty.setAdminId(smartCast(data[3]));
+			penalty.setAdminId(getClientHash(uid, smartCast(data[3])));
 			playerInfo.setPenaltyInfo(penalty);			
 		}
 		return playerInfo;

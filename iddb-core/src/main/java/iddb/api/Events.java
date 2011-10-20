@@ -9,5 +9,6 @@ public interface Events {
 	public static final String ADDNOTE = "addnote";
 	public static final String DELNOTE = "delnote";
 	public static final String UNBAN = "unbanned";
+	public static final String REGISTER = "register";
 	
 }

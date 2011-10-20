@@ -10,6 +10,7 @@ import iddb.exception.UnauthorizedUpdateException;
 import iddb.exception.UpdateApiException;
 import iddb.info.PenaltyInfo;
 import iddb.info.PlayerInfo;
+import iddb.legacy.python.date.DateUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -49,14 +50,12 @@ public class RPC3Handler {
 	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-			
-			PlayerInfo playerInfo = new PlayerInfo("register",
-													(String) data[0],
-													(String) data[1],
-													parseLong(data[2]),
-													(String) data[3],
-													parseLong(data[4]));
-			
+			PlayerInfo playerInfo = new PlayerInfo(Events.REGISTER);
+			playerInfo.setName((String) data[0]);
+			playerInfo.setHash((String) data[1]);
+			playerInfo.setClientId(parseLong(data[2]));
+			playerInfo.setIp((String) data[3]);
+			playerInfo.setLevel(parseLong(data[4]));
 			return this.updateApi.linkUser(server, userid, playerInfo);
 			
 		} catch (UnauthorizedUpdateException e) {
@@ -116,19 +115,19 @@ public class RPC3Handler {
 		Object[] values = ((Object[]) o);
 		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
 		String event = (String) values[0];
-		PlayerInfo playerInfo = new PlayerInfo(event,
-												(String) values[1],
-												(String) values[2],
-												parseLong(values[3]),
-												(String) values[4],
-												parseLong(values[5]));
+		PlayerInfo playerInfo = new PlayerInfo(event);
+		playerInfo.setName((String) values[1]);
+		playerInfo.setHash((String) values[2]);
+		playerInfo.setClientId(parseLong(values[3]));
+		playerInfo.setIp((String) values[4]);
+		playerInfo.setLevel(parseLong(values[5]));
 		if (values.length > 6) {
 			Date updated;
 			if (values[6] instanceof Date) {
 				updated = (Date) values[6];
 			} else {
 				try {
-					updated = new Date((Integer) values[6] * 1000L);
+					updated = DateUtils.timestampToDate((Long) values[6]);
 				} catch (Exception e) {
 					log.error(e.getMessage());
 					updated = new Date();
@@ -141,7 +140,7 @@ public class RPC3Handler {
 			if (log.isDebugEnabled()) log.debug("BanInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.BAN);
-			penalty.setCreated(parseLong(data[1]));
+			penalty.setCreated(DateUtils.timestampToDate(parseLong(data[1])));
 			penalty.setDuration(parseLong(data[2]));
 			penalty.setReason((String) data[3]);
 			penalty.setAdmin((String) data[4]);
@@ -152,7 +151,7 @@ public class RPC3Handler {
 			if (log.isDebugEnabled()) log.debug("NoteInfo: {}", Arrays.toString(data));
 			PenaltyInfo penalty = new PenaltyInfo();
 			penalty.setType(Penalty.NOTICE);
-			penalty.setCreated(parseLong(data[0]));
+			penalty.setCreated(DateUtils.timestampToDate(parseLong(data[0])));
 			penalty.setReason((String) data[1]);
 			penalty.setAdmin((String) data[2]);
 			penalty.setAdminId(smartCast(data[3]));

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="pag"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
@@ -111,7 +111,19 @@
     </c:if>    
     <c:if test="${not empty player.banInfo}">
 	   <strong>Estado:</strong> ${player.banInfo}<br />
-    </c:if></fieldset>
+    </c:if>
+    <c:if test="${not empty player.guid}">
+    <br/>
+    	<iddb:choose>
+			<iddb:whenvalidguid test="${player.guid}">
+				<span class="icon guid-ok">Este jugador posee una GUID válida.</span>
+			</iddb:whenvalidguid>   	
+    		<iddb:otherwise>
+    			<span class="icon guid-nok">La GUID de este jugador no es válida.</span>
+    		</iddb:otherwise>
+    	</iddb:choose>
+    </c:if>
+    </fieldset>
     <br />
 <h2>Aliases</h2>
 <table>

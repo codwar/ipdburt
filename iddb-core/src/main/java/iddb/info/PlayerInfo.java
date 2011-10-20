@@ -35,30 +35,12 @@ public class PlayerInfo implements Serializable {
 	private Long level;
 	private Date updated = new Date();
 	private PenaltyInfo penaltyInfo = null;
+	private String hash = null;
 	
 	private String event;
 	
-	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level) {
+	public PlayerInfo(String event) {
 		setEvent(event.toLowerCase());
-		setName(name);
-		setGuid(guid);
-		setClientId(id);
-		setIp(ip);
-		setLevel(level);
-	}
-	
-	/**
-	 * @param addnote
-	 * @param string
-	 * @param string2
-	 * @param l
-	 * @param string3
-	 * @param m
-	 * @param notice
-	 */
-	public PlayerInfo(String event, String name, String guid, Long id, String ip, Long level, PenaltyInfo penalty) {
-		this(event, name, guid, id, ip, level);
-		this.setPenaltyInfo(penalty);
 	}
 
 	public String getName() {
@@ -134,5 +116,12 @@ public class PlayerInfo implements Serializable {
 		this.penaltyInfo = banInfo;
 		return this;
 	}
+	
+	public String getHash() {
+		return hash;
+	}
 
+	public void setHash(String hash) {
+		this.hash = hash;
+	}	
 }

@@ -18,16 +18,14 @@
  */
 package jipdbs.web.processors;
 
+import iddb.core.IDDBService;
+import iddb.core.model.Server;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import iddb.core.IDDBService;
-import iddb.core.model.Server;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.CollectionUtils;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;

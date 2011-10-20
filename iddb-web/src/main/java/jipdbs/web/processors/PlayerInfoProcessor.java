@@ -85,6 +85,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		infoView.setKey(player.getKey().toString());
 		infoView.setName(player.getNickname());
 		if (hasAdmin) {
+			infoView.setGuid(player.getGuid());
 			infoView.setIp(player.getIp());	
 		} else {
 			infoView.setIp(Functions.maskIpAddress(player.getIp()));

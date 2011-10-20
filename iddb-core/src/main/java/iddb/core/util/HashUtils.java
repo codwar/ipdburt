@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
-public class GuidGenerator {
+public class HashUtils {
 
 	/**
 	 * Returns a random generated uuid encoded with SHA1 If text is supplied it

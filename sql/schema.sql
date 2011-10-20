@@ -33,10 +33,10 @@ CREATE TABLE IF NOT EXISTS `aliasip` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `playerid` (`playerid`,`ip`),
-  KEY `playerid_2` (`playerid`),
-  KEY `playerid_3` (`playerid`,`updated`),
-  KEY `playerid_4` (`ip`,`playerid`,`updated`)
+  KEY `playerid` (`playerid`),
+  KEY `playerid_ip` (`playerid`,`ip`),
+  KEY `playerid_upd` (`playerid`,`updated`),
+  KEY `ip_playerid_ipd` (`ip`,`playerid`,`updated`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -60,11 +60,11 @@ CREATE TABLE IF NOT EXISTS `penalty` (
   PRIMARY KEY (`id`),
   KEY `playerid` (`playerid`),
   KEY `type` (`type`),
-  KEY `type_2` (`type`,`created`),
-  KEY `playerid_2` (`playerid`,`type`,`active`),
-  KEY `playerid_3` (`playerid`,`type`),
-  KEY `playerid_4` (`playerid`,`type`,`created`),
-  KEY `playerid_5` (`playerid`,`type`,`active`,`updated`),
+  KEY `type_ct` (`type`,`created`),
+  KEY `playerid_type_st` (`playerid`,`type`,`active`),
+  KEY `playerid_type` (`playerid`,`type`),
+  KEY `playerid_type_crt` (`playerid`,`type`,`created`),
+  KEY `playerid_type_st_upd` (`playerid`,`type`,`active`,`updated`),
   KEY `expires` (`type`,`duration`,`expires`,`active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `penalty` (
 CREATE TABLE IF NOT EXISTS `player` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `rguid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `serverid` int(11) unsigned NOT NULL,
   `nickname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
@@ -91,12 +92,12 @@ CREATE TABLE IF NOT EXISTS `player` (
   PRIMARY KEY (`id`),
   KEY `guid` (`guid`,`serverid`),
   KEY `serverid` (`serverid`),
-  KEY `serverid_2` (`serverid`,`updated`),
+  KEY `serverid_upd` (`serverid`,`updated`),
   KEY `connected` (`connected`,`updated`),
   KEY `baninfo` (`baninfo`),
-  KEY `serverid_3` (`serverid`,`connected`),
+  KEY `serverid_con` (`serverid`,`connected`),
   KEY `clientid` (`clientid`),
-  KEY `clientid_2` (`clientid`,`updated`),
+  KEY `clientid_upd` (`clientid`,`updated`),
   KEY `gaekey` (`gaekey`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -126,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   UNIQUE KEY `uid` (`uid`),
   KEY `gaekey` (`gaekey`),
   KEY `updated` (`updated`),
+  KEY `name` (`name`),
   KEY `disabled` (`updated`,`disabled`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -163,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `userserver` (
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `serverid` (`serverid`),
-  KEY `userid_2` (`userid`,`serverid`)
+  KEY `userid_server` (`userid`,`serverid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -178,5 +180,5 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `created` (`created`),
-  KEY `key` (`id`,`userid`,`ip`)
+  KEY `sessionkey` (`id`,`userid`,`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

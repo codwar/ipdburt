@@ -44,7 +44,14 @@ public class PlayerViewBean implements Serializable {
 	private String clientId;
 	private boolean playing;
 	private String note;
+	private String guid;
 	
+	public String getGuid() {
+		return guid;
+	}
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 	public String getName() {
 		return name;
 	}

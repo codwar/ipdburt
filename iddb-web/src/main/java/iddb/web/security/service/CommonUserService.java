@@ -18,15 +18,15 @@
  */
 package iddb.web.security.service;
 
-import java.util.Date;
-
-import iddb.core.util.GuidGenerator;
+import iddb.core.util.HashUtils;
 import iddb.web.security.ThreadContext;
 import iddb.web.security.dao.Session;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
 import iddb.web.security.subject.Subject;
+
+import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -143,7 +143,7 @@ public abstract class CommonUserService implements UserService {
 		HttpSession session = request.getSession(true);
 		session.setAttribute(UserService.SUBJECT, subject);
 		saveLocal(subject);
-		String sessionKey = GuidGenerator.generate(subject.getLoginId());
+		String sessionKey = HashUtils.generate(subject.getLoginId());
 		session.setAttribute(UserService.SESSION_KEY, sessionKey);
 		Cookie cookieKey = new Cookie("iddb-k", sessionKey);
 		Cookie cookieUser = new Cookie("iddb-u", subject.getKey().toString());

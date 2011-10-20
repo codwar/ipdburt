@@ -42,6 +42,7 @@
         </c:forEach>
     </tbody>
 </table>
+<br/>
 
 <script type="text/javascript">
 $(document).ready(
@@ -108,11 +109,3 @@ function open_dialog() {
 </fieldset>
 </form>
 </div>
-	
-<!-- 
-<form action="<url:url name="admin-saveserver"/>" method="post">
-
-<label for="name">Nombre:</label><input type="text" value="${server.name}" name="name" /><br/>      
-<label for="admin">Contacto:</label><input type="text" value="${server.adminEmail}" name="admin" /><br/>
-<label for="ip">IP</label><input type="text" value="${server.address}" name="ip"> <sub>(dejar en blanco para no verificar)</sub><br/>
-</form> -->

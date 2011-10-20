@@ -9,7 +9,7 @@ $(document).ready(
 			$('ul.messages li').each(
 					function() {
 						$(this).append(
-								"<img class='close_button' src='/media/images/close.gif'/>");
+								"<span class='close_button'></span>");
 					});
 			$('.close_button').click(function() {
 				$(this).parent().remove();

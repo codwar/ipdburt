@@ -163,7 +163,7 @@ public class Update {
 	public Integer linkUser(Server server, String userid, PlayerInfo playerInfo) throws UpdateApiException, Exception {
 		log.info("Linking player {} with user {}", playerInfo.getName(), userid);
 		
-		Player player = playerDAO.findByServerAndGuid(server.getKey(), playerInfo.getGuid());
+		Player player = playerDAO.findByServerAndHash(server.getKey(), playerInfo.getHash());
 		if (player == null) {
 			log.debug("Player is unsynced.");
 			return 1;

@@ -541,8 +541,12 @@ ul.messages li.warning {
 }
 
 .close_button {
-	float: right;
+	background-image: url("images/close.gif");
+	background-repeat: no-repeat;
 	cursor: pointer;
+	float: right;
+	height: 16px;
+	width: 16px;	
 }
 
 body,.container {
@@ -858,4 +862,12 @@ input.search {
 #advsearch li {
 	padding-top: 5px;
 	list-style: url('images/bullet_go.png'); 
+}
+.guid-ok {
+	font-weight: bold;
+	background-image: url('images/accept.png');
+}
+.guid-nok {
+	font-weight: bold;
+	background-image: url('images/error.png');
 }

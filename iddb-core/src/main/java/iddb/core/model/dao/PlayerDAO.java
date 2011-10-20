@@ -26,7 +26,7 @@ import java.util.List;
 
 public interface PlayerDAO {
 
-	public abstract Player findByServerAndGuid(Long server, String guid);
+	public abstract Player findByServerAndHash(Long server, String hash);
 
 	public abstract List<Player> findByServer(Long server, int offset,
 			int limit, int[] count);

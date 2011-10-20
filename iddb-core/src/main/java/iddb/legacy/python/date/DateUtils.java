@@ -5,7 +5,7 @@ import java.util.Date;
 public final class DateUtils {
 
 	public static Date timestampToDate(Long value) {
-		return new Date(value * 1000L);		
+		return new Date(value * 1000L);
 	}
 	
 	public static Long dateToTimestamp(Date value) {

@@ -18,8 +18,6 @@
  */
 package iddb.info;
 
-import iddb.legacy.python.date.DateUtils;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -35,6 +33,7 @@ public class PenaltyInfo implements Serializable {
 	private Long duration;
 	private Integer type;
 	private String adminId;
+	private String adminHash;
 	private String admin;
 	
 	public Date getCreated() {
@@ -43,9 +42,6 @@ public class PenaltyInfo implements Serializable {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	public void setCreated(Long timestamp) {
-		this.created = DateUtils.timestampToDate(timestamp);
-	}	
 	public String getReason() {
 		return reason;
 	}
@@ -80,6 +76,12 @@ public class PenaltyInfo implements Serializable {
 
 	public void setAdmin(String admin) {
 		this.admin = admin;
+	}
+	public String getAdminHash() {
+		return adminHash;
+	}
+	public void setAdminHash(String adminHash) {
+		this.adminHash = adminHash;
 	}
 	
 }

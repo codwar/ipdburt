@@ -31,14 +31,14 @@ public final class PasswordUtils {
 		if (!encoded_password.contains("$")) return false;
 		// get the salt from the encoded password
 		String[] part = StringUtils.split(encoded_password, "$");
-		String hashPassword = GuidGenerator.getSHA1Hash(part[0] + raw_password);
+		String hashPassword = HashUtils.getSHA1Hash(part[0] + raw_password);
 		return (hashPassword.equals(part[1]));
 	}
 	
 	public static String hashPassword(String raw_password) {
 		Random random = new Random(raw_password.length() + System.currentTimeMillis());
-		String salt = StringUtils.left(GuidGenerator.getSHA1Hash(Float.toHexString(random.nextFloat()) + Float.toHexString(System.currentTimeMillis())),5);
-		String hashedPassword = GuidGenerator.getSHA1Hash(salt + raw_password);
+		String salt = StringUtils.left(HashUtils.getSHA1Hash(Float.toHexString(random.nextFloat()) + Float.toHexString(System.currentTimeMillis())),5);
+		String hashedPassword = HashUtils.getSHA1Hash(salt + raw_password);
 		return salt + "$" + hashedPassword;
 	}
 	

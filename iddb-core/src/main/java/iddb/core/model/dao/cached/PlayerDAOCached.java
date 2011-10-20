@@ -41,14 +41,14 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 	}
 
 	@Override
-	public Player findByServerAndGuid(Long server, String guid) {
+	public Player findByServerAndHash(Long server, String guid) {
 
 		Player player = (Player) cacheGet(cacheKey(server, guid));
 
 		if (player != null)
 			return player;
 
-		player = impl.findByServerAndGuid(server, guid);
+		player = impl.findByServerAndHash(server, guid);
 
 		if (player != null)
 			cachePut(cacheKey(player.getServer(), player.getGuid()), player);

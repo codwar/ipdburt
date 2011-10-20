@@ -27,7 +27,7 @@ public class Player implements Serializable {
 
 	private Long key;
 	private Long server;
-
+	private String hash;
 	private String guid;
 	private Date created;
 	private Date updated;
@@ -167,4 +167,11 @@ public class Player implements Serializable {
 		this.ip = ip;
 	}
 
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
 }

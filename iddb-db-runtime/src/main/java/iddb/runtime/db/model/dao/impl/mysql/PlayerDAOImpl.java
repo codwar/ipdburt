@@ -43,7 +43,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 	private static Logger logger = LoggerFactory.getLogger(PlayerDAOImpl.class);
 	
 	@Override
-	public Player findByServerAndGuid(Long server, String guid) {
+	public Player findByServerAndHash(Long server, String guid) {
 		String sql = "select * from player where serverid = ? and guid = ?";
 		Connection conn = null;
 		Player player = null;
@@ -58,9 +58,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				loadPlayer(player, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByServerAndGuid", e);
+			logger.error("findByServerAndHash", e);
 		} catch (IOException e) {
-			logger.error("findByServerAndGuid", e);
+			logger.error("findByServerAndHash", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -221,7 +221,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 	private void loadPlayer(Player player, ResultSet rs) throws SQLException {
 		player.setKey(rs.getLong("id"));
 		player.setServer(rs.getLong("serverid"));
-		player.setGuid(rs.getString("guid"));
+		player.setHash(rs.getString("guid"));
+		player.setGuid(rs.getString("rguid"));
 		player.setCreated(rs.getTimestamp("created"));
 		player.setUpdated(rs.getTimestamp("updated"));
 		player.setBanInfo(rs.getTimestamp("baninfo"));
@@ -237,10 +238,11 @@ public class PlayerDAOImpl implements PlayerDAO {
 	public void save(Player player) {
 		String sql;
 		if (player.getKey() == null) {
-			sql = "insert into player (serverid, guid, created, updated, baninfo, clientid, level, note, connected, nickname, ip) values (?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into player (serverid, guid, rguid, created, updated, baninfo, clientid, level, note, connected, nickname, ip) values (?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update player set serverid = ?," +
 					"guid = ?," +
+					"rguid = ?," +
 					"created = ?," +
 					"updated = ?," +
 					"baninfo = ?," +
@@ -256,28 +258,30 @@ public class PlayerDAOImpl implements PlayerDAO {
 			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			st.setLong(1, player.getServer());
-			st.setString(2, player.getGuid());
+			st.setString(2, player.getHash());
+			if (player.getGuid() != null) st.setString(3, player.getGuid());
+			else st.setNull(3, Types.VARCHAR);
 			if (player.getCreated() == null) player.setCreated(new Date());
 			if (player.getUpdated() == null) player.setUpdated(new Date());		
-			st.setTimestamp(3, new java.sql.Timestamp(player.getCreated().getTime()));
-			st.setTimestamp(4, new java.sql.Timestamp(player.getUpdated().getTime()));
-			if (player.getBanInfo() != null) st.setTimestamp(5, new java.sql.Timestamp(player.getBanInfo().getTime()));
-			else st.setNull(5, Types.DATE);
-			st.setLong(6, player.getClientId());
-			st.setLong(7, player.getLevel());
-			if (player.getNote() != null) st.setTimestamp(8, new java.sql.Timestamp(player.getNote().getTime()));
-			else st.setNull(8, Types.DATE);			
-			st.setBoolean(9, player.isConnected());
-			st.setString(10, player.getNickname());
-			st.setString(11, player.getIp());
-			if (player.getKey() != null) st.setLong(12, player.getKey());
+			st.setTimestamp(4, new java.sql.Timestamp(player.getCreated().getTime()));
+			st.setTimestamp(5, new java.sql.Timestamp(player.getUpdated().getTime()));
+			if (player.getBanInfo() != null) st.setTimestamp(6, new java.sql.Timestamp(player.getBanInfo().getTime()));
+			else st.setNull(6, Types.DATE);
+			st.setLong(7, player.getClientId());
+			st.setLong(8, player.getLevel());
+			if (player.getNote() != null) st.setTimestamp(9, new java.sql.Timestamp(player.getNote().getTime()));
+			else st.setNull(9, Types.DATE);			
+			st.setBoolean(10, player.isConnected());
+			st.setString(11, player.getNickname());
+			st.setString(12, player.getIp());
+			if (player.getKey() != null) st.setLong(13, player.getKey());
 			st.executeUpdate();
 			if (player.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
 				if (rs != null && rs.next()) {
 					player.setKey(rs.getLong(1));
 				} else {
-					logger.warn("Couldn't get id for player {}", player.getGuid());
+					logger.warn("Couldn't get id for player {}", player.getHash());
 				}
 			}
 		} catch (SQLException e) {

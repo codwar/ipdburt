@@ -75,6 +75,7 @@ public class UpdateTask implements Runnable {
 		Player player = new Player();
 		player.setCreated(new Date());
 		player.setGuid(playerInfo.getGuid());
+		player.setHash(playerInfo.getHash());
 		player.setLevel(playerInfo.getLevel());
 		player.setClientId(playerInfo.getClientId());
 		player.setServer(server.getKey());
@@ -89,12 +90,15 @@ public class UpdateTask implements Runnable {
 			for (PlayerInfo playerInfo : list) {
 				try {
 					Date playerLastUpdate;
-					Player player = playerDAO.findByServerAndGuid(server.getKey(),
-							playerInfo.getGuid());
+					Player player = playerDAO.findByServerAndHash(server.getKey(),
+							playerInfo.getHash());
 					if (player == null) {
 						player = createPlayer(server, playerInfo);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
+						if (StringUtils.isEmpty(player.getGuid()) && StringUtils.isNotEmpty(playerInfo.getGuid())) {
+							player.setGuid(playerInfo.getGuid());
+						}
 						player.setNickname(playerInfo.getName());
 						player.setIp(playerInfo.getIp());
 						player.setClientId(playerInfo.getClientId());
@@ -164,7 +168,7 @@ public class UpdateTask implements Runnable {
 				penalty.setActive(true);
 				if (StringUtils.isNotEmpty(playerInfo.getPenaltyInfo().getAdminId())) {
 					try {
-						Player admin = playerDAO.findByServerAndGuid(player.getServer(), playerInfo.getPenaltyInfo().getAdminId());
+						Player admin = playerDAO.findByServerAndHash(player.getServer(), playerInfo.getPenaltyInfo().getAdminId());
 						if (admin != null) penalty.setAdmin(admin.getKey());
 					} catch (Exception e) {
 						log.error(e.getMessage());
@@ -183,7 +187,7 @@ public class UpdateTask implements Runnable {
 				penalty.setActive(true);
 				if (StringUtils.isNotEmpty(playerInfo.getPenaltyInfo().getAdminId())) {
 					try {
-						Player admin = playerDAO.findByServerAndGuid(player.getServer(), playerInfo.getPenaltyInfo().getAdminId());
+						Player admin = playerDAO.findByServerAndHash(player.getServer(), playerInfo.getPenaltyInfo().getAdminId());
 						if (admin != null) penalty.setAdmin(admin.getKey());
 					} catch (Exception e) {
 						log.error(e.getMessage());

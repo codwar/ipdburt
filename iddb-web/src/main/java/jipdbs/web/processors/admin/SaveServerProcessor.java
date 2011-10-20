@@ -19,7 +19,7 @@
 package jipdbs.web.processors.admin;
 
 import iddb.core.IDDBService;
-import iddb.core.util.GuidGenerator;
+import iddb.core.util.HashUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,7 +55,7 @@ public class SaveServerProcessor extends RedirectProcessor {
 			Flash.warn(req, MessageResource.getMessage("save_server_noip"));
 
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
-			String uid = GuidGenerator.generate(name);
+			String uid = HashUtils.generate(name);
 			app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
 			Flash.info(req, MessageResource.getMessage("save_server_added"));
 		} else {

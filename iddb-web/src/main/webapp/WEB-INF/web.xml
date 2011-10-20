@@ -17,6 +17,19 @@
 	</listener>
 
 	<filter>
+		<filter-name>LocaleFilter</filter-name>
+		<filter-class>jipdbs.web.LocaleFilter</filter-class>
+		<init-param>
+			<param-name>timezone</param-name>
+			<param-value>GMT-3</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>LocaleFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
 		<filter-name>UserServiceFilter</filter-name>
 		<filter-class>iddb.web.security.service.UserServiceFilter</filter-class>
 	</filter>
@@ -25,17 +38,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-<!-- 
-	<filter>
-		<filter-name>ShiroFilter</filter-name>
-		<filter-class>org.apache.shiro.web.servlet.IniShiroFilter
-		</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>ShiroFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
--->
 	<filter>
 		<filter-name>ResolverFilter</filter-name>
 		<filter-class>ar.sgt.resolver.filter.ResolverFilter</filter-class>

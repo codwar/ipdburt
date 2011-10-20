@@ -1,54 +1,94 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE taglib
-    PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
-	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
-<taglib>
-    <tlibversion>1.0</tlibversion>
-    <jspversion>1.1</jspversion>
-    <shortname>ipdbs</shortname>
-    <uri></uri>
-    <info>ipdbs tags</info>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>IDDB Tags</description>
+	<display-name>IDDB Tags</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>ipdb</short-name>
+
 	<tag>
+		<description>
+			Build a Pagination Bar
+		</description>
 		<name>paginator</name>
-		<tagclass>jipdbs.tag.Paginator</tagclass>
-	    <bodycontent>empty</bodycontent>
-		<info>Paginator</info>
-	    <attribute>
+		<tag-class>jipdbs.tag.Paginator</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
 			<name>totalPages</name>
-	        <required>true</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	    <attribute>
+		<attribute>
 			<name>currentPage</name>
-	        <required>true</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	    <attribute>
+		<attribute>
 			<name>pageSize</name>
-	        <required>true</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	    <attribute>
+		<attribute>
 			<name>url</name>
-	        <required>true</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
+		</attribute>
 	</tag>
 	<tag>
+		<description>
+			Mask an IP Address Based on User Permissions
+		</description>
 		<name>maskip</name>
-		<tagclass>jipdbs.tag.IpMasker</tagclass>
-	    <bodycontent>empty</bodycontent>
-		<info>Mask IP</info>
-	    <attribute>
+		<tag-class>jipdbs.tag.IpMasker</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
 			<name>value</name>
-	        <required>true</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	    <attribute>
+		<attribute>
 			<name>var</name>
-	        <required>false</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>	
+	</tag>
+
+	<tag>
+		<description>
+	Simple conditional tag that establishes a context for
+	mutually exclusive conditional operations, marked by
+	&lt;when&gt; and &lt;otherwise&gt; </description>
+		<name>choose</name>
+		<tag-class>jipdbs.tag.CustomChooseTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+
+	<tag>
+		<description>
+        Subtag of &lt;choose&gt; that follows &lt;when&gt; tags
+        and runs only if all of the prior conditions evaluated to
+        'false'
+    </description>
+		<name>otherwise</name>
+		<tag-class>jipdbs.tag.CustomOtherwiseTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+
+	<tag>
+		<description>
+			Subtag of &lt;choose&gt; that includes its body if guid is valid
+		</description>
+		<name>whenvalidguid</name>
+		<tag-class>jipdbs.tag.WhenValidGuidTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The guid value</description>
+			<name>test</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>
 
