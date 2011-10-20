@@ -301,7 +301,7 @@ public class AliasDAOImpl implements AliasDAO {
 	public List<Alias> booleanSearch(String query, int offset, int limit,
 			int[] count) {
 		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid";
-		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid LIMIT ?,?";
+		String sql = "SELECT *, MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) AS RELEVANCE FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid ORDER BY RELEVANCE LIMIT ?,?";
 		
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
@@ -315,8 +315,9 @@ public class AliasDAOImpl implements AliasDAO {
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, query);
-			st.setInt(2, offset);
-			st.setInt(3, limit);
+			st.setString(2, query);
+			st.setInt(3, offset);
+			st.setInt(4, limit);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Alias alias = new Alias();

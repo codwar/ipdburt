@@ -124,12 +124,12 @@ public class SearchProcessor extends FlashResponseProcessor {
 				Flash.warn(req,MessageResource.getMessage("too_many_results"));
 			}
 		} else if (Validator.isValidSearchIp(query)) {
-			log.debug("Buscando IP {}", query);
+			log.debug("Search IP {}", query);
 			query = Functions.fixIp(query);
 			queryValue = query;
 			list = app.ipSearch(query, offset, limit, total);
 		} else if (Validator.isValidClientId(query)) {
-			log.debug("Buscando Client ID {}", query);
+			log.debug("Search Client ID {}", query);
 			try {
 				Long clientId = Long.parseLong(query.substring(1));
 				list = app.clientIdSearch(clientId, offset, limit, total);
@@ -137,17 +137,21 @@ public class SearchProcessor extends FlashResponseProcessor {
 				log.error("Invalid client id: {}", query);
 			}
 		} else {
-			log.debug("Buscando Alias " + query);
-			if (query.length() >= MIN_LENGTH_QUERY) {
-				if (Validator.isValidPlayerName(query)) {
-					list = app.aliasSearch(query, offset, limit, total, "exact".equals(match));
-					if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
-						Flash.warn(req,MessageResource.getMessage("too_many_results"));
-					}
-				} else
-					Flash.error(req, MessageResource.getMessage("invalid_search"));
+			log.debug("Search Alias " + query);
+			if (query.length() >= MIN_LENGTH_QUERY && Validator.isValidPlayerName(query)) {
+				list = app.aliasSearch(query, offset, limit, total, "exact".equals(match));
 			} else {
-				Flash.error(req, MessageResource.getMessage("query_too_short"));
+				log.debug("Using advanced mode");
+				if (query.length() < MIN_LENGTH_QUERY) {
+					query = query + "*";
+				}
+				if (!query.startsWith("+") && !query.startsWith("-")) {
+					query = "+" + query;
+				}
+				list = app.aliasAdvSearch(query, null, offset, limit, total);
+			}
+			if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
+				Flash.warn(req,MessageResource.getMessage("too_many_results"));
 			}
 		}
 

@@ -13,7 +13,7 @@
 <fieldset><legend>Búsqueda avanzada</legend>
 <label for="aq">Buscar palabras clave:</label><input placeholder="Ingrese consulta" class="focus" type="text" name="aq" value=""/>&nbsp;<input type="button" value="Buscar" />
 <br/>
-<span><small>Escribe + delante de una palabra a encontrar, utiliza - para excluirla. Usa * como comodín para coincidencias parciales.</small></span>
+<small><span>Escribe <b>+</b> delante de una palabra a encontrar, utiliza <b>-</b> para excluirla. Usa <b>*</b> como comodín para coincidencias parciales o búsquedas menores a 4 caracteres.</span></small>
 <br/>
 <br/>
 <label for="server">Buscar únicamente en el servidor seleccionado:</label>
