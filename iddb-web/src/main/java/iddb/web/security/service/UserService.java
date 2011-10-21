@@ -18,6 +18,7 @@
  */
 package iddb.web.security.service;
 
+import iddb.core.model.Player;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
@@ -98,6 +99,13 @@ public interface UserService {
 	 */
 	public boolean hasAnyServer(Integer level);
 
+	/**
+	 * 
+	 * @param server
+	 * @return
+	 */
+	public Player getSubjectPlayer(Long server);
+	
 	/**
 	 * Remove local data to avoid leeks
 	 */

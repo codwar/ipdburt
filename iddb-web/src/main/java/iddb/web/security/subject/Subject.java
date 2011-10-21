@@ -18,8 +18,12 @@
  */
 package iddb.web.security.subject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
+import iddb.core.model.Player;
 import iddb.core.model.User;
 
 public class Subject extends User {
@@ -30,6 +34,12 @@ public class Subject extends User {
 	private static final long serialVersionUID = -8553739759968034511L;
 
 	private String screenName;
+	private Map<String, Player> serverPlayer;
+	
+	public Subject() {
+		super();
+		serverPlayer = new HashMap<String, Player>();
+	}
 	
 	public String getScreenName() {
 		return screenName;
@@ -58,6 +68,14 @@ public class Subject extends User {
 	 */
 	public boolean isSuperAdmin() {
 		return hasRole("admin");
+	}
+
+	public Map<String, Player> getServerPlayer() {
+		return serverPlayer;
+	}
+
+	public void setServerPlayer(Map<String, Player> serverPlayer) {
+		this.serverPlayer = serverPlayer;
 	}
 	
 }

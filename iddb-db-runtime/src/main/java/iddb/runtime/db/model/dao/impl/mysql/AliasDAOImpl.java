@@ -257,7 +257,7 @@ public class AliasDAOImpl implements AliasDAO {
 	public List<Alias> booleanSearchByServer(String query, Long serverkey,
 			int offset, int limit, int[] count) {
 		String sqlCount = "SELECT COUNT(a.id) FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid";
-		String sql = "SELECT a.* FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid LIMIT ?,?";
+		String sql = "SELECT a.*,MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) AS RELEVANCE FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid ORDER BY RELEVANCE LIMIT ?,?";
 		
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
@@ -271,10 +271,11 @@ public class AliasDAOImpl implements AliasDAO {
 				count[0] = rsC.getInt(1);
 			}
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setLong(1, serverkey);
-			st.setString(2, query);
-			st.setInt(3, offset);
-			st.setInt(4, limit);
+			st.setString(1, query);
+			st.setLong(2, serverkey);
+			st.setString(3, query);
+			st.setInt(4, offset);
+			st.setInt(5, limit);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Alias alias = new Alias();

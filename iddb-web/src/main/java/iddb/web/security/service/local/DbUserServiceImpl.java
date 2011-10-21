@@ -127,25 +127,8 @@ public class DbUserServiceImpl extends CommonUserService {
 		if (!subject.isAuthenticated()) return false;
 		if (subject.isSuperAdmin()) return true;
 		
-		UserServer userServer;
-		try {
-			userServer = serverDAO.findByUserAndServer(subject.getKey(), server);
-		} catch (EntityDoesNotExistsException e) {
-			log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
-			return false;
-		}
-		if (userServer.getPlayer() == null || userServer.getPlayer() == 0) {
-			log.trace("No associated player for userid {}", subject.getLoginId());
-			return false;
-		}
+		Player player = getSubjectPlayer(server);
 		
-		Player player;
-		try {
-			player = playerDAO.get(userServer.getPlayer());
-		} catch (EntityDoesNotExistsException e) {
-			log.trace("Player {} do not exists", userServer.getPlayer());
-			return false;
-		}
 		if (player.getLevel() != null && player.getLevel() >= level) {
 			return true;
 		}
@@ -218,6 +201,39 @@ public class DbUserServiceImpl extends CommonUserService {
 			return null;
 		}
 		return buildSubject(u);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#getSubjectPlayer(java.lang.Long)
+	 */
+	@Override
+	public Player getSubjectPlayer(Long server) {
+		Subject subject = this.getCurrentUser();
+		Player player;
+		player = subject.getServerPlayer().get(server.toString());
+		
+		if (player == null) {
+			UserServer userServer;
+			try {
+				userServer = serverDAO.findByUserAndServer(subject.getKey(), server);
+			} catch (EntityDoesNotExistsException e) {
+				log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
+				return null;
+			}
+			if (userServer.getPlayer() == null || userServer.getPlayer() == 0) {
+				log.trace("No associated player for userid {}", subject.getLoginId());
+				return null;
+			}
+			
+			try {
+				player = playerDAO.get(userServer.getPlayer());
+				subject.getServerPlayer().put(server.toString(), player);
+			} catch (EntityDoesNotExistsException e) {
+				log.trace("Player {} do not exists", userServer.getPlayer());
+				return null;
+			}
+		}
+		return player;
 	}
 
 }

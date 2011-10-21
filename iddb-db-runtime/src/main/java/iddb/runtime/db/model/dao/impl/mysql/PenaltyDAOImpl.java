@@ -29,7 +29,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,7 +80,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			if (penalty.getUpdated() == null) penalty.setUpdated(new Date());
 			st.setTimestamp(8, new java.sql.Timestamp(penalty.getCreated().getTime()));
 			st.setTimestamp(9, new java.sql.Timestamp(penalty.getUpdated().getTime()));
-			st.setTimestamp(10, new Timestamp(DateUtils.addMinutes(penalty.getCreated(), penalty.getDuration().intValue()).getTime()));
+			st.setTimestamp(10, new java.sql.Timestamp(DateUtils.addMinutes(penalty.getCreated(), penalty.getDuration().intValue()).getTime()));
 			if (penalty.getKey() != null) st.setLong(11, penalty.getKey());
 			st.executeUpdate();
 			if (penalty.getKey() == null) {

@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `penalty_history` (
   `error` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`,`penaltyid`),
-  KEY `penaltyid` (`penaltyid`)
+  KEY `penaltyid` (`penaltyid`),
+  KEY `created` (`created`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE penalty ADD INDEX (synced) 

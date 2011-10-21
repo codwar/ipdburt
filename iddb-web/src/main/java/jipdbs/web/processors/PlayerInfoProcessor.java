@@ -33,6 +33,7 @@ import iddb.web.viewbean.PlayerViewBean;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,7 +81,10 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 			throw new ProcessorException(e);
 		}
 
-		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL); 
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL);
+		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
+		
+		List<NoticeViewBean> notices = null;
 		PlayerViewBean infoView = new PlayerViewBean();
 		infoView.setKey(player.getKey().toString());
 		infoView.setName(player.getNickname());
@@ -110,8 +114,10 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 				}
 				infoView.setBanInfo(penaltyViewBean.toString());
 			}
-			Penalty notice = app.getLastNotice(player);
-			if (notice != null) {
+			
+			List<Penalty> pn = app.getActivePenalties(player.getKey(), Penalty.NOTICE);
+			notices = new ArrayList<NoticeViewBean>();
+			for (Penalty notice : pn) {
 				NoticeViewBean noticeViewBean = new NoticeViewBean();
 				noticeViewBean.setCreated(notice.getCreated());
 				noticeViewBean.setReason(notice.getReason());
@@ -123,7 +129,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 						log.warn(e.getMessage());
 					}
 				}
-				infoView.setNote(noticeViewBean.toString());
+				notices.add(noticeViewBean);
 			}			
 		} else {
 			if (player.getBanInfo() != null) {
@@ -141,6 +147,9 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		}
 		
 		req.setAttribute("player", infoView);
+		req.setAttribute("notices", notices);
+		req.setAttribute("hasAdmin", hasAdmin);
+		req.setAttribute("hasServerAdmin", hasServerAdmin);
 	
 		return null;
 	}

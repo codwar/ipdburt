@@ -1,3 +1,4 @@
+<%@page import="iddb.core.model.Penalty"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -5,6 +6,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
+
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/ui-darkness/jquery-ui-1.8.16.custom.css" media="screen"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
@@ -106,9 +110,6 @@
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />
     <strong>IP:</strong> <a href="<url:url name="search"><url:param name="query" value="${player.ip}"/></url:url>">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
     <strong>Nivel:</strong> ${player.level}<br />
-    <c:if test="${not empty player.note}">
-	   <strong>Comentarios:</strong> ${player.note}<br />
-    </c:if>    
     <c:if test="${not empty player.banInfo}">
 	   <strong>Estado:</strong> ${player.banInfo}<br />
     </c:if>
@@ -125,8 +126,39 @@
     </c:if>
     </fieldset>
     <br />
-<h2>Aliases</h2>
+
+<c:if test="${not empty notices}">
 <table>
+	<caption>Notas&nbsp;<span id="addnote" class="icon add tip" title="Agregar nueva nota"></span></caption>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="width: 40px;">Admin</th>
+			<th style="width: 160px;">Agregado</th>
+		</tr>
+	</thead>
+	<tbody>
+	<c:forEach items="${notices}" var="notice">
+		<tr>
+			<td>${notice.reason}</td>
+			<td>${notice.admin}</td>
+			<td><fmt:formatDate	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss" value="${notice.created}" />
+			<span class="icon delete tip" title="Eliminar"></span>
+			</td>
+		</tr>
+	</c:forEach>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+	</tfoot>
+</table>
+<br/>
+</c:if>
+
+<table>
+	<caption>Aliases</caption>
 	<thead>
 		<tr>
 			<th>Alias</th>
@@ -141,13 +173,14 @@
 		<tr>
 			<td colspan="3">
 			<span style="font-size: smaller;">Total: <span id="total-alias">0</span></span>
-			<div class='pagination'><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></td>
+			<div class="pagination"><span class='prev-na' id='prev-alias'><a>&laquo; Anterior</a></span><span class='curr' id='curr-alias'>-</span><span id='next-alias' class='next-na'><a>Siguiente &raquo;</a></span></div>
+			</td>
 		</tr>
 	</tfoot>
 </table>
 <br/>
-<h2>IPs</h2>
 <table>
+	<caption>IPs</caption>
 	<thead>
 		<tr>
 			<th>IP</th>
@@ -162,7 +195,8 @@
 		<tr>
 			<td colspan="3">
 			<span style="font-size: smaller;">Total: <span id="total-ip">0</span></span>
-			<div class='pagination'><span class='prev-na' id='prev-ip'><a>&laquo; Anterior</a></span><span class='curr' id='curr-ip'>-</span><span id='next-ip' class='next-na'><a>Siguiente &raquo;</a></span></td>
+			<div class='pagination'><span class='prev-na' id='prev-ip'><a>&laquo; Anterior</a></span><span class='curr' id='curr-ip'>-</span><span id='next-ip' class='next-na'><a>Siguiente &raquo;</a></span></div>
+			</td>
 		</tr>
 	</tfoot>
 </table>
@@ -171,6 +205,38 @@ $(document).ready(
 	function() {
 		setTimeout("getAlias(1)", 500);
 		setTimeout("getAliasIP(1)", 1000);
+
+		$("#addnote").click(function() {
+			var dialog = $("#add-note-dialog");
+			$(dialog).find('[name="reason"]').val('');
+			open_dialog(dialog);
+		});
+
 	}
 )
+function open_dialog(d) {
+	$(d).dialog({
+		hide: "explode",
+		modal: true,
+		buttons: {
+			"Guardar": function() {
+				$(d).find("form").submit();
+			},
+			"Cancelar": function() {
+				$( this ).dialog( "close" );
+			}
+		},				
+	});
+}
 </script>
+
+<div id="add-note-dialog" class="dialog" style="display: none;">
+<form action="<url:url name="add-penalty"/>" method="post">
+<fieldset>
+	<input type="hidden" name="k" value="${player.key}"/>
+	<input type="hidden" name="p" value="${current_path}"/>
+	<label for="name">Nota</label><br/>
+	<input type="text" name="reason" class="text ui-corner-all" /><br/>
+</fieldset>
+</form>
+</div>

@@ -194,15 +194,15 @@ public class RPC4Handler extends RPC3Handler {
 				String[] values;
 				if (p.getType() == Penalty.BAN) {
 					if (p.getActive()) {
-						values = new String[]{Events.BAN, his.getKey(), client.getClientId().toString(), p.getDuration().toString(), p.getReason(), adminId};	
+						values = new String[]{Events.BAN, his.getKey().toString(), client.getClientId().toString(), p.getDuration().toString(), p.getReason(), adminId};	
 					} else {
-						values = new String[]{Events.UNBAN, his.getKey(), client.getClientId().toString()};
+						values = new String[]{Events.UNBAN, his.getKey().toString(), client.getClientId().toString()};
 					}
 				} else {
 					if (p.getActive()) {
-						values = new String[]{Events.ADDNOTE, his.getKey(), client.getClientId().toString(), p.getReason(), adminId};
+						values = new String[]{Events.ADDNOTE, his.getKey().toString(), client.getClientId().toString(), p.getReason(), adminId};
 					} else {
-						values = new String[]{Events.DELNOTE, his.getKey()};
+						values = new String[]{Events.DELNOTE, his.getKey().toString()};
 					}
 				}
 				list.add(values);

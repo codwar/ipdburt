@@ -32,8 +32,9 @@ public class PenaltyHistory implements Serializable {
 	public static final Integer ST_WAITING = 1;
 	public static final Integer ST_DONE = 2;
 	public static final Integer ST_ERROR = 3;
+	public static final Integer ST_CANCEL = 4;
 	
-	private String key;
+	private Long key;
 	private Long adminId;
 	private Long penaltyId;
 	private Date created;
@@ -41,10 +42,10 @@ public class PenaltyHistory implements Serializable {
 	private Integer status;
 	private String error;
 	
-	public String getKey() {
+	public Long getKey() {
 		return key;
 	}
-	public void setKey(String key) {
+	public void setKey(Long key) {
 		this.key = key;
 	}
 	public Date getCreated() {

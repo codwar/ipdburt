@@ -524,6 +524,13 @@ ul.messages li.warning {
 	background-image: url('images/arrow_refresh.png');
 }
 
+.add {
+	background-image: url('images/add.png');
+}
+.delete {
+	background-image: url('images/delete.png');
+}
+
 .details {
 	background-image: url('images/application_view_detail.png');
 }

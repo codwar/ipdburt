@@ -544,4 +544,20 @@ public class IDDBService {
 		return his;
 	}
 	
+	public List<Penalty> getActivePenalties(Long playerId, Integer type) {
+		return penaltyDAO.findByPlayerAndTypeAndActive(playerId, type);
+	}
+
+	public void addPenalty(Penalty penalty, boolean log) {
+		penaltyDAO.save(penalty);
+		if (log) {
+			PenaltyHistory his = new PenaltyHistory();
+			his.setPenaltyId(penalty.getKey());
+			his.setAdminId(penalty.getAdmin());
+			his.setCreated(new Date());
+			his.setUpdated(new Date());
+			his.setStatus(PenaltyHistory.ST_PENDING);
+			penaltyHistoryDAO.save(his);
+		}
+	}
 }
