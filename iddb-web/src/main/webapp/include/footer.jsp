@@ -2,7 +2,7 @@
 <%@page import="java.util.Properties"%>
 <div class="footer">
 	<div id="ffox">
-		<a href='http://www.mozilla.org/firefox?WT.mc_id=aff_en05&WT.mc_ev=click'><img src='http://www.mozilla.org/contribute/buttons/110x32bubble_g.png' alt='Firefox Download Button' border='0' /></a>
+		<a href="https://affiliates.mozilla.org/link/banner/417/3/1"><img src="http://affiliates-cdn.mozilla.org/media/uploads/banners/download-small-green-EN.png" alt="" border="0" /></a>
 	</div>
      <%
      	String version;
