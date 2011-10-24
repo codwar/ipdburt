@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `user_session` (
 CREATE TABLE IF NOT EXISTS `penalty_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `penaltyid` int(11) unsigned NOT NULL,
-  `adminid` int(11) unsigned NOT NULL,
+  `adminid` int(11) unsigned DEFAULT NULL,
   `status` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

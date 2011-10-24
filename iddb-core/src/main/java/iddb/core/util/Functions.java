@@ -157,6 +157,45 @@ public class Functions {
 		return result;
 	}
 	
+	public static Long time2minutes(String time) {
+		if (time == null || "".trim().equals(time)) return 0L;
+		
+		Long value;
+		
+		char last = time.charAt(time.length()-1);
+		try {
+			switch (last) {
+			case 'h':
+				value = Long.parseLong(time.substring(0, time.length()-1)) * 60;
+				break;
+			case 'm':
+				value = Long.parseLong(time.substring(0, time.length()-1));
+				break;
+			case 's':
+				value = Long.parseLong(time.substring(0, time.length()-1)) / 60;
+				break;
+			case 'd':
+				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24;
+				break;
+			case 'w':
+				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 7;
+				break;
+			case 'M':
+				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 31;
+				break;
+			case 'y':
+				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 365;
+				break;				
+			default:
+				value = Long.parseLong(time);
+				break;
+			}
+		} catch (NumberFormatException e) {
+			value = 0L;
+		}
+		return value;
+	}
+	
 	public static String normalize(String text) {
 		// TODO agregar lo que vaya siendo necesario
 //		String s = text.toLowerCase();

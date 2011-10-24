@@ -150,6 +150,7 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		req.setAttribute("notices", notices);
 		req.setAttribute("hasAdmin", hasAdmin);
 		req.setAttribute("hasServerAdmin", hasServerAdmin);
+		req.setAttribute("permission", server.getPermission());
 	
 		return null;
 	}

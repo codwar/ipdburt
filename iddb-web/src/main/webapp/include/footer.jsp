@@ -1,6 +1,6 @@
 <%@page import="iddb.core.util.SystemProperties"%>
 <%@page import="java.util.Properties"%>
-<div class="footer">
+<div class="footer" style="margin-top: 10px;">
 	<div id="ffox">
 		<a href="https://affiliates.mozilla.org/link/banner/417/3/1"><img src="http://affiliates-cdn.mozilla.org/media/uploads/banners/download-small-green-EN.png" alt="" border="0" /></a>
 	</div>

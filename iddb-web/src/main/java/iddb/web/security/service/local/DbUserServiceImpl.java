@@ -129,7 +129,7 @@ public class DbUserServiceImpl extends CommonUserService {
 		
 		Player player = getSubjectPlayer(server);
 		
-		if (player.getLevel() != null && player.getLevel() >= level) {
+		if (player != null && player.getLevel() != null && player.getLevel() >= level) {
 			return true;
 		}
 		return false;

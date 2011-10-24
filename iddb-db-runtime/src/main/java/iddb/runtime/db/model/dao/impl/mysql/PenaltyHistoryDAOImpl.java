@@ -70,7 +70,11 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 			if (penalty.getKey() != null) st.setLong(4, penalty.getKey());
 			else {
 				st.setLong(4, penalty.getPenaltyId());
-				st.setLong(5, penalty.getAdminId());
+				if (penalty.getAdminId() == null) {
+					st.setNull(5, Types.INTEGER);
+				} else {
+					st.setLong(5, penalty.getAdminId());	
+				}
 				st.setTimestamp(6, new java.sql.Timestamp(penalty.getCreated().getTime()));	
 			}
 			st.executeUpdate();

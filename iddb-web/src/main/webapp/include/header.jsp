@@ -39,8 +39,10 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/selector/js/openid-jquery.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/selector/js/openid-es.js"></script>
 -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/media/js/css_browser_selector.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/dutils.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/base.js"></script>
+
 <!--[if IE 6]>
     <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.nm-ie6.min.js"></script>
 <![endif]-->

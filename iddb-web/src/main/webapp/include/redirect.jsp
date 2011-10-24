@@ -20,7 +20,7 @@
 </head>
 <body>
 <div class="container">
-<div id="context-loader" class="context-loader" style="width: 225px;">Aguarda mientras te redirigimos.</div>
+<div id="context-loader" class="context-loader">Aguarda mientras te redirigimos.</div>
 </div>
 <script type="text/javascript">
 	window.location = "<c:out value="${redirect}"/>";

@@ -1,3 +1,4 @@
+<%@page import="iddb.api.RemotePermissions"%>
 <%@page import="iddb.core.model.Penalty"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
@@ -93,7 +94,22 @@
 	}
 </script>
 
-<fieldset style="width: 75%; margin-left: auto; margin-right: auto;">
+<fieldset class="playerheader shadowbox">
+<c:if test="${hasServerAdmin}">
+<div id="player_menu" class="player_menu">
+<div class="player_menu_box">
+	<ul>
+		<li class="icon add link" id="addnote">Nueva nota</li>
+<%
+Integer permission = (Integer) request.getAttribute("permission");
+if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+	out.write("<li class='icon ban link' id='addpenalty'>Banear</li>");
+}
+%>		
+	</ul>
+</div>
+</div>
+</c:if>
 <legend>${fn:escapeXml(player.name)}<span class="icon <c:choose>
                     <c:when test="${not empty player.banInfo}">
                         banned
@@ -106,7 +122,7 @@
                     </c:otherwise>
                 </c:choose>"></span></legend>
 	<strong>Id:</strong> ${player.clientId}<br />
-	<strong>Visto:</strong> <fmt:formatDate	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
+	<strong>Visto:</strong> <fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />
     <strong>IP:</strong> <a href="<url:url name="search"><url:param name="query" value="${player.ip}"/></url:url>">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
     <strong>Nivel:</strong> ${player.level}<br />
@@ -120,20 +136,56 @@
 				<span class="icon guid-ok">Este jugador posee una GUID válida.</span>
 			</iddb:whenvalidguid>   	
     		<iddb:otherwise>
-    			<span class="icon guid-nok">La GUID de este jugador no es válida.</span>
+    			<span class="icon guid-nok">La GUID (${player.guid}) de este jugador no es válida.</span>
     		</iddb:otherwise>
     	</iddb:choose>
     </c:if>
     </fieldset>
     <br />
 
+<c:if test="${not empty events}">
+<table>
+	<caption>Eventos</caption>
+	<thead>
+		<tr>
+			<th>Tipo</th>
+			<th>Estado</th>
+			<th style="width: 160px;">Fecha</th>
+			<th style="width: 140px;">Admin</th>
+		</tr>
+	</thead>
+	<tbody>
+	<c:forEach items="${event}" var="events">
+		<tr>
+			<td>${event.type}</td>
+			<td>${event.status}</td>
+			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.created}" /></td>
+			<td>
+			<c:choose>
+				<c:when test="${not empty event.admin}">${event.admin}</c:when>
+				<c:otherwise>-</c:otherwise>
+			</c:choose>
+			</td>
+			
+		</tr>
+	</c:forEach>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+	</tfoot>
+</table>
+<br/>
+</c:if>
+
 <c:if test="${not empty notices}">
 <table>
-	<caption>Notas&nbsp;<span id="addnote" class="icon add tip" title="Agregar nueva nota"></span></caption>
+	<caption>Notas</caption>
 	<thead>
 		<tr>
 			<th></th>
-			<th style="width: 40px;">Admin</th>
+			<th style="width: 140px;">Admin</th>
 			<th style="width: 160px;">Agregado</th>
 		</tr>
 	</thead>
@@ -141,9 +193,13 @@
 	<c:forEach items="${notices}" var="notice">
 		<tr>
 			<td>${notice.reason}</td>
-			<td>${notice.admin}</td>
-			<td><fmt:formatDate	type="both" timeZone="GMT-3" pattern="dd-MM-yyyy HH:mm:ss" value="${notice.created}" />
-			<span class="icon delete tip" title="Eliminar"></span>
+			<td>
+			<c:choose>
+				<c:when test="${not empty notice.admin}">${notice.admin}</c:when>
+				<c:otherwise>-</c:otherwise>
+			</c:choose> </td>
+			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${notice.created}" />
+			<span class="icon delete tip link" title="Eliminar"></span>
 			</td>
 		</tr>
 	</c:forEach>
@@ -212,6 +268,20 @@ $(document).ready(
 			open_dialog(dialog);
 		});
 
+		$("#addpenalty").click(function() {
+			var dialog = $("#add-ban-dialog");
+			$(dialog).find('[name="reason"]').val('');
+			$(dialog).find('[name="duration"]').val('');
+			$(dialog).find('[name="dt"]').val('d');
+			open_dialog(dialog);
+		});
+		
+		$("#player_menu").hover(function() {
+			$(".player_menu_box").show();
+		},
+		function() {
+			$(".player_menu_box").hide();
+		});
 	}
 )
 function open_dialog(d) {
@@ -231,12 +301,33 @@ function open_dialog(d) {
 </script>
 
 <div id="add-note-dialog" class="dialog" style="display: none;">
+<form action="<url:url name="add-penalty-notice"/>" method="post">
+<fieldset>
+	<input type="hidden" name="k" value="${player.key}"/>
+	<input type="hidden" name="p" value="${current_path}"/>
+	<label for="name">Motivo</label><br/>
+	<input type="text" name="reason" class="text ui-corner-all" /><br/>
+</fieldset>
+</form>
+</div>
+<div id="add-ban-dialog" class="dialog" style="display: none;">
 <form action="<url:url name="add-penalty"/>" method="post">
 <fieldset>
 	<input type="hidden" name="k" value="${player.key}"/>
 	<input type="hidden" name="p" value="${current_path}"/>
-	<label for="name">Nota</label><br/>
+	<label for="name">Motivo</label><br/>
 	<input type="text" name="reason" class="text ui-corner-all" /><br/>
+	<label for="name">Duración</label><br/>
+	<input type="text" name="duration" class="text ui-corner-all" /><br/>
+	<label for="name">Periodo</label><br/>
+	<select name="dt" class="text ui-corner-all">
+		<option value="m">Minutos</option>
+		<option value="d">Días</option>
+		<option value="w">Semanas</option>
+		<option value="M">Meses</option>
+		<option value="y">Años</option>
+	</select>
+	<br/>		
 </fieldset>
 </form>
 </div>

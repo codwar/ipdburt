@@ -20,12 +20,10 @@ package iddb.core.model.dao;
 
 import iddb.core.cache.CacheFactory;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -37,49 +35,68 @@ public final class DAOFactory {
 	private static DAOFactory instance;
 	private static final Logger log = LoggerFactory.getLogger(DAOFactory.class);
 
+	private static final String PACKAGE = "iddb.runtime.db.model.dao.impl.";
+	private Boolean useCache = false;
+	private String engine;
+	
 	private Map<String, Object> daoCache = new HashMap<String, Object>();
 
 	private DAOFactory() {
 		// let see if we have a cache system available
-		boolean useCache = false;
+//		boolean useCache = false;
+//		if (CacheFactory.getInstance().verify()) {
+//			log.debug("Cache system is available, will try to create cached DAO");
+//			useCache = true;
+//		}
+//		Properties prop = new Properties();
+//		try {
+//			prop.load(this.getClass().getClassLoader()
+//					.getResourceAsStream("dao.properties"));
+//			for (Entry<Object, Object> entry : prop.entrySet()) {
+//				String key = (String) entry.getKey();
+//				String value = (String) entry.getValue();
+//				log.debug("Initializing {}", value);
+//				try {
+//					@SuppressWarnings({ "static-access", "rawtypes" })
+//					Class cls = this.getClass().forName(value);
+//					Object daoImpl = cls.newInstance();
+//					if (useCache) {
+//						try {
+//							daoCache.put(key,
+//									createCachedInstance(key, daoImpl));
+//						} catch (Exception e) {
+//							log.error(e.getMessage());
+//							daoCache.put(key, daoImpl);
+//						}
+//					} else {
+//						daoCache.put(key, daoImpl);
+//					}
+//				} catch (ClassNotFoundException e) {
+//					log.error("{} not found", e.getMessage());
+//				} catch (InstantiationException e) {
+//					log.error("Cannot initialize {}", e.getMessage());
+//				} catch (IllegalAccessException e) {
+//					log.error(e.getMessage());
+//				}
+//			}
+//		} catch (IOException e) {
+//			log.error(e.getMessage());
+//		}
+		
 		if (CacheFactory.getInstance().verify()) {
 			log.debug("Cache system is available, will try to create cached DAO");
-			useCache = true;
+			this.useCache = true;
 		}
 		Properties prop = new Properties();
 		try {
 			prop.load(this.getClass().getClassLoader()
-					.getResourceAsStream("dao.properties"));
-			for (Entry<Object, Object> entry : prop.entrySet()) {
-				String key = (String) entry.getKey();
-				String value = (String) entry.getValue();
-				log.debug("Initializing {}", value);
-				try {
-					@SuppressWarnings({ "static-access", "rawtypes" })
-					Class cls = this.getClass().forName(value);
-					Object daoImpl = cls.newInstance();
-					if (useCache) {
-						try {
-							daoCache.put(key,
-									createCachedInstance(key, daoImpl));
-						} catch (Exception e) {
-							log.error(e.getMessage());
-							daoCache.put(key, daoImpl);
-						}
-					} else {
-						daoCache.put(key, daoImpl);
-					}
-				} catch (ClassNotFoundException e) {
-					log.error("{} not found", e.getMessage());
-				} catch (InstantiationException e) {
-					log.error("Cannot initialize {}", e.getMessage());
-				} catch (IllegalAccessException e) {
-					log.error(e.getMessage());
-				}
-			}
-		} catch (IOException e) {
+					.getResourceAsStream("db.properties"));
+			this.engine = prop.getProperty("engine");
+			log.debug("Using engine {}", this.engine);
+		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
+		
 	}
 
 	/**
@@ -140,12 +157,44 @@ public final class DAOFactory {
 		return daoCache;
 	}
 
+	public Object getDaoImpl(String name) {
+		Object dao = getDaoCache().get(name);
+		if (dao == null) {
+			String[] ifacePart = StringUtils.split(name, ".");
+			String ifaceName = ifacePart[ifacePart.length - 1];
+			String classname = PACKAGE + this.engine + "." + ifaceName + "Impl";
+			log.debug("Initializing {}", classname);
+			try {
+				@SuppressWarnings({ "static-access", "rawtypes" })
+				Class cls = this.getClass().forName(classname);
+				Object daoImpl = cls.newInstance();
+				if (useCache) {
+					try {
+						dao = createCachedInstance(name, daoImpl);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+						dao = daoImpl;
+					}
+				} else {
+					dao = daoImpl;
+				}
+				daoCache.put(name, dao);
+			} catch (ClassNotFoundException e) {
+				log.error("{} not found", e.getMessage());
+			} catch (InstantiationException e) {
+				log.error("Cannot initialize {}", e.getMessage());
+			} catch (IllegalAccessException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return dao;
+	}
 	@SuppressWarnings("rawtypes")
 	public static Object forClass(Class claz) {
 		if (instance == null) {
 			instance = new DAOFactory();
 		}
-		Object dao = instance.getDaoCache().get(claz.getName());
+		Object dao = instance.getDaoImpl(claz.getName());
 		if (dao == null) {
 			log.debug("Failed lookup dao for {}", claz.getName());
 		}

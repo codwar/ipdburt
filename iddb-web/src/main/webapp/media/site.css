@@ -878,3 +878,83 @@ input.search {
 	font-weight: bold;
 	background-image: url('images/error.png');
 }
+.player_menu {
+	background: url("images/cog.png") no-repeat scroll 50% 50% transparent;
+	float: right;
+	list-style: none outside none;
+	/*margin-top: -25px;*/
+	margin-top: -10px;
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+}
+.player_menu:hover  {
+	background-color: #282828;
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	border-radius: 5px 5px 0px 0px; 
+}
+.playerheader {
+	width: 75%;
+	margin-left: auto;
+	margin-right: auto;
+}
+.ban {
+	background-image: url('images/icons/cross.png'); 
+}
+.shadowbox {
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+/*
+	-webkit-box-shadow: 2px 2px 5px 2px #000;
+	-moz-box-shadow: 2px 2px 5px 2px #000;
+	box-shadow: 2px 2px 5px 2px #000;*/
+}
+.player_menu_box {
+	display: none;
+	background-color: #282828;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-left: -120px;
+	margin-top: 32px;
+	width: 189px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+.player_menu_box ul {
+	padding-bottom: 5px;
+	padding-left: 5px;
+	/*padding-top: 5px;*/	
+	list-style: none outside none;
+}
+.player_menu_box li {
+	color: #FFFFFF;
+    font-weight: bold;
+	border-bottom: 1px dotted;
+	padding-bottom: 5px;
+	padding-top: 5px;    
+}
+
+.link {
+	cursor: pointer; 
+}
+/* fix firefox shadow error */
+fieldset { position: relative; }
+fieldset legend { position: absolute; top: -35px; left: 0; }
+.webkit fieldset legend { position: relative; top: 0px; }
+
+.context-message {
+	text-align: center;
+	background: #EEEEEE;
+	border-radius: 5px;
+	border: solid 1px #DDDDDD;
+	color: #666666;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 10px 10px 10px 30px;
+	-webkit-box-shadow: 0 0 10px rgb(0, 0, 0);
+	-moz-box-shadow: 0 0 10px rgb(0, 0, 0);
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+}

@@ -18,9 +18,12 @@
  */
 package jipdbs.web.processors;
 
+import iddb.api.RemotePermissions;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Player;
+import iddb.core.model.Server;
+import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.web.security.service.UserServiceFactory;
 
@@ -31,17 +34,17 @@ import jipdbs.web.Flash;
 import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
-import ar.sgt.resolver.flow.ForceRedirect;
 import ar.sgt.resolver.processor.ResolverContext;
 
-/**
- * @author 12072245
- *
- */
 public class AddPenaltyProcessor extends FlashResponseProcessor {
 
+	private static final Logger log = LoggerFactory.getLogger(AddPenaltyProcessor.class);
+	
 	/* (non-Javadoc)
 	 * @see jipdbs.web.processors.FlashResponseProcessor#processProcessor(ar.sgt.resolver.processor.ResolverContext)
 	 */
@@ -50,47 +53,96 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 			throws ProcessorException {
 
 		IDDBService app = (IDDBService) ctx.getServletContext().getAttribute("jipdbs");
+		HttpServletRequest req = ctx.getRequest();
 		
 		String playerId = ctx.getRequest().getParameter("k");
-
+		String type = ctx.getParameter("type");
+		String redirect = ctx.getRequest().getParameter("p");
+		String reason = ctx.getRequest().getParameter("reason");
+		String duration = ctx.getRequest().getParameter("duration");
+		String durationType = ctx.getRequest().getParameter("dt");
+		
+		log.debug("Redirect {}", redirect);
+		
+		req.setAttribute("redirect", redirect);
+		
 		Player player = null;
 		try {
 			player = app.getPlayer(playerId);
 		} catch (EntityDoesNotExistsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.debug(e.getMessage());
+			throw new HttpError(404);
 		}
 		
 		if (!UserServiceFactory.getUserService().hasPersmission(player.getServer(), CommonConstants.ADMIN_LEVEL)) {
-			// TODO forbiden
+			Flash.error(req, MessageResource.getMessage("forbidden"));
+			log.debug("Forbidden");
+			return null;
 		}
 		
-		Player currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(player.getServer());
-		if (currentPlayer == null) {
-			// THIS CANT HAPPEN
+		Player currentPlayer = null;
+		if (!UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
+			currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(player.getServer());
+			if (currentPlayer == null) {
+				throw new HttpError(404);
+			}
 		}
-		
-		String type = ctx.getParameter("type");
-		String redirect = ctx.getRequest().getParameter("p");
-		String reason = ctx.getRequest().getParameter("reason");
-		HttpServletRequest req = ctx.getRequest();
 		
 		if (StringUtils.isEmpty(reason)) {
 			Flash.error(req, MessageResource.getMessage("reason_field_required"));
-			throw new ForceRedirect(redirect);
+			return null;
+		}
+
+		Server server = null;
+		try {
+			server = app.getServer(player.getServer());
+		} catch (EntityDoesNotExistsException e) {
+			log.debug(e.getMessage());
+			throw new HttpError(404);
 		}
 		
 		Penalty penalty = new Penalty();
 		penalty.setReason(reason);
-		penalty.setAdmin(currentPlayer.getKey());
+		penalty.setPlayer(player.getKey());
 		
-		// TODO CHECK SERVER PERMISSIONS
+		if (currentPlayer != null) penalty.setAdmin(currentPlayer.getKey());
+		
 		if (type.equals("notice")) {
-			
+			penalty.setType(Penalty.NOTICE);
+			if ((server.getPermission() & RemotePermissions.ADD_NOTICE) == RemotePermissions.ADD_NOTICE) {
+				penalty.setActive(false);
+				penalty.setSynced(false);
+				Flash.info(req, MessageResource.getMessage("local_action_pending"));
+			} else {
+				penalty.setActive(true);
+				penalty.setSynced(true);
+				Flash.warn(req, MessageResource.getMessage("local_action_only"));
+			}
+		} else {
+			Long dm = Functions.time2minutes(duration + durationType);
+			if (dm == 0L) {
+				Flash.error(req, MessageResource.getMessage("duration_field_required"));
+				return null;				
+			}
+			if ((server.getPermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+				penalty.setActive(false);
+				penalty.setSynced(false);
+				Flash.info(req, MessageResource.getMessage("local_action_pending"));
+			} else {
+				Flash.error(req, MessageResource.getMessage("remote_action_not_available"));
+				return null;
+			}
+			penalty.setType(Penalty.BAN);
+			penalty.setDuration(dm);
+		}
+
+		try {
+			app.addPenalty(penalty, !penalty.getSynced());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return null;
-		
 	}
 
 }

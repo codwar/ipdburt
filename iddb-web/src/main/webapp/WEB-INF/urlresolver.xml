@@ -65,6 +65,16 @@
         <arg name="type" value="logout"/>
     </rule>    
   </processor>
+  <processor class="jipdbs.web.processors.AddPenaltyProcessor" redirect="/page/confirm.jsp">
+    <rule name="add-penalty-notice" pattern="^/player/op/add/notice/$">
+    	<arg name="type" value="notice"/>
+    </rule>
+    <rule name="add-penalty" pattern="^/player/op/add/ban/$">
+    	<arg name="type" value="ban"/>
+    </rule>    
+  </processor>  
+  
+  
   <processor class="jipdbs.web.processors.ChangePasswordProcessor" redirect="/page/change_password.jsp">
     <rule name="change_password" pattern="^/account/update/$"/>
   </processor>  
