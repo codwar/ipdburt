@@ -65,7 +65,7 @@
         <arg name="type" value="logout"/>
     </rule>    
   </processor>
-  <processor class="jipdbs.web.processors.AddPenaltyProcessor" redirect="/page/confirm.jsp">
+  <processor class="jipdbs.web.processors.PlayerPenaltyProcessor">
     <rule name="add-penalty-notice" pattern="^/player/op/add/notice/$">
     	<arg name="type" value="notice"/>
     </rule>

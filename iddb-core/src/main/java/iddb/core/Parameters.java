@@ -8,7 +8,7 @@ public interface Parameters {
 	
 	public static final int MIN_NGRAM_QUERY = 4;
 	public static final int MAX_NGRAM_QUERY = 50;
-	public static final int INDEX_MIN_LENGTH = 3;
+	public static final int INDEX_MIN_LENGTH = 2;
 	
 	public static final int MAX_ENTITY_LIMIT = 400;
 	

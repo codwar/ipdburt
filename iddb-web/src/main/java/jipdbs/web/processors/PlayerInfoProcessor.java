@@ -20,6 +20,7 @@ package jipdbs.web.processors;
 
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
+import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.util.Functions;
@@ -27,6 +28,7 @@ import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
 import iddb.web.security.service.UserServiceFactory;
 import iddb.web.viewbean.NoticeViewBean;
+import iddb.web.viewbean.PenaltyEventViewBean;
 import iddb.web.viewbean.PenaltyViewBean;
 import iddb.web.viewbean.PlayerViewBean;
 
@@ -47,13 +49,14 @@ import org.slf4j.LoggerFactory;
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 
-public class PlayerInfoProcessor extends FlashResponseProcessor {
+public class PlayerInfoProcessor extends ResponseProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(PlayerInfoProcessor.class);
 	
 	@Override
-	public String processProcessor(ResolverContext context) throws ProcessorException {
+	public String doProcess(ResolverContext context) throws ProcessorException {
 		
 		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		
@@ -85,6 +88,8 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
 		
 		List<NoticeViewBean> notices = null;
+		List<PenaltyEventViewBean> events = null;
+		
 		PlayerViewBean infoView = new PlayerViewBean();
 		infoView.setKey(player.getKey().toString());
 		infoView.setName(player.getNickname());
@@ -130,7 +135,40 @@ public class PlayerInfoProcessor extends FlashResponseProcessor {
 					}
 				}
 				notices.add(noticeViewBean);
-			}			
+			}
+			List<PenaltyHistory> historyList = app.listPenaltyEvents(player.getKey(), 10);
+			events = new ArrayList<PenaltyEventViewBean>();
+			for (PenaltyHistory history : historyList) {
+				PenaltyEventViewBean event = new PenaltyEventViewBean();
+				event.setStatus(MessageResource.getMessage("st_msg_" + history.getStatus().toString()));
+				event.setUpdated(history.getUpdated());
+				try {
+					Player pa = app.getPlayer(history.getAdminId());
+					event.setAdmin(pa.getNickname());
+				} catch (EntityDoesNotExistsException e) {
+					event.setAdmin("-");
+				}
+				try {
+					Penalty pe = app.getPenalty(history.getPenaltyId());
+					if (pe.getType() == Penalty.BAN) {
+						if (pe.getActive()) {
+							event.setType(MessageResource.getMessage("event_ban"));	
+						} else {
+							event.setType(MessageResource.getMessage("event_unban"));
+						}
+					} else {
+						if (pe.getActive()) {
+							event.setType(MessageResource.getMessage("event_note"));	
+						} else {
+							event.setType(MessageResource.getMessage("event_delnote"));
+						}					
+					}
+				} catch (EntityDoesNotExistsException e) {
+					event.setType("-");
+				}
+				events.add(event);
+			}
+			
 		} else {
 			if (player.getBanInfo() != null) {
 				infoView.setBanInfo(MessageResource.getMessage("banned"));

@@ -34,14 +34,15 @@ import org.apache.commons.lang.StringUtils;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 
-public class ChangePasswordProcessor extends FlashResponseProcessor {
+public class ChangePasswordProcessor extends ResponseProcessor {
 
 	/* (non-Javadoc)
 	 * @see jipdbs.web.processors.FlashResponseProcessor#processProcessor(ar.sgt.resolver.processor.ResolverContext)
 	 */
 	@Override
-	public String processProcessor(ResolverContext context)
+	public String doProcess(ResolverContext context)
 			throws ProcessorException {
 		
 		if (context.isPost()) {

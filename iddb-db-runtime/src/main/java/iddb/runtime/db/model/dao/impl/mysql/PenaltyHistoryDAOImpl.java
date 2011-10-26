@@ -209,4 +209,45 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 		return penalty;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyHistoryDAO#listByPlayer(java.lang.Long, int, int, int[])
+	 */
+	@Override
+	public List<PenaltyHistory> listByPlayer(Long id, int offset, int limit,
+			int[] count) {
+		String sqlCount = "SELECT count(h.id) FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? GROUP by h.penaltyid";
+		String sql = "SELECT h.* FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? GROUP by h.penaltyid HAVING h.id = max(h.id) ORDER BY h.updated desc limit ?,?";
+		Connection conn = null;
+		List<PenaltyHistory> list = new ArrayList<PenaltyHistory>();
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement stC = conn.prepareStatement(sqlCount);
+			stC.setLong(1, id);
+			ResultSet rsC = stC.executeQuery();
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, id);
+			st.setInt(2, offset);
+			st.setInt(3, limit);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				PenaltyHistory penalty = new PenaltyHistory();
+				loadPenaltyHistory(penalty, rs);
+				list.add(penalty);
+			}
+		} catch (SQLException e) {
+			logger.error("listByPlayer", e);
+		} catch (IOException e) {
+			logger.error("listByPlayer", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
 }

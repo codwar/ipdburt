@@ -287,7 +287,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type) {
-		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by created desc";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? and synced = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -296,6 +296,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
 			st.setBoolean(3, true);
+			st.setBoolean(4, true);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Penalty penalty = new Penalty();
@@ -459,7 +460,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public Penalty findLastActivePenalty(Long player, Integer type) {
-		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by updated desc limit 1";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? and synced = ? order by updated desc limit 1";
 		Connection conn = null;
 		Penalty penalty = null;
 		try {
@@ -468,6 +469,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
 			st.setBoolean(3, true);
+			st.setBoolean(4, true);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				penalty = new Penalty();

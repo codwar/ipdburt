@@ -27,6 +27,8 @@ import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.web.security.service.UserServiceFactory;
 
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 
 import jipdbs.web.CommonConstants;
@@ -37,19 +39,22 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ar.sgt.resolver.SimpleEntry;
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.utils.UrlReverse;
 
-public class AddPenaltyProcessor extends FlashResponseProcessor {
+public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 
-	private static final Logger log = LoggerFactory.getLogger(AddPenaltyProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(PlayerPenaltyProcessor.class);
 	
 	/* (non-Javadoc)
 	 * @see jipdbs.web.processors.FlashResponseProcessor#processProcessor(ar.sgt.resolver.processor.ResolverContext)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public String processProcessor(ResolverContext ctx)
+	public String doProcess(ResolverContext ctx)
 			throws ProcessorException {
 
 		IDDBService app = (IDDBService) ctx.getServletContext().getAttribute("jipdbs");
@@ -57,14 +62,18 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 		
 		String playerId = ctx.getRequest().getParameter("k");
 		String type = ctx.getParameter("type");
-		String redirect = ctx.getRequest().getParameter("p");
 		String reason = ctx.getRequest().getParameter("reason");
 		String duration = ctx.getRequest().getParameter("duration");
 		String durationType = ctx.getRequest().getParameter("dt");
 		
-		log.debug("Redirect {}", redirect);
-		
-		req.setAttribute("redirect", redirect);
+		UrlReverse reverse = new UrlReverse(ctx.getServletContext());
+		String redirect;
+		try {
+			redirect = reverse.resolve("playerinfo", new Entry[]{new SimpleEntry("key", playerId)});
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new ProcessorException(e);
+		}
 		
 		Player player = null;
 		try {
@@ -77,7 +86,7 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 		if (!UserServiceFactory.getUserService().hasPersmission(player.getServer(), CommonConstants.ADMIN_LEVEL)) {
 			Flash.error(req, MessageResource.getMessage("forbidden"));
 			log.debug("Forbidden");
-			return null;
+			return redirect;
 		}
 		
 		Player currentPlayer = null;
@@ -90,7 +99,7 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 		
 		if (StringUtils.isEmpty(reason)) {
 			Flash.error(req, MessageResource.getMessage("reason_field_required"));
-			return null;
+			return redirect;
 		}
 
 		Server server = null;
@@ -104,17 +113,16 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 		Penalty penalty = new Penalty();
 		penalty.setReason(reason);
 		penalty.setPlayer(player.getKey());
+		penalty.setActive(true);
 		
 		if (currentPlayer != null) penalty.setAdmin(currentPlayer.getKey());
 		
 		if (type.equals("notice")) {
 			penalty.setType(Penalty.NOTICE);
 			if ((server.getPermission() & RemotePermissions.ADD_NOTICE) == RemotePermissions.ADD_NOTICE) {
-				penalty.setActive(false);
 				penalty.setSynced(false);
 				Flash.info(req, MessageResource.getMessage("local_action_pending"));
 			} else {
-				penalty.setActive(true);
 				penalty.setSynced(true);
 				Flash.warn(req, MessageResource.getMessage("local_action_only"));
 			}
@@ -122,15 +130,14 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 			Long dm = Functions.time2minutes(duration + durationType);
 			if (dm == 0L) {
 				Flash.error(req, MessageResource.getMessage("duration_field_required"));
-				return null;				
+				return redirect;			
 			}
 			if ((server.getPermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
-				penalty.setActive(false);
 				penalty.setSynced(false);
 				Flash.info(req, MessageResource.getMessage("local_action_pending"));
 			} else {
 				Flash.error(req, MessageResource.getMessage("remote_action_not_available"));
-				return null;
+				return redirect;
 			}
 			penalty.setType(Penalty.BAN);
 			penalty.setDuration(dm);
@@ -139,10 +146,10 @@ public class AddPenaltyProcessor extends FlashResponseProcessor {
 		try {
 			app.addPenalty(penalty, !penalty.getSynced());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		
-		return null;
+		return redirect;
 	}
 
 }

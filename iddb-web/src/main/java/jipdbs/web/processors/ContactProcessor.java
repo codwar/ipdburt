@@ -31,11 +31,12 @@ import org.apache.commons.lang.StringUtils;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 
-public class ContactProcessor extends FlashResponseProcessor {
+public class ContactProcessor extends ResponseProcessor {
 
 	@Override
-	public String processProcessor(ResolverContext context) throws ProcessorException {
+	public String doProcess(ResolverContext context) throws ProcessorException {
 
 		if (context.isPost()) {
 			HttpServletRequest req = context.getRequest();

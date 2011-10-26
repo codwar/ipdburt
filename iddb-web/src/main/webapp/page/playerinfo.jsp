@@ -159,7 +159,7 @@ if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 		<tr>
 			<td>${event.type}</td>
 			<td>${event.status}</td>
-			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.created}" /></td>
+			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.updated}" /></td>
 			<td>
 			<c:choose>
 				<c:when test="${not empty event.admin}">${event.admin}</c:when>

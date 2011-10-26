@@ -33,8 +33,9 @@ import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 
-public class LoginProcessor extends FlashResponseProcessor {
+public class LoginProcessor extends ResponseProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(LoginProcessor.class);
 	
@@ -42,7 +43,7 @@ public class LoginProcessor extends FlashResponseProcessor {
 	 * @see jipdbs.web.processors.FlashResponseProcessor#processProcessor(ar.sgt.resolver.processor.ResolverContext)
 	 */
 	@Override
-	public String processProcessor(ResolverContext context)
+	public String doProcess(ResolverContext context)
 			throws ProcessorException {
 		String contextPath = context.getRequest().getContextPath().isEmpty() ? "/" : context.getRequest().getContextPath(); 
 		UserService userService = UserServiceFactory.getUserService();
@@ -51,7 +52,6 @@ public class LoginProcessor extends FlashResponseProcessor {
 			userService.logout(context.getRequest(), context.getResponse());
 			context.getRequest().setAttribute("redirect", contextPath);
 			return "/include/redirect.jsp";
-			//throw new ForceRedirect(contextPath);
 		} else {
 			Subject user = userService.getCurrentUser();
 			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? contextPath : context.getRequest().getParameter("next");
@@ -65,7 +65,6 @@ public class LoginProcessor extends FlashResponseProcessor {
 					boolean remember = "1".equals(context.getRequest().getParameter("remember"));
 					user = userService.authenticate(context.getRequest(), context.getResponse(), context.getRequest().getParameter("username"), context.getRequest().getParameter("password"), remember);
 					context.getRequest().setAttribute("redirect", next);
-					//throw new ForceRedirect(next);
 					return "/include/redirect.jsp";
 				} catch (InvalidAccountException e) {
 					Flash.error(context.getRequest(), MessageResource.getMessage("invalid_user_or_password")); 

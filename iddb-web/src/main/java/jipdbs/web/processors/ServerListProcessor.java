@@ -28,15 +28,16 @@ import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 
-public class ServerListProcessor extends FlashResponseProcessor {
+public class ServerListProcessor extends ResponseProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(ServerListProcessor.class);
 	
 	public static final int SERVER_LIMIT = 100;
 	
 	@Override
-	public String processProcessor(ResolverContext context) throws ProcessorException {
+	public String doProcess(ResolverContext context) throws ProcessorException {
 
 		IDDBService app = (IDDBService) context.getServletContext().getAttribute("jipdbs");
 		

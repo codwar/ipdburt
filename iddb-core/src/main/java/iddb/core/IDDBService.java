@@ -548,6 +548,15 @@ public class IDDBService {
 		return penaltyDAO.findByPlayerAndTypeAndActive(playerId, type);
 	}
 
+	public List<PenaltyHistory> listPenaltyEvents(Long playerId, int offset, int limit, int[] count) {
+		return penaltyHistoryDAO.listByPlayer(playerId, offset, limit, count);
+	}
+	
+	public List<PenaltyHistory> listPenaltyEvents(Long playerId, int limit) {
+		int[] total = new int[1];
+		return listPenaltyEvents(playerId, 0, limit, total);
+	}
+	
 	public void addPenalty(Penalty penalty, boolean log) {
 		penaltyDAO.save(penalty);
 		if (log) {
@@ -560,4 +569,9 @@ public class IDDBService {
 			penaltyHistoryDAO.save(his);
 		}
 	}
+	
+	public Penalty getPenalty(Long id) throws EntityDoesNotExistsException {
+		return penaltyDAO.get(id);
+	}
+
 }

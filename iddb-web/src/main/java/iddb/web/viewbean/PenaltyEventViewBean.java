@@ -16,23 +16,46 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.model.dao;
+package iddb.web.viewbean;
 
-import iddb.core.model.PenaltyHistory;
-import iddb.exception.EntityDoesNotExistsException;
+import java.io.Serializable;
+import java.util.Date;
 
-import java.util.List;
+public class PenaltyEventViewBean implements Serializable {
 
-public interface PenaltyHistoryDAO {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3380665773440492478L;
 
-	public abstract void save(PenaltyHistory history);
+	private String type;
+	private String status;
+	private Date updated;
+	private String admin;
 	
-	public abstract PenaltyHistory get(Long id) throws EntityDoesNotExistsException;
-	
-	public abstract List<PenaltyHistory> listByPenaltyId(Long id);
-	
-	public abstract PenaltyHistory getLastByPenalty(Long id) throws EntityDoesNotExistsException;
-	
-	public abstract List<PenaltyHistory> listByPlayer(Long id, int offset, int limit, int[] count);
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public Date getUpdated() {
+		return updated;
+	}
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+	public String getAdmin() {
+		return admin;
+	}
+	public void setAdmin(String admin) {
+		this.admin = admin;
+	}
 	
 }
