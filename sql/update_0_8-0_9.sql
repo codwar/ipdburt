@@ -3,7 +3,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 #
 # DDL START
 #
-CREATE TABLE penalty_history (
+CREATE TABLE IF NOT EXISTS penalty_history (
     id int(11) unsigned NOT NULL DEFAULT 0 COMMENT '' auto_increment,
     penaltyid int(11) unsigned NOT NULL DEFAULT 0 COMMENT '',
     adminid int(11) unsigned NULL DEFAULT NULL COMMENT '',
@@ -17,7 +17,7 @@ CREATE TABLE penalty_history (
     INDEX id_pen_upd (id, penaltyid, updated)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE user_session (
+CREATE TABLE IF NOT EXISTS user_session (
     id varchar(40) NOT NULL DEFAULT '' COMMENT '' COLLATE utf8_unicode_ci,
     userid int(11) unsigned NOT NULL DEFAULT 0 COMMENT '',
     ip varchar(15) NOT NULL DEFAULT '' COMMENT '' COLLATE utf8_unicode_ci,
@@ -35,8 +35,20 @@ ALTER TABLE player
     ADD rguid varchar(50) NULL DEFAULT NULL COMMENT '' COLLATE utf8_unicode_ci AFTER gaekey;
 
 ALTER TABLE server
-    ADD adminlevel tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '' AFTER gaekey,
     ADD INDEX name (name);
+
+CREATE TABLE IF NOT EXISTS `server_permission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `serverid` int(11) unsigned NOT NULL,
+  `funcid` tinyint(4) unsigned NOT NULL,
+  `level` tinyint(4) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `serverid_func` (`serverid`,`funcid`),
+  KEY `serverid` (`serverid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+
+ALTER TABLE `server` ADD `totalplayers` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `server` ADD `maxban` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
 
 #
 # DDL END

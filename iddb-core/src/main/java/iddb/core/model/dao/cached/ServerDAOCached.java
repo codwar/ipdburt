@@ -107,4 +107,31 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	public List<Server> listNotUpdatedSince(Date date) {
 		return impl.listNotUpdatedSince(date);
 	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#savePermissions(iddb.core.model.Server)
+	 */
+	@Override
+	public void savePermissions(Server server) {
+		this.impl.savePermissions(server);
+		cachePut("sp+" + server.getKey().toString(), server);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#get(java.lang.Long, boolean)
+	 */
+	@Override
+	public Server get(Long key, boolean fetchPermissions)
+			throws EntityDoesNotExistsException {
+		if (fetchPermissions) {
+			Server server = (Server) cacheGet("sp+" + key.toString());
+			if (server == null) {
+				server = impl.get(key, fetchPermissions);
+				if (server != null) cachePut("sp+" + key.toString(), server);
+			}
+			return server;
+		} else {
+			return get(key);
+		}
+	}
 }

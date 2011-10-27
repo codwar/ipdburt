@@ -30,8 +30,8 @@ import iddb.web.security.service.UserServiceFactory;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.web.CommonConstants;
 import jipdbs.web.Flash;
 import jipdbs.web.MessageResource;
 
@@ -79,35 +79,35 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 		try {
 			player = app.getPlayer(playerId);
 		} catch (EntityDoesNotExistsException e) {
-			log.debug(e.getMessage());
-			throw new HttpError(404);
+			log.error(e.getMessage());
+			throw new HttpError(HttpServletResponse.SC_NOT_FOUND);
 		}
 		
-		if (!UserServiceFactory.getUserService().hasPersmission(player.getServer(), CommonConstants.ADMIN_LEVEL)) {
+		Server server;
+		try {
+			server = app.getServer(player.getServer(), true);
+		} catch (EntityDoesNotExistsException e) {
+			log.error(e.getMessage());
+			throw new ProcessorException(e);
+		}
+		
+		if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getAdminLevel())) {
 			Flash.error(req, MessageResource.getMessage("forbidden"));
 			log.debug("Forbidden");
-			return redirect;
+			throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
 		}
 		
 		Player currentPlayer = null;
 		if (!UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
 			currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(player.getServer());
 			if (currentPlayer == null) {
-				throw new HttpError(404);
+				throw new HttpError(HttpServletResponse.SC_NOT_FOUND);
 			}
 		}
 		
 		if (StringUtils.isEmpty(reason)) {
 			Flash.error(req, MessageResource.getMessage("reason_field_required"));
 			return redirect;
-		}
-
-		Server server = null;
-		try {
-			server = app.getServer(player.getServer());
-		} catch (EntityDoesNotExistsException e) {
-			log.debug(e.getMessage());
-			throw new HttpError(404);
 		}
 		
 		Penalty penalty = new Penalty();

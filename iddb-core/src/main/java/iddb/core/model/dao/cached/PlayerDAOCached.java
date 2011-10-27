@@ -114,8 +114,8 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 	}
 
 	@Override
-	public int countConnected(Long key) {
-		return impl.countConnected(key);
+	public int countByServer(Long key, boolean connectedOnly) {
+		return impl.countByServer(key, connectedOnly);
 	}
 
 	@Override

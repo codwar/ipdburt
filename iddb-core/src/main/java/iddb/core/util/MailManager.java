@@ -62,11 +62,12 @@ public class MailManager {
 		if (props.containsKey("debug") && props.getProperty("debug").equalsIgnoreCase("true")) email.setDebug(true);
 	}
 	
-	public void sendAdminMail(String subject, String message) throws Exception {
+	public void sendAdminMail(String subject, String message, String replyTo) throws Exception {
 		if (props == null) throw new Exception("Unable to access email subsystem.");
 		Email email = new SimpleEmail();
 		email.setSubject(subject);
 		email.setMsg(message);
+		if (replyTo != null) email.addReplyTo(replyTo);
 		for (String adr : props.getProperty("admin").split(";")) {
 			email.addTo(adr);
 		}

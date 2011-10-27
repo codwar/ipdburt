@@ -18,12 +18,14 @@
  */
 package iddb.core;
 
+import iddb.api.RemotePermissions;
 import iddb.core.model.Alias;
 import iddb.core.model.AliasIP;
 import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.ServerPermission;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.AliasIPDAO;
 import iddb.core.model.dao.DAOFactory;
@@ -41,6 +43,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -119,9 +122,25 @@ public class IDDBService {
 	}
 
 	public Server getServer(Long key) throws EntityDoesNotExistsException {
-		return serverDAO.get(key);
+		return getServer(key, false);
 	}
 
+	public Server getServer(Long key, boolean permissions) throws EntityDoesNotExistsException {
+		Server server = serverDAO.get(key, permissions);
+		// this is a check to initialize the server permissions with default values
+		if (permissions && server.getPermissions().size() == 0) {
+			log.debug("Initialize {} server permissions", server.getName());
+			List<ServerPermission> lp = new ArrayList<ServerPermission>();
+			lp.add(new ServerPermission(RemotePermissions.ADD_BAN, 60));
+			lp.add(new ServerPermission(RemotePermissions.REMOVE_BAN, 60));
+			lp.add(new ServerPermission(RemotePermissions.ADD_NOTICE, 20));
+			lp.add(new ServerPermission(RemotePermissions.REMOVE_NOTICE, 40));
+			saveServerPermissions(server, lp);
+		}
+		if (server.getMaxBanDuration() == 0) server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
+		return server; 
+	}
+	
 	public void saveServer(String key, String name, String admin, String ip, boolean disabled) {
 		try {
 			Server server = getServer(key);
@@ -135,6 +154,10 @@ public class IDDBService {
 		}
 	}
 
+	public void saveServer(Server server) {
+		serverDAO.save(server);
+	}
+	
 	public List<Server> getServers() {
 		int[] count = new int[1];
 		return getServers(0, 1000, count);
@@ -401,9 +424,9 @@ public class IDDBService {
 
 	public void sendAdminMail(String realId, String from, String body) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Responder a: ");
-		builder.append(from);
-		builder.append("\r\n");
+//		builder.append("Responder a: ");
+//		builder.append(from);
+//		builder.append("\r\n");
 		if (realId != null) {
 			builder.append("Identificado como: ");
 			builder.append(realId);
@@ -414,7 +437,7 @@ public class IDDBService {
 		builder.append(body);
 		
 		try {
-			MailManager.getInstance().sendAdminMail("Mensaje enviado desde IPDB", builder.toString());
+			MailManager.getInstance().sendAdminMail("Mensaje enviado desde IPDB", builder.toString(), from);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -422,7 +445,7 @@ public class IDDBService {
 	}
 
 	public void refreshServerInfo(Server server) {
-		int c = playerDAO.countConnected(server.getKey());
+		int c = playerDAO.countByServer(server.getKey(), true);
 		server.setOnlinePlayers(c);
 		server.setDirty(false);
 		serverDAO.save(server);
@@ -574,4 +597,11 @@ public class IDDBService {
 		return penaltyDAO.get(id);
 	}
 
+	public void saveServerPermissions(Server server, List<ServerPermission> perm) {
+		if (server.getPermissions() == null) server.setPermissions(new HashMap<Long, Integer>(4));
+		for (ServerPermission p : perm) {
+			server.getPermissions().put(p.getFuncId().longValue(), p.getLevel());
+		}
+		serverDAO.savePermissions(server);
+	}
 }

@@ -1,3 +1,4 @@
+<%@page import="iddb.web.security.service.UserPermission"%>
 <%@page import="iddb.web.security.service.UserServiceFactory"%>
 <%@page import="iddb.web.security.service.UserService"%>
 
@@ -37,12 +38,22 @@
         <li><a href="<url:url name="banlist"/>">Baneados</a></li>
         <li><a href="<url:url name="serverlist"/>">Servidores</a></li>
         <%
-            if (userService.getCurrentUser().isSuperAdmin()) {
+        	if (userService.hasAnyServer(UserPermission.LEVEL_SUPERADMIN)) {
         %>
-        <li><a href="<url:url name="admin-serverlist"/>">Administrar</a></li>
-        <%      
-            }
-        %>
+        <li>  
+            <span class="subnav">Administrar</span>
+            <ul class="subnav">
+		        <%
+		            if (userService.getCurrentUser().isSuperAdmin()) {
+		        %>
+		        <li><a href="<url:url name="admin-serverlist"/>">Sistema</a></li>
+		        <%      
+		            }
+		        %>
+                <li><a href="<url:url name="manager"/>">Servidor</a></li>
+            </ul>
+        </li>
+		<% } %>
         <li>  
             <span class="subnav">Ayuda</span>
             <ul class="subnav">

@@ -27,12 +27,16 @@ import java.util.List;
 public interface ServerDAO {
 
 	public abstract void save(Server server);
+	
+	public abstract void savePermissions(Server server);
 
 	public abstract List<Server> findAll(int offset, int limit, int[] count);
 
 	public abstract Server findByUid(String uid);
 
 	public abstract Server get(Long server) throws EntityDoesNotExistsException;
+	
+	public abstract Server get(Long server, boolean fetchPermissions) throws EntityDoesNotExistsException;
 	
 	public abstract List<Server> listNotUpdatedSince(Date date); 
 	

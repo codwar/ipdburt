@@ -16,11 +16,29 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package jipdbs.web;
+package iddb.quartz.job;
 
-public interface CommonConstants {
+import iddb.scheduller.Worker;
+import iddb.scheduller.jobs.UpdateStatsWorker;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class UpdateStatsJob implements Job {
+
+	private static final Logger log = LoggerFactory.getLogger(UpdateStatsJob.class);
 	
-	public static final int DEFAULT_PAGE_SIZE = 20;
-	public static final int DEFAULT_AJAX_PAGE_LIMIT = 10;
-	
+	/* (non-Javadoc)
+	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+	 */
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		log.debug("Running update stats job");
+		Worker worker = new UpdateStatsWorker();
+		worker.execute();
+	}
+
 }

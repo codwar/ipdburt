@@ -205,3 +205,14 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   KEY `created` (`created`),
   KEY `key` (`id`,`userid`,`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `server_permission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `serverid` int(11) unsigned NOT NULL,
+  `funcid` tinyint(4) unsigned NOT NULL,
+  `level` tinyint(4) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `serverid_func` (`serverid`,`funcid`),
+  KEY `serverid` (`serverid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci

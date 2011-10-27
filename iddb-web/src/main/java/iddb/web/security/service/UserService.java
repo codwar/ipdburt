@@ -18,7 +18,10 @@
  */
 package iddb.web.security.service;
 
+import java.util.List;
+
 import iddb.core.model.Player;
+import iddb.core.model.Server;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
@@ -91,7 +94,7 @@ public interface UserService {
 	 * @param level
 	 * @return
 	 */
-	public boolean hasPersmission(Long server, Integer level);
+	public boolean hasPermission(Long server, Integer level);
 	
 	/**
 	 * Check if the user has level permission on any server
@@ -110,5 +113,11 @@ public interface UserService {
 	 * Remove local data to avoid leeks
 	 */
 	public void cleanUp();
+
+	/**
+	 * @param level
+	 * @return
+	 */
+	List<Server> listUserServers(Integer level);
 	
 }

@@ -1,4 +1,4 @@
-<%@page import="jipdbs.web.CommonConstants"%>
+<%@page import="iddb.web.security.service.UserPermission"%>
 <%@page import="iddb.web.security.service.UserServiceFactory"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
@@ -153,7 +153,7 @@
 		
         $('.bbcode').nyroModal();
         <%
-    	if (UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL)) {
+    	if (UserServiceFactory.getUserService().hasAnyServer(UserPermission.LEVEL_MOD)) {
     	%>
         $(".banned").tipTip({attribute: "alt", defaultPosition: "right"});
         /*

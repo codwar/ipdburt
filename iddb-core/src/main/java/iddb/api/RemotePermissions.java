@@ -26,4 +26,6 @@ public interface RemotePermissions {
 	public static final Integer ADD_NOTICE = 4;
 	public static final Integer REMOVE_NOTICE = 8;
 	
+	public static final Long DEFAULT_MAXBAN = 20160L; // 14d
+	
 }

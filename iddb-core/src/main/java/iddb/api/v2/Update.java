@@ -109,11 +109,10 @@ public class Update {
 			server.setPermission(permission);
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
-			server.setAdminLevel(adminLevel);
 			serverDAO.save(server);
 		} catch (UnauthorizedUpdateException e) {
 			try {
-				MailManager.getInstance().sendAdminMail("WARN", e.getMessage());
+				MailManager.getInstance().sendAdminMail("WARN", e.getMessage(), null);
 			} catch (Exception me) {
 				log.error(me.getMessage());
 			}

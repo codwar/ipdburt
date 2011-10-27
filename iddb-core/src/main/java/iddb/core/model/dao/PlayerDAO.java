@@ -49,7 +49,14 @@ public interface PlayerDAO {
 
 	public abstract void cleanConnected(Long server);
 
-	public abstract int countConnected(Long key);
+	/**
+	 * Count players by server id.
+	 * If connectedOnly = false will count all players
+	 * @param serverId
+	 * @param connectedOnly
+	 * @return
+	 */
+	public abstract int countByServer(Long serverId, boolean connectedOnly);
 
 	public abstract List<Player> findByClientId(Long clientId, int offset,
 			int limit, int[] count);

@@ -19,6 +19,7 @@
 package jipdbs.tag;
 
 import iddb.core.util.Functions;
+import iddb.web.security.service.UserPermission;
 import iddb.web.security.service.UserService;
 import iddb.web.security.service.UserServiceFactory;
 
@@ -27,8 +28,6 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import jipdbs.web.CommonConstants;
 
 public class IpMasker extends TagSupport {
 
@@ -52,7 +51,7 @@ public class IpMasker extends TagSupport {
 			} else {
 				String h;
 				UserService userService = UserServiceFactory.getUserService();
-				if (userService.hasAnyServer(CommonConstants.ADMIN_LEVEL)) {
+				if (userService.hasAnyServer(UserPermission.LEVEL_MOD)) {
 					h = value;
 				} else {
 					h = Functions.maskIpAddress(value);

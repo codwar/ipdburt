@@ -16,11 +16,37 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package jipdbs.web;
+package iddb.core.model;
 
-public interface CommonConstants {
+import java.io.Serializable;
+
+public class ServerPermission implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1218957068034932929L;
 	
-	public static final int DEFAULT_PAGE_SIZE = 20;
-	public static final int DEFAULT_AJAX_PAGE_LIMIT = 10;
+	private Integer funcId;
+	private Integer level;
+	
+	public ServerPermission(Integer funcId, Integer level) {
+		this.funcId = funcId;
+		this.level = level;
+	}
+	
+	public Integer getFuncId() {
+		return funcId;
+	}
+	public void setFuncId(Integer funcId) {
+		this.funcId = funcId;
+	}
+	public Integer getLevel() {
+		return level;
+	}
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
 	
 }

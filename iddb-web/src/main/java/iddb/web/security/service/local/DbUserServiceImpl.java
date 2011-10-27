@@ -19,10 +19,12 @@
 package iddb.web.security.service.local;
 
 import iddb.core.model.Player;
+import iddb.core.model.Server;
 import iddb.core.model.User;
 import iddb.core.model.UserServer;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PlayerDAO;
+import iddb.core.model.dao.ServerDAO;
 import iddb.core.model.dao.UserDAO;
 import iddb.core.model.dao.UserServerDAO;
 import iddb.core.util.PasswordUtils;
@@ -35,6 +37,11 @@ import iddb.web.security.exceptions.UserLockedException;
 import iddb.web.security.service.CommonUserService;
 import iddb.web.security.subject.Subject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,7 +51,8 @@ import org.slf4j.LoggerFactory;
 public class DbUserServiceImpl extends CommonUserService {
 
 	private UserDAO userDAO = (UserDAO) DAOFactory.forClass(UserDAO.class);
-	private UserServerDAO serverDAO = (UserServerDAO) DAOFactory.forClass(UserServerDAO.class);
+	private UserServerDAO userServerDAO = (UserServerDAO) DAOFactory.forClass(UserServerDAO.class);
+	private ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 	private PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 	
 	private SessionDAO sessionDAO;
@@ -109,7 +117,7 @@ public class DbUserServiceImpl extends CommonUserService {
 		if (subject.isSuperAdmin()) return true;
 		
 		try {
-			serverDAO.findByUserAndServer(subject.getKey(), server);
+			userServerDAO.findByUserAndServer(subject.getKey(), server);
 		} catch (EntityDoesNotExistsException e) {
 			log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
 			return false;
@@ -118,11 +126,39 @@ public class DbUserServiceImpl extends CommonUserService {
 		return true;
 	}
 
+	@Override
+	public List<Server> listUserServers(Integer level) {
+		Subject subject = this.getCurrentUser();
+		if (!subject.isAuthenticated()) return Collections.emptyList();
+		List<Server> servers = null;
+		if (subject.isSuperAdmin()) {
+			int[] count = new int[1];
+			servers = serverDAO.findEnabled(0, 1000, count);
+		} else {
+			List<UserServer> us = userServerDAO.listUserServers(subject.getKey(), level);
+			servers = new ArrayList<Server>();
+			for (UserServer u : us) {
+				try {
+					servers.add(serverDAO.get(u.getServer()));
+				} catch (EntityDoesNotExistsException e) {
+					log.error(e.getMessage());
+				}
+			}
+		}
+		Collections.sort(servers, new Comparator<Server>() {
+			@Override
+			public int compare(Server o1, Server o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		return servers;
+	}
+	
 	/* (non-Javadoc)
 	 * @see iddb.web.security.service.UserService#hasPersmission(java.lang.Long, java.lang.Integer)
 	 */
 	@Override
-	public boolean hasPersmission(Long server, Integer level) {
+	public boolean hasPermission(Long server, Integer level) {
 		Subject subject = this.getCurrentUser();
 		if (!subject.isAuthenticated()) return false;
 		if (subject.isSuperAdmin()) return true;
@@ -151,7 +187,7 @@ public class DbUserServiceImpl extends CommonUserService {
 		Subject subject = this.getCurrentUser();
 		if (!subject.isAuthenticated()) return false;
 		if (subject.isSuperAdmin()) return true;
-		return serverDAO.existsAny(subject.getKey(), level);
+		return userServerDAO.existsAny(subject.getKey(), level);
 	}
 
 	/* (non-Javadoc)
@@ -215,7 +251,7 @@ public class DbUserServiceImpl extends CommonUserService {
 		if (player == null) {
 			UserServer userServer;
 			try {
-				userServer = serverDAO.findByUserAndServer(subject.getKey(), server);
+				userServer = userServerDAO.findByUserAndServer(subject.getKey(), server);
 			} catch (EntityDoesNotExistsException e) {
 				log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
 				return null;

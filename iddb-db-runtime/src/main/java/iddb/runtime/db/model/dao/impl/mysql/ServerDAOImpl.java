@@ -31,7 +31,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +46,7 @@ public class ServerDAOImpl implements ServerDAO {
 	public void save(Server server) {
 		String sql;
 		if (server.getKey() == null) {
-			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled, adminlevel) values (?,?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled, maxban, totalplayers) values (?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update server set uid = ?, " +
 					"name = ?, " +
@@ -58,7 +60,8 @@ public class ServerDAOImpl implements ServerDAO {
 					"isdirty = ?, " +
 					"permission = ?, " +
 					"disabled = ?, " +
-					"adminlevel = ? where id = ? limit 1";
+					"maxban = ?, " +
+					"totalplayers = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -78,8 +81,9 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setBoolean(10, server.getDirty());
 			st.setInt(11, server.getPermission());
 			st.setBoolean(12, server.getDisabled());
-			st.setInt(13, server.getAdminLevel());
-			if (server.getKey() != null) st.setLong(14, server.getKey());
+			st.setLong(13, server.getMaxBanDuration());
+			st.setInt(14, server.getTotalPlayers());
+			if (server.getKey() != null) st.setLong(15, server.getKey());
 			st.executeUpdate();
 			if (server.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -177,36 +181,13 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setDirty(rs.getBoolean("isdirty"));
 		server.setPermission(rs.getInt("permission"));
 		server.setDisabled(rs.getBoolean("disabled"));
-		server.setAdminLevel(rs.getInt("adminlevel"));
+		server.setTotalPlayers(rs.getInt("totalplayers"));
+		server.setMaxBanDuration(rs.getLong("maxban"));
 	}
 
 	@Override
 	public Server get(Long key) throws EntityDoesNotExistsException {
-		String sql = "select * from server where id = ?";
-		Connection conn = null;
-		Server server = null;
-		try {
-			conn = ConnectionFactory.getSecondaryConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setLong(1, key);
-			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
-				server = new Server();
-				loadServer(server, rs);
-			} else {
-				throw new EntityDoesNotExistsException("Server with id %s was not found", key.toString());
-			}
-		} catch (SQLException e) {
-			logger.error("get", e);
-		} catch (IOException e) {
-			logger.error("get", e);
-		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (Exception e) {
-			}
-		}
-		return server;
+		return get(key, false);
 	}
 
 	/* (non-Javadoc)
@@ -273,6 +254,92 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		}
 		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#get(java.lang.Long, boolean)
+	 */
+	@Override
+	public Server get(Long key, boolean fetchPermissions) throws EntityDoesNotExistsException {
+		String sql = "select * from server where id = ?";
+		Connection conn = null;
+		Server server = null;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setLong(1, key);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				server = new Server();
+				loadServer(server, rs);
+			} else {
+				throw new EntityDoesNotExistsException("Server with id %s was not found", key.toString());
+			}
+			if (fetchPermissions) {
+				sql = "select * from server_permission where serverid = ?";
+				st = conn.prepareStatement(sql);
+				st.setLong(1, key);
+				rs = st.executeQuery();
+				server.setPermissions(new HashMap<Long, Integer>());
+				while (rs.next()) {
+					server.getPermissions().put(new Long(rs.getInt("funcid")), rs.getInt("level"));
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("get", e);
+		} catch (IOException e) {
+			logger.error("get", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return server;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#savePermissions(iddb.core.model.Server)
+	 */
+	@Override
+	public void savePermissions(Server server) {
+		String sqlI = "insert into server_permission (serverid, funcid, level) values (?,?,?)";
+		String sqlU = "update server_permission set level = ? where serverid = ? and funcid = ? limit 1";
+		String sql = "select level from server_permission where serverid = ? and funcid = ? limit 1";
+		
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st;
+			ResultSet rs;
+			for (Entry<Long, Integer> entry : server.getPermissions().entrySet()) {
+				st = conn.prepareStatement(sql);
+				st.setLong(1, server.getKey());
+				st.setInt(2, entry.getKey().intValue());
+				rs = st.executeQuery();
+				if (rs.next()) {
+					st = conn.prepareStatement(sqlU);
+					st.setInt(1, entry.getValue());
+					st.setLong(2, server.getKey());
+					st.setInt(3, entry.getKey().intValue());
+				} else {
+					st = conn.prepareStatement(sqlI);
+					st.setLong(1, server.getKey());
+					st.setInt(2, entry.getKey().intValue());
+					st.setInt(3, entry.getValue());
+				}
+				st.executeUpdate();
+			}
+		} catch (SQLException e) {
+			logger.error("savePermissions", e.getMessage());
+		} catch (IOException e) {
+			logger.error("savePermissions", e.getMessage());
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 }

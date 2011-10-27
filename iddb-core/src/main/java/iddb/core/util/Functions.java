@@ -196,6 +196,26 @@ public class Functions {
 		return value;
 	}
 	
+	public static String minutes2Str(Long minutes) {
+		Integer num;
+		if (minutes < 60) {
+			num = Math.round(minutes);
+			return num.toString();
+		} else if (minutes < 1440) {
+			num = Math.round(minutes / 60);
+			return num.toString() + "h";
+		} else if (minutes < 10080) {
+			num = Math.round((minutes / 60) / 24);
+			return num.toString() + "d";
+		} else if (minutes < 525600) {
+			num = Math.round(((minutes / 60) / 24) / 7);
+			return num.toString() + "w";
+		} else {
+			num = Math.round(((minutes / 60) / 24) / 365);
+			return num.toString() + "y";
+		}
+	}
+
 	public static String normalize(String text) {
 		// TODO agregar lo que vaya siendo necesario
 //		String s = text.toLowerCase();
@@ -305,6 +325,7 @@ public class Functions {
 	}
 	
 	public static void main(String[] args) {
+		System.out.println(minutes2Str(15000L));
 		System.out.println(normalize(">pr0.frankillo"));
 		System.out.println(normalize("H'ace"));
 		System.out.println(normalize("Fatal1ty"));

@@ -19,7 +19,11 @@
 package iddb.core.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class Server implements Serializable {
 
@@ -44,8 +48,28 @@ public class Server implements Serializable {
 	private Boolean dirty;
 	private Integer permission;
 	private Boolean disabled;
-	private Integer adminLevel;
+	private Map<Long, Integer> permissions;
+	private Long maxBanDuration;
 	
+	/* stats */
+	private Integer totalPlayers;
+	
+	public Integer getTotalPlayers() {
+		return totalPlayers;
+	}
+
+	public void setTotalPlayers(Integer totalPlayers) {
+		this.totalPlayers = totalPlayers;
+	}
+
+	public Map<Long, Integer> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Map<Long, Integer> permissions) {
+		this.permissions = permissions;
+	}
+
 	public Boolean getDisabled() {
 		return disabled;
 	}
@@ -179,11 +203,18 @@ public class Server implements Serializable {
 	}
 
 	public Integer getAdminLevel() {
-		return adminLevel;
+		if (this.permissions == null || this.permissions.size() == 0) return 100;
+		List<Integer> levels = new ArrayList<Integer>(this.permissions.values());
+		Collections.sort(levels);
+		return levels.get(0);
 	}
 
-	public void setAdminLevel(Integer adminLevel) {
-		this.adminLevel = adminLevel;
+	public Long getMaxBanDuration() {
+		return maxBanDuration;
 	}
 
+	public void setMaxBanDuration(Long maxBanDuration) {
+		this.maxBanDuration = maxBanDuration;
+	}
+	
 }

@@ -304,7 +304,6 @@ function open_dialog(d) {
 <form action="<url:url name="add-penalty-notice"/>" method="post">
 <fieldset>
 	<input type="hidden" name="k" value="${player.key}"/>
-	<input type="hidden" name="p" value="${current_path}"/>
 	<label for="name">Motivo</label><br/>
 	<input type="text" name="reason" class="text ui-corner-all" /><br/>
 </fieldset>
@@ -314,7 +313,6 @@ function open_dialog(d) {
 <form action="<url:url name="add-penalty"/>" method="post">
 <fieldset>
 	<input type="hidden" name="k" value="${player.key}"/>
-	<input type="hidden" name="p" value="${current_path}"/>
 	<label for="name">Motivo</label><br/>
 	<input type="text" name="reason" class="text ui-corner-all" /><br/>
 	<label for="name">Duración</label><br/>

@@ -47,15 +47,12 @@
   <processor class="jipdbs.web.processors.admin.LoadServerProcessor" redirect="/admin/serverlist.jsp">
     <rule name="admin-getserver" pattern="^/admin/server/($key[\d]+)/get/$"/>
   </processor>
-  <forward-processor redirect="/page/donar.jsp">
-    <rule name="donation" pattern="^/donate/$"/>
-  </forward-processor>
-  <forward-processor redirect="/page/donar_ok.jsp">
-    <rule name="donation_ok" pattern="^/donate/thanks/$"/>
-  </forward-processor>
-  <forward-processor redirect="/page/donar_fail.jsp">
-    <rule name="donation_fail" pattern="^/donate/sad/$"/>
-  </forward-processor>  
+  <processor class="jipdbs.web.processors.ServerManagerProcessor" redirect="/page/man_server_list.jsp">
+  	<rule name="manager" pattern="^/manage/server/$"/>
+  </processor>  
+  <processor class="jipdbs.web.processors.ServerManagerProcessor" redirect="/page/man_server.jsp">
+    <rule name="manage-server" pattern="^/manage/server/($key[\d]+)/$"/>
+  </processor>
   <processor class="jipdbs.web.processors.ContactProcessor" redirect="/page/contact.jsp">
     <rule name="contact" pattern="^/contact/$"/>
   </processor>
@@ -73,14 +70,21 @@
     	<arg name="type" value="ban"/>
     </rule>    
   </processor>  
-  
-  
   <processor class="jipdbs.web.processors.ChangePasswordProcessor" redirect="/page/change_password.jsp">
     <rule name="change_password" pattern="^/account/update/$"/>
   </processor>  
   <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
     <rule name="openid" pattern="^/openid/$"/>
   </processor>
+  <forward-processor redirect="/page/donar.jsp">
+    <rule name="donation" pattern="^/donate/$"/>
+  </forward-processor>
+  <forward-processor redirect="/page/donar_ok.jsp">
+    <rule name="donation_ok" pattern="^/donate/thanks/$"/>
+  </forward-processor>
+  <forward-processor redirect="/page/donar_fail.jsp">
+    <rule name="donation_fail" pattern="^/donate/sad/$"/>
+  </forward-processor>    
   <forward-processor redirect="/page/faq.jsp">
     <rule name="faq" pattern="^/faq/$"/>
   </forward-processor>

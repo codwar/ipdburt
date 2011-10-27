@@ -27,6 +27,7 @@ import iddb.core.util.Functions;
 import iddb.core.util.Validator;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.SearchResult;
+import iddb.web.security.service.UserPermission;
 import iddb.web.security.service.UserServiceFactory;
 import iddb.web.viewbean.PenaltyViewBean;
 
@@ -162,7 +163,7 @@ public class SearchProcessor extends ResponseProcessor {
 
 		int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
-		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL); 
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(UserPermission.LEVEL_MOD); 
 		if (hasAdmin) {
 			for (SearchResult result : list) {
 				if (result.isBanned()) {

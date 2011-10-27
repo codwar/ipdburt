@@ -329,23 +329,28 @@ public class PlayerDAOImpl implements PlayerDAO {
 	}
 
 	@Override
-	public int countConnected(Long key) {
-		String sql = "select count(id) from player where connected = ? and serverid = ?";
+	public int countByServer(Long key, boolean connectedOnly) {
+		String sql;
+		if (connectedOnly) {
+			sql = "select count(id) from player where serverid = ? and connected = ?";	
+		} else {
+			sql = "select count(id) from player where serverid = ?";
+		}
 		Connection conn = null;
 		int c = 0;
 		try {
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setBoolean(1, true);
-			st.setLong(2, key);
+			st.setLong(1, key);
+			if (connectedOnly) st.setBoolean(2, true);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				c = rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			logger.error("countConnected", e);
+			logger.error("countByServer", e);
 		} catch (IOException e) {
-			logger.error("countConnected", e);
+			logger.error("countByServer", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

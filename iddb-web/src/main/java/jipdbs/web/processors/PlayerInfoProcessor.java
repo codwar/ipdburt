@@ -40,7 +40,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jipdbs.web.CommonConstants;
 import jipdbs.web.MessageResource;
 
 import org.slf4j.Logger;
@@ -76,15 +75,16 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		
 		Server server;
 		try {
-			server = app.getServer(player.getServer());
+			server = app.getServer(player.getServer(), true);
 		} catch (EntityDoesNotExistsException e) {
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.error(w.getBuffer().toString());
 			throw new ProcessorException(e);
 		}
-
-		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(CommonConstants.ADMIN_LEVEL);
+		
+		Integer minLevel = server.getAdminLevel();
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(minLevel);
 		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
 		
 		List<NoticeViewBean> notices = null;
