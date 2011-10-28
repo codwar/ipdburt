@@ -21,7 +21,7 @@
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
-				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${server.key}"/></url:url>">${server.name}</a></td>
+				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${server.key}"/></url:url>">${server.name} - [${server.address}]</a></td>
 				<td style="text-align: right;">
 				<c:choose>
 				<c:when test="${server.dirty}">

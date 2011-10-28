@@ -4,19 +4,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/ui-darkness/jquery-ui-1.8.16.custom.css" media="screen"/>
+<jsp:include page="/include/jqueryui.jsp"/>
 
+<c:if test="${not empty servers}">
 <table>
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
 				<td>${server.name}</td>
-				<td><a class="button" style="color: #fff;" href="<url:url name="manage-server"><url:param name="key" value="${server.key}"/></url:url>">Administrar</a></td>
+				<td style="width: 120px;"><a class="button" href="<url:url name="manage-server"><url:param name="key" value="${server.key}"/></url:url>">Administrar</a></td>
 			</tr>
 		</c:forEach>
 	</tbody>
 </table>
+</c:if>
 
 <script type="text/javascript">
 $(document).ready(

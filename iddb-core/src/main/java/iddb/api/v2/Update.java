@@ -80,29 +80,6 @@ public class Update {
 	 * @since 0.5
 	 */
 	public void updateName(String key, String name, String version,	Integer permission, String remoteAddr) {
-		updateName(key, name, version, permission, 40, remoteAddr);
-	}
-
-	/**
-	 * Updates the name of a server given its uid.
-	 * <p>
-	 * Invoked by the servers when they change their public server name.
-	 * 
-	 * @param key
-	 *          the server uid.
-	 * @param name
-	 *          the server's new name.
-	 * @param version
-	 * 			plugin version number
-	 * @param permission
-	 * 			allowed actions for server admins
-	 * @param adminLevel
-	 * 			minimum level for remote actions  
-	 * @param remoteAddr
-	 *            the server's remote address.
-	 * @since 0.8
-	 */
-	public void updateName(String key, String name, String version,	Integer permission, Integer adminLevel, String remoteAddr) {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, remoteAddr,name);
 			server.setName(name);

@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS `server_permission` (
 ALTER TABLE `server` ADD `totalplayers` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `server` ADD `maxban` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
 
+ALTER TABLE `player` ADD INDEX `serverid_con_upd` ( `serverid` , `connected` , `updated` );
+
 #
 # DDL END
 #

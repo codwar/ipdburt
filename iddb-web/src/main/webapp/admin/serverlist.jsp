@@ -3,8 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/ui-darkness/jquery-ui-1.8.16.custom.css" media="screen"/>
+<jsp:include page="/include/jqueryui.jsp"/>
 
 <button id="create-server">Nuevo</button>
 <table border="1" style="margin-top: 5px;">

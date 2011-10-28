@@ -1,3 +1,7 @@
+<%@page import="org.springframework.beans.factory.annotation.Required"%>
+<%@page import="iddb.core.model.Server"%>
+<%@page import="iddb.web.security.service.UserServiceFactory"%>
+<%@page import="iddb.core.model.Player"%>
 <%@page import="iddb.api.RemotePermissions"%>
 <%@page import="iddb.core.model.Penalty"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -8,8 +12,7 @@
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/ui-darkness/jquery-ui-1.8.16.custom.css" media="screen"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<jsp:include page="/include/jqueryui.jsp"/>
 
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
@@ -102,9 +105,17 @@
 		<li class="icon add link" id="addnote">Nueva nota</li>
 <%
 Integer permission = (Integer) request.getAttribute("permission");
+Server server = (Server) request.getAttribute("server"); 
 if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
-	out.write("<li class='icon ban link' id='addpenalty'>Banear</li>");
+	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
+		out.write("<li class='icon ban link' id='addpenalty'>Banear</li>");
+	}
 }
+if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
+	request.setAttribute("canRemoveNotice", true);
+}
+
+
 %>		
 	</ul>
 </div>
@@ -199,7 +210,9 @@ if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 				<c:otherwise>-</c:otherwise>
 			</c:choose> </td>
 			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${notice.created}" />
-			<span class="icon delete tip link" title="Eliminar"></span>
+			<c:if test="${canRemoveNotice}">
+			<span alt="<url:url name="delete-notice"><url:param name="key" value="${notice.key}"/></url:url>?k=${player.key}" class="icon delete tip link confirm" title="Eliminar"></span>
+			</c:if>
 			</td>
 		</tr>
 	</c:forEach>
@@ -282,6 +295,24 @@ $(document).ready(
 		function() {
 			$(".player_menu_box").hide();
 		});
+		
+		$(".confirm").click(function() {
+			var url = $(this).attr('alt');
+			$("#dialog-confirm").dialog({
+				resizable: false,
+				height:140,
+				modal: true,
+				title: 'Confirmar',
+				buttons: {
+					"Eliminar": function() {
+						window.location = url;
+					},
+					"Cancelar": function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});			
+		});
 	}
 )
 function open_dialog(d) {
@@ -300,8 +331,12 @@ function open_dialog(d) {
 }
 </script>
 
+<div id="dialog-confirm">
+Confirma eliminaci&oacute;n?
+</div>
+
 <div id="add-note-dialog" class="dialog" style="display: none;">
-<form action="<url:url name="add-penalty-notice"/>" method="post">
+<form action="<url:url name="add-notice"/>" method="post">
 <fieldset>
 	<input type="hidden" name="k" value="${player.key}"/>
 	<label for="name">Motivo</label><br/>

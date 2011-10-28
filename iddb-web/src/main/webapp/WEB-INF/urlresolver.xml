@@ -63,13 +63,21 @@
     </rule>    
   </processor>
   <processor class="jipdbs.web.processors.PlayerPenaltyProcessor">
-    <rule name="add-penalty-notice" pattern="^/player/op/add/notice/$">
+    <rule name="add-notice" pattern="^/player/op/add/notice/$">
     	<arg name="type" value="notice"/>
     </rule>
     <rule name="add-penalty" pattern="^/player/op/add/ban/$">
     	<arg name="type" value="ban"/>
+    </rule>
+    <rule name="delete-notice" pattern="^/player/op/rm/notice/($key[\d]+)/$">
+    	<arg name="type" value="notice"/>
+    	<arg name="rm" value="true"/>
     </rule>    
-  </processor>  
+    <rule name="delete-penalty" pattern="^/player/op/rm/ban/($key[\d]+)/$">
+    	<arg name="type" value="ban"/>
+    	<arg name="rm" value="true"/>
+    </rule>
+  </processor>
   <processor class="jipdbs.web.processors.ChangePasswordProcessor" redirect="/page/change_password.jsp">
     <rule name="change_password" pattern="^/account/update/$"/>
   </processor>  

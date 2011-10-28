@@ -37,6 +37,7 @@ public class PenaltyViewBean implements Serializable {
 	 */
 	private static final long serialVersionUID = -8113493728931503717L;
 
+	private Long key;
 	private Date created;
 	private String reason;
 	private Long duration;
@@ -76,6 +77,14 @@ public class PenaltyViewBean implements Serializable {
 		calendar.add(Calendar.MINUTE, this.getDuration().intValue());
 		return calendar.getTime();
 	}	
+
+	public Long getKey() {
+		return key;
+	}
+
+	public void setKey(Long key) {
+		this.key = key;
+	}
 
 	@Override
 	public String toString() {

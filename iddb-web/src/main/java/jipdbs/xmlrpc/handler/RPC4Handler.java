@@ -45,10 +45,6 @@ public class RPC4Handler extends RPC3Handler {
 	public String getClientAddress() {
 		return JIPDBSXmlRpc4Servlet.getClientIpAddress();
 	}
-	
-	public void updateName(String key, String name, Object[] data) {
-		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], (Integer) data[2], getClientAddress());
-	}
 
 	public String getClientHash(String key, String guid) {
 		if (guid == null || "".equals(guid)) return "";

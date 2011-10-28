@@ -580,17 +580,20 @@ public class IDDBService {
 		return listPenaltyEvents(playerId, 0, limit, total);
 	}
 	
-	public void addPenalty(Penalty penalty, boolean log) {
+	public void updatePenalty(Penalty penalty, Long playerId, boolean log) {
 		penaltyDAO.save(penalty);
+		PenaltyHistory his = new PenaltyHistory();
+		his.setPenaltyId(penalty.getKey());
+		if (playerId == null) playerId = penalty.getAdmin();
+		his.setAdminId(playerId);
+		his.setCreated(new Date());
+		his.setUpdated(new Date());
 		if (log) {
-			PenaltyHistory his = new PenaltyHistory();
-			his.setPenaltyId(penalty.getKey());
-			his.setAdminId(penalty.getAdmin());
-			his.setCreated(new Date());
-			his.setUpdated(new Date());
 			his.setStatus(PenaltyHistory.ST_PENDING);
-			penaltyHistoryDAO.save(his);
+		} else {
+			his.setStatus(PenaltyHistory.ST_DONE);
 		}
+		penaltyHistoryDAO.save(his);
 	}
 	
 	public Penalty getPenalty(Long id) throws EntityDoesNotExistsException {

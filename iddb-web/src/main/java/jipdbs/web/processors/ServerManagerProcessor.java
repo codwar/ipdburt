@@ -68,9 +68,7 @@ public class ServerManagerProcessor extends ResponseProcessor {
 		
 		if (id == null) {
 			List<Server> servers = UserServiceFactory.getUserService().listUserServers(UserPermission.LEVEL_SUPERADMIN);
-			if (servers.size() == 0) {
-				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
-			} else if (servers.size() == 1) {
+			if (servers.size() == 1) {
 				UrlReverse reverse = new UrlReverse(context.getServletContext());
 				String url;
 				try {
@@ -81,6 +79,7 @@ public class ServerManagerProcessor extends ResponseProcessor {
 				}
 				throw new ForceRedirect(req.getContextPath() + url);
 			} else {
+				if (servers.size() == 0) Flash.warn(req, MessageResource.getMessage("manager_noservers"));
 				req.setAttribute("servers", servers);
 				return null;
 			}

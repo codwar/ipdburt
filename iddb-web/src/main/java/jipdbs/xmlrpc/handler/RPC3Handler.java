@@ -39,7 +39,6 @@ public class RPC3Handler {
 		this.updateApi = new Update();
 	}
 
-	@Deprecated
 	public void updateName(String key, String name, Object[] data) {
 		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
 	}

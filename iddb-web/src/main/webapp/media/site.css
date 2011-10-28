@@ -330,7 +330,7 @@ caption .cap-link {
 
 table a:link {
 	color: #666;
-	border-bottom: 1px dotted #dedede;
+	/*border-bottom: 1px dotted #dedede;*/
 }
 
 table a:visited {

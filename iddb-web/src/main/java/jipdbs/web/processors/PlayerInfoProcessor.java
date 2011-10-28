@@ -106,6 +106,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			Penalty ban = app.getLastPenalty(player);
 			if (ban != null) {
 				PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
+				penaltyViewBean.setKey(ban.getKey());
 				penaltyViewBean.setCreated(ban.getCreated());
 				penaltyViewBean.setDuration(ban.getDuration());
 				penaltyViewBean.setReason(ban.getReason());
@@ -124,6 +125,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			notices = new ArrayList<NoticeViewBean>();
 			for (Penalty notice : pn) {
 				NoticeViewBean noticeViewBean = new NoticeViewBean();
+				noticeViewBean.setKey(notice.getKey());
 				noticeViewBean.setCreated(notice.getCreated());
 				noticeViewBean.setReason(notice.getReason());
 				if (notice.getAdmin() != null) {
@@ -185,6 +187,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		}
 		
 		req.setAttribute("player", infoView);
+		req.setAttribute("server", server);
 		req.setAttribute("notices", notices);
 		req.setAttribute("hasAdmin", hasAdmin);
 		req.setAttribute("hasServerAdmin", hasServerAdmin);

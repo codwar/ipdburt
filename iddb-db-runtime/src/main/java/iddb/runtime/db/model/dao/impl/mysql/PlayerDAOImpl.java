@@ -76,7 +76,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 */
 	public List<Player> findByServer(Long key, int offset, int limit,int[] count) {
 		String sqlCount = "select count(id) from player where serverid = " + key;
-		String sql = "select * from player where serverid = ? order by updated desc limit ?,?";
+		String sql = "select * from player where serverid = ? order by connected desc, updated desc limit ?,?";
 		Connection conn = null;
 		List<Player> list = new ArrayList<Player>();
 		try {
