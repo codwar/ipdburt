@@ -38,6 +38,10 @@ public class RPC4Handler extends RPC3Handler {
 		super(app);
 	}
 
+	public void updateName(String key, String name, Object[] data) {
+		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
+	}
+	
 	/* (non-Javadoc)
 	 * @see jipdbs.xmlrpc.handler.RPC3Handler#getClientAddress()
 	 */
@@ -168,6 +172,7 @@ public class RPC4Handler extends RPC3Handler {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List eventQueue(String key) {
 		List list = new ArrayList();
+		List<PenaltyHistory> events = new ArrayList<PenaltyHistory>();
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 			List<Penalty> penalties = app.listPendingEvents(server.getKey());
@@ -189,20 +194,22 @@ public class RPC4Handler extends RPC3Handler {
 				}
 				String[] values;
 				if (p.getType() == Penalty.BAN) {
-					if (p.getActive()) {
+					if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
 						values = new String[]{Events.BAN, his.getKey().toString(), client.getClientId().toString(), p.getDuration().toString(), p.getReason(), adminId};	
 					} else {
 						values = new String[]{Events.UNBAN, his.getKey().toString(), client.getClientId().toString()};
 					}
 				} else {
-					if (p.getActive()) {
+					if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
 						values = new String[]{Events.ADDNOTE, his.getKey().toString(), client.getClientId().toString(), p.getReason(), adminId};
 					} else {
 						values = new String[]{Events.DELNOTE, his.getKey().toString()};
 					}
 				}
 				list.add(values);
+				events.add(his);
 			}
+			app.updatePenaltyHistory(events);
 		} catch (UnauthorizedUpdateException e) {
 			log.warn(e.getMessage());
 		}

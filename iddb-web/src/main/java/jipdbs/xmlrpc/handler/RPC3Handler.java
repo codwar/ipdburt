@@ -40,7 +40,8 @@ public class RPC3Handler {
 	}
 
 	public void updateName(String key, String name, Object[] data) {
-		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
+		// plugins using this api doesn't support remote permissions.
+		this.updateApi.updateName(key, name, (String) data[0], 0, getClientAddress());
 	}
 
 	public String getClientAddress() {

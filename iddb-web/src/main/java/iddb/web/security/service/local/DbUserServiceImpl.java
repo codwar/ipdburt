@@ -256,7 +256,7 @@ public class DbUserServiceImpl extends CommonUserService {
 				log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
 				return null;
 			}
-			if (userServer.getPlayer() == null || userServer.getPlayer() == 0) {
+			if (userServer.getPlayer() == null || userServer.getPlayer().equals(0)) {
 				log.trace("No associated player for userid {}", subject.getLoginId());
 				return null;
 			}

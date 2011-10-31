@@ -37,6 +37,8 @@ import iddb.core.util.MailManager;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
 import iddb.info.SearchResult;
+import iddb.task.TaskManager;
+import iddb.task.tasks.UpdatePenaltyStatusTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -104,7 +106,6 @@ public class IDDBService {
 	}
 
 	public void addServer(String name, String admin, String uid, String ip, boolean disabled) {
-
 		Server server = new Server();
 		server.setAdminEmail(admin);
 		server.setCreated(new Date());
@@ -114,6 +115,8 @@ public class IDDBService {
 		server.setAddress(ip);
 		server.setDisabled(disabled);
 		server.setPermission(0);
+		server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
+		server.setTotalPlayers(0);
 		serverDAO.save(server);
 	}
 
@@ -531,8 +534,22 @@ public class IDDBService {
 	public PenaltyHistory confirmRemoteEvent(Long eventId, String msg) {
 		try {
 			PenaltyHistory his = penaltyHistoryDAO.get(eventId);
+			Penalty penalty;
+			log.debug("Confirm event {} {}", eventId, msg);
+			if (his.getStatus() != PenaltyHistory.ST_WAITING) {
+				log.warn("Event {} already confirmed", eventId);
+				return null;
+			}
 			if (msg == null || "".equals(msg)) {
 				his.setStatus(PenaltyHistory.ST_DONE);
+				penalty = penaltyDAO.get(his.getPenaltyId());
+				penalty.setSynced(true);
+				if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
+					penalty.setActive(true);
+				} else {
+					penalty.setActive(false);
+				}
+				penaltyDAO.save(penalty);
 			} else {
 				his.setStatus(PenaltyHistory.ST_ERROR);
 				his.setError(msg);
@@ -547,7 +564,7 @@ public class IDDBService {
 	}
 	
 	public void updatePenaltyHistory(List<PenaltyHistory> list) {
-		// TODO TaskManager.getInstance().runTask(new UpdateTask(server, list));
+		TaskManager.getInstance().runTask(new UpdatePenaltyStatusTask(list, PenaltyHistory.ST_WAITING));
 	}
 	
 	public PenaltyHistory getLastPenaltyHistory(Penalty penalty) {
@@ -580,15 +597,16 @@ public class IDDBService {
 		return listPenaltyEvents(playerId, 0, limit, total);
 	}
 	
-	public void updatePenalty(Penalty penalty, Long playerId, boolean log) {
+	public void updatePenalty(Penalty penalty, Long playerId, int action) {
 		penaltyDAO.save(penalty);
 		PenaltyHistory his = new PenaltyHistory();
 		his.setPenaltyId(penalty.getKey());
 		if (playerId == null) playerId = penalty.getAdmin();
+		his.setFuncId(action);
 		his.setAdminId(playerId);
 		his.setCreated(new Date());
 		his.setUpdated(new Date());
-		if (log) {
+		if (!penalty.getSynced()) {
 			his.setStatus(PenaltyHistory.ST_PENDING);
 		} else {
 			his.setStatus(PenaltyHistory.ST_DONE);

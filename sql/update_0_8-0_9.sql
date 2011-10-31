@@ -52,6 +52,9 @@ ALTER TABLE `server` ADD `maxban` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
 
 ALTER TABLE `player` ADD INDEX `serverid_con_upd` ( `serverid` , `connected` , `updated` );
 
+ALTER TABLE `server` DROP INDEX `disabled`,
+  ADD INDEX `active_srvs` ( `disabled` , `updated` , `name` );
+
 #
 # DDL END
 #

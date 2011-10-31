@@ -21,6 +21,7 @@ package jipdbs.web.processors;
 import iddb.api.RemotePermissions;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
+import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.util.Functions;
@@ -107,8 +108,10 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 			}
 		}
 		
+		Integer funcId;
 		Penalty penalty = null;
 		if ("true".equals(rm)) {
+			funcId = PenaltyHistory.FUNC_ID_RM;
 			String penaltyId = ctx.getParameter("key");
 			try {
 				penalty = app.getPenalty(Long.parseLong(penaltyId));
@@ -127,6 +130,7 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				Flash.error(req, MessageResource.getMessage("reason_field_required"));
 				return redirect;
 			}
+			funcId = PenaltyHistory.FUNC_ID_ADD;
 			penalty = new Penalty();
 			String res = createPenalty(req, penalty, type, reason, duration, durationType, redirect, player, server, currentPlayer);
 			if (res != null) return res;
@@ -134,9 +138,9 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 
 		try {
 			if (currentPlayer == null) {
-				app.updatePenalty(penalty, null, !penalty.getSynced());	
+				app.updatePenalty(penalty, null, funcId);	
 			} else {
-				app.updatePenalty(penalty, currentPlayer.getKey(), !penalty.getSynced());
+				app.updatePenalty(penalty, currentPlayer.getKey(), funcId);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -158,12 +162,12 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 	 */
 	private String removePenalty(HttpServletRequest req, String redirect,
 			Player player, Server server, Penalty penalty) throws HttpError {
-		if (penalty.getPlayer() != player.getKey()) {
+		if (!penalty.getPlayer().equals(player.getKey())) {
 			log.debug("Penalty is not associated to this player");
 			Flash.error(req, MessageResource.getMessage("forbidden"));
 			throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
 		}
-		if (penalty.getType() == Penalty.BAN) {
+		if (penalty.getType().equals(Penalty.BAN)) {
 			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
 				log.debug("Cannot remove ban");
 				Flash.error(req, MessageResource.getMessage("forbidden"));
@@ -175,7 +179,6 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 			}
 			Flash.info(req, MessageResource.getMessage("local_action_pending"));
 			penalty.setSynced(false);
-			penalty.setActive(true);
 		} else {
 			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
 				log.debug("Cannot remove notice");
@@ -189,7 +192,6 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 			} else {
 				Flash.info(req, MessageResource.getMessage("local_action_pending"));
 				penalty.setSynced(false);
-				penalty.setActive(true);
 			}
 		}
 		return null;
@@ -241,7 +243,7 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}			
 			Long dm = Functions.time2minutes(duration + durationType);
-			if (dm == 0L) {
+			if (dm.equals(0)) {
 				Flash.error(req, MessageResource.getMessage("duration_field_required"));
 				return redirect;			
 			}

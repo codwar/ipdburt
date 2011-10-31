@@ -58,9 +58,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				loadPlayer(player, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByServerAndHash", e);
+			logger.error("findByServerAndHash: {}", e);
 		} catch (IOException e) {
-			logger.error("findByServerAndHash", e);
+			logger.error("findByServerAndHash: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -97,9 +97,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				list.add(player);
 			}
 		} catch (SQLException e) {
-			logger.error("findByServer", e);
+			logger.error("findByServer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByServer", e);
+			logger.error("findByServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -135,9 +135,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				list.add(player);
 			}
 		} catch (SQLException e) {
-			logger.error("findLatest", e);
+			logger.error("findLatest: {}", e);
 		} catch (IOException e) {
-			logger.error("findLatest", e);
+			logger.error("findLatest: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -173,9 +173,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				list.add(player);
 			}
 		} catch (SQLException e) {
-			logger.error("findBanned", e);
+			logger.error("findBanned: {}", e);
 		} catch (IOException e) {
-			logger.error("findBanned", e);
+			logger.error("findBanned: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -202,9 +202,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				throw new EntityDoesNotExistsException("Player with id %s was not found", key.toString());
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -285,9 +285,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -317,9 +317,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 			int r = st.executeUpdate();
 			logger.debug("Updated {} players.", r);
 		} catch (SQLException e) {
-			logger.error("cleanConnected", e);
+			logger.error("cleanConnected: {}", e);
 		} catch (IOException e) {
-			logger.error("cleanConnected", e);
+			logger.error("cleanConnected: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -348,9 +348,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				c = rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			logger.error("countByServer", e);
+			logger.error("countByServer: {}", e);
 		} catch (IOException e) {
-			logger.error("countByServer", e);
+			logger.error("countByServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -386,9 +386,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				list.add(player);
 			}
 		} catch (SQLException e) {
-			logger.error("findByClientId", e);
+			logger.error("findByClientId: {}", e);
 		} catch (IOException e) {
-			logger.error("findByClientId", e);
+			logger.error("findByClientId: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -438,9 +438,9 @@ public class PlayerDAOImpl implements PlayerDAO {
 				throw new EntityDoesNotExistsException("Player with key %s was not found", key);
 			}
 		} catch (SQLException e) {
-			logger.error("findByOldKey", e);
+			logger.error("findByOldKey: {}", e);
 		} catch (IOException e) {
-			logger.error("findByOldKey", e);
+			logger.error("findByOldKey: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

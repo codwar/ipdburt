@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `penalty` (
 CREATE TABLE IF NOT EXISTS `penalty_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `penaltyid` int(11) unsigned NOT NULL,
+  `funcid` tinyint(3) unsigned NOT NULL,
   `adminid` int(11) unsigned DEFAULT NULL,
   `status` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -120,7 +121,8 @@ CREATE TABLE IF NOT EXISTS `player` (
   KEY `serverid_con` (`serverid`,`connected`),
   KEY `clientid` (`clientid`),
   KEY `clientid_upd` (`clientid`,`updated`),
-  KEY `gaekey` (`gaekey`)
+  KEY `gaekey` (`gaekey`),
+  KEY `serverid_con_upd` (`serverid`,`connected`,`updated`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -144,14 +146,29 @@ CREATE TABLE IF NOT EXISTS `server` (
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   `permission` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `gaekey` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adminlevel` tinyint(3) unsigned NOT NULL,
+  `totalplayers` int(11) unsigned NOT NULL DEFAULT '0',
+  `maxban` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`uid`),
   KEY `gaekey` (`gaekey`),
   KEY `updated` (`updated`),
-  KEY `disabled` (`updated`,`disabled`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `active_srvs` (`disabled`,`updated`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `server_permission`
+--
+
+CREATE TABLE IF NOT EXISTS `server_permission` (
+  `serverid` int(11) unsigned NOT NULL,
+  `funcid` tinyint(4) unsigned NOT NULL,
+  `level` tinyint(4) unsigned NOT NULL,
+  PRIMARY KEY (`serverid`,`funcid`),
+  KEY `serverid` (`serverid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -205,14 +222,3 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   KEY `created` (`created`),
   KEY `key` (`id`,`userid`,`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-CREATE TABLE IF NOT EXISTS `server_permission` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `serverid` int(11) unsigned NOT NULL,
-  `funcid` tinyint(4) unsigned NOT NULL,
-  `level` tinyint(4) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `serverid_func` (`serverid`,`funcid`),
-  KEY `serverid` (`serverid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci

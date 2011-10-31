@@ -68,9 +68,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findByNickname", e);
+			logger.error("findByNickname: {}", e);
 		} catch (IOException e) {
-			logger.error("findByNickname", e);
+			logger.error("findByNickname: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -109,9 +109,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findBySimilar", e);
+			logger.error("findBySimilar: {}", e);
 		} catch (IOException e) {
-			logger.error("findBySimilar", e);
+			logger.error("findBySimilar: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -146,9 +146,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -206,9 +206,9 @@ public class AliasDAOImpl implements AliasDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -238,9 +238,9 @@ public class AliasDAOImpl implements AliasDAO {
 				loadAlias(alias, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndNickname", e);
+			logger.error("findByPlayerAndNickname: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndNickname", e);
+			logger.error("findByPlayerAndNickname: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -283,9 +283,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("booleanSearchByServer", e);
+			logger.error("booleanSearchByServer: {}", e);
 		} catch (IOException e) {
-			logger.error("booleanSearchByServer", e);
+			logger.error("booleanSearchByServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -326,9 +326,9 @@ public class AliasDAOImpl implements AliasDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("booleanSearch", e);
+			logger.error("booleanSearch: {}", e);
 		} catch (IOException e) {
-			logger.error("booleanSearch", e);
+			logger.error("booleanSearch: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

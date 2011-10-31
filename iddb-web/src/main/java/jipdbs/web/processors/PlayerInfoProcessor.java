@@ -152,14 +152,14 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 				}
 				try {
 					Penalty pe = app.getPenalty(history.getPenaltyId());
-					if (pe.getType() == Penalty.BAN) {
-						if (pe.getActive()) {
+					if (pe.getType().equals(Penalty.BAN)) {
+						if (history.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
 							event.setType(MessageResource.getMessage("event_ban"));	
 						} else {
 							event.setType(MessageResource.getMessage("event_unban"));
 						}
 					} else {
-						if (pe.getActive()) {
+						if (history.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
 							event.setType(MessageResource.getMessage("event_note"));	
 						} else {
 							event.setType(MessageResource.getMessage("event_delnote"));
@@ -187,6 +187,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		}
 		
 		req.setAttribute("player", infoView);
+		req.setAttribute("events", events);
 		req.setAttribute("server", server);
 		req.setAttribute("notices", notices);
 		req.setAttribute("hasAdmin", hasAdmin);

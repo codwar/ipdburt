@@ -48,7 +48,7 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 	public void save(PenaltyHistory penalty) {
 		String sql;
 		if (penalty.getKey() == null) {
-			sql = "insert into penalty_history (status, updated, error, penaltyid, adminid, created) values (?,?,?,?,?,?)"; 
+			sql = "insert into penalty_history (status, updated, error, penaltyid, adminid, created, funcid) values (?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update penalty_history set status = ?," +
 					"updated = ?," +
@@ -75,7 +75,8 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				} else {
 					st.setLong(5, penalty.getAdminId());	
 				}
-				st.setTimestamp(6, new java.sql.Timestamp(penalty.getCreated().getTime()));	
+				st.setTimestamp(6, new java.sql.Timestamp(penalty.getCreated().getTime()));
+				st.setInt(7, penalty.getFuncId());
 			}
 			st.executeUpdate();
 			if (penalty.getKey() == null) {
@@ -87,9 +88,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -118,9 +119,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				throw new EntityDoesNotExistsException("Penalty history with id %s was not found", id.toString());
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -141,8 +142,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 		penalty.setPenaltyId(rs.getLong("penaltyid"));
 		penalty.setError(rs.getString("error"));
 		penalty.setStatus(rs.getInt("status"));
-		penalty.setCreated(rs.getDate("created"));
-		penalty.setUpdated(rs.getDate("updated"));
+		penalty.setCreated(rs.getTimestamp("created"));
+		penalty.setUpdated(rs.getTimestamp("updated"));
+		penalty.setFuncId(rs.getInt("funcid"));
 	}
 
 	/* (non-Javadoc)
@@ -164,9 +166,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("listByPenaltyId", e);
+			logger.error("listByPenaltyId: {}", e);
 		} catch (IOException e) {
-			logger.error("listByPenaltyId", e);
+			logger.error("listByPenaltyId: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -197,9 +199,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				throw new EntityDoesNotExistsException("Penalty history for penalty %s was not found", id.toString());
 			}
 		} catch (SQLException e) {
-			logger.error("getLastByPenalty", e);
+			logger.error("getLastByPenalty: {}", e);
 		} catch (IOException e) {
-			logger.error("getLastByPenalty", e);
+			logger.error("getLastByPenalty: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -238,9 +240,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("listByPlayer", e);
+			logger.error("listByPlayer: {}", e);
 		} catch (IOException e) {
-			logger.error("listByPlayer", e);
+			logger.error("listByPlayer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -248,6 +250,36 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 			}
 		}
 		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyHistoryDAO#updateStatus(java.util.List, java.lang.Integer)
+	 */
+	@Override
+	public void updateStatus(List<Long> ids, Integer status) {
+		String sql;
+		sql = "update penalty_history set status = ?, updated = ? where id = ? limit 1";
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			for (Long id : ids) {
+				st.setInt(1, status);
+				st.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+				st.setLong(3, id);
+				st.addBatch();
+			}
+			st.executeBatch();
+		} catch (SQLException e) {
+			logger.error("updateStatus: {}", e);
+		} catch (IOException e) {
+			logger.error("updateStatus: {}", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 
 }

@@ -35,4 +35,6 @@ public interface PenaltyHistoryDAO {
 	
 	public abstract List<PenaltyHistory> listByPlayer(Long id, int offset, int limit, int[] count);
 	
+	public abstract void updateStatus(List<Long> ids, Integer status);
+	
 }

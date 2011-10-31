@@ -92,9 +92,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -117,9 +117,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			int r = st.executeUpdate();
 			logger.debug("{} penalty removed", r);
 		} catch (SQLException e) {
-			logger.error("delete", e);
+			logger.error("delete: {}", e);
 		} catch (IOException e) {
-			logger.error("delete", e);
+			logger.error("delete: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -148,9 +148,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				throw new EntityDoesNotExistsException("Penalty with id %s was not found", key.toString());
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -197,9 +197,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -229,9 +229,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -270,9 +270,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByType", e);
+			logger.error("findByType: {}", e);
 		} catch (IOException e) {
-			logger.error("findByType", e);
+			logger.error("findByType: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -287,7 +287,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type) {
-		String sql = "select * from penalty where playerid = ? and type = ? and active = ? and synced = ? order by created desc";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by created desc";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -296,7 +296,6 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
 			st.setBoolean(3, true);
-			st.setBoolean(4, true);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Penalty penalty = new Penalty();
@@ -304,9 +303,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndTypeAndActive", e);
+			logger.error("findByPlayerAndTypeAndActive: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndTypeAndActive", e);
+			logger.error("findByPlayerAndTypeAndActive: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -346,9 +345,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndType", e);
+			logger.error("findByPlayerAndType: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndType", e);
+			logger.error("findByPlayerAndType: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -384,9 +383,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 			st.executeBatch();
 		} catch (SQLException e) {
-			logger.error("delete", e);
+			logger.error("delete: {}", e);
 		} catch (IOException e) {
-			logger.error("delete", e);
+			logger.error("delete: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -415,9 +414,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndType", e);
+			logger.error("findByPlayerAndType: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndType", e);			
+			logger.error("findByPlayerAndType: {}", e);			
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -444,9 +443,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			}
 			st.executeBatch();
 		} catch (SQLException e) {
-			logger.error("disable", e);
+			logger.error("disable: {}", e);
 		} catch (IOException e) {
-			logger.error("disable", e);
+			logger.error("disable: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -460,7 +459,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public Penalty findLastActivePenalty(Long player, Integer type) {
-		String sql = "select * from penalty where playerid = ? and type = ? and active = ? and synced = ? order by updated desc limit 1";
+		String sql = "select * from penalty where playerid = ? and type = ? and active = ? order by updated desc limit 1";
 		Connection conn = null;
 		Penalty penalty = null;
 		try {
@@ -469,16 +468,15 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(1, player);
 			st.setInt(2, type.intValue());
 			st.setBoolean(3, true);
-			st.setBoolean(4, true);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				penalty = new Penalty();
 				loadPenalty(penalty, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndTypeAndActive", e);
+			logger.error("findByPlayerAndTypeAndActive: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndTypeAndActive", e);
+			logger.error("findByPlayerAndTypeAndActive: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -508,9 +506,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findExpired", e);
+			logger.error("findExpired: {}", e);
 		} catch (IOException e) {
-			logger.error("findExpired", e);			
+			logger.error("findExpired: {}", e);			
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -532,9 +530,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			int r = st.executeUpdate();
 			logger.debug("{} penalties removed", r);
 		} catch (SQLException e) {
-			logger.error("deletePlayerPenalty", e);
+			logger.error("deletePlayerPenalty: {}", e);
 		} catch (IOException e) {
-			logger.error("deletePlayerPenalty", e);
+			logger.error("deletePlayerPenalty: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -548,7 +546,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 	 */
 	@Override
 	public List<Penalty> findPendingPenalties(Long serverId) {
-		String sql = "select p.* from penalty p, player pa, penalty_history h where p.id = h.penaltyid and p.playerid = pa.id and p.synced = 0 and h.status = 0 and p.serverid = ?";
+		String sql = "select p.* from penalty p, player pa, penalty_history h where p.id = h.penaltyid and p.playerid = pa.id and p.synced = 0 and h.status = 0 and pa.serverid = ?";
 		Connection conn = null;
 		List<Penalty> list = new ArrayList<Penalty>();
 		try {
@@ -562,9 +560,9 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 				list.add(penalty);
 			}
 		} catch (SQLException e) {
-			logger.error("findPendingPenalties", e);
+			logger.error("findPendingPenalties: {}", e);
 		} catch (IOException e) {
-			logger.error("findPendingPenalties", e);			
+			logger.error("findPendingPenalties: {}", e);			
 		} finally {
 			try {
 				if (conn != null) conn.close();

@@ -81,9 +81,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -111,9 +111,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				list.add(userServer);
 			}
 		} catch (SQLException e) {
-			logger.error("findByUser", e);
+			logger.error("findByUser: {}", e);
 		} catch (IOException e) {
-			logger.error("findByUser", e);
+			logger.error("findByUser: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -155,9 +155,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				list.add(userServer);
 			}
 		} catch (SQLException e) {
-			logger.error("findByServer", e);
+			logger.error("findByServer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByServer", e);
+			logger.error("findByServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -187,9 +187,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				throw new EntityDoesNotExistsException("UserServer with id %s was not found", key);
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -221,9 +221,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				throw new EntityDoesNotExistsException("UserServer with for user %s and server %s was not found", user, server);
 			}
 		} catch (SQLException e) {
-			logger.error("findByUserAndServer", e);
+			logger.error("findByUserAndServer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByUserAndServer", e);
+			logger.error("findByUserAndServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -255,9 +255,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				throw new EntityDoesNotExistsException("UserServer with for player %s and server %s was not found", player, server);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndServer", e);
+			logger.error("findByPlayerAndServer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndServer", e);
+			logger.error("findByPlayerAndServer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -285,9 +285,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				res = Boolean.TRUE;
 			}
 		} catch (SQLException e) {
-			logger.error("existsAny", e);
+			logger.error("existsAny: {}", e);
 		} catch (IOException e) {
-			logger.error("existsAny", e);
+			logger.error("existsAny: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -314,9 +314,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				list.add(userServer);
 			}
 		} catch (SQLException e) {
-			logger.error("listUserServers", e);
+			logger.error("listUserServers: {}", e);
 		} catch (IOException e) {
-			logger.error("listUserServers", e);
+			logger.error("listUserServers: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -343,9 +343,9 @@ public class UserServerDAOImpl implements UserServerDAO {
 				list.add(userServer);
 			}
 		} catch (SQLException e) {
-			logger.error("findServerAdmins", e);
+			logger.error("findServerAdmins: {}", e);
 		} catch (IOException e) {
-			logger.error("findServerAdmins", e);
+			logger.error("findServerAdmins: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

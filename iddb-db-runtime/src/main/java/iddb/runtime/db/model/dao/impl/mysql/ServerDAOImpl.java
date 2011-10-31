@@ -24,6 +24,8 @@ import iddb.exception.EntityDoesNotExistsException;
 import iddb.runtime.db.ConnectionFactory;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,7 +48,20 @@ public class ServerDAOImpl implements ServerDAO {
 	public void save(Server server) {
 		String sql;
 		if (server.getKey() == null) {
-			sql = "insert into server (uid, name, admin, created, updated, onlineplayers, address, pluginversion, maxlevel, isdirty, permission, disabled, maxban, totalplayers) values (?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into server (uid," +
+					"name, " +
+					"admin, " +
+					"created, " +
+					"updated, " +
+					"onlineplayers, " +
+					"address, " +
+					"pluginversion, " +
+					"maxlevel, " +
+					"isdirty, " +
+					"permission, " +
+					"disabled, " +
+					"maxban, " +
+					"totalplayers) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update server set uid = ?, " +
 					"name = ?, " +
@@ -78,8 +93,10 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setString(7, server.getAddress());
 			st.setString(8, server.getPluginVersion());
 			st.setInt(9, server.getMaxLevel());
+			if (server.getDirty() == null) server.setDirty(false);
 			st.setBoolean(10, server.getDirty());
 			st.setInt(11, server.getPermission());
+			if (server.getDisabled() == null) server.setDisabled(false);
 			st.setBoolean(12, server.getDisabled());
 			st.setLong(13, server.getMaxBanDuration());
 			st.setInt(14, server.getTotalPlayers());
@@ -94,9 +111,14 @@ public class ServerDAOImpl implements ServerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e.getMessage());
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e.getMessage());
+			logger.error("Save: {}", e);
+		} catch (Exception e) {
+			logger.error("Save: {}", e);
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			logger.trace(w.getBuffer().toString());
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -128,9 +150,9 @@ public class ServerDAOImpl implements ServerDAO {
 				list.add(server);
 			}
 		} catch (SQLException e) {
-			logger.error("findAll", e);
+			logger.error("findAll: {}", e);
 		} catch (IOException e) {
-			logger.error("findAll", e);
+			logger.error("findAll: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -155,9 +177,9 @@ public class ServerDAOImpl implements ServerDAO {
 				loadServer(server, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByUid", e);
+			logger.error("findByUid: {}", e);
 		} catch (IOException e) {
-			logger.error("findByUid", e);
+			logger.error("findByUid: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -209,9 +231,9 @@ public class ServerDAOImpl implements ServerDAO {
 				list.add(server);
 			}
 		} catch (SQLException e) {
-			logger.error("listNotUpdatedSince", e);
+			logger.error("listNotUpdatedSince: {}", e);
 		} catch (IOException e) {
-			logger.error("listNotUpdatedSince", e);
+			logger.error("listNotUpdatedSince: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -224,7 +246,7 @@ public class ServerDAOImpl implements ServerDAO {
 	@Override
 	public List<Server> findEnabled(int offset, int limit, int[] count) {
 		String sqlCount = "select count(id) from server where disabled = 0";
-		String sql = "select * from server where disabled = 0 order by updated desc limit ?,?";
+		String sql = "select * from server where disabled = 0 order by date(updated) desc, name limit ?,?";
 		Connection conn = null;
 		List<Server> list = new ArrayList<Server>();
 		try {
@@ -244,9 +266,9 @@ public class ServerDAOImpl implements ServerDAO {
 				list.add(server);
 			}
 		} catch (SQLException e) {
-			logger.error("findEnabled", e);
+			logger.error("findEnabled: {}", e);
 		} catch (IOException e) {
-			logger.error("findEnabled", e);
+			logger.error("findEnabled: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -286,9 +308,9 @@ public class ServerDAOImpl implements ServerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -331,9 +353,9 @@ public class ServerDAOImpl implements ServerDAO {
 				st.executeUpdate();
 			}
 		} catch (SQLException e) {
-			logger.error("savePermissions", e.getMessage());
+			logger.error("savePermissions: {}", e.getMessage());
 		} catch (IOException e) {
-			logger.error("savePermissions", e.getMessage());
+			logger.error("savePermissions: {}", e.getMessage());
 		} finally {
 			try {
 				if (conn != null) conn.close();

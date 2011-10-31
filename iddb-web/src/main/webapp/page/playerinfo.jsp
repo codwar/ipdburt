@@ -114,8 +114,6 @@ if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
 	request.setAttribute("canRemoveNotice", true);
 }
-
-
 %>		
 	</ul>
 </div>
@@ -166,7 +164,7 @@ if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.ge
 		</tr>
 	</thead>
 	<tbody>
-	<c:forEach items="${event}" var="events">
+	<c:forEach items="${events}" var="event">
 		<tr>
 			<td>${event.type}</td>
 			<td>${event.status}</td>
@@ -183,7 +181,7 @@ if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.ge
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3">&nbsp;</td>
+			<td colspan="4">&nbsp;</td>
 		</tr>
 	</tfoot>
 </table>
@@ -331,7 +329,7 @@ function open_dialog(d) {
 }
 </script>
 
-<div id="dialog-confirm">
+<div id="dialog-confirm" style="display: none;">
 Confirma eliminaci&oacute;n?
 </div>
 

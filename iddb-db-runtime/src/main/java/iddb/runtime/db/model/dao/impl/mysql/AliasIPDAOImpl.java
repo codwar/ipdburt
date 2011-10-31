@@ -79,9 +79,9 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -109,9 +109,9 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 				loadAlias(alias, rs);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayerAndIp", e);
+			logger.error("findByPlayerAndIp: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayerAndIp", e);
+			logger.error("findByPlayerAndIp: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -164,9 +164,9 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} catch (IOException e) {
-			logger.error("findByPlayer", e);
+			logger.error("findByPlayer: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -208,9 +208,9 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 				list.add(alias);
 			}
 		} catch (SQLException e) {
-			logger.error("findByIP", e);
+			logger.error("findByIP: {}", e);
 		} catch (IOException e) {
-			logger.error("findByIP", e);
+			logger.error("findByIP: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

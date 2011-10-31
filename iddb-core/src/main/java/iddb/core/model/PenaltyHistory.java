@@ -34,8 +34,12 @@ public class PenaltyHistory implements Serializable {
 	public static final Integer ST_ERROR = 3;
 	public static final Integer ST_CANCEL = 4;
 	
+	public static final Integer FUNC_ID_ADD = 1;
+	public static final Integer FUNC_ID_RM = 2;
+	
 	private Long key;
 	private Long adminId;
+	private Integer funcId;
 	private Long penaltyId;
 	private Date created;
 	private Date updated;
@@ -83,6 +87,12 @@ public class PenaltyHistory implements Serializable {
 	}
 	public void setPenaltyId(Long penaltyId) {
 		this.penaltyId = penaltyId;
+	}
+	public Integer getFuncId() {
+		return funcId;
+	}
+	public void setFuncId(Integer funcId) {
+		this.funcId = funcId;
 	}
 	
 }

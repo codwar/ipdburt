@@ -81,9 +81,9 @@ public class UserDAOImpl implements UserDAO {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -118,9 +118,9 @@ public class UserDAOImpl implements UserDAO {
 				list.add(user);
 			}
 		} catch (SQLException e) {
-			logger.error("findAll", e);
+			logger.error("findAll: {}", e);
 		} catch (IOException e) {
-			logger.error("findAll", e);
+			logger.error("findAll: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -162,9 +162,9 @@ public class UserDAOImpl implements UserDAO {
 				throw new EntityDoesNotExistsException("User with id %s was not found", key);
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -194,9 +194,9 @@ public class UserDAOImpl implements UserDAO {
 				throw new EntityDoesNotExistsException("User with loginId %s was not found", loginId);
 			}
 		} catch (SQLException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} catch (IOException e) {
-			logger.error("get", e);
+			logger.error("get: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -222,9 +222,9 @@ public class UserDAOImpl implements UserDAO {
 			st.setLong(3, user.getKey());
 			st.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} catch (IOException e) {
-			logger.error("Save", e);
+			logger.error("Save: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();
