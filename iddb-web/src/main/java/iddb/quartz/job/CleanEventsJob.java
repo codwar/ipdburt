@@ -16,27 +16,29 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.core.model.dao;
+package iddb.quartz.job;
 
-import iddb.core.model.PenaltyHistory;
-import iddb.exception.EntityDoesNotExistsException;
+import iddb.scheduller.Worker;
+import iddb.scheduller.jobs.PenaltyEventWorker;
 
-import java.util.List;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface PenaltyHistoryDAO {
+public class CleanEventsJob implements Job {
 
-	public abstract void save(PenaltyHistory history);
+	private static final Logger log = LoggerFactory.getLogger(CleanEventsJob.class);
 	
-	public abstract PenaltyHistory get(Long id) throws EntityDoesNotExistsException;
-	
-	public abstract List<PenaltyHistory> listByPenaltyId(Long id);
-	
-	public abstract List<PenaltyHistory> listByStatus(Integer type);
-	
-	public abstract PenaltyHistory getLastByPenalty(Long id) throws EntityDoesNotExistsException;
-	
-	public abstract List<PenaltyHistory> listByPlayer(Long id, int offset, int limit, int[] count);
-	
-	public abstract void updateStatus(List<Long> ids, Integer status);
-	
+	/* (non-Javadoc)
+	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+	 */
+	@Override
+	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		log.debug("Running clean events job");
+		Worker worker = new PenaltyEventWorker();
+		worker.execute();
+	}
+
 }

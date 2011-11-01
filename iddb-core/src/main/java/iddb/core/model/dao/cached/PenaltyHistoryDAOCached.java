@@ -92,4 +92,12 @@ public class PenaltyHistoryDAOCached extends CachedDAO implements PenaltyHistory
 		this.impl.updateStatus(ids, status);
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyHistoryDAO#listByStatus(java.lang.Integer)
+	 */
+	@Override
+	public List<PenaltyHistory> listByStatus(Integer type) {
+		return this.impl.listByStatus(type);
+	}
+
 }

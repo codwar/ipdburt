@@ -282,4 +282,35 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyHistoryDAO#listByStatus(java.lang.Integer)
+	 */
+	@Override
+	public List<PenaltyHistory> listByStatus(Integer type) {
+		String sql = "SELECT * FROM penalty_history WHERE status = ?";
+		Connection conn = null;
+		List<PenaltyHistory> list = new ArrayList<PenaltyHistory>();
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, type);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				PenaltyHistory penalty = new PenaltyHistory();
+				loadPenaltyHistory(penalty, rs);
+				list.add(penalty);
+			}
+		} catch (SQLException e) {
+			logger.error("listByStatus: {}", e);
+		} catch (IOException e) {
+			logger.error("listByStatus: {}", e);			
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
 }
