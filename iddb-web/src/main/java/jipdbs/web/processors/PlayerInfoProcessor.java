@@ -23,6 +23,7 @@ import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.User;
 import iddb.core.util.Functions;
 import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
@@ -118,7 +119,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 						log.warn(e.getMessage());
 					}
 				}
-				infoView.setBanInfo(penaltyViewBean.toString());
+				infoView.setBanInfo(penaltyViewBean);
 			}
 			
 			List<Penalty> pn = app.getActivePenalties(player.getKey(), Penalty.NOTICE);
@@ -144,12 +145,19 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 				PenaltyEventViewBean event = new PenaltyEventViewBean();
 				event.setStatus(MessageResource.getMessage("st_msg_" + history.getStatus().toString()));
 				event.setUpdated(history.getUpdated());
+				User user = null;
 				try {
-					Player pa = app.getPlayer(history.getAdminId());
-					event.setAdmin(pa.getNickname());
+					user = UserServiceFactory.getUserService().getUser(history.getAdminId());
+					Player pa = UserServiceFactory.getUserService().getUserPlayer(user, server.getKey());
+					if (pa != null) {
+						event.setAdmin(pa.getNickname());	
+					} else {
+						event.setAdmin(user.getLoginId());
+					}
 				} catch (EntityDoesNotExistsException e) {
 					event.setAdmin("-");
 				}
+				
 				try {
 					Penalty pe = app.getPenalty(history.getPenaltyId());
 					if (pe.getType().equals(Penalty.BAN)) {
@@ -173,7 +181,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			
 		} else {
 			if (player.getBanInfo() != null) {
-				infoView.setBanInfo(MessageResource.getMessage("banned"));
+				infoView.setBanInfo(new PenaltyViewBean(true));
 			}
 		}
 		infoView.setAliases(new ArrayList<AliasResult>());

@@ -249,25 +249,45 @@ public class DbUserServiceImpl extends CommonUserService {
 		player = subject.getServerPlayer().get(server.toString());
 		
 		if (player == null) {
-			UserServer userServer;
-			try {
-				userServer = userServerDAO.findByUserAndServer(subject.getKey(), server);
-			} catch (EntityDoesNotExistsException e) {
-				log.trace("UserServer {} do not exists for user {}", server.toString(), subject.getLoginId());
-				return null;
-			}
-			if (userServer.getPlayer() == null || userServer.getPlayer().equals(0)) {
-				log.trace("No associated player for userid {}", subject.getLoginId());
-				return null;
-			}
-			
-			try {
-				player = playerDAO.get(userServer.getPlayer());
+			player = getUserPlayer(subject, server);
+			if (player != null) {
 				subject.getServerPlayer().put(server.toString(), player);
-			} catch (EntityDoesNotExistsException e) {
-				log.trace("Player {} do not exists", userServer.getPlayer());
-				return null;
 			}
+		}
+		return player;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#getUser(java.lang.Long)
+	 */
+	@Override
+	public User getUser(Long id) throws EntityDoesNotExistsException {
+		return userDAO.get(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#getUserPlayer(iddb.core.model.User, java.lang.Long)
+	 */
+	@Override
+	public Player getUserPlayer(User user, Long server) {
+		UserServer userServer;
+		Player player;
+		try {
+			userServer = userServerDAO.findByUserAndServer(user.getKey(), server);
+		} catch (EntityDoesNotExistsException e) {
+			log.trace("UserServer {} do not exists for user {}", server.toString(), user.getLoginId());
+			return null;
+		}
+		if (userServer.getPlayer() == null || userServer.getPlayer().equals(0)) {
+			log.trace("No associated player for userid {}", user.getLoginId());
+			return null;
+		}
+		
+		try {
+			player = playerDAO.get(userServer.getPlayer());
+		} catch (EntityDoesNotExistsException e) {
+			log.trace("Player {} do not exists", userServer.getPlayer());
+			return null;
 		}
 		return player;
 	}

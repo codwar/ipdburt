@@ -38,13 +38,13 @@ public class PlayerViewBean implements Serializable {
 	private Server server;
 	private String ip;
 	private Date updated;
-	private String penaltyDetail;
 	private Collection<AliasResult> aliases;
 	private String level;
 	private String clientId;
 	private boolean playing;
 	private String note;
 	private String guid;
+	private PenaltyViewBean banInfo;
 	
 	public String getGuid() {
 		return guid;
@@ -76,11 +76,11 @@ public class PlayerViewBean implements Serializable {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
-	public String getBanInfo() {
-		return penaltyDetail;
+	public PenaltyViewBean getBanInfo() {
+		return banInfo;
 	}
-	public void setBanInfo(String banInfo) {
-		this.penaltyDetail = banInfo;
+	public void setBanInfo(PenaltyViewBean banInfo) {
+		this.banInfo = banInfo;
 	}
 	public Collection<AliasResult> getAliases() {
 		return aliases;

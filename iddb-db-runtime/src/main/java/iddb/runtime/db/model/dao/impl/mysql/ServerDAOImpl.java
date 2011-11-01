@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,9 +87,12 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setString(2, server.getName());
 			st.setString(3, server.getAdminEmail());
 			if (server.getCreated() == null) server.setCreated(new java.util.Date());
-			if (server.getUpdated() == null) server.setUpdated(new java.util.Date());
 			st.setTimestamp(4, new Timestamp(server.getCreated().getTime()));
-			st.setTimestamp(5, new Timestamp(server.getUpdated().getTime()));
+			if (server.getUpdated() == null) {
+				st.setNull(5, Types.TIMESTAMP);
+			} else {
+				st.setTimestamp(5, new Timestamp(server.getUpdated().getTime()));
+			}
 			st.setInt(6, server.getOnlinePlayers());
 			st.setString(7, server.getAddress());
 			st.setString(8, server.getPluginVersion());

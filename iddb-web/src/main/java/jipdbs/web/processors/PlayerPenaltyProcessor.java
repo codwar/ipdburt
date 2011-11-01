@@ -137,11 +137,7 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 		}
 
 		try {
-			if (currentPlayer == null) {
-				app.updatePenalty(penalty, null, funcId);	
-			} else {
-				app.updatePenalty(penalty, currentPlayer.getKey(), funcId);
-			}
+			app.updatePenalty(penalty, UserServiceFactory.getUserService().getCurrentUser().getKey(), funcId);	
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			Flash.error(req, e.getMessage());

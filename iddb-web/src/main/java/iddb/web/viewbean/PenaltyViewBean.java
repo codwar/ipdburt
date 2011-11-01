@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import jipdbs.web.MessageResource;
+
 import org.apache.commons.lang.StringUtils;
 
 public class PenaltyViewBean implements Serializable {
@@ -42,6 +44,14 @@ public class PenaltyViewBean implements Serializable {
 	private String reason;
 	private Long duration;
 	private String admin;
+	private boolean blank;
+	
+	public PenaltyViewBean() {
+		this.blank = false;
+	}
+	public PenaltyViewBean(boolean blank) {
+		this.blank = blank;
+	}
 	
 	public Integer getType() {
 		return Penalty.BAN;
@@ -88,6 +98,8 @@ public class PenaltyViewBean implements Serializable {
 
 	@Override
 	public String toString() {
+		if (this.blank) return MessageResource.getMessage("banned");
+		
 		StringBuilder s = new StringBuilder();
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		format.setTimeZone(TimeZone.getTimeZone("GMT-3"));

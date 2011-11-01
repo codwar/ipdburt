@@ -22,6 +22,8 @@ import java.util.List;
 
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.User;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
@@ -119,5 +121,20 @@ public interface UserService {
 	 * @return
 	 */
 	List<Server> listUserServers(Integer level);
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public User getUser(Long id) throws EntityDoesNotExistsException;
+	
+	/**
+	 * 
+	 * @param user
+	 * @param server
+	 * @return
+	 */
+	public Player getUserPlayer(User user, Long server);
 	
 }

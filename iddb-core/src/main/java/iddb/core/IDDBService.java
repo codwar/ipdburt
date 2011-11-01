@@ -38,6 +38,7 @@ import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.AliasResult;
 import iddb.info.SearchResult;
 import iddb.task.TaskManager;
+import iddb.task.tasks.ConfirmRemoteEventTask;
 import iddb.task.tasks.UpdatePenaltyStatusTask;
 
 import java.io.PrintWriter;
@@ -47,6 +48,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import net.tanesha.recaptcha.ReCaptcha;
@@ -531,36 +533,8 @@ public class IDDBService {
 		return penaltyDAO.findPendingPenalties(serverId);
 	}
 
-	public PenaltyHistory confirmRemoteEvent(Long eventId, String msg) {
-		try {
-			PenaltyHistory his = penaltyHistoryDAO.get(eventId);
-			Penalty penalty;
-			log.debug("Confirm event {} {}", eventId, msg);
-			if (his.getStatus() != PenaltyHistory.ST_WAITING) {
-				log.warn("Event {} already confirmed", eventId);
-				return null;
-			}
-			if (msg == null || "".equals(msg)) {
-				his.setStatus(PenaltyHistory.ST_DONE);
-				penalty = penaltyDAO.get(his.getPenaltyId());
-				penalty.setSynced(true);
-				if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
-					penalty.setActive(true);
-				} else {
-					penalty.setActive(false);
-				}
-				penaltyDAO.save(penalty);
-			} else {
-				his.setStatus(PenaltyHistory.ST_ERROR);
-				his.setError(msg);
-			}
-			his.setUpdated(new Date());
-			penaltyHistoryDAO.save(his);
-			return his;
-		} catch (EntityDoesNotExistsException e) {
-			log.error(e.getMessage());
-		}
-		return null;
+	public void confirmRemoteEvent(List<Entry<Long, String>> list) {
+		TaskManager.getInstance().runTask(new ConfirmRemoteEventTask(list));
 	}
 	
 	public void updatePenaltyHistory(List<PenaltyHistory> list) {
@@ -597,13 +571,12 @@ public class IDDBService {
 		return listPenaltyEvents(playerId, 0, limit, total);
 	}
 	
-	public void updatePenalty(Penalty penalty, Long playerId, int action) {
+	public void updatePenalty(Penalty penalty, Long userId, int action) {
 		penaltyDAO.save(penalty);
 		PenaltyHistory his = new PenaltyHistory();
 		his.setPenaltyId(penalty.getKey());
-		if (playerId == null) playerId = penalty.getAdmin();
 		his.setFuncId(action);
-		his.setAdminId(playerId);
+		his.setAdminId(userId);
 		his.setCreated(new Date());
 		his.setUpdated(new Date());
 		if (!penalty.getSynced()) {

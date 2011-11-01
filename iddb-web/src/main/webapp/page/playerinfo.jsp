@@ -1,8 +1,7 @@
-<%@page import="org.springframework.beans.factory.annotation.Required"%>
-<%@page import="iddb.core.model.Server"%>
 <%@page import="iddb.web.security.service.UserServiceFactory"%>
-<%@page import="iddb.core.model.Player"%>
 <%@page import="iddb.api.RemotePermissions"%>
+<%@page import="iddb.web.viewbean.PlayerViewBean"%>
+<%@page import="iddb.core.model.Server"%>
 <%@page import="iddb.core.model.Penalty"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" session="true"%>
@@ -97,24 +96,43 @@
 	}
 </script>
 
+<%
+Integer permission = (Integer) request.getAttribute("permission");
+Server server = (Server) request.getAttribute("server");
+PlayerViewBean player = (PlayerViewBean) request.getAttribute("player");
+
+if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
+	request.setAttribute("canRemoveNotice", true);
+}
+
+if (player.getBanInfo() == null) {
+	if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+		if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
+			request.setAttribute("addban", true);
+		}
+	}
+} else {
+	if ((permission & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN) {
+		if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
+			request.setAttribute("delban", true);
+		}
+	}
+}
+
+%>
+
 <fieldset class="playerheader shadowbox">
 <c:if test="${hasServerAdmin}">
 <div id="player_menu" class="player_menu">
 <div class="player_menu_box">
 	<ul>
 		<li class="icon add link" id="addnote">Nueva nota</li>
-<%
-Integer permission = (Integer) request.getAttribute("permission");
-Server server = (Server) request.getAttribute("server"); 
-if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
-	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
-		out.write("<li class='icon ban link' id='addpenalty'>Banear</li>");
-	}
-}
-if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
-	request.setAttribute("canRemoveNotice", true);
-}
-%>		
+		<c:if test="${addban}">
+		<li class="icon ban link" id="addpenalty">Banear</li>		
+		</c:if>
+		<c:if test="${delban}">
+		<li class="icon delete link confirm" alt="<url:url name="delete-penalty"><url:param name="key" value="${player.banInfo.key}"/></url:url>?k=${player.key}">Levantar Ban</li>
+		</c:if>
 	</ul>
 </div>
 </div>
@@ -151,42 +169,6 @@ if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.ge
     </c:if>
     </fieldset>
     <br />
-
-<c:if test="${not empty events}">
-<table>
-	<caption>Eventos</caption>
-	<thead>
-		<tr>
-			<th>Tipo</th>
-			<th>Estado</th>
-			<th style="width: 160px;">Fecha</th>
-			<th style="width: 140px;">Admin</th>
-		</tr>
-	</thead>
-	<tbody>
-	<c:forEach items="${events}" var="event">
-		<tr>
-			<td>${event.type}</td>
-			<td>${event.status}</td>
-			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.updated}" /></td>
-			<td>
-			<c:choose>
-				<c:when test="${not empty event.admin}">${event.admin}</c:when>
-				<c:otherwise>-</c:otherwise>
-			</c:choose>
-			</td>
-			
-		</tr>
-	</c:forEach>
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="4">&nbsp;</td>
-		</tr>
-	</tfoot>
-</table>
-<br/>
-</c:if>
 
 <c:if test="${not empty notices}">
 <table>
@@ -267,6 +249,43 @@ if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.ge
 		</tr>
 	</tfoot>
 </table>
+<br/>
+<c:if test="${not empty events}">
+<table>
+	<caption>Eventos</caption>
+	<thead>
+		<tr>
+			<th>Tipo</th>
+			<th>Estado</th>
+			<th style="width: 160px;">Fecha</th>
+			<th style="width: 140px;">Admin</th>
+		</tr>
+	</thead>
+	<tbody>
+	<c:forEach items="${events}" var="event">
+		<tr>
+			<td>${event.type}</td>
+			<td>${event.status}</td>
+			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.updated}" /></td>
+			<td>
+			<c:choose>
+				<c:when test="${not empty event.admin}">${event.admin}</c:when>
+				<c:otherwise>-</c:otherwise>
+			</c:choose>
+			</td>
+			
+		</tr>
+	</c:forEach>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+	</tfoot>
+</table>
+<br/>
+</c:if>
+
 <script type="text/javascript">
 $(document).ready(
 	function() {

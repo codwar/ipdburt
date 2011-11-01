@@ -2,6 +2,7 @@ package jipdbs.xmlrpc.handler;
 
 import iddb.api.Events;
 import iddb.api.ServerManager;
+import iddb.api.SimpleMapEntry;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import jipdbs.xmlrpc.JIPDBSXmlRpc4Servlet;
 
@@ -40,6 +42,7 @@ public class RPC4Handler extends RPC3Handler {
 
 	public void updateName(String key, String name, Object[] data) {
 		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
+		log.debug("Update Name {}", name);
 	}
 	
 	/* (non-Javadoc)
@@ -55,10 +58,12 @@ public class RPC4Handler extends RPC3Handler {
 		return HashUtils.getSHA1Hash(guid + key);
 	}
 	
-	public void update(String key, Object[] plist, Long timestamp) throws UpdateApiException, Exception {
+	public void update(String key, Object[] plist, Integer timestamp) throws UpdateApiException, Exception {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 
+			log.debug("Update {}", server.getName());
+			
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				try {
@@ -96,6 +101,9 @@ public class RPC4Handler extends RPC3Handler {
 	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			
+			log.debug("Register {} - User {}", server.getName(), userid);
+			
 			PlayerInfo playerInfo = new PlayerInfo(Events.REGISTER);
 			playerInfo.setName((String) data[0]);
 			playerInfo.setGuid((String) data[1]);
@@ -118,7 +126,7 @@ public class RPC4Handler extends RPC3Handler {
 		}
 	}
 	
-	protected PlayerInfo processEventInfo(String uid, Object o, Long timestamp) throws Exception {
+	protected PlayerInfo processEventInfo(String uid, Object o, Integer timestamp) throws Exception {
 		Long timediff = DateUtils.dateToTimestamp(new Date()) - timestamp;
 		Object[] values = ((Object[]) o);
 		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
@@ -175,6 +183,9 @@ public class RPC4Handler extends RPC3Handler {
 		List<PenaltyHistory> events = new ArrayList<PenaltyHistory>();
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			
+			log.debug("eventQueue {}", server.getName());
+			
 			List<Penalty> penalties = app.listPendingEvents(server.getKey());
 			for (Penalty p : penalties) {
 				String adminId = "0";
@@ -218,11 +229,21 @@ public class RPC4Handler extends RPC3Handler {
 	
 	public void confirmEvent(String key, Object[] list) {
 		try {
-			@SuppressWarnings("unused")
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Confirm Event {}", server.getName());
+				log.debug("Info: {}", Arrays.toString(list));
+			}
+			
+			List<Entry<Long, String>> eventList = new ArrayList<Entry<Long,String>>();
 			for (Object o : list) {
 				Object[] data = (Object[]) o;
-				app.confirmRemoteEvent(parseLong(data[0]), (String) data[1]);	
+				Entry<Long, String> entry = new SimpleMapEntry<Long, String>(parseLong(data[0]), (String) data[1]);
+				eventList.add(entry);
+			}
+			if (eventList.size() > 0) {
+				app.confirmRemoteEvent(eventList);
 			}
 		} catch (UnauthorizedUpdateException e) {
 			log.warn(e.getMessage());

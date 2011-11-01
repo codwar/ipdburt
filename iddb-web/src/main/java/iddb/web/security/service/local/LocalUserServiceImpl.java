@@ -20,6 +20,7 @@ package iddb.web.security.service.local;
 
 import iddb.core.model.Player;
 import iddb.core.model.Server;
+import iddb.core.model.User;
 import iddb.web.security.dao.Session;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
@@ -144,6 +145,24 @@ public class LocalUserServiceImpl extends CommonUserService {
 	 */
 	@Override
 	public List<Server> listUserServers(Integer level) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#getUser(java.lang.Long)
+	 */
+	@Override
+	public User getUser(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#getUserPlayer(iddb.core.model.User, java.lang.Long)
+	 */
+	@Override
+	public Player getUserPlayer(User user, Long server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
