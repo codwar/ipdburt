@@ -128,7 +128,7 @@ public class RPC3Handler {
 				updated = (Date) values[6];
 			} else {
 				try {
-					updated = DateUtils.timestampToDate((Long) values[6]);
+					updated = DateUtils.timestampToDate(parseLong(values[6]));
 				} catch (Exception e) {
 					log.error(e.getMessage());
 					updated = new Date();
