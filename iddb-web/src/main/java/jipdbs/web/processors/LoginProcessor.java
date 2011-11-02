@@ -55,6 +55,9 @@ public class LoginProcessor extends ResponseProcessor {
 		} else {
 			Subject user = userService.getCurrentUser();
 			String next = StringUtils.isEmpty(context.getRequest().getParameter("next")) ? contextPath : context.getRequest().getParameter("next");
+			if (next.startsWith("//")) {
+				next = next.substring(1);
+			}
 			if (user.isAuthenticated()) {
 				log.debug("User is already authenticated. Redirect {}", next);
 				return next;

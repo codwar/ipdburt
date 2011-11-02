@@ -136,6 +136,7 @@ public class DbUserServiceImpl extends CommonUserService {
 			servers = serverDAO.findEnabled(0, 1000, count);
 		} else {
 			List<UserServer> us = userServerDAO.listUserServers(subject.getKey(), level);
+			log.debug("Found {} servers", us.size());
 			servers = new ArrayList<Server>();
 			for (UserServer u : us) {
 				try {

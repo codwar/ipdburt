@@ -306,7 +306,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 			st.setLong(1, user);
 			st.setInt(2, level);
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				UserServer userServer = new UserServer();
 				loadUserServer(userServer, rs);
 				list.add(userServer);
@@ -335,7 +335,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 			st.setLong(1, server);
 			st.setInt(2, level);
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				UserServer userServer = new UserServer();
 				loadUserServer(userServer, rs);
 				list.add(userServer);
