@@ -179,7 +179,6 @@ public class Update {
 			userServer = new UserServer();
 			userServer.setUser(user.getKey());
 			userServer.setServer(server.getKey());
-			userServer.setOwner(false);
 		}
 		userServer.setPlayer(player.getKey());
 		serverDAO.save(userServer);

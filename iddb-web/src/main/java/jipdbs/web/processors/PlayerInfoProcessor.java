@@ -87,6 +87,12 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		Integer minLevel = server.getAdminLevel();
 		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(minLevel);
 		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
+		Boolean canApplyAction = false;
+		
+		Player currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(server.getKey());
+		if (currentPlayer != null && (currentPlayer.getLevel() > player.getLevel())) {
+			canApplyAction = true;
+		}
 		
 		List<NoticeViewBean> notices = null;
 		List<PenaltyEventViewBean> events = null;
@@ -201,6 +207,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		req.setAttribute("hasAdmin", hasAdmin);
 		req.setAttribute("hasServerAdmin", hasServerAdmin);
 		req.setAttribute("permission", server.getPermission());
+		req.setAttribute("canApplyAction", canApplyAction);
 	
 		return null;
 	}

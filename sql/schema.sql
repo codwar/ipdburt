@@ -1,3 +1,7 @@
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `alias`
 --
@@ -88,7 +92,8 @@ CREATE TABLE IF NOT EXISTS `penalty_history` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`,`penaltyid`),
   KEY `penaltyid` (`penaltyid`),
-  KEY `id_pen_upd` (`id`,`penaltyid`,`updated`)
+  KEY `id_pen_upd` (`id`,`penaltyid`,`updated`),
+  KEY `status` (`status`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -198,14 +203,13 @@ CREATE TABLE IF NOT EXISTS `userserver` (
   `userid` int(11) unsigned NOT NULL,
   `serverid` int(11) unsigned NOT NULL,
   `playerid` int(11) DEFAULT NULL,
-  `owner` tinyint(1) NOT NULL DEFAULT '0',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `serverid` (`serverid`),
   KEY `userid_server` (`userid`,`serverid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 

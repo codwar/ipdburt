@@ -49,12 +49,12 @@ public class UserServerDAOImpl implements UserServerDAO {
 	public void save(UserServer userServer) {
 		String sql;
 		if (userServer.getKey() == null) {
-			sql = "insert into userserver (userid, serverid, playerid, owner, updated, created) values (?,?,?,?,?,?)"; 
+			sql = "insert into userserver (userid, serverid, playerid, updated, created) values (?,?,?,?,?)"; 
 		} else {
 			sql = "update userserver set userid = ?," +
 					"serverid = ?," +
 					"playerid = ?," +
-					"owner = ?, updated = ? where id = ? limit 1";
+					"updated = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -64,12 +64,11 @@ public class UserServerDAOImpl implements UserServerDAO {
 			st.setLong(2, userServer.getServer());
 			if (userServer.getPlayer() == null) st.setNull(3, Types.INTEGER);
 			else st.setLong(3, userServer.getPlayer());
-			st.setBoolean(4, userServer.getOwner());
-			st.setTimestamp(5, new Timestamp(new Date().getTime()));
+			st.setTimestamp(4, new Timestamp(new Date().getTime()));
 			if (userServer.getKey() != null) {
-				st.setLong(6, userServer.getKey());
+				st.setLong(5, userServer.getKey());
 			} else {
-				st.setTimestamp(6, new Timestamp(new Date().getTime()));
+				st.setTimestamp(5, new Timestamp(new Date().getTime()));
 			}
 			st.executeUpdate();
 			if (userServer.getKey() == null) {
@@ -131,7 +130,6 @@ public class UserServerDAOImpl implements UserServerDAO {
 	private void loadUserServer(UserServer userServer, ResultSet rs) throws SQLException {
 		userServer.setUser(rs.getLong("userid"));
 		userServer.setServer(rs.getLong("serverid"));
-		userServer.setOwner(rs.getBoolean("owner"));
 		userServer.setKey(rs.getLong("id"));
 		userServer.setPlayer(rs.getLong("playerid"));
 	}

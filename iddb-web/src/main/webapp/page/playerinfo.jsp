@@ -97,24 +97,28 @@
 </script>
 
 <%
-Integer permission = (Integer) request.getAttribute("permission");
-Server server = (Server) request.getAttribute("server");
-PlayerViewBean player = (PlayerViewBean) request.getAttribute("player");
+Boolean canApplyAction = (Boolean) request.getAttribute("canApplyAction");
 
-if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
-	request.setAttribute("canRemoveNotice", true);
-}
+if (canApplyAction) {
+	Integer permission = (Integer) request.getAttribute("permission");
+	Server server = (Server) request.getAttribute("server");
+	PlayerViewBean player = (PlayerViewBean) request.getAttribute("player");
 
-if (player.getBanInfo() == null) {
-	if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
-		if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
-			request.setAttribute("addban", true);
-		}
+	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
+		request.setAttribute("canRemoveNotice", true);
 	}
-} else {
-	if ((permission & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN) {
-		if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
-			request.setAttribute("delban", true);
+
+	if (player.getBanInfo() == null) {
+		if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
+				request.setAttribute("addban", true);
+			}
+		}
+	} else {
+		if ((permission & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN) {
+			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
+				request.setAttribute("delban", true);
+			}
 		}
 	}
 }
@@ -122,7 +126,7 @@ if (player.getBanInfo() == null) {
 %>
 
 <fieldset class="playerheader shadowbox">
-<c:if test="${hasServerAdmin}">
+<c:if test="${hasServerAdmin and canApplyAction}">
 <div id="player_menu" class="player_menu">
 <div class="player_menu_box">
 	<ul>

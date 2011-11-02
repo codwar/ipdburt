@@ -245,6 +245,8 @@ public class DbUserServiceImpl extends CommonUserService {
 	@Override
 	public Player getSubjectPlayer(Long server) {
 		Subject subject = this.getCurrentUser();
+		if (!subject.isAuthenticated()) return null;
+		
 		Player player;
 		player = subject.getServerPlayer().get(server.toString());
 		

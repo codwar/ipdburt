@@ -31,7 +31,6 @@ public class UserServer implements Serializable {
 	private Long server;
 	private Long user;
 	private Long player;
-	private Boolean owner;
 
 	public Long getKey() {
 		return key;
@@ -55,14 +54,6 @@ public class UserServer implements Serializable {
 
 	public void setUser(Long user) {
 		this.user = user;
-	}
-
-	public Boolean getOwner() {
-		return owner;
-	}
-
-	public void setOwner(Boolean owner) {
-		this.owner = owner;
 	}
 
 	public Long getPlayer() {

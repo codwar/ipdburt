@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `server_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `serverid_func` (`serverid`,`funcid`),
   KEY `serverid` (`serverid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE `server` ADD `totalplayers` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `server` ADD `maxban` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
@@ -54,6 +54,10 @@ ALTER TABLE `player` ADD INDEX `serverid_con_upd` ( `serverid` , `connected` , `
 
 ALTER TABLE `server` DROP INDEX `disabled`,
   ADD INDEX `active_srvs` ( `disabled` , `updated` , `name` );
+
+ALTER TABLE `penalty_history` ADD INDEX ( `status` );
+
+ALTER TABLE `userserver` DROP `owner`;
 
 #
 # DDL END

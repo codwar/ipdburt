@@ -99,13 +99,15 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 			throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
 		}
 		
-		Player currentPlayer = null;
-		if (!UserServiceFactory.getUserService().getCurrentUser().isSuperAdmin()) {
-			currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(player.getServer());
-			if (currentPlayer == null) {
-				log.debug("No player for current user");
-				throw new HttpError(HttpServletResponse.SC_NOT_FOUND);
-			}
+		Player currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(player.getServer());
+		if (currentPlayer == null) {
+			log.error("No player for current user");
+			throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
+		}
+		
+		if (currentPlayer.getLevel() <= player.getLevel()) {
+			Flash.error(req, MessageResource.getMessage("low_level_admin"));
+			return redirect;
 		}
 		
 		Integer funcId;
