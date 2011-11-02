@@ -124,11 +124,12 @@ public class Player implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder b = new StringBuilder("\"");
-		b.append(server);
-		b.append("[");
+		StringBuilder b = new StringBuilder();
+		b.append(this.nickname);
+		b.append(" [");
 		b.append(guid);
-		b.append("]");
+		b.append("] ");
+		b.append(" - ").append(this.server);
 		return b.toString();
 	}
 

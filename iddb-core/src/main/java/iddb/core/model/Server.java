@@ -154,9 +154,9 @@ public class Server implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder b = new StringBuilder("\"");
+		StringBuilder b = new StringBuilder();
 		b.append(name);
-		b.append("[");
+		b.append(" [");
 		b.append(uid);
 		b.append("]");
 		return b.toString();

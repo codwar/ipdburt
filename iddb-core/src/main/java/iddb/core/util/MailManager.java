@@ -67,7 +67,9 @@ public class MailManager {
 		Email email = new SimpleEmail();
 		email.setSubject(subject);
 		email.setMsg(message);
-		if (replyTo != null) email.addReplyTo(replyTo);
+		if (replyTo != null) {
+			email.addReplyTo(replyTo);
+		}
 		for (String adr : props.getProperty("admin").split(";")) {
 			email.addTo(adr);
 		}

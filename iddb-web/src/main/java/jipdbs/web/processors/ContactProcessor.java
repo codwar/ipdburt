@@ -26,6 +26,7 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 
 import jipdbs.web.Flash;
+import jipdbs.web.MessageResource;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -44,12 +45,12 @@ public class ContactProcessor extends ResponseProcessor {
 			String text = req.getParameter("text");
 
 			if (StringUtils.isEmpty(mail) || StringUtils.isEmpty(text)) {
-				Flash.error(req, "Completa todos los campos solicitados.");
+				Flash.error(req, MessageResource.getMessage("fields_required"));
 				return null;
 			}
 			
 			if (!Validator.isValidEmail(mail)) {
-				Flash.error(req, "Ingresa una dirección de correo válida.");
+				Flash.error(req, MessageResource.getMessage("invalid_email"));
 				return null;
 			}
 			
@@ -58,13 +59,13 @@ public class ContactProcessor extends ResponseProcessor {
 			if (!app.isRecaptchaValid(req.getRemoteAddr(),
 					req.getParameter("recaptcha_challenge_field"),
 					req.getParameter("recaptcha_response_field"))) {
-					Flash.error(req, "Código no válido.");
+					Flash.error(req, MessageResource.getMessage("invalid_captcha"));
 					return null;
 				
 			}
 			Principal user = req.getUserPrincipal();
 			app.sendAdminMail(user != null ? user.getName() : null, mail, text);
-			Flash.ok(req, "Tu mensaje fue enviado.");
+			Flash.ok(req, MessageResource.getMessage("mail_sent"));
 		}
 		return null;
 	}

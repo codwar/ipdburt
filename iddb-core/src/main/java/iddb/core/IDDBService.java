@@ -429,9 +429,9 @@ public class IDDBService {
 
 	public void sendAdminMail(String realId, String from, String body) {
 		StringBuilder builder = new StringBuilder();
-//		builder.append("Responder a: ");
-//		builder.append(from);
-//		builder.append("\r\n");
+		builder.append("Responder a: ");
+		builder.append(from);
+		builder.append("\r\n");
 		if (realId != null) {
 			builder.append("Identificado como: ");
 			builder.append(realId);

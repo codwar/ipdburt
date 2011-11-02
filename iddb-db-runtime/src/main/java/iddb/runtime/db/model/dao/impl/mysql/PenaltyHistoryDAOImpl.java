@@ -218,7 +218,9 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 	public List<PenaltyHistory> listByPlayer(Long id, int offset, int limit,
 			int[] count) {
 		String sqlCount = "SELECT count(h.id) FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? GROUP by h.penaltyid";
-		String sql = "SELECT h.* FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? GROUP by h.penaltyid HAVING h.id = max(h.id) ORDER BY h.updated desc limit ?,?";
+		//String sql = "SELECT h.* FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? GROUP by h.penaltyid HAVING h.id = max(h.id) ORDER BY h.updated desc limit ?,?";
+		String sql = "SELECT h.* FROM penalty_history h INNER JOIN (SELECT max(h.id) as id FROM penalty_history h INNER JOIN penalty p ON h.penaltyid = p.id where p.playerid = ? group by h.penaltyid) hj ON h.id = hj.id ORDER BY h.updated desc limit ?,?";
+		
 		Connection conn = null;
 		List<PenaltyHistory> list = new ArrayList<PenaltyHistory>();
 		try {
