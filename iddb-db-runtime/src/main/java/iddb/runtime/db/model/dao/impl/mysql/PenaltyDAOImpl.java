@@ -191,7 +191,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, player);
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				Penalty penalty = new Penalty();
 				loadPenalty(penalty, rs);
 				list.add(penalty);
@@ -223,7 +223,7 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 			st.setLong(1, player);
 			st.setInt(2, limit);
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				Penalty penalty = new Penalty();
 				loadPenalty(penalty, rs);
 				list.add(penalty);

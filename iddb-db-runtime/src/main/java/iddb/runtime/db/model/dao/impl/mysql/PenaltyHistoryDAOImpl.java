@@ -160,7 +160,7 @@ public class PenaltyHistoryDAOImpl implements PenaltyHistoryDAO {
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setLong(1, id);
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				PenaltyHistory penalty = new PenaltyHistory();
 				loadPenaltyHistory(penalty, rs);
 				list.add(penalty);
