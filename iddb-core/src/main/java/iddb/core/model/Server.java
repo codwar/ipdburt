@@ -33,7 +33,8 @@ public class Server implements Serializable {
 	private static final long serialVersionUID = 1356474862304251338L;
 
 	private static final Integer DEFAULT_MAX_LEVEL = 2;
-
+	private static final Integer MAX_LEVEL = 100;
+	
 	private Long key;
 
 	private String uid;
@@ -62,6 +63,12 @@ public class Server implements Serializable {
 		this.totalPlayers = totalPlayers;
 	}
 
+	public Integer getPermission(Integer func) {
+		Integer n = this.permissions.get(func);
+		if (n == null) return MAX_LEVEL;
+		return n;
+	}
+	
 	public Map<Long, Integer> getPermissions() {
 		return permissions;
 	}
@@ -194,16 +201,16 @@ public class Server implements Serializable {
 		return true;
 	}
 
-	public Integer getPermission() {
+	public Integer getRemotePermission() {
 		return permission;
 	}
 
-	public void setPermission(Integer permission) {
+	public void setRemotePermission(Integer permission) {
 		this.permission = permission;
 	}
 
 	public Integer getAdminLevel() {
-		if (this.permissions == null || this.permissions.size() == 0) return 100;
+		if (this.permissions == null || this.permissions.size() == 0) return MAX_LEVEL;
 		List<Integer> levels = new ArrayList<Integer>(this.permissions.values());
 		Collections.sort(levels);
 		return levels.get(0);

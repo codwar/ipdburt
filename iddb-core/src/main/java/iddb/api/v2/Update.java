@@ -83,7 +83,7 @@ public class Update {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, remoteAddr,name);
 			server.setName(name);
-			server.setPermission(permission);
+			server.setRemotePermission(permission);
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
 			serverDAO.save(server);

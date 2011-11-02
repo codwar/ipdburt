@@ -166,24 +166,24 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 			throw new HttpError(HttpServletResponse.SC_FORBIDDEN);
 		}
 		if (penalty.getType().equals(Penalty.BAN)) {
-			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
+			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.REMOVE_BAN))) {
 				log.debug("Cannot remove ban");
 				Flash.error(req, MessageResource.getMessage("forbidden"));
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}
-			if (!((server.getPermission() & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN)) {
+			if (!((server.getRemotePermission() & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN)) {
 				Flash.error(req, MessageResource.getMessage("remote_action_not_available"));
 				return redirect;
 			}
 			Flash.info(req, MessageResource.getMessage("local_action_pending"));
 			penalty.setSynced(false);
 		} else {
-			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
+			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.REMOVE_NOTICE))) {
 				log.debug("Cannot remove notice");
 				Flash.error(req, MessageResource.getMessage("forbidden"));
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}
-			if (!((server.getPermission() & RemotePermissions.REMOVE_NOTICE) == RemotePermissions.REMOVE_NOTICE)) {
+			if (!((server.getRemotePermission() & RemotePermissions.REMOVE_NOTICE) == RemotePermissions.REMOVE_NOTICE)) {
 				Flash.warn(req, MessageResource.getMessage("local_action_only"));
 				penalty.setSynced(true);
 				penalty.setActive(false);
@@ -221,12 +221,12 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 		if (currentPlayer != null) penalty.setAdmin(currentPlayer.getKey());
 		
 		if (type.equals("notice")) {
-			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_NOTICE))) {
+			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.ADD_NOTICE))) {
 				Flash.error(req, MessageResource.getMessage("forbidden"));
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}
 			penalty.setType(Penalty.NOTICE);
-			if ((server.getPermission() & RemotePermissions.ADD_NOTICE) == RemotePermissions.ADD_NOTICE) {
+			if ((server.getRemotePermission() & RemotePermissions.ADD_NOTICE) == RemotePermissions.ADD_NOTICE) {
 				penalty.setSynced(false);
 				penalty.setActive(false);
 				Flash.info(req, MessageResource.getMessage("local_action_pending"));
@@ -236,7 +236,7 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				Flash.warn(req, MessageResource.getMessage("local_action_only"));
 			}
 		} else {
-			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
+			if (!UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.ADD_BAN))) {
 				Flash.error(req, MessageResource.getMessage("forbidden"));
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}			
@@ -245,7 +245,7 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				Flash.error(req, MessageResource.getMessage("duration_field_required"));
 				return redirect;			
 			}
-			if ((server.getPermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+			if ((server.getRemotePermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 				penalty.setSynced(false);
 				penalty.setActive(false);
 				Flash.info(req, MessageResource.getMessage("local_action_pending"));

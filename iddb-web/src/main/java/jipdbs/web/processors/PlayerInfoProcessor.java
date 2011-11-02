@@ -206,7 +206,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		req.setAttribute("notices", notices);
 		req.setAttribute("hasAdmin", hasAdmin);
 		req.setAttribute("hasServerAdmin", hasServerAdmin);
-		req.setAttribute("permission", server.getPermission());
+		req.setAttribute("permission", server.getRemotePermission());
 		req.setAttribute("canApplyAction", canApplyAction);
 	
 		return null;

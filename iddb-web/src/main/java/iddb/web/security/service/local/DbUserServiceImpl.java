@@ -188,6 +188,7 @@ public class DbUserServiceImpl extends CommonUserService {
 		Subject subject = this.getCurrentUser();
 		if (!subject.isAuthenticated()) return false;
 		if (subject.isSuperAdmin()) return true;
+
 		return userServerDAO.existsAny(subject.getKey(), level);
 	}
 

@@ -99,7 +99,7 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setInt(9, server.getMaxLevel());
 			if (server.getDirty() == null) server.setDirty(false);
 			st.setBoolean(10, server.getDirty());
-			st.setInt(11, server.getPermission());
+			st.setInt(11, server.getRemotePermission());
 			if (server.getDisabled() == null) server.setDisabled(false);
 			st.setBoolean(12, server.getDisabled());
 			st.setLong(13, server.getMaxBanDuration());
@@ -205,7 +205,7 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setPluginVersion(rs.getString("pluginversion"));
 		server.setMaxLevel(rs.getInt("maxlevel"));
 		server.setDirty(rs.getBoolean("isdirty"));
-		server.setPermission(rs.getInt("permission"));
+		server.setRemotePermission(rs.getInt("permission"));
 		server.setDisabled(rs.getBoolean("disabled"));
 		server.setTotalPlayers(rs.getInt("totalplayers"));
 		server.setMaxBanDuration(rs.getLong("maxban"));

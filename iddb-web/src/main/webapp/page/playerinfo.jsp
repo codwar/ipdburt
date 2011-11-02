@@ -104,19 +104,19 @@ if (canApplyAction) {
 	Server server = (Server) request.getAttribute("server");
 	PlayerViewBean player = (PlayerViewBean) request.getAttribute("player");
 
-	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_NOTICE))) {
+	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.REMOVE_NOTICE))) {
 		request.setAttribute("canRemoveNotice", true);
 	}
 
 	if (player.getBanInfo() == null) {
 		if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
-			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.ADD_BAN))) {
+			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.ADD_BAN))) {
 				request.setAttribute("addban", true);
 			}
 		}
 	} else {
 		if ((permission & RemotePermissions.REMOVE_BAN) == RemotePermissions.REMOVE_BAN) {
-			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermissions().get(RemotePermissions.REMOVE_BAN))) {
+			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.REMOVE_BAN))) {
 				request.setAttribute("delban", true);
 			}
 		}

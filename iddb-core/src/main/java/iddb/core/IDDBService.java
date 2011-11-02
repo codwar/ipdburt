@@ -116,7 +116,7 @@ public class IDDBService {
 		server.setOnlinePlayers(0);
 		server.setAddress(ip);
 		server.setDisabled(disabled);
-		server.setPermission(0);
+		server.setRemotePermission(0);
 		server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
 		server.setTotalPlayers(0);
 		serverDAO.save(server);
