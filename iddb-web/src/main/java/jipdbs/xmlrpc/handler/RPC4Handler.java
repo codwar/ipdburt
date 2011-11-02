@@ -204,17 +204,17 @@ public class RPC4Handler extends RPC3Handler {
 					log.error(e.getMessage());
 				}
 				String[] values;
-				if (p.getType() == Penalty.BAN) {
-					if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
+				if (p.getType().equals(Penalty.BAN)) {
+					if (his.getFuncId().equals(PenaltyHistory.FUNC_ID_ADD)) {
 						values = new String[]{Events.BAN, his.getKey().toString(), client.getClientId().toString(), p.getDuration().toString(), p.getReason(), adminId};	
 					} else {
 						values = new String[]{Events.UNBAN, his.getKey().toString(), client.getClientId().toString()};
 					}
 				} else {
-					if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
-						values = new String[]{Events.ADDNOTE, his.getKey().toString(), client.getClientId().toString(), p.getReason(), adminId};
+					if (his.getFuncId().equals(PenaltyHistory.FUNC_ID_ADD)) {
+						values = new String[]{Events.ADDNOTE, his.getKey().toString(), p.getKey().toString() , client.getClientId().toString(), p.getReason(), adminId};
 					} else {
-						values = new String[]{Events.DELNOTE, his.getKey().toString()};
+						values = new String[]{Events.DELNOTE, his.getKey().toString(), p.getKey().toString()};
 					}
 				}
 				list.add(values);
