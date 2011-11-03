@@ -27,6 +27,9 @@ public class BuildAliasIndex extends Command {
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getConnection();
+			
+			System.out.println("Processing ...");
+			
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery("select id, nickname from alias");
 			
