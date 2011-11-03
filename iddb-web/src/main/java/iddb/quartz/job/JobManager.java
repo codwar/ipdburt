@@ -73,6 +73,4 @@ public class JobManager {
 		return jobs;
 	}
 	
-	
-	
 }

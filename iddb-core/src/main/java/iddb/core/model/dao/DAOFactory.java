@@ -19,6 +19,7 @@
 package iddb.core.model.dao;
 
 import iddb.core.cache.CacheFactory;
+import iddb.core.cache.UnavailableCacheException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -42,47 +43,6 @@ public final class DAOFactory {
 	private Map<String, Object> daoCache = new HashMap<String, Object>();
 
 	private DAOFactory() {
-		// let see if we have a cache system available
-//		boolean useCache = false;
-//		if (CacheFactory.getInstance().verify()) {
-//			log.debug("Cache system is available, will try to create cached DAO");
-//			useCache = true;
-//		}
-//		Properties prop = new Properties();
-//		try {
-//			prop.load(this.getClass().getClassLoader()
-//					.getResourceAsStream("dao.properties"));
-//			for (Entry<Object, Object> entry : prop.entrySet()) {
-//				String key = (String) entry.getKey();
-//				String value = (String) entry.getValue();
-//				log.debug("Initializing {}", value);
-//				try {
-//					@SuppressWarnings({ "static-access", "rawtypes" })
-//					Class cls = this.getClass().forName(value);
-//					Object daoImpl = cls.newInstance();
-//					if (useCache) {
-//						try {
-//							daoCache.put(key,
-//									createCachedInstance(key, daoImpl));
-//						} catch (Exception e) {
-//							log.error(e.getMessage());
-//							daoCache.put(key, daoImpl);
-//						}
-//					} else {
-//						daoCache.put(key, daoImpl);
-//					}
-//				} catch (ClassNotFoundException e) {
-//					log.error("{} not found", e.getMessage());
-//				} catch (InstantiationException e) {
-//					log.error("Cannot initialize {}", e.getMessage());
-//				} catch (IllegalAccessException e) {
-//					log.error(e.getMessage());
-//				}
-//			}
-//		} catch (IOException e) {
-//			log.error(e.getMessage());
-//		}
-		
 		if (CacheFactory.getInstance().verify()) {
 			log.debug("Cache system is available, will try to create cached DAO");
 			this.useCache = true;
@@ -171,6 +131,10 @@ public final class DAOFactory {
 				if (useCache) {
 					try {
 						dao = createCachedInstance(name, daoImpl);
+					} catch (UnavailableCacheException e) {
+						log.debug("Disabling cache factory");
+						dao = daoImpl;
+						useCache = false;
 					} catch (Exception e) {
 						log.error(e.getMessage());
 						dao = daoImpl;

@@ -42,7 +42,9 @@ public class RPC4Handler extends RPC3Handler {
 
 	public void updateName(String key, String name, Object[] data) {
 		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
-		log.debug("Update Name {}", name);
+		if (log.isDebugEnabled()) {
+			log.debug("Update Server {} - {}", name, Arrays.toString(data));	
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -58,28 +60,38 @@ public class RPC4Handler extends RPC3Handler {
 		return HashUtils.getSHA1Hash(guid + key);
 	}
 	
+	/**
+	 * 
+	 * @param key
+	 * @param plist
+	 * @param timestamp
+	 * @throws UpdateApiException
+	 * @throws Exception
+	 */
 	public void update(String key, Object[] plist, Integer timestamp) throws UpdateApiException, Exception {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 
-			log.debug("Update {}", server.getName());
+			log.info("Update {} - {}", server.getName(), plist.length);
+			
+			if (plist.length > maxListSize) {
+				log.warn("Too many items to process [{}].", plist.length);
+				plist = Arrays.copyOfRange(plist, 0, maxListSize);
+			}
+
+			Long timediff = DateUtils.dateToTimestamp(new Date()) - timestamp;
+			log.debug("Server timestamp: {} - diff {}", timestamp, timediff);
 			
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
 				try {
-					list.add(processEventInfo(server.getUid(), o, timestamp));
+					list.add(processEventInfo(server.getUid(), o, timediff));
 				} catch (Exception e) {
 					log.error(e.getMessage());
 				}
 			}
+			
 			if (list.size() > 0) {
-				if (list.size() > maxListSize) {
-					log.warn("List size is " + Integer.toString(list.size()));
-					// this is too much to process
-					list = list.subList(list.size() - maxListSize, list.size());
-				} else {
-					log.info("List size is " + Integer.toString(list.size()));
-				}
 				updateApi.updatePlayer(server, list);
 			} else {
 				if (server.getOnlinePlayers() > 0 || server.getDirty()) {
@@ -87,6 +99,7 @@ public class RPC4Handler extends RPC3Handler {
 					updateApi.cleanServer(server);
 				}
 			}
+			
 		} catch (UnauthorizedUpdateException e) {
 			log.warn(e.getMessage());
 		} catch (Exception e) {
@@ -126,8 +139,7 @@ public class RPC4Handler extends RPC3Handler {
 		}
 	}
 	
-	protected PlayerInfo processEventInfo(String uid, Object o, Integer timestamp) throws Exception {
-		Long timediff = DateUtils.dateToTimestamp(new Date()) - timestamp;
+	protected PlayerInfo processEventInfo(String uid, Object o, Long timediff) throws Exception {
 		Object[] values = ((Object[]) o);
 		if (log.isDebugEnabled()) log.debug("EventInfo: {}", Arrays.toString(values));
 		String event = (String) values[0];
@@ -184,7 +196,7 @@ public class RPC4Handler extends RPC3Handler {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 			
-			log.debug("eventQueue {}", server.getName());
+			log.debug("Query Event Queue {}", server.getName());
 			
 			List<Penalty> penalties = app.listPendingEvents(server.getKey());
 			for (Penalty p : penalties) {
@@ -220,6 +232,11 @@ public class RPC4Handler extends RPC3Handler {
 				list.add(values);
 				events.add(his);
 			}
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Events {}", list.toString());
+			}
+			
 			app.updatePenaltyHistory(events);
 		} catch (UnauthorizedUpdateException e) {
 			log.warn(e.getMessage());
@@ -227,13 +244,17 @@ public class RPC4Handler extends RPC3Handler {
 		return list;
 	}
 	
+	/**
+	 * 
+	 * @param key
+	 * @param list
+	 */
 	public void confirmEvent(String key, Object[] list) {
 		try {
 			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
 			
 			if (log.isDebugEnabled()) {
-				log.debug("Confirm Event {}", server.getName());
-				log.debug("Info: {}", Arrays.toString(list));
+				log.debug("Confirm Event {} - {}", server.getName(), Arrays.toString(list));
 			}
 			
 			List<Entry<Long, String>> eventList = new ArrayList<Entry<Long,String>>();
