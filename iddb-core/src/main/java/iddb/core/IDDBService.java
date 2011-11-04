@@ -107,7 +107,7 @@ public class IDDBService {
 		return reCaptchaResponse.isValid();
 	}
 
-	public void addServer(String name, String admin, String uid, String ip, boolean disabled) {
+	public Server addServer(String name, String admin, String uid, String ip, boolean disabled) {
 		Server server = new Server();
 		server.setAdminEmail(admin);
 		server.setCreated(new Date());
@@ -120,6 +120,7 @@ public class IDDBService {
 		server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
 		server.setTotalPlayers(0);
 		serverDAO.save(server);
+		return server;
 	}
 
 	public Server getServer(String key) throws EntityDoesNotExistsException {
@@ -146,19 +147,6 @@ public class IDDBService {
 		return server; 
 	}
 	
-	public void saveServer(String key, String name, String admin, String ip, boolean disabled) {
-		try {
-			Server server = getServer(key);
-			server.setName(name);
-			server.setAdminEmail(admin);
-			server.setAddress(ip);
-			server.setDisabled(disabled);
-			serverDAO.save(server);
-		} catch (EntityDoesNotExistsException e) {
-			log.error(e.toString());
-		}
-	}
-
 	public void saveServer(Server server) {
 		serverDAO.save(server);
 	}

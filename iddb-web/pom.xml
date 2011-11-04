@@ -26,13 +26,6 @@
 			<artifactId>iddb-db-runtime</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>iddb-security-runtime</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		 -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>iddb-memcached-runtime</artifactId>
@@ -136,20 +129,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>install-urlresolver</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<file>${project.basedir}/lib/urlresolver-0.0.2.jar</file>
-							<groupId>sgt</groupId>
-							<artifactId>urlresolver</artifactId>
-							<version>0.0.2</version>
-							<packaging>jar</packaging>
-						</configuration>
-					</execution>
 					<execution>
 						<id>install-json-taglib</id>
 						<phase>initialize</phase>

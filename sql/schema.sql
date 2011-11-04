@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `admin` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `address` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `display_address` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NULL DEFAULT NULL,
   `onlineplayers` tinyint(4) unsigned NOT NULL DEFAULT '0',

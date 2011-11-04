@@ -44,6 +44,7 @@ public class Server implements Serializable {
 	private Date updated;
 	private int onlinePlayers;
 	private String address;
+	private String displayAddress;
 	private String pluginVersion;
 	private Integer maxLevel;
 	private Boolean dirty;
@@ -222,6 +223,14 @@ public class Server implements Serializable {
 
 	public void setMaxBanDuration(Long maxBanDuration) {
 		this.maxBanDuration = maxBanDuration;
+	}
+
+	public String getDisplayAddress() {
+		return displayAddress;
+	}
+
+	public void setDisplayAddress(String displayAddress) {
+		this.displayAddress = displayAddress;
 	}
 	
 }

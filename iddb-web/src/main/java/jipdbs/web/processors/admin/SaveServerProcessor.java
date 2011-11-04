@@ -19,7 +19,9 @@
 package jipdbs.web.processors.admin;
 
 import iddb.core.IDDBService;
+import iddb.core.model.Server;
 import iddb.core.util.HashUtils;
+import iddb.exception.EntityDoesNotExistsException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,6 +47,7 @@ public class SaveServerProcessor extends RedirectProcessor {
 		String admin = req.getParameter("admin");
 		String ip = req.getParameter("ip");
 		String disabled = req.getParameter("disable") == null ? "off" : req.getParameter("disable");
+		String displayip = req.getParameter("displayip");
 		
 		if (StringUtils.isEmpty(name) || StringUtils.isEmpty(admin)) {
 			Flash.error(req, MessageResource.getMessage("save_server_noname"));
@@ -56,10 +59,24 @@ public class SaveServerProcessor extends RedirectProcessor {
 
 		if (StringUtils.isEmpty(req.getParameter("k"))) {
 			String uid = HashUtils.generate(name);
-			app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
+			Server server = app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
+			server.setDisplayAddress(displayip);
+			app.saveServer(server);
 			Flash.info(req, MessageResource.getMessage("save_server_added"));
 		} else {
-			app.saveServer(req.getParameter("k"), name, admin, ip, disabled.equalsIgnoreCase("on"));
+			Server server;
+			try {
+				server = app.getServer(req.getParameter("k"));
+			} catch (EntityDoesNotExistsException e) {
+				Flash.error(req, MessageResource.getMessage("server_not_found"));
+				return null;
+			}
+			server.setName(name);
+			server.setAdminEmail(admin);
+			server.setAddress(ip);
+			server.setDisplayAddress(displayip);
+			server.setDisabled(disabled.equalsIgnoreCase("on"));
+			app.saveServer(server);
 			Flash.info(req, MessageResource.getMessage("save_server_updated"));
 		}
 		

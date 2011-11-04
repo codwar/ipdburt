@@ -21,7 +21,18 @@
 	<tbody>
 		<c:forEach items="${servers}" var="server">
 			<tr>
-				<td><a href="<url:url name="serverfilter"><url:param name="query" value="${server.key}"/></url:url>">${server.name} - [${server.address}]</a></td>
+				<td>
+				<a href="<url:url name="serverfilter"><url:param name="query" value="${server.key}"/></url:url>">
+				${server.name} 
+				<c:choose>
+				<c:when test="${not empty server.displayAddress}">
+				- [${server.displayAddress}]
+				</c:when>
+				<c:when test="${not empty server.address}">
+				- [${server.address}]
+				</c:when>			
+				</c:choose>
+				</a></td>
 				<td style="text-align: right;">
 				<c:choose>
 				<c:when test="${server.dirty}">

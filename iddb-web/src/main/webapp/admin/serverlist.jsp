@@ -36,6 +36,7 @@
 	                    </c:otherwise>
 	                </c:choose>                
                 </td>
+                <td style="display: none;">${server.displayAddress}</td>
                 <!--<td><a href="<url:url name="admin-getserver"><url:param name="key" value="${server.key}"/></url:url>" class="icon edit"></a></td>-->
             </tr>
         </c:forEach>
@@ -52,6 +53,7 @@ $(document).ready(
 			$("#edit-dialog").find('[name="name"]').val('');
 			$("#edit-dialog").find('[name="admin"]').val('');
 			$("#edit-dialog").find('[name="ip"]').val('');
+			$("#edit-dialog").find('[name="displayip"]').val('');
 			$("#edit-dialog").find('[name="disable"]').attr('checked', false);
 			open_dialog();
 		});
@@ -73,6 +75,7 @@ $(document).ready(
 				d = false;
 			}
 			$("#edit-dialog").find('[name="disable"]').attr('checked', d);
+			$("#edit-dialog").find('[name="displayip"]').val(values[7]);
 			open_dialog();
 		});
 	}
@@ -104,6 +107,8 @@ function open_dialog() {
 	<input type="text" name="admin" class="text ui-corner-all" /><br/>
 	<label for="ip">IP</label><br/>
 	<input type="text" name="ip" class="text ui-corner-all"><br/>&nbsp;<sub>(dejar en blanco para no verificar)</sub><br/>
+	<label for="displayip">IP a Mostrar</label><br/>
+	<input type="text" name="displayip" class="text ui-corner-all"><br/>&nbsp;<sub>(si la ip del server es distinta a la del cliente)</sub><br/>
 	<label for="ip">Deshabilitar</label><input type="checkbox" name="disable" class="checkbox ui-corner-all"/>
 </fieldset>
 </form>

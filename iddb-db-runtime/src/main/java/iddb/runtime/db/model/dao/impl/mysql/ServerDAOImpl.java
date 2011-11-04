@@ -62,7 +62,8 @@ public class ServerDAOImpl implements ServerDAO {
 					"permission, " +
 					"disabled, " +
 					"maxban, " +
-					"totalplayers) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+					"totalplayers, " +
+					"display_address) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update server set uid = ?, " +
 					"name = ?, " +
@@ -77,7 +78,8 @@ public class ServerDAOImpl implements ServerDAO {
 					"permission = ?, " +
 					"disabled = ?, " +
 					"maxban = ?, " +
-					"totalplayers = ? where id = ? limit 1";
+					"totalplayers = ?, " +
+					"display_address = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -104,7 +106,12 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setBoolean(12, server.getDisabled());
 			st.setLong(13, server.getMaxBanDuration());
 			st.setInt(14, server.getTotalPlayers());
-			if (server.getKey() != null) st.setLong(15, server.getKey());
+			if (server.getDisplayAddress() == null) {
+				st.setNull(15, Types.VARCHAR);
+			} else {
+				st.setString(15, server.getDisplayAddress());
+			}
+			if (server.getKey() != null) st.setLong(16, server.getKey());
 			st.executeUpdate();
 			if (server.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -209,6 +216,7 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setDisabled(rs.getBoolean("disabled"));
 		server.setTotalPlayers(rs.getInt("totalplayers"));
 		server.setMaxBanDuration(rs.getLong("maxban"));
+		server.setDisplayAddress(rs.getString("display_address"));
 	}
 
 	@Override
