@@ -245,6 +245,10 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				Flash.error(req, MessageResource.getMessage("duration_field_required"));
 				return redirect;			
 			}
+			if (dm > server.getMaxBanDuration()) {
+				Flash.warn(req, MessageResource.getMessage("duration_fixed"));
+				dm = server.getMaxBanDuration();
+			}
 			if ((server.getRemotePermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 				penalty.setSynced(false);
 				penalty.setActive(false);
