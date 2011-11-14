@@ -57,8 +57,8 @@
     <rule name="contact" pattern="^/contact/$"/>
   </processor>
   <processor class="jipdbs.web.processors.LoginProcessor" redirect="/page/login.jsp">
-    <rule name="login" pattern="^/account/login/$"/>
-    <rule name="logout" pattern="^/account/logout/$">
+    <rule name="login" pattern="^/login/$"/>
+    <rule name="logout" pattern="^/logout/$">
         <arg name="type" value="logout"/>
     </rule>    
   </processor>
@@ -84,6 +84,9 @@
   <processor class="jipdbs.web.processors.OpenIDLoginProcessor" redirect="/page/openid.jsp">
     <rule name="openid" pattern="^/openid/$"/>
   </processor>
+  <processor class="jipdbs.web.processors.UserPlayerDetailProcessor" redirect="/page/userplayerdetail.jsp">
+    <rule name="userplayerdetail" pattern="^/account/detail/$"/>
+  </processor>  
   <forward-processor redirect="/page/donar.jsp">
     <rule name="donation" pattern="^/donate/$"/>
   </forward-processor>

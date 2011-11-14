@@ -21,6 +21,7 @@
             <% if (userService.getCurrentUser().isAuthenticated()) { %>
 	            <span class="subnav" id="signin-link"><g:gravatar email="<%= userService.getCurrentUser().getLoginId() %>" size="16"/> <em style="font-weight: bold; font-style: normal;"><%= userService.getCurrentUser().getScreenName() %></em></span>
 	            <ul class="subnav">
+	            	<li><a href="<url:url name="userplayerdetail"/>">Perfil</a></li>
 	                <li><a href="<url:url name="change_password"/>">Cambiar contrase&ntilde;a</a></li>
 	                <li><a href="<url:url name="logout"/>">Desconectar</a></li>
 	            </ul>            
