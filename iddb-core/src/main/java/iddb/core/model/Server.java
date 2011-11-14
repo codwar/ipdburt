@@ -50,7 +50,7 @@ public class Server implements Serializable {
 	private Boolean dirty;
 	private Integer permission;
 	private Boolean disabled;
-	private Map<Long, Integer> permissions;
+	private Map<Integer, Integer> permissions;
 	private Long maxBanDuration;
 	
 	/* stats */
@@ -70,11 +70,11 @@ public class Server implements Serializable {
 		return n;
 	}
 	
-	public Map<Long, Integer> getPermissions() {
+	public Map<Integer, Integer> getPermissions() {
 		return permissions;
 	}
 
-	public void setPermissions(Map<Long, Integer> permissions) {
+	public void setPermissions(Map<Integer, Integer> permissions) {
 		this.permissions = permissions;
 	}
 

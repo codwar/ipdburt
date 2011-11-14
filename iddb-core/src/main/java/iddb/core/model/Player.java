@@ -126,10 +126,10 @@ public class Player implements Serializable {
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(this.nickname);
-		b.append(" [");
-		b.append(guid);
-		b.append("] ");
-		b.append(" - ").append(this.server);
+		b.append(" [").append(guid).append("] ");
+		b.append("Level: ").append(level);
+		b.append(" - ").append(level);
+		b.append("Server: ").append(server);
 		return b.toString();
 	}
 

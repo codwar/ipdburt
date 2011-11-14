@@ -91,11 +91,11 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		Integer minLevel = server.getAdminLevel();
 		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(minLevel);
 		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
-		Boolean canApplyAction = false;
+		Boolean canApplyAction = Boolean.FALSE;
 		
 		Player currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(server.getKey());
-		if (currentPlayer != null && (currentPlayer.getLevel() > player.getLevel())) {
-			canApplyAction = true;
+		if (currentPlayer != null && (currentPlayer.getLevel().intValue() > player.getLevel().intValue())) {
+			canApplyAction = Boolean.TRUE;
 		}
 		
 		if (log.isDebugEnabled()) {
@@ -105,6 +105,8 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			log.debug("hasAdmin: {}", hasAdmin);
 			log.debug("hasServerAdmin: {}", hasServerAdmin);
 			log.debug("canApplyAction: {}", canApplyAction);
+			log.debug("Permission: {}", server.getRemotePermission());
+			log.debug("Permission Set: {}", server.getPermissions().keySet());
 		}
 		
 		List<NoticeViewBean> notices = null;

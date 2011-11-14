@@ -580,9 +580,9 @@ public class IDDBService {
 	}
 
 	public void saveServerPermissions(Server server, List<ServerPermission> perm) {
-		if (server.getPermissions() == null) server.setPermissions(new HashMap<Long, Integer>(4));
+		if (server.getPermissions() == null) server.setPermissions(new HashMap<Integer, Integer>(4));
 		for (ServerPermission p : perm) {
-			server.getPermissions().put(p.getFuncId().longValue(), p.getLevel());
+			server.getPermissions().put(p.getFuncId(), p.getLevel());
 		}
 		serverDAO.savePermissions(server);
 	}
