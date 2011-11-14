@@ -334,6 +334,7 @@ public class IDDBService {
 		result.setNote(player.getNote() != null);
 		result.setName(player.getNickname());
 		result.setServer(server);
+		result.setGuid(player.getGuid());
 		result.setBanned(player.getBanInfo() != null);
 		result.setClientId(player.getClientId() != null ? "@"
 				+ player.getClientId().toString() : "UID" + result.getId());

@@ -267,7 +267,7 @@ if (canApplyAction) {
 	</thead>
 	<tbody>
 	<c:forEach items="${events}" var="event">
-		<tr>
+		<tr <c:if test="${not empty event.detail}"> class="tip" title="${event.detail}"</c:if>	>
 			<td>${event.type}</td>
 			<td>${event.status}</td>
 			<td><fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${event.updated}" /></td>

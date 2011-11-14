@@ -128,7 +128,7 @@ public class Player implements Serializable {
 		b.append(this.nickname);
 		b.append(" [").append(guid).append("] ");
 		b.append("Level: ").append(level);
-		b.append(" - ").append(level);
+		b.append(" - ");
 		b.append("Server: ").append(server);
 		return b.toString();
 	}

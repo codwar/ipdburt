@@ -32,6 +32,7 @@ public class PenaltyEventViewBean implements Serializable {
 	private String status;
 	private Date updated;
 	private String admin;
+	private String detail;
 	
 	public String getType() {
 		return type;
@@ -56,6 +57,12 @@ public class PenaltyEventViewBean implements Serializable {
 	}
 	public void setAdmin(String admin) {
 		this.admin = admin;
+	}
+	public String getDetail() {
+		return detail;
+	}
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 	
 }

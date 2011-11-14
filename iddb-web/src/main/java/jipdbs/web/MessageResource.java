@@ -35,8 +35,16 @@ public class MessageResource {
 	}
 	
 	public static String getMessage(String key) {
+		return getMessage(key, new Object[]{});
+	}
+
+	public static String getMessage(String key, Object... args) {
 		try {
-			return bundle.getString(key);
+			String s = bundle.getString(key);
+			if (args.length > 0) {
+				return String.format(s, args);
+			} 
+			return s;
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}

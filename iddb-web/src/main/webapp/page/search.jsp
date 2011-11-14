@@ -5,8 +5,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="util"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
+<%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
@@ -208,16 +208,22 @@
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
 				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a></span>
-				<!-- 
-				<c:if test="${player.note}">
-				<span class="icon information">&nbsp;</span>
-				</c:if>
-				 -->
+
+			    <c:if test="${not empty player.guid}">
+			    	<iddb:choose>
+						<iddb:whenvalidguid test="${player.guid}">
+						</iddb:whenvalidguid>   	
+			    		<iddb:otherwise>
+			    			<span class="icon guid-nok">&nbsp;</span>
+			    		</iddb:otherwise>
+			    	</iddb:choose>
+			    </c:if>
+    				
 				</td>
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.ipSearch}"/></url:url>"><util:maskip value="${player.ip}"/></a>&nbsp;<a
+				<a href="<url:url name="search"><url:param name="query" value="${player.ipSearch}"/></url:url>"><iddb:maskip value="${player.ip}"/></a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>
@@ -283,7 +289,7 @@
                 <c:set var="url" value="/"/>
             </c:otherwise>
             </c:choose>
-            <util:paginator
+            <iddb:paginator
                 totalPages="${pageLink.totalPages}"
                 currentPage="${pageLink.pageNumber}" pageSize="${pageLink.pageSize}"
                 url="${url}" />            

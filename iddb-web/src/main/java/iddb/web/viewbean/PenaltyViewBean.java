@@ -112,6 +112,8 @@ public class PenaltyViewBean implements Serializable {
 		}
 		if (StringUtils.isNotEmpty(this.getReason())) {
 			s.append(". Motivo: ").append(this.getReason());
+		} else {
+			s.append(". No indica motivo.");
 		}
 		if (StringUtils.isNotEmpty(this.getAdmin())) {
 			s.append(" (").append(getAdmin()).append(")");

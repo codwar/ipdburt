@@ -46,6 +46,8 @@ import jipdbs.web.MessageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.mail.handlers.message_rfc822;
+
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;
@@ -117,17 +119,18 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		infoView.setName(player.getNickname());
 		if (hasAdmin) {
 			infoView.setGuid(player.getGuid());
-			infoView.setIp(player.getIp());	
+			infoView.setIp(player.getIp());
+
+			notices = getPlayerNotices(app, player);
+			events = listPlayerEvents(app, player, server);
 		} else {
 			infoView.setIp(Functions.maskIpAddress(player.getIp()));
 		}
 		infoView.setUpdated(player.getUpdated());
 		infoView.setServer(server);
 		
-		if (hasAdmin) {
-			getLastPlayerPenalty(app, player, infoView);
-			notices = getPlayerNotices(app, player);
-			events = listPlayerEvents(app, player, server);
+		if (UserServiceFactory.getUserService().getCurrentUser().isAuthenticated()) {
+			getLastPlayerPenalty(app, player, infoView, hasAdmin);
 		} else {
 			if (player.getBanInfo() != null) {
 				infoView.setBanInfo(new PenaltyViewBean(true));
@@ -191,12 +194,14 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 				Penalty pe = app.getPenalty(history.getPenaltyId());
 				if (pe.getType().equals(Penalty.BAN)) {
 					if (history.getFuncId().equals(PenaltyHistory.FUNC_ID_ADD)) {
+						event.setDetail(MessageResource.getMessage("event_ban_detail", pe.getReason(), Functions.minutes2Str(pe.getDuration())));
 						event.setType(MessageResource.getMessage("event_ban"));	
 					} else {
 						event.setType(MessageResource.getMessage("event_unban"));
 					}
 				} else {
 					if (history.getFuncId().equals(PenaltyHistory.FUNC_ID_ADD)) {
+						event.setDetail(pe.getReason());
 						event.setType(MessageResource.getMessage("event_note"));	
 					} else {
 						event.setType(MessageResource.getMessage("event_delnote"));
@@ -248,7 +253,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 	 * @param infoView
 	 */
 	private void getLastPlayerPenalty(IDDBService app, Player player,
-			PlayerViewBean infoView) {
+			PlayerViewBean infoView, boolean showAdmin) {
 		Penalty ban = app.getLastPenalty(player);
 		if (ban != null) {
 			PenaltyViewBean penaltyViewBean = new PenaltyViewBean();
@@ -256,12 +261,14 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			penaltyViewBean.setCreated(ban.getCreated());
 			penaltyViewBean.setDuration(ban.getDuration());
 			penaltyViewBean.setReason(ban.getReason());
-			if (ban.getAdmin() != null) {
-				try {
-					Player admin = app.getPlayer(ban.getAdmin());
-					penaltyViewBean.setAdmin(admin.getNickname());
-				} catch (EntityDoesNotExistsException e) {
-					log.warn(e.getMessage());
+			if (showAdmin) {
+				if (ban.getAdmin() != null) {
+					try {
+						Player admin = app.getPlayer(ban.getAdmin());
+						penaltyViewBean.setAdmin(admin.getNickname());
+					} catch (EntityDoesNotExistsException e) {
+						log.warn(e.getMessage());
+					}
 				}
 			}
 			infoView.setBanInfo(penaltyViewBean);

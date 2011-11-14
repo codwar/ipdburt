@@ -48,6 +48,8 @@ public class SearchResult {
 
 	private String baninfo;
 
+	private String guid;
+	
 	public String getBaninfo() {
 		return baninfo;
 	}
@@ -157,6 +159,14 @@ public class SearchResult {
 
 	public void setNote(boolean note) {
 		this.note = note;
+	}
+
+	public String getGuid() {
+		return guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 }
