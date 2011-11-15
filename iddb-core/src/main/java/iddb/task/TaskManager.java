@@ -35,7 +35,7 @@ public class TaskManager {
 	
 	private ThreadPoolExecutor threadPool = null;
 	
-	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(20);
+	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(poolSize);
 	
 	private static TaskManager instance;
 	
@@ -43,7 +43,7 @@ public class TaskManager {
 		threadPool = new ThreadPoolExecutor(poolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, queue);
 	}
 	
-	public static TaskManager getInstance() {
+	synchronized public static TaskManager getInstance() {
 		if (instance == null) {
 			instance = new TaskManager();
 		}
@@ -55,25 +55,14 @@ public class TaskManager {
 		log.debug("Task queue size: {}", queue.size());
 	}
 	
+	public void shutdown() {
+		threadPool.shutdown();
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
-		threadPool.shutdown();
+		this.shutdown();
 		super.finalize();
 	}
-//
-//	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory
-//			.forClass(PlayerDAO.class);
-//
-//	private PenaltyTask penaltyTask = new PenaltyTask();
-//
-//	public void processPenalty(String key, String event) {
-//		try {
-//			// TODO manejar keys
-//			Player player = playerDAO.get(Long.parseLong(key));
-//			penaltyTask.process(player, event);
-//		} catch (EntityDoesNotExistsException e) {
-//			log.error(e.getMessage());
-//		}
-//	}
 
 }
