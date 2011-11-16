@@ -50,7 +50,8 @@ public class Server implements Serializable {
 	private Boolean dirty;
 	private Integer permission;
 	private Boolean disabled;
-	private Map<Integer, Integer> permissions;
+	/* key is long because limitations later in jsp processing */
+	private Map<Long, Integer> permissions;
 	private Long maxBanDuration;
 	
 	/* stats */
@@ -70,11 +71,11 @@ public class Server implements Serializable {
 		return n;
 	}
 	
-	public Map<Integer, Integer> getPermissions() {
+	public Map<Long, Integer> getPermissions() {
 		return permissions;
 	}
 
-	public void setPermissions(Map<Integer, Integer> permissions) {
+	public void setPermissions(Map<Long, Integer> permissions) {
 		this.permissions = permissions;
 	}
 

@@ -120,6 +120,10 @@ public class ServerManagerProcessor extends ResponseProcessor {
 			Flash.info(req, MessageResource.getMessage("server_updated"));
 		}
 		
+		if (log.isTraceEnabled()) {
+			log.trace(server.getPermissions().toString());
+		}
+		
 		req.setAttribute("server", server);
 		
 		return null;

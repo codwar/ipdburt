@@ -15,12 +15,12 @@
     </logger>
 
     <logger name="jipdbs" additivity="false">
-        <level value="debug" />
+        <level value="trace" />
         <appender-ref ref="console" />
     </logger>
 
     <logger name="iddb" additivity="false">
-        <level value="debug" />
+        <level value="trace" />
         <appender-ref ref="console" />
     </logger>
 

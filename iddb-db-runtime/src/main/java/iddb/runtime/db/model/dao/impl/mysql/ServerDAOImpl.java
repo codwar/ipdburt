@@ -314,9 +314,9 @@ public class ServerDAOImpl implements ServerDAO {
 				st = conn.prepareStatement(sql);
 				st.setLong(1, key);
 				rs = st.executeQuery();
-				server.setPermissions(new HashMap<Integer, Integer>());
+				server.setPermissions(new HashMap<Long, Integer>());
 				while (rs.next()) {
-					server.getPermissions().put(new Integer(rs.getInt("funcid")), rs.getInt("level"));
+					server.getPermissions().put(new Long(rs.getInt("funcid")), rs.getInt("level"));
 				}
 			}
 		} catch (SQLException e) {
@@ -346,20 +346,20 @@ public class ServerDAOImpl implements ServerDAO {
 			conn = ConnectionFactory.getMasterConnection();
 			PreparedStatement st;
 			ResultSet rs;
-			for (Entry<Integer, Integer> entry : server.getPermissions().entrySet()) {
+			for (Entry<Long, Integer> entry : server.getPermissions().entrySet()) {
 				st = conn.prepareStatement(sql);
 				st.setLong(1, server.getKey());
-				st.setInt(2, entry.getKey());
+				st.setInt(2, entry.getKey().intValue());
 				rs = st.executeQuery();
 				if (rs.next()) {
 					st = conn.prepareStatement(sqlU);
 					st.setInt(1, entry.getValue());
 					st.setLong(2, server.getKey());
-					st.setInt(3, entry.getKey());
+					st.setInt(3, entry.getKey().intValue());
 				} else {
 					st = conn.prepareStatement(sqlI);
 					st.setLong(1, server.getKey());
-					st.setInt(2, entry.getKey());
+					st.setInt(2, entry.getKey().intValue());
 					st.setInt(3, entry.getValue());
 				}
 				st.executeUpdate();
