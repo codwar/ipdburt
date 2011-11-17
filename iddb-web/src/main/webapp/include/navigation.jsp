@@ -48,6 +48,7 @@
 		            if (userService.getCurrentUser().isSuperAdmin()) {
 		        %>
 		        <li><a href="<url:url name="admin-serverlist"/>">Sistema</a></li>
+		        <li><a href="<url:url name="admin-users"/>">Usuarios</a></li>
 		        <%      
 		            }
 		        %>

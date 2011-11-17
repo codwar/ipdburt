@@ -18,39 +18,41 @@
  */
 package iddb.web.viewbean;
 
-import iddb.core.model.Player;
-import iddb.core.model.Server;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserPlayerDetailViewBean implements Serializable {
+public class UserViewBean implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8113493728546456L;
+	private static final long serialVersionUID = -8113493724489314447L;
 
-	private Long id;
-	private Player player;
-	private Server server;
+	private Long key;
+	private String username;
+	private List<UserServerViewBean> list;
+
+	public UserViewBean() {
+		list = new ArrayList<UserServerViewBean>();
+	}
 	
-	public Long getId() {
-		return id;
+	public Long getKey() {
+		return key;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setKey(Long key) {
+		this.key = key;
 	}
-	public Player getPlayer() {
-		return player;
+	public String getUsername() {
+		return username;
 	}
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public Server getServer() {
-		return server;
+	public List<UserServerViewBean> getList() {
+		return list;
 	}
-	public void setServer(Server server) {
-		this.server = server;
+	public void setList(List<UserServerViewBean> list) {
+		this.list = list;
 	}
-
 }

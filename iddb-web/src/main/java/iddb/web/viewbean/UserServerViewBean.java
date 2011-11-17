@@ -23,22 +23,28 @@ import iddb.core.model.Server;
 
 import java.io.Serializable;
 
-public class UserPlayerDetailViewBean implements Serializable {
+public class UserServerViewBean implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8113493728546456L;
+	private static final long serialVersionUID = 81134937289314447L;
 
-	private Long id;
-	private Player player;
 	private Server server;
+	private Player player;
 	
-	public Long getId() {
-		return id;
+	public UserServerViewBean() {};
+	
+	public UserServerViewBean(Server server, Player player) {
+		this.server = server;
+		this.player = player;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	
+	public Server getServer() {
+		return server;
+	}
+	public void setServer(Server server) {
+		this.server = server;
 	}
 	public Player getPlayer() {
 		return player;
@@ -46,11 +52,5 @@ public class UserPlayerDetailViewBean implements Serializable {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-	public Server getServer() {
-		return server;
-	}
-	public void setServer(Server server) {
-		this.server = server;
-	}
-
+	
 }

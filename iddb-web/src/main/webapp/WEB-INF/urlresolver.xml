@@ -47,6 +47,9 @@
   <processor class="jipdbs.web.processors.admin.LoadServerProcessor" redirect="/admin/serverlist.jsp">
     <rule name="admin-getserver" pattern="^/admin/server/($key[\d]+)/get/$"/>
   </processor>
+  <processor class="jipdbs.web.processors.admin.UserAdminProcessor" redirect="/admin/users.jsp">
+    <rule name="admin-users" pattern="^/admin/users/$"/>
+  </processor>  
   <processor class="jipdbs.web.processors.ServerManagerProcessor" redirect="/page/man_server_list.jsp">
   	<rule name="manager" pattern="^/manage/server/$"/>
   </processor>  

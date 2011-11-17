@@ -31,7 +31,7 @@ public class PlayerViewBean implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 21345435389314447L;
 
 	private String key;
 	private String name;
