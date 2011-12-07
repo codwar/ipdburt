@@ -66,7 +66,7 @@ public class Server implements Serializable {
 	}
 
 	public Integer getPermission(Integer func) {
-		Integer n = this.permissions.get(func);
+		Integer n = this.permissions.get(new Long(func));
 		if (n == null) return MAX_LEVEL;
 		return n;
 	}

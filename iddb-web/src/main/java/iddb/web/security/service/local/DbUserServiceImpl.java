@@ -166,6 +166,11 @@ public class DbUserServiceImpl extends CommonUserService {
 		
 		Player player = getSubjectPlayer(server);
 		
+        if (log.isDebugEnabled()) {
+            log.debug("Player id {} - level {}", player.getKey(), player.getLevel());
+            log.debug("Checking level {}", level);
+        }
+        
 		if (player != null && player.getLevel() != null && player.getLevel().intValue() >= level.intValue()) {
 			return true;
 		}
@@ -279,18 +284,18 @@ public class DbUserServiceImpl extends CommonUserService {
 		try {
 			userServer = userServerDAO.findByUserAndServer(user.getKey(), server);
 		} catch (EntityDoesNotExistsException e) {
-			log.trace("UserServer {} do not exists for user {}", server.toString(), user.getLoginId());
+			log.warn("UserServer {} do not exists for user {}", server.toString(), user.getLoginId());
 			return null;
 		}
 		if (userServer.getPlayer() == null || userServer.getPlayer().equals(0)) {
-			log.trace("No associated player for userid {}", user.getLoginId());
+			log.warn("No associated player for userid {}", user.getLoginId());
 			return null;
 		}
 		
 		try {
 			player = playerDAO.get(userServer.getPlayer());
 		} catch (EntityDoesNotExistsException e) {
-			log.trace("Player {} do not exists", userServer.getPlayer());
+			log.warn("Player {} do not exists", userServer.getPlayer());
 			return null;
 		}
 		return player;
