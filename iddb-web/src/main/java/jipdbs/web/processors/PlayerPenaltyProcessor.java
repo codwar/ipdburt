@@ -65,8 +65,11 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 		String type = ctx.getParameter("type");
 		String reason = ctx.getRequest().getParameter("reason");
 		String duration = ctx.getRequest().getParameter("duration");
-		String durationType = ctx.getRequest().getParameter("dt");
+		//String durationType = ctx.getRequest().getParameter("dt");
+		String durationType = "w";
 		String rm = ctx.getParameter("rm");
+		
+		System.out.println(">>>>>>>>>>>>>>>>> " + duration);
 		
 		UrlReverse reverse = new UrlReverse(ctx.getServletContext());
 		String redirect;

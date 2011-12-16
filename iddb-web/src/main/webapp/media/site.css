@@ -58,7 +58,9 @@ input:focus,textarea:focus,select:focus {
 	-moz-box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 8px;
 	outline: 0;
 }
-
+input[disabled] {
+	background: url("images/sprites.png") repeat-x scroll 0 -1500px #EFEFEF;
+}
 select:hover {
 	cursor: pointer;
 }

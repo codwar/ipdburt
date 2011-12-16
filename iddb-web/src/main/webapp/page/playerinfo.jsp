@@ -1,3 +1,4 @@
+
 <%@page import="iddb.web.security.service.UserServiceFactory"%>
 <%@page import="iddb.api.RemotePermissions"%>
 <%@page import="iddb.web.viewbean.PlayerViewBean"%>
@@ -17,8 +18,17 @@
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
     dutils.conf.urls.aliasip = "<url:clean name="alias-ip"/>";
 </script>
-
+<%
+	Server server = (Server) request.getAttribute("server");
+	Long dm = server.getMaxBanDuration();
+	String maxw = Integer.toString(Math.round(((dm / 60) / 24) / 7));
+	request.setAttribute("maxw", maxw);
+%>
 <script type="text/javascript">
+	$(function() {
+		$("input[name=duration]").spinner({step: 0.2, min: 0.2, 'max': ${maxw}, value: 0.2});	
+	});
+
 	var clientKey = '${player.key}';
     function pagination(key, offset, hasMore, pages, total) {
         prev = $("#prev-"+key);
@@ -101,7 +111,7 @@ Boolean canApplyAction = (Boolean) request.getAttribute("canApplyAction");
 
 if (canApplyAction) {
 	Integer permission = (Integer) request.getAttribute("permission");
-	Server server = (Server) request.getAttribute("server");
+	//Server server = (Server) request.getAttribute("server");
 	PlayerViewBean player = (PlayerViewBean) request.getAttribute("player");
 
 	if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.REMOVE_NOTICE))) {
@@ -305,8 +315,8 @@ $(document).ready(
 		$("#addpenalty").click(function() {
 			var dialog = $("#add-ban-dialog");
 			$(dialog).find('[name="reason"]').val('');
-			$(dialog).find('[name="duration"]').val('');
-			$(dialog).find('[name="dt"]').val('d');
+			$(dialog).find('[name="duration"]').val('1');
+			$(dialog).find('[name="dt"]').val('w');
 			open_dialog(dialog);
 		});
 		
@@ -372,9 +382,11 @@ Confirma eliminaci&oacute;n?
 	<label for="name">Motivo</label><br/>
 	<input type="text" name="reason" class="text ui-corner-all" /><br/>
 	<label for="name">Duración</label><br/>
-	<input type="text" name="duration" class="text ui-corner-all" /><br/>
+	<input type="text" name="duration" class="text ui-corner-all"/><br/>
 	<label for="name">Periodo</label><br/>
-	<select name="dt" class="text ui-corner-all">
+	<!-- input type="text" name="dt" class="text ui-corner-all" readonly="readonly" value="Semanas"/-->
+	<%-- DEFAULT VALUE IS SELECTED WITH JS --%>
+	<select name="dt" class="text ui-corner-all" disabled="disabled">
 		<option value="m">Minutos</option>
 		<option value="d">Días</option>
 		<option value="w">Semanas</option>

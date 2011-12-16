@@ -26,7 +26,8 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/selector/css/openid-shadow.css" />
  -->
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/site.css" media="screen"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<!-- script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.nm.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.measure.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.place.js"></script>

@@ -160,40 +160,40 @@ public class Functions {
 	public static Long time2minutes(String time) {
 		if (time == null || "".trim().equals(time)) return 0L;
 		
-		Long value;
+		Float value;
 		
 		char last = time.charAt(time.length()-1);
 		try {
 			switch (last) {
 			case 'h':
-				value = Long.parseLong(time.substring(0, time.length()-1)) * 60;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) * 60;
 				break;
 			case 'm':
-				value = Long.parseLong(time.substring(0, time.length()-1));
+				value = Float.parseFloat(time.substring(0, time.length()-1));
 				break;
 			case 's':
-				value = Long.parseLong(time.substring(0, time.length()-1)) / 60;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) / 60;
 				break;
 			case 'd':
-				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) * 60 * 24;
 				break;
 			case 'w':
-				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 7;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) * 60 * 24 * 7;
 				break;
 			case 'M':
-				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 31;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) * 60 * 24 * 31;
 				break;
 			case 'y':
-				value = Long.parseLong(time.substring(0, time.length()-1)) * 60 * 24 * 365;
+				value = Float.parseFloat(time.substring(0, time.length()-1)) * 60 * 24 * 365;
 				break;				
 			default:
-				value = Long.parseLong(time);
+				value = Float.parseFloat(time);
 				break;
 			}
 		} catch (NumberFormatException e) {
-			value = 0L;
+			value = 0f;
 		}
-		return value;
+		return value.longValue();
 	}
 	
 	public static String minutes2Str(Long minutes) {

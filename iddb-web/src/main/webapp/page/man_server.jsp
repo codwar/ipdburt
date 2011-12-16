@@ -12,6 +12,28 @@
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
+<script type="text/javascript">
+$(function() {
+	$("input[name=ban]").bind("change", function() {
+		var selected = parseInt($(this).val());
+		toggle_mxinput(selected);
+	});
+	toggle_mxinput(parseInt($("input[name=ban]:checked").val()));
+});
+function toggle_mxinput(selected) {
+	$("input[name^=maxban_lv_]").each(function() {
+		var name = $(this).attr('name');
+		var level = parseInt(name.substring(10));
+		if (level < selected) {
+			console.log("disable");
+			$(this).prop('disabled', true);
+		} else {
+			$(this).prop('disabled', false);
+		}
+	});
+}
+</script>
+
 <fieldset>
 	<legend>${server.name}</legend>
 	<strong>Versi&oacute;n:</strong> ${server.pluginVersion}<br/>
@@ -33,7 +55,7 @@
 %>
 
 <form method="post">
-<table style="width: 355px">
+<table style="width: 590px">
 	<caption>Permisos</caption>
 	<thead>
 		<tr>
@@ -84,7 +106,14 @@
 			<%
 				Server server = (Server) pageContext.getRequest().getAttribute("server");
 			%>
-			<td colspan="2">M&aacute;ximo ban permitido: <input style="width: 70px;" type="text" value="<%= Functions.minutes2Str(server.getMaxBanDuration()) %>" name="maxban"></td>
+			<!-- td colspan="2">M&aacute;ximo ban permitido: <input style="width: 70px;" type="text" value="<%= Functions.minutes2Str(server.getMaxBanDuration()) %>" name="maxban"></td-->
+			<td colspan="2">
+				<span style="font-weight: bold;">M&aacute;ximo ban permitido:</span><br/>
+				<c:forEach items="${levels}" var="level">
+					<label style="font-weight:normal; font-size: 12px;" for="id_maxban_lvl_${level}">Nivel ${level}</label>
+					<input style="width: 25px;" type="text" name="maxban_lv_${level}" id="id_maxban_lvl_${level}" value="">&nbsp;
+				</c:forEach>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2" style="text-align: right;"><input type="submit" value="Guardar"></td>
