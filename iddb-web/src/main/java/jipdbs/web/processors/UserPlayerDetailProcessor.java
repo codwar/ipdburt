@@ -26,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
@@ -68,6 +69,9 @@ public class UserPlayerDetailProcessor extends ResponseProcessor {
 				list.add(b);
 			} catch (EntityDoesNotExistsException e) {
 				log.error(e.getMessage());
+			} catch (ApplicationError e) {
+				log.error(e.getMessage());
+				throw new ProcessorException(e);
 			}
 		}
 

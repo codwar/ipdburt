@@ -18,6 +18,7 @@
  */
 package jipdbs.web.processors;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
@@ -88,16 +89,23 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			e.printStackTrace(new PrintWriter(w));
 			log.error(w.getBuffer().toString());
 			throw new ProcessorException(e);
+		} catch (ApplicationError e) {
+			StringWriter w = new StringWriter();
+			e.printStackTrace(new PrintWriter(w));
+			log.error(w.getBuffer().toString());
+			throw new ProcessorException(e);
 		}
 		
 		Integer minLevel = server.getAdminLevel();
 		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(minLevel);
 		Boolean hasServerAdmin = UserServiceFactory.getUserService().hasPermission(server.getKey());
 		Boolean canApplyAction = Boolean.FALSE;
+		Long maxBan = 0L;
 		
 		Player currentPlayer = UserServiceFactory.getUserService().getSubjectPlayer(server.getKey());
 		if (currentPlayer != null && (currentPlayer.getLevel().intValue() > player.getLevel().intValue())) {
 			canApplyAction = Boolean.TRUE;
+			maxBan = server.getBanPermission(currentPlayer.getLevel());
 		}
 		
 		if (log.isDebugEnabled()) {
@@ -109,6 +117,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 			log.debug("canApplyAction: {}", canApplyAction);
 			log.debug("Permission: {}", server.getRemotePermission());
 			log.debug("Permission Set: {}", server.getPermissions().keySet());
+			log.debug("MaxBan: {}", maxBan);
 		}
 		
 		List<NoticeViewBean> notices = null;
@@ -154,7 +163,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		req.setAttribute("hasServerAdmin", hasServerAdmin);
 		req.setAttribute("permission", server.getRemotePermission());
 		req.setAttribute("canApplyAction", canApplyAction);
-	
+		req.setAttribute("maxBan", maxBan);
 		return null;
 	}
 

@@ -107,7 +107,7 @@ public class IDDBService {
 		return reCaptchaResponse.isValid();
 	}
 
-	public Server addServer(String name, String admin, String uid, String ip, boolean disabled) {
+	public Server addServer(String name, String admin, String uid, String ip, boolean disabled) throws ApplicationError {
 		Server server = new Server();
 		server.setAdminEmail(admin);
 		server.setCreated(new Date());
@@ -117,22 +117,36 @@ public class IDDBService {
 		server.setAddress(ip);
 		server.setDisabled(disabled);
 		server.setRemotePermission(0);
-		server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
+		//server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
 		server.setTotalPlayers(0);
-		serverDAO.save(server);
+		try {
+			serverDAO.save(server);
+		} catch (DAOException e) {
+			throw new ApplicationError(e);
+		}
 		return server;
 	}
 
-	public Server getServer(String key) throws EntityDoesNotExistsException {
-		return getServer(Long.parseLong(key));
+	public Server getServer(String key) throws EntityDoesNotExistsException, ApplicationError {
+		try {
+			return getServer(Long.parseLong(key));
+		} catch (NumberFormatException e) {
+			log.error("NumberFormatException: [value {}] {}", key, e.getMessage());
+			return null;
+		}
 	}
 
-	public Server getServer(Long key) throws EntityDoesNotExistsException {
+	public Server getServer(Long key) throws EntityDoesNotExistsException, ApplicationError {
 		return getServer(key, false);
 	}
 
-	public Server getServer(Long key, boolean permissions) throws EntityDoesNotExistsException {
-		Server server = serverDAO.get(key, permissions);
+	public Server getServer(Long key, boolean permissions) throws EntityDoesNotExistsException, ApplicationError {
+		Server server;
+		try {
+			server = serverDAO.get(key, permissions);
+		} catch (DAOException e) {
+			throw new ApplicationError(e);
+		}
 		// this is a check to initialize the server permissions with default values
 		if (permissions && server.getPermissions().size() == 0) {
 			log.debug("Initialize {} server permissions", server.getName());
@@ -143,12 +157,16 @@ public class IDDBService {
 			lp.add(new ServerPermission(RemotePermissions.REMOVE_NOTICE, 40));
 			saveServerPermissions(server, lp);
 		}
-		if (server.getMaxBanDuration() == 0) server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
+		//if (server.getMaxBanDuration() == 0) server.setMaxBanDuration(RemotePermissions.DEFAULT_MAXBAN);
 		return server; 
 	}
 	
-	public void saveServer(Server server) {
-		serverDAO.save(server);
+	public void saveServer(Server server) throws ApplicationError {
+		try {
+			serverDAO.save(server);
+		} catch (Exception e) {
+			throw new ApplicationError(e);
+		}
 	}
 	
 	public List<Server> getServers() {
@@ -304,14 +322,19 @@ public class IDDBService {
 	}
 
 	private List<SearchResult> marshall(List<Alias> aliasses)
-			throws EntityDoesNotExistsException {
+			throws EntityDoesNotExistsException, ApplicationError {
 
 		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		for (Alias alias : aliasses) {
 
 			Player player = playerDAO.get(alias.getPlayer());
-			Server server = serverDAO.get(player.getServer());
+			Server server;
+			try {
+				server = serverDAO.get(player.getServer());
+			} catch (DAOException e) {
+				throw new ApplicationError(e);
+			}
 
 			// Whoops! inconsistent data.
 			if (alias == null || server == null)
@@ -438,11 +461,15 @@ public class IDDBService {
 
 	}
 
-	public void refreshServerInfo(Server server) {
+	public void refreshServerInfo(Server server) throws ApplicationError {
 		int c = playerDAO.countByServer(server.getKey(), true);
 		server.setOnlinePlayers(c);
 		server.setDirty(false);
-		serverDAO.save(server);
+		try {
+			serverDAO.save(server);
+		} catch (Exception e) {
+			throw new ApplicationError(e);
+		}
 	}
 
 	public List<SearchResult> clientIdSearch(Long clientId, int offset,
@@ -580,11 +607,28 @@ public class IDDBService {
 		return penaltyDAO.get(id);
 	}
 
-	public void saveServerPermissions(Server server, List<ServerPermission> perm) {
+	public void saveServerPermissions(Server server, List<ServerPermission> perm) throws ApplicationError {
 		if (server.getPermissions() == null) server.setPermissions(new HashMap<Long, Integer>(4));
 		for (ServerPermission p : perm) {
 			server.getPermissions().put(p.getFuncId().longValue(), p.getLevel());
 		}
-		serverDAO.savePermissions(server);
+		try {
+			serverDAO.savePermissions(server);
+		} catch (DAOException e) {
+			throw new ApplicationError(e);
+		}
 	}
+	
+	public void saveServerBanPermissions(Server server, HashMap<Long, Long> perm) throws ApplicationError {
+		if (server.getBanPermissions() != null) server.getBanPermissions().clear();
+		for (Entry<Long, Long> p : perm.entrySet()) {
+			server.setBanPermission(p.getKey(), p.getValue());
+		}
+		try {
+			serverDAO.saveBanPermissions(server);
+		} catch (DAOException e) {
+			throw new ApplicationError(e);
+		}
+	}
+	
 }

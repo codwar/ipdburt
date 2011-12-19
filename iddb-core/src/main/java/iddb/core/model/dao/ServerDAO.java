@@ -18,6 +18,7 @@
  */
 package iddb.core.model.dao;
 
+import iddb.core.DAOException;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
 
@@ -26,20 +27,24 @@ import java.util.List;
 
 public interface ServerDAO {
 
-	public abstract void save(Server server);
+	public abstract void save(Server server) throws DAOException;
 	
-	public abstract void savePermissions(Server server);
+	public abstract void savePermissions(Server server) throws DAOException;
 
+	public abstract void saveBanPermissions(Server server) throws DAOException;
+	
 	public abstract List<Server> findAll(int offset, int limit, int[] count);
 
 	public abstract Server findByUid(String uid);
 
-	public abstract Server get(Long server) throws EntityDoesNotExistsException;
+	public abstract Server get(Long server) throws EntityDoesNotExistsException, DAOException;
 	
-	public abstract Server get(Long server, boolean fetchPermissions) throws EntityDoesNotExistsException;
+	public abstract Server get(Long server, boolean fetchPermissions) throws EntityDoesNotExistsException, DAOException;
 	
 	public abstract List<Server> listNotUpdatedSince(Date date); 
 	
-	public abstract List<Server> findEnabled(int offset, int limit, int[] count); 
+	public abstract List<Server> findEnabled(int offset, int limit, int[] count);
+
+	public abstract void loadPermissions(Server server) throws DAOException; 
 
 }

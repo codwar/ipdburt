@@ -18,6 +18,7 @@
  */
 package iddb.web.security.service.local;
 
+import iddb.core.DAOException;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.model.User;
@@ -142,6 +143,8 @@ public class DbUserServiceImpl extends CommonUserService {
 				try {
 					servers.add(serverDAO.get(u.getServer()));
 				} catch (EntityDoesNotExistsException e) {
+					log.error(e.getMessage());
+				} catch (DAOException e) {
 					log.error(e.getMessage());
 				}
 			}

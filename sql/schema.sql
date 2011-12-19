@@ -227,3 +227,15 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   KEY `created` (`created`),
   KEY `key` (`id`,`userid`,`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--
+-- Table structure for table `server_ban_perm`
+--
+
+CREATE TABLE IF NOT EXISTS `server_ban_perm` (
+  `serverid` INT( 11 ) UNSIGNED NOT NULL ,
+  `level` TINYINT( 4 ) UNSIGNED NOT NULL ,
+  `value` INT( 11 ) UNSIGNED NOT NULL ,
+  INDEX ( `serverid` )
+) ENGINE = MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

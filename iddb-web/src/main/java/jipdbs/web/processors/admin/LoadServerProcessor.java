@@ -18,6 +18,7 @@
  */
 package jipdbs.web.processors.admin;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
@@ -44,6 +45,8 @@ public class LoadServerProcessor extends ServerListProcessor {
 			server = app.getServer(context.getParameter("key"));
 		} catch (EntityDoesNotExistsException e) {
 			log.error(e.getMessage());
+		} catch (ApplicationError e) {
+			throw new ProcessorException(e);
 		}
 		context.getRequest().setAttribute("server", server);	
 		

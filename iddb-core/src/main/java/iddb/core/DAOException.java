@@ -16,31 +16,20 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package iddb.api;
+package iddb.core;
 
-import java.util.ArrayList;
-import java.util.List;
+public class DAOException extends Exception {
 
-public final class RemotePermissions {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 872314157992697515L;
 
-	public static final Integer DISABLE = 0;
-	public static final Integer ADD_BAN = 1;
-	public static final Integer REMOVE_BAN = 2;
-	public static final Integer ADD_NOTICE = 4;
-	public static final Integer REMOVE_NOTICE = 8;
-	
-	public static final Long DEFAULT_MAXBAN = 20160L; // 14d
-	
-	public static final List<Long> LEVELS;
-	
-	static {
-		LEVELS = new ArrayList<Long>();
-		LEVELS.add(20L);
-		LEVELS.add(40L);
-		LEVELS.add(60L);
-		LEVELS.add(80L);
-		LEVELS.add(100L);
+	/**
+	 * @param arg
+	 */
+	public DAOException(String message) {
+		super(message);
 	}
-	
-}
 
+}

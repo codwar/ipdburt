@@ -18,6 +18,7 @@
  */
 package jipdbs.web.processors.admin;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.core.util.HashUtils;
@@ -57,27 +58,31 @@ public class SaveServerProcessor extends RedirectProcessor {
 		if (StringUtils.isEmpty(ip))
 			Flash.warn(req, MessageResource.getMessage("save_server_noip"));
 
-		if (StringUtils.isEmpty(req.getParameter("k"))) {
-			String uid = HashUtils.generate(name);
-			Server server = app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
-			server.setDisplayAddress(displayip);
-			app.saveServer(server);
-			Flash.info(req, MessageResource.getMessage("save_server_added"));
-		} else {
-			Server server;
-			try {
-				server = app.getServer(req.getParameter("k"));
-			} catch (EntityDoesNotExistsException e) {
-				Flash.error(req, MessageResource.getMessage("server_not_found"));
-				return null;
+		try {
+			if (StringUtils.isEmpty(req.getParameter("k"))) {
+				String uid = HashUtils.generate(name);
+				Server server = app.addServer(name, admin, uid, ip, disabled.equalsIgnoreCase("on"));
+				server.setDisplayAddress(displayip);
+				app.saveServer(server);
+				Flash.info(req, MessageResource.getMessage("save_server_added"));
+			} else {
+				Server server;
+				try {
+					server = app.getServer(req.getParameter("k"));
+				} catch (EntityDoesNotExistsException e) {
+					Flash.error(req, MessageResource.getMessage("server_not_found"));
+					return null;
+				}
+				server.setName(name);
+				server.setAdminEmail(admin);
+				server.setAddress(ip);
+				server.setDisplayAddress(displayip);
+				server.setDisabled(disabled.equalsIgnoreCase("on"));
+				app.saveServer(server);
+				Flash.info(req, MessageResource.getMessage("save_server_updated"));
 			}
-			server.setName(name);
-			server.setAdminEmail(admin);
-			server.setAddress(ip);
-			server.setDisplayAddress(displayip);
-			server.setDisabled(disabled.equalsIgnoreCase("on"));
-			app.saveServer(server);
-			Flash.info(req, MessageResource.getMessage("save_server_updated"));
+		} catch (ApplicationError e) {
+			Flash.error(req, e.getMessage());
 		}
 		
 		return null;

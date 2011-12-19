@@ -18,6 +18,7 @@
  */
 package jipdbs.web.processors;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
@@ -57,6 +58,9 @@ public class ServerInfoProcessor extends ResponseProcessor {
 				list.add(server);
 			} catch (EntityDoesNotExistsException e) {
 				log.error(e.getMessage());
+			} catch (ApplicationError e) {
+				log.error(e.getMessage());
+				throw new ProcessorException(e);
 			}
 		}
 		

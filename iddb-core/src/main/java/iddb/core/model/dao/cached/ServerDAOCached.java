@@ -18,6 +18,7 @@
  */
 package iddb.core.model.dao.cached;
 
+import iddb.core.DAOException;
 import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
@@ -35,7 +36,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	}
 
 	@Override
-	public void save(Server server) {
+	public void save(Server server) throws DAOException {
 		if (server.getKey() == null) {
 			// if the server is new, we clear the cache for the listed servers
 			cacheClear();
@@ -87,7 +88,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	}
 
 	@Override
-	public Server get(Long server) throws EntityDoesNotExistsException {
+	public Server get(Long server) throws EntityDoesNotExistsException, DAOException {
 		return impl.get(server);
 	}
 
@@ -112,7 +113,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	 * @see iddb.core.model.dao.ServerDAO#savePermissions(iddb.core.model.Server)
 	 */
 	@Override
-	public void savePermissions(Server server) {
+	public void savePermissions(Server server) throws DAOException {
 		this.impl.savePermissions(server);
 		cachePut("sp+" + server.getKey().toString(), server);
 	}
@@ -122,7 +123,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	 */
 	@Override
 	public Server get(Long key, boolean fetchPermissions)
-			throws EntityDoesNotExistsException {
+			throws EntityDoesNotExistsException, DAOException {
 		if (fetchPermissions) {
 			Server server = (Server) cacheGet("sp+" + key.toString());
 			if (server == null) {
@@ -133,5 +134,22 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 		} else {
 			return get(key);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#saveBanPermissions(iddb.core.model.Server)
+	 */
+	@Override
+	public void saveBanPermissions(Server server) throws DAOException {
+		this.impl.saveBanPermissions(server);
+		cachePut("sp+" + server.getKey().toString(), server);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#loadPermissions(iddb.core.model.Server)
+	 */
+	@Override
+	public void loadPermissions(Server server) throws DAOException {
+		this.impl.loadPermissions(server);
 	}
 }

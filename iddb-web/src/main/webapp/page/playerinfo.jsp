@@ -20,8 +20,8 @@
 </script>
 <%
 	Server server = (Server) request.getAttribute("server");
-	Long dm = server.getMaxBanDuration();
-	String maxw = Integer.toString(Math.round(((dm / 60) / 24) / 7));
+	Long maxBan = (Long) request.getAttribute("maxBan");
+	String maxw = Integer.toString(Math.round(((maxBan / 60) / 24) / 7));
 	request.setAttribute("maxw", maxw);
 %>
 <script type="text/javascript">
@@ -119,7 +119,7 @@ if (canApplyAction) {
 	}
 
 	if (player.getBanInfo() == null) {
-		if ((permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
+		if (maxBan > 0 && (permission & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 			if (UserServiceFactory.getUserService().hasPermission(server.getKey(), server.getPermission(RemotePermissions.ADD_BAN))) {
 				request.setAttribute("addban", true);
 			}
@@ -151,6 +151,7 @@ if (canApplyAction) {
 </div>
 </div>
 </c:if>
+
 <legend>${fn:escapeXml(player.name)}<span class="icon <c:choose>
                     <c:when test="${not empty player.banInfo}">
                         banned
@@ -382,7 +383,7 @@ Confirma eliminaci&oacute;n?
 	<label for="name">Motivo</label><br/>
 	<input type="text" name="reason" class="text ui-corner-all" /><br/>
 	<label for="name">Duración</label><br/>
-	<input type="text" name="duration" class="text ui-corner-all"/><br/>
+	<input type="text" name="duration" class="text ui-corner-all" style="width: 110px;"/> (max: ${maxw})<br/>
 	<label for="name">Periodo</label><br/>
 	<!-- input type="text" name="dt" class="text ui-corner-all" readonly="readonly" value="Semanas"/-->
 	<%-- DEFAULT VALUE IS SELECTED WITH JS --%>

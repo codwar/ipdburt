@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class Server implements Serializable {
 	private Boolean disabled;
 	/* key is long because limitations later in jsp processing */
 	private Map<Long, Integer> permissions;
-	private Long maxBanDuration;
+	private Map<Long, Long> banPermissions;
 	
 	/* stats */
 	private Integer totalPlayers;
@@ -79,6 +80,22 @@ public class Server implements Serializable {
 		this.permissions = permissions;
 	}
 
+	public Map<Long, Long> getBanPermissions() {
+		return this.banPermissions;
+	}
+	
+	public Long getBanPermission(Long level) {
+		if (this.banPermissions == null) return 0l;
+		Long m = this.banPermissions.get(level);
+		if (m == null) m = 0l;
+		return m;
+	}
+	
+	public void setBanPermission(Long level, Long value) {
+		if (this.banPermissions == null) this.banPermissions = new HashMap<Long, Long>(5);
+		this.banPermissions.put(level, value);
+	}
+	
 	public Boolean getDisabled() {
 		return disabled;
 	}
@@ -216,14 +233,6 @@ public class Server implements Serializable {
 		List<Integer> levels = new ArrayList<Integer>(this.permissions.values());
 		Collections.sort(levels);
 		return levels.get(0);
-	}
-
-	public Long getMaxBanDuration() {
-		return maxBanDuration;
-	}
-
-	public void setMaxBanDuration(Long maxBanDuration) {
-		this.maxBanDuration = maxBanDuration;
 	}
 
 	public String getDisplayAddress() {

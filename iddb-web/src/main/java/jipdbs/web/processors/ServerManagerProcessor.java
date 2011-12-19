@@ -19,6 +19,7 @@
 package jipdbs.web.processors;
 
 import iddb.api.RemotePermissions;
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.core.model.ServerPermission;
@@ -29,6 +30,7 @@ import iddb.web.security.service.UserServiceFactory;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -106,17 +108,37 @@ public class ServerManagerProcessor extends ResponseProcessor {
 			lp.add(new ServerPermission(RemotePermissions.REMOVE_NOTICE, Integer.parseInt(req.getParameter("delnote"))));
 			lp.add(new ServerPermission(RemotePermissions.ADD_NOTICE, Integer.parseInt(req.getParameter("addnote"))));
 			log.debug("Update permissions");
-			app.saveServerPermissions(server, lp);
-			String value = req.getParameter("maxban");
-			Long maxban = Functions.time2minutes(value);
-			if (maxban > 0 && maxban != server.getMaxBanDuration()) {
-				log.debug("Update max ban duration");
-				server.setMaxBanDuration(maxban);
-				app.saveServer(server);
+			try {
+				app.saveServerPermissions(server, lp);
+			} catch (ApplicationError e1) {
+				Flash.error(req, e1.getMessage());
 			}
-			if (maxban == 0) {
-				Flash.warn(req, MessageResource.getMessage("server_invalid_maxban"));
+
+			HashMap<Long, Long> bans = new HashMap<Long, Long>();
+			for (Long level : RemotePermissions.LEVELS) {
+				String value = req.getParameter("maxban_lv_" + level.toString());
+				Long mxb = Functions.time2minutes(value);
+				if (mxb > 0) {
+					log.debug("Level {} : Value {}", level, mxb);
+					bans.put(level, mxb);
+				}
 			}
+			try {
+				app.saveServerBanPermissions(server, bans);
+			} catch (ApplicationError e) {
+				Flash.error(req, e.getMessage());
+			}
+			
+//			String value = req.getParameter("maxban");
+//			Long maxban = Functions.time2minutes(value);
+//			if (maxban > 0 && maxban != server.getMaxBanDuration()) {
+//				log.debug("Update max ban duration");
+//				server.setMaxBanDuration(maxban);
+//				app.saveServer(server);
+//			}
+//			if (maxban == 0) {
+//				Flash.warn(req, MessageResource.getMessage("server_invalid_maxban"));
+//			}
 			Flash.info(req, MessageResource.getMessage("server_updated"));
 		}
 		

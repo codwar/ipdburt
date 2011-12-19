@@ -18,6 +18,7 @@
  */
 package jipdbs.web.processors.admin;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
@@ -100,6 +101,9 @@ public class UserAdminProcessor extends ResponseProcessor {
 					viewBean.getList().add(new UserServerViewBean(server, player));
 				} catch (EntityDoesNotExistsException e) {
 					log.warn(e.getMessage());
+				} catch (ApplicationError e) {
+					log.error(e.getMessage());
+					throw new ProcessorException(e);
 				}
 			}
 			list.add(viewBean);

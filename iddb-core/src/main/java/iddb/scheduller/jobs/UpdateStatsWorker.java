@@ -23,6 +23,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import iddb.core.DAOException;
 import iddb.core.model.Server;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.PlayerDAO;
@@ -48,7 +49,10 @@ public class UpdateStatsWorker implements Worker {
 			int c = playerDAO.countByServer(server.getKey(), false);
 			log.debug("Total players for server {}: {}", server.getName(), c);
 			server.setTotalPlayers(c);
-			serverDAO.save(server);
+			try {
+				serverDAO.save(server);
+			} catch (DAOException e) {
+			}
 		}
 		
 	}

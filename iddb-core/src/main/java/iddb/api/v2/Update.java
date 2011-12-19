@@ -19,6 +19,7 @@
 package iddb.api.v2;
 
 import iddb.api.ServerManager;
+import iddb.core.DAOException;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.model.User;
@@ -113,7 +114,10 @@ public class Update {
 		if (updateDate) {
 			server.setUpdated(new Date());	
 		}
-		serverDAO.save(server);
+		try {
+			serverDAO.save(server);
+		} catch (DAOException e) {
+		}
 	}
 	
 	/**

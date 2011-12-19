@@ -18,6 +18,7 @@
  */
 package jipdbs.http;
 
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Server;
 import iddb.exception.EntityDoesNotExistsException;
@@ -58,7 +59,9 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 			try {
 				server = app.getServer(key);
 			} catch (EntityDoesNotExistsException e) {
-				log.error(e.getMessage());
+				log.error("{}: {}", e.getClass().getName(), e.getMessage());
+			} catch (ApplicationError e) {
+				log.error("{}: {}", e.getClass().getName(), e.getMessage());
 			}
 			if (server == null) {
 				resp.getWriter().println(
@@ -66,7 +69,11 @@ public class JIPDBSHTTPHandler extends HttpServlet {
 								+ "\"}}");
 			} else {
 				if (server.getDirty()) {
-					app.refreshServerInfo(server);
+					try {
+						app.refreshServerInfo(server);
+					} catch (ApplicationError e) {
+						log.error("{}: {}", e.getClass().getName(), e.getMessage());
+					}
 				}
 				resp.getWriter().println(
 						"{\"error\": false, \"server\": {\"key\": \""

@@ -197,23 +197,27 @@ public class Functions {
 	}
 	
 	public static String minutes2Str(Long minutes) {
-		Integer num;
+		Float num;
+		String suffix = "";
 		if (minutes < 60) {
-			num = Math.round(minutes);
-			return num.toString();
+			num = new Float(minutes);
 		} else if (minutes < 1440) {
-			num = Math.round(minutes / 60);
-			return num.toString() + "h";
+			num = Float.valueOf(minutes) / 60;
+			suffix = "h";
 		} else if (minutes < 10080) {
-			num = Math.round((minutes / 60) / 24);
-			return num.toString() + "d";
+			num = Float.valueOf(minutes) / 1440;
+			suffix = "d";
 		} else if (minutes < 525600) {
-			num = Math.round(((minutes / 60) / 24) / 7);
-			return num.toString() + "w";
+			num = Float.valueOf(minutes) / 10080;
+			suffix = "w";
 		} else {
-			num = Math.round(((minutes / 60) / 24) / 365);
-			return num.toString() + "y";
+			num = Float.valueOf(minutes) / 525600;
+			suffix = "y";
 		}
+		if ("0".equals(num.toString().substring(num.toString().indexOf(".")+1))) {
+			return String.format("%d%s", num.intValue(), suffix);
+		}
+		return String.format("%.2g%s", num, suffix); // 2=1 decimal
 	}
 
 	public static String normalize(String text) {
@@ -325,19 +329,20 @@ public class Functions {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(minutes2Str(15000L));
-		System.out.println(normalize(">pr0.frankillo"));
-		System.out.println(normalize("H'ace"));
-		System.out.println(normalize("Fatal1ty"));
-		System.out.println(normalize("[Her0]-.{T0bA_1"));
-		System.out.println(normalize("pok_lol!!!"));
-		System.out.println(normalize("Ca|*Sniper_Depre"));
-		System.out.println(normalize("P3P3"));
-		System.out.println(normalize("R0S4M0N73"));
-		System.out.println(normalize("[xXxXx]heXen"));
-		System.out.println(normalize("Macca*_____*"));
-		System.out.println(normalize("lVZLAl#VCTR#"));
-		System.out.println(createNameIndex("&amp;amp;gt;WD&amp;amp;gt;Mr.Popo"));
+		System.out.println(minutes2Str(873074L));
+		
+//		System.out.println(normalize(">pr0.frankillo"));
+//		System.out.println(normalize("H'ace"));
+//		System.out.println(normalize("Fatal1ty"));
+//		System.out.println(normalize("[Her0]-.{T0bA_1"));
+//		System.out.println(normalize("pok_lol!!!"));
+//		System.out.println(normalize("Ca|*Sniper_Depre"));
+//		System.out.println(normalize("P3P3"));
+//		System.out.println(normalize("R0S4M0N73"));
+//		System.out.println(normalize("[xXxXx]heXen"));
+//		System.out.println(normalize("Macca*_____*"));
+//		System.out.println(normalize("lVZLAl#VCTR#"));
+//		System.out.println(createNameIndex("&amp;amp;gt;WD&amp;amp;gt;Mr.Popo"));
 //		String s = "125.68.67.66";
 //		Long v = ipToDecimal(s);
 //		System.out.println(s);

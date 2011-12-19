@@ -1,2 +1,2 @@
-Run mvn appassembler:assemble go build
+Run 'mvn appassembler:assemble' to build
 

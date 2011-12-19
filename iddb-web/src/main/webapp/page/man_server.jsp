@@ -45,17 +45,17 @@ function toggle_mxinput(selected) {
 <br/>
 
 <%
-	Collection levels = new ArrayList();
+/* 	Collection levels = new ArrayList();
 	levels.add(20);
 	levels.add(40);
 	levels.add(60);
 	levels.add(80);
-	levels.add(100);
-	pageContext.setAttribute("levels", levels);
+	levels.add(100); */
+	pageContext.setAttribute("levels", RemotePermissions.LEVELS);
 %>
 
 <form method="post">
-<table style="width: 590px">
+<table style="width: 635px">
 	<caption>Permisos</caption>
 	<thead>
 		<tr>
@@ -111,7 +111,15 @@ function toggle_mxinput(selected) {
 				<span style="font-weight: bold;">M&aacute;ximo ban permitido:</span><br/>
 				<c:forEach items="${levels}" var="level">
 					<label style="font-weight:normal; font-size: 12px;" for="id_maxban_lvl_${level}">Nivel ${level}</label>
-					<input style="width: 25px;" type="text" name="maxban_lv_${level}" id="id_maxban_lvl_${level}" value="">&nbsp;
+					<%
+						Long v = server.getBanPermission((Long) pageContext.getAttribute("level"));
+						String s = "0";
+						if (v > 0) {
+							s = Functions.minutes2Str(v);
+						}
+						pageContext.setAttribute("banValue", s);
+					%>
+					<input style="width: 40px;" type="text" name="maxban_lv_${level}" id="id_maxban_lvl_${level}" value="${banValue}">&nbsp;
 				</c:forEach>
 			</td>
 		</tr>

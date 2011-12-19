@@ -19,6 +19,7 @@
 package jipdbs.web.processors;
 
 import iddb.api.RemotePermissions;
+import iddb.core.ApplicationError;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
@@ -92,6 +93,9 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 		try {
 			server = app.getServer(player.getServer(), true);
 		} catch (EntityDoesNotExistsException e) {
+			log.error(e.getMessage());
+			throw new ProcessorException(e);
+		} catch (ApplicationError e) {
 			log.error(e.getMessage());
 			throw new ProcessorException(e);
 		}
@@ -244,13 +248,13 @@ public class PlayerPenaltyProcessor extends SimpleActionProcessor {
 				throw new HttpError(HttpServletResponse.SC_FORBIDDEN);	
 			}			
 			Long dm = Functions.time2minutes(duration + durationType);
+			if (dm > server.getBanPermission(currentPlayer.getLevel())) {
+				Flash.warn(req, MessageResource.getMessage("duration_fixed"));
+				dm = server.getBanPermission(currentPlayer.getLevel());
+			}
 			if (dm.equals(0)) {
 				Flash.error(req, MessageResource.getMessage("duration_field_required"));
 				return redirect;			
-			}
-			if (dm > server.getMaxBanDuration()) {
-				Flash.warn(req, MessageResource.getMessage("duration_fixed"));
-				dm = server.getMaxBanDuration();
 			}
 			if ((server.getRemotePermission() & RemotePermissions.ADD_BAN) == RemotePermissions.ADD_BAN) {
 				penalty.setSynced(false);

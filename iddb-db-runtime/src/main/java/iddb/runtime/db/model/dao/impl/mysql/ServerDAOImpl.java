@@ -18,6 +18,7 @@
  */
 package iddb.runtime.db.model.dao.impl.mysql;
 
+import iddb.core.DAOException;
 import iddb.core.model.Server;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.EntityDoesNotExistsException;
@@ -46,7 +47,7 @@ public class ServerDAOImpl implements ServerDAO {
 	private static Logger logger = LoggerFactory.getLogger(ServerDAOImpl.class);
 	
 	@Override
-	public void save(Server server) {
+	public void save(Server server) throws DAOException {
 		String sql;
 		if (server.getKey() == null) {
 			sql = "insert into server (uid," +
@@ -61,7 +62,6 @@ public class ServerDAOImpl implements ServerDAO {
 					"isdirty, " +
 					"permission, " +
 					"disabled, " +
-					"maxban, " +
 					"totalplayers, " +
 					"display_address) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
@@ -77,7 +77,6 @@ public class ServerDAOImpl implements ServerDAO {
 					"isdirty = ?, " +
 					"permission = ?, " +
 					"disabled = ?, " +
-					"maxban = ?, " +
 					"totalplayers = ?, " +
 					"display_address = ? where id = ? limit 1";
 		}
@@ -104,12 +103,11 @@ public class ServerDAOImpl implements ServerDAO {
 			st.setInt(11, server.getRemotePermission());
 			if (server.getDisabled() == null) server.setDisabled(false);
 			st.setBoolean(12, server.getDisabled());
-			st.setLong(13, server.getMaxBanDuration());
-			st.setInt(14, server.getTotalPlayers());
+			st.setInt(13, server.getTotalPlayers());
 			if (server.getDisplayAddress() == null) {
-				st.setNull(15, Types.VARCHAR);
+				st.setNull(14, Types.VARCHAR);
 			} else {
-				st.setString(15, server.getDisplayAddress());
+				st.setString(14, server.getDisplayAddress());
 			}
 			if (server.getKey() != null) st.setLong(16, server.getKey());
 			st.executeUpdate();
@@ -123,8 +121,10 @@ public class ServerDAOImpl implements ServerDAO {
 			}
 		} catch (SQLException e) {
 			logger.error("Save: {}", e);
+			throw new DAOException(e.getMessage());
 		} catch (IOException e) {
 			logger.error("Save: {}", e);
+			throw new DAOException(e.getMessage());
 		} catch (Exception e) {
 			logger.error("Save: {}", e);
 			StringWriter w = new StringWriter();
@@ -215,12 +215,11 @@ public class ServerDAOImpl implements ServerDAO {
 		server.setRemotePermission(rs.getInt("permission"));
 		server.setDisabled(rs.getBoolean("disabled"));
 		server.setTotalPlayers(rs.getInt("totalplayers"));
-		server.setMaxBanDuration(rs.getLong("maxban"));
 		server.setDisplayAddress(rs.getString("display_address"));
 	}
 
 	@Override
-	public Server get(Long key) throws EntityDoesNotExistsException {
+	public Server get(Long key) throws EntityDoesNotExistsException, DAOException {
 		return get(key, false);
 	}
 
@@ -294,7 +293,7 @@ public class ServerDAOImpl implements ServerDAO {
 	 * @see iddb.core.model.dao.ServerDAO#get(java.lang.Long, boolean)
 	 */
 	@Override
-	public Server get(Long key, boolean fetchPermissions) throws EntityDoesNotExistsException {
+	public Server get(Long key, boolean fetchPermissions) throws EntityDoesNotExistsException, DAOException {
 		String sql = "select * from server where id = ?";
 		Connection conn = null;
 		Server server = null;
@@ -310,19 +309,14 @@ public class ServerDAOImpl implements ServerDAO {
 				throw new EntityDoesNotExistsException("Server with id %s was not found", key.toString());
 			}
 			if (fetchPermissions) {
-				sql = "select * from server_permission where serverid = ?";
-				st = conn.prepareStatement(sql);
-				st.setLong(1, key);
-				rs = st.executeQuery();
-				server.setPermissions(new HashMap<Long, Integer>());
-				while (rs.next()) {
-					server.getPermissions().put(new Long(rs.getInt("funcid")), rs.getInt("level"));
-				}
+				loadPermissions(server);
 			}
 		} catch (SQLException e) {
 			logger.error("get: {}", e);
+			throw new DAOException(e.getMessage());
 		} catch (IOException e) {
 			logger.error("get: {}", e);
+			throw new DAOException(e.getMessage());
 		} finally {
 			try {
 				if (conn != null) conn.close();
@@ -332,45 +326,167 @@ public class ServerDAOImpl implements ServerDAO {
 		return server;
 	}
 
+	@Override
+	public void loadPermissions(Server server) throws DAOException {
+		Connection conn = null;
+		String sql;
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement st;;
+			ResultSet rs;
+			// func permissions
+			sql = "select * from server_permission where serverid = ?";
+			st = conn.prepareStatement(sql);
+			st.setLong(1, server.getKey());
+			rs = st.executeQuery();
+			server.setPermissions(new HashMap<Long, Integer>());
+			while (rs.next()) {
+				server.getPermissions().put(new Long(rs.getInt("funcid")), rs.getInt("level"));
+			}
+			rs.close();
+			st.close();
+			// ban permissions
+			sql = "select * from server_ban_perm where serverid = ?";
+			st = conn.prepareStatement(sql);
+			st.setLong(1, server.getKey());
+			rs = st.executeQuery();
+			while (rs.next()) {
+				server.setBanPermission(new Long(rs.getInt("level")), rs.getLong("value"));
+			}
+			rs.close();
+			st.close();
+		} catch (SQLException e) {
+			logger.error("get: {}", e);
+			throw new DAOException(e.getMessage());
+		} catch (IOException e) {
+			logger.error("get: {}", e);
+			throw new DAOException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see iddb.core.model.dao.ServerDAO#savePermissions(iddb.core.model.Server)
 	 */
 	@Override
-	public void savePermissions(Server server) {
+	public void savePermissions(Server server) throws DAOException {
 		String sqlI = "insert into server_permission (serverid, funcid, level) values (?,?,?)";
-		String sqlU = "update server_permission set level = ? where serverid = ? and funcid = ? limit 1";
-		String sql = "select level from server_permission where serverid = ? and funcid = ? limit 1";
+		String sqlD = "delete from server_permission where serverid = ?";
+		//String sqlU = "update server_permission set level = ? where serverid = ? and funcid = ? limit 1";
+		//String sql = "select level from server_permission where serverid = ? and funcid = ? limit 1";
 		
 		Connection conn = null;
 		try {
 			conn = ConnectionFactory.getMasterConnection();
+			conn.setAutoCommit(false);
+
+			// DELETE PREVIOUS RECORDS
+			PreparedStatement stD = conn.prepareStatement(sqlD);
+			stD.setLong(1, server.getKey());
+			stD.executeUpdate();
+			
 			PreparedStatement st;
-			ResultSet rs;
+			//ResultSet rs;
+			
 			for (Entry<Long, Integer> entry : server.getPermissions().entrySet()) {
-				st = conn.prepareStatement(sql);
+				st = conn.prepareStatement(sqlI);
 				st.setLong(1, server.getKey());
 				st.setInt(2, entry.getKey().intValue());
-				rs = st.executeQuery();
-				if (rs.next()) {
-					st = conn.prepareStatement(sqlU);
-					st.setInt(1, entry.getValue());
-					st.setLong(2, server.getKey());
-					st.setInt(3, entry.getKey().intValue());
-				} else {
-					st = conn.prepareStatement(sqlI);
-					st.setLong(1, server.getKey());
-					st.setInt(2, entry.getKey().intValue());
-					st.setInt(3, entry.getValue());
-				}
+				st.setInt(3, entry.getValue());
 				st.executeUpdate();
-			}
+			}			
+			
+			conn.commit();
+			
+//			for (Entry<Long, Integer> entry : server.getPermissions().entrySet()) {
+//				st = conn.prepareStatement(sql);
+//				st.setLong(1, server.getKey());
+//				st.setInt(2, entry.getKey().intValue());
+//				rs = st.executeQuery();
+//				if (rs.next()) {
+//					st = conn.prepareStatement(sqlU);
+//					st.setInt(1, entry.getValue());
+//					st.setLong(2, server.getKey());
+//					st.setInt(3, entry.getKey().intValue());
+//				} else {
+//					st = conn.prepareStatement(sqlI);
+//					st.setLong(1, server.getKey());
+//					st.setInt(2, entry.getKey().intValue());
+//					st.setInt(3, entry.getValue());
+//				}
+//				st.executeUpdate();
+//			}
 		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+			}
 			logger.error("savePermissions: {}", e.getMessage());
+			throw new DAOException(e.getMessage());
 		} catch (IOException e) {
 			logger.error("savePermissions: {}", e.getMessage());
+			throw new DAOException(e.getMessage());
 		} finally {
 			try {
-				if (conn != null) conn.close();
+				if (conn != null) {
+					conn.setAutoCommit(false);
+					conn.close();
+				}
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.ServerDAO#saveBanPermissions(iddb.core.model.Server)
+	 */
+	@Override
+	public void saveBanPermissions(Server server) throws DAOException {
+		String sqlI = "insert into server_ban_perm (serverid, level, value) values (?,?,?)";
+		String sqlD = "delete from server_ban_perm where serverid = ?";
+		
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			conn.setAutoCommit(false);
+
+			// DELETE PREVIOUS RECORDS
+			PreparedStatement stD = conn.prepareStatement(sqlD);
+			stD.setLong(1, server.getKey());
+			stD.executeUpdate();
+			
+			PreparedStatement st;
+			
+			for (Entry<Long, Long> entry : server.getBanPermissions().entrySet()) {
+				st = conn.prepareStatement(sqlI);
+				st.setLong(1, server.getKey());
+				st.setInt(2, entry.getKey().intValue());
+				st.setLong(3, entry.getValue());
+				st.executeUpdate();
+			}			
+			
+			conn.commit();
+			
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+			}
+			logger.error("saveBanPermissions: {}", e.getMessage());
+			throw new DAOException(e.getMessage());
+		} catch (IOException e) {
+			logger.error("saveBanPermissions: {}", e.getMessage());
+			throw new DAOException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.setAutoCommit(false);
+					conn.close();
+				}
 			} catch (Exception e) {
 			}
 		}
