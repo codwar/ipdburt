@@ -106,7 +106,6 @@ function toggle_mxinput(selected) {
 			<%
 				Server server = (Server) pageContext.getRequest().getAttribute("server");
 			%>
-			<!-- td colspan="2">M&aacute;ximo ban permitido: <input style="width: 70px;" type="text" value="<%= Functions.minutes2Str(server.getMaxBanDuration()) %>" name="maxban"></td-->
 			<td colspan="2">
 				<span style="font-weight: bold;">M&aacute;ximo ban permitido:</span><br/>
 				<c:forEach items="${levels}" var="level">
