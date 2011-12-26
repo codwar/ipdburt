@@ -109,7 +109,7 @@ public class ServerDAOImpl implements ServerDAO {
 			} else {
 				st.setString(14, server.getDisplayAddress());
 			}
-			if (server.getKey() != null) st.setLong(16, server.getKey());
+			if (server.getKey() != null) st.setLong(15, server.getKey());
 			st.executeUpdate();
 			if (server.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
