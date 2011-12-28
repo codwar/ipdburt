@@ -63,7 +63,7 @@ public class ServerDAOImpl implements ServerDAO {
 					"permission, " +
 					"disabled, " +
 					"totalplayers, " +
-					"display_address) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+					"display_address) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update server set uid = ?, " +
 					"name = ?, " +
