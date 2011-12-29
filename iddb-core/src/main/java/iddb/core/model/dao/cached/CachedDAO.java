@@ -80,7 +80,7 @@ public abstract class CachedDAO {
 
 	protected void createCache(String namespace) {
 		try {
-			this.cacheImpl = CacheFactory.getInstance().getCache("alias");
+			this.cacheImpl = CacheFactory.getInstance().getCache(namespace);
 		} catch (UnavailableCacheException e) {
 			this.cacheImpl = null;
 		}
