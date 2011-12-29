@@ -28,8 +28,8 @@ public class AliasIPDAOCached extends CachedDAO implements AliasIPDAO {
 	private AliasIPDAO impl;
 	
 	public AliasIPDAOCached(AliasIPDAO impl) {
+		super("aliasip");
 		this.impl = impl;
-		this.initializeCache();
 	}
 
 	private String cacheKey(Long player, String ip) {
@@ -63,18 +63,25 @@ public class AliasIPDAOCached extends CachedDAO implements AliasIPDAO {
 	@Override
 	public List<AliasIP> findByPlayer(Long player, int offset, int limit,
 			int[] count) {
-		return impl.findByPlayer(player, offset, limit, count);
+		String key = "fbp" + Long.toString(player) + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<AliasIP> aliasses = (List<AliasIP>) getCachedList(key, count);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByPlayer(player, offset, limit, count);
+		putCachedList(key, aliasses, count);
+		return aliasses;
 	}
 
 	@Override
 	public List<AliasIP> findByIP(String query, int offset, int limit,
 			int[] count) {
-		return impl.findByIP(query, offset, limit, count);
-	}
-
-	@Override
-	protected void initializeCache() {
-		createCache("aliasip");
+		String key = "fbi" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<AliasIP> aliasses = (List<AliasIP>) getCachedList(key, count);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByIP(query, offset, limit, count);
+		putCachedList(key, aliasses, count);
+		return aliasses;
 	}
 
 }

@@ -30,16 +30,9 @@ public class PenaltyHistoryDAOCached extends CachedDAO implements PenaltyHistory
 	private PenaltyHistoryDAO impl;
 	
 	public PenaltyHistoryDAOCached(PenaltyHistoryDAO impl) {
+		super("ph");
 		this.impl = impl;
-		this.initializeCache();
-	}
-	
-	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.cached.CachedDAO#initializeCache()
-	 */
-	@Override
-	protected void initializeCache() {
-		// do nothing
+		
 	}
 
 	/* (non-Javadoc)

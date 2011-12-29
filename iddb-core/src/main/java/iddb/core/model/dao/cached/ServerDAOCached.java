@@ -31,8 +31,8 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	private final ServerDAO impl;
 
 	public ServerDAOCached(ServerDAO impl) {
+		super("server");
 		this.impl = impl;
-		this.initializeCache();
 	}
 
 	@Override
@@ -43,6 +43,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 		}
 		impl.save(server);
 		cachePut(cacheKey(server.getUid()), server);
+		cachePut("server"+server.getKey().toString(), server);
 	}
 
 	@Override
@@ -88,17 +89,16 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 	}
 
 	@Override
-	public Server get(Long server) throws EntityDoesNotExistsException, DAOException {
-		return impl.get(server);
+	public Server get(Long key) throws EntityDoesNotExistsException, DAOException {
+		Server s = (Server) cacheGet("server"+key.toString());
+		if (s != null) return s;
+		s = impl.get(key);
+		if (s != null) cachePut("server"+key.toString(), s);
+		return s;
 	}
 
 	private String cacheKey(String uid) {
 		return "key-" + uid;
-	}
-
-	@Override
-	protected void initializeCache() {
-		createCache("server");
 	}
 
 	/* (non-Javadoc)

@@ -29,15 +29,10 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 	private final AliasDAO impl;
 
 	public AliasDAOCached(AliasDAO impl) {
+		super("alias");
 		this.impl = impl;
-		this.initializeCache();
 	}
 
-	@Override
-	protected void initializeCache() {
-		createCache("alias");
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Alias> findByNickname(String query, int offset, int limit, int[] count) {
@@ -49,11 +44,11 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 		return aliasses;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Alias> findBySimilar(String query, int offset, int limit,
 			int[] count) {
 		String key = "gram" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
 		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
 		aliasses = impl.findBySimilar(query, offset, limit, count);
@@ -64,7 +59,13 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 	@Override
 	public List<Alias> findByPlayer(Long player, int offset, int limit,
 			int[] count) {
-		return impl.findByPlayer(player, offset, limit, count);
+		String key = "fbp" + Long.toString(player) + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+		if (aliasses != null) return aliasses;
+		aliasses = impl.findByPlayer(player, offset, limit, count);
+		putCachedList(key, aliasses, count);
+		return aliasses;
 	}
 
 	private String cacheKey(Long player, String nickname) {

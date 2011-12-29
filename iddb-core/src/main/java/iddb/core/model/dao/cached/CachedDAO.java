@@ -24,6 +24,7 @@ import iddb.core.cache.UnavailableCacheException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,22 @@ public abstract class CachedDAO {
 	
 	private Cache cacheImpl;
 	
-	protected final Integer SEARCH_EXPIRE = 5;
+	protected Integer SEARCH_EXPIRE = 60;
 	
-	protected abstract void initializeCache();
+	public CachedDAO(String namespace) {
+		initProperties();
+		createCache(namespace);
+	}
+
+	private void initProperties() {
+		Properties props = new Properties();
+		try {
+			props.load(getClass().getClassLoader().getResourceAsStream("memcache.properties"));
+			if (props.containsKey("list_expiration")) SEARCH_EXPIRE = Integer.parseInt(props.getProperty("list_expiration"));
+		} catch (Exception e) {
+			log.warn("Unable to load cache properties [{}]", e.getMessage());
+		}	
+	}
 	
 	@SuppressWarnings("unchecked")
 	protected Object getCachedList(String key, int[] count) {
@@ -45,7 +59,7 @@ public abstract class CachedDAO {
 			Map<String, Object> map = (Map<String, Object>) cacheImpl.get(key);
 			if (map != null) {
 				if (log.isDebugEnabled()) log.debug(map.toString());
-				count[0] = (Integer) map.get("count");
+				if (count != null) count[0] = (Integer) map.get("count");
 				return map.get("list");
 			}
 		} catch (Exception e) {
@@ -58,7 +72,8 @@ public abstract class CachedDAO {
 		if (cacheImpl != null) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("list", list);
-			map.put("count", count[0]);
+			if (count != null) map.put("count", count[0]);
+			else map.put("count", 0);
 			cacheImpl.put(key, map, SEARCH_EXPIRE);
 		}
 	}
@@ -85,8 +100,8 @@ public abstract class CachedDAO {
 	 * @param key
 	 * @param value
 	 */
-	protected void cachePut(String key, Object value, Integer expire) {
-		if (this.cacheImpl != null) this.cacheImpl.put(key, value, expire); 
+	protected void cachePut(String key, Object value, Integer expire_in_seconds) {
+		if (this.cacheImpl != null) this.cacheImpl.put(key, value, expire_in_seconds * 60); 
 	}
 	
 	/**

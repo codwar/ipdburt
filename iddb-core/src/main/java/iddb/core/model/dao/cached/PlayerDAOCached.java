@@ -30,8 +30,8 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 	private final PlayerDAO impl;
 
 	public PlayerDAOCached(PlayerDAO impl) {
+		super("player");
 		this.impl = impl;
-		this.initializeCache();
 	}
 
 	@Override
@@ -140,11 +140,6 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 		players = impl.findByClientId(clientId, offset, limit, count);
 		putCachedList(key, players, count);
 		return players;
-	}
-
-	@Override
-	protected void initializeCache() {
-		createCache("player");
 	}
 
 	/* (non-Javadoc)

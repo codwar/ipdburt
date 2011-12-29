@@ -29,8 +29,8 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 	private PenaltyDAO impl;
 	
 	public PenaltyDAOCached(PenaltyDAO impl) {
+		super("penalty");
 		this.impl = impl;
-		this.initializeCache();
 	}
 
 	private String cacheKey(Long key) {
@@ -92,11 +92,6 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 	}
 
 	@Override
-	protected void initializeCache() {
-		createCache("penalty");
-	}
-
-	@Override
 	public void save(List<Penalty> list) {
 		impl.save(list);
 	}
@@ -116,12 +111,24 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 
 	@Override
 	public List<Penalty> findByPlayerAndTypeAndActive(Long player, Integer type) {
-		return impl.findByPlayerAndTypeAndActive(player, type);
+		String key = "pta" + Long.toString(player) + "T" + Integer.toString(type);
+		@SuppressWarnings("unchecked")
+		List<Penalty> penalties = (List<Penalty>) getCachedList(key, null);
+		if (penalties != null) return penalties;
+		penalties = impl.findByPlayerAndTypeAndActive(player, type);
+		putCachedList(key, penalties, null);
+		return penalties;
 	}
 
 	@Override
 	public List<Penalty> findByPlayerAndType(Long player, Integer type) {
-		return impl.findByPlayerAndType(player, type);
+		String key = "pa" + Long.toString(player) + "T" + Integer.toString(type);
+		@SuppressWarnings("unchecked")
+		List<Penalty> penalties = (List<Penalty>) getCachedList(key, null);
+		if (penalties != null) return penalties;
+		penalties = impl.findByPlayerAndType(player, type);
+		putCachedList(key, penalties, null);
+		return penalties;
 	}
 
 	/* (non-Javadoc)
@@ -138,7 +145,7 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 	 */
 	@Override
 	public Penalty findLastActivePenalty(Long player, Integer type) {
-		String key = "active-" + player.toString() + "T" + type.toString();;
+		String key = "act-" + player.toString() + "T" + type.toString();;
 		Penalty penalty = (Penalty) cacheGet(key);
 		if (penalty == null) {
 			penalty = impl.findLastActivePenalty(player, type);

@@ -30,8 +30,8 @@ public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 	private UserServerDAO impl;
 	
 	public UserServerDAOCached(UserServerDAO impl) {
+		super("userserver");
 		this.impl = impl;
-		initializeCache();
 	}
 	
 	@Override
@@ -66,14 +66,6 @@ public class UserServerDAOCached extends CachedDAO implements UserServerDAO {
 		l = this.impl.findByServer(server);
 		if (l.size() > 0) cachePut("list" + server.toString(), l);
 		return l;
-	}
-
-	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.cached.CachedDAO#initializeCache()
-	 */
-	@Override
-	protected void initializeCache() {
-		createCache("userserver");
 	}
 
 	/* (non-Javadoc)

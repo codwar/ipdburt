@@ -3,10 +3,10 @@ import time
 import datetime
 import socket
 
-keys= ['3483c7a89bc3eb257bb54d74121315b17aa2ee33']
+keys= ['57a69b7c573a8416881d67aec13e39b523fd5d8b']
 
 for  key in keys:
-    proxy = xmlrpclib.ServerProxy("http://www.iddb.com.ar/api/v3/xmlrpc")
+    proxy = xmlrpclib.ServerProxy("http://slave.ipdb.com.ar/api/v3/xmlrpc")
     socket.setdefaulttimeout(10)
     
     print "Update Name"

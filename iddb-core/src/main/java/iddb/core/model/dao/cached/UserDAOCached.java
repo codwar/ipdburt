@@ -29,24 +29,35 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 	private UserDAO impl;
 	
 	public UserDAOCached(UserDAO impl) {
+		super("user");
 		this.impl = impl;
-		initializeCache();
 	}
 	
 	@Override
 	public void save(User user) {
 		this.impl.save(user);
-		cachePut(user.getLoginId(), user, 10);
+		cacheUser(user);
 	}
 
 	@Override
 	public List<User> findAll(int offset, int limit, int[] count) {
-		return this.impl.findAll(offset, limit, count);
+		String key = "all-" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<User> users = (List<User>) getCachedList(key, count);
+		if (users != null) return users;
+		users = this.impl.findAll(offset, limit, count);
+		putCachedList(key, users, count);
+		return users;
 	}
 
 	@Override
 	public User get(Long key) throws EntityDoesNotExistsException {
-		return this.impl.get(key);
+		String k = "key+" + key.toString();
+		User u = (User) cacheGet(k);
+		if (u != null) return u;
+		u = this.impl.get(key);
+		if (u != null) cacheUser(u);
+		return u;
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +68,7 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 		User user = (User) cacheGet(loginId);
 		if (user != null) return user;
 		user = this.impl.get(loginId);
-		cachePut(loginId, user, 10);
+		cacheUser(user);
 		return user;
 		
 	}
@@ -68,15 +79,12 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 	@Override
 	public void change_password(User user) {
 		this.impl.change_password(user);
-		cachePut(user.getLoginId(), user, 10);
+		cacheUser(user);
 	}
-
-	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.cached.CachedDAO#initializeCache()
-	 */
-	@Override
-	protected void initializeCache() {
-		createCache("user");
+	
+	private void cacheUser(User user) {
+		cachePut(user.getLoginId(), user, 10);
+		cachePut("key+" + user.getKey().toString(), user, 10);
 	}
 
 }
