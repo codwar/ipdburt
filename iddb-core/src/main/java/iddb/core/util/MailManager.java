@@ -90,6 +90,7 @@ public class MailManager {
 			email.send();
 		} catch (Exception e) {
 			log.error("{}: {}", e.getClass().getName(), e.getMessage());
+			throw new Exception("We are unable to send your message right now.");
 		}		
 	}
 
