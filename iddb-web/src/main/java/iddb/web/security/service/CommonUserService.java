@@ -24,6 +24,7 @@ import iddb.web.security.dao.Session;
 import iddb.web.security.exceptions.InvalidAccountException;
 import iddb.web.security.exceptions.InvalidCredentialsException;
 import iddb.web.security.exceptions.UserLockedException;
+import iddb.web.security.subject.AnonymousSubject;
 import iddb.web.security.subject.Subject;
 
 import java.util.Date;
@@ -44,22 +45,39 @@ public abstract class CommonUserService implements UserService {
 	
 	private static ThreadContext context = new ThreadContext();
 	
+	private ThreadContext getContext() {
+		// for some strange reason sometimes context is null ¿?.. maybe a tomcat7 bug?
+		if (context == null) {
+			context = new ThreadContext();
+		}
+		return context;
+	}
+	
 	/* (non-Javadoc)
 	 * @see iddb.web.security.UserService#getCurrentUser(javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public Subject getCurrentUser() {
-		return context.getSubject();
+		try {
+			return getContext().getSubject();
+		} catch (Exception e) {
+			log.error("{}: {}", e.getClass().getName(), e.getMessage());
+			return new AnonymousSubject();
+		}
 	}
 	
 	private void saveLocal(Subject subject) {
-		context.setSubject(subject);
+		try {
+			getContext().setSubject(subject);
+		} catch (Exception e) {
+			log.error("{}: {}", e.getClass().getName(), e.getMessage());
+		}
 	}
 	
 	@Override
 	public void cleanUp() {
 		try {
-			context.removeSubject();
+			getContext().removeSubject();
 		} catch (Exception e) {
 		}
 	}

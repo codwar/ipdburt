@@ -65,7 +65,7 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 	 */
 	@Override
 	public User get(String loginId) throws EntityDoesNotExistsException {
-		User user = (User) cacheGet(loginId);
+		User user = (User) cacheGet("login+" + loginId);
 		if (user != null) return user;
 		user = this.impl.get(loginId);
 		cacheUser(user);
@@ -83,7 +83,7 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 	}
 	
 	private void cacheUser(User user) {
-		cachePut(user.getLoginId(), user, 10);
+		cachePut("login+" + user.getLoginId(), user, 10);
 		cachePut("key+" + user.getKey().toString(), user, 10);
 	}
 
