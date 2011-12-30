@@ -64,17 +64,22 @@ public class MailManager {
 	
 	public void sendAdminMail(String subject, String message, String replyTo) throws Exception {
 		if (props == null) throw new Exception("Unable to access email subsystem.");
-		Email email = new SimpleEmail();
-		email.setSubject(subject);
-		email.setMsg(message);
-		if (replyTo != null) {
-			email.addReplyTo(replyTo);
+		try {
+			Email email = new SimpleEmail();
+			email.setSubject(subject);
+			email.setMsg(message);
+			if (replyTo != null) {
+				email.addReplyTo(replyTo);
+			}
+			for (String adr : props.getProperty("admin").split(";")) {
+				email.addTo(adr);
+			}
+			setEmailProps(email);
+			email.send();
+		} catch (Exception e) {
+			log.error("{}: {}", e.getClass().getName(), e.getMessage());
+			throw new Exception("We are unable to send your message right now.");
 		}
-		for (String adr : props.getProperty("admin").split(";")) {
-			email.addTo(adr);
-		}
-		setEmailProps(email);
-		email.send();
 	}
 	
 	public void sendMail(String subject, String template, String[] dest, Map<String, String> args) throws Exception {
