@@ -79,14 +79,18 @@ public class MailManager {
 	
 	public void sendMail(String subject, String template, String[] dest, Map<String, String> args) throws Exception {
 		if (props == null) throw new Exception("Unable to access email subsystem.");
-		Email email = new SimpleEmail();
-		email.setSubject(subject);
-		email.setMsg(TemplateManager.getTemplate(template, args));
-		for (String adr : dest) {
-			email.addTo(adr);
-		}
-		setEmailProps(email);
-		email.send();		
+		try {
+			Email email = new SimpleEmail();
+			email.setSubject(subject);
+			email.setMsg(TemplateManager.getTemplate(template, args));
+			for (String adr : dest) {
+				email.addTo(adr);
+			}
+			setEmailProps(email);
+			email.send();
+		} catch (Exception e) {
+			log.error("{}: {}", e.getClass().getName(), e.getMessage());
+		}		
 	}
 
 }
