@@ -18,6 +18,7 @@
  */
 package iddb.task.tasks;
 
+import iddb.core.PenaltyService;
 import iddb.core.model.Penalty;
 import iddb.core.model.PenaltyHistory;
 import iddb.core.model.Player;
@@ -41,7 +42,7 @@ public class ConfirmRemoteEventTask implements Runnable {
 	protected final PenaltyHistoryDAO penaltyHistoryDAO = (PenaltyHistoryDAO) DAOFactory.forClass(PenaltyHistoryDAO.class);
 	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
-
+	
 	private List<Entry<Long, String>> entries;
 	
 	public ConfirmRemoteEventTask(List<Entry<Long, String>> entries) {
@@ -61,6 +62,7 @@ public class ConfirmRemoteEventTask implements Runnable {
 	}
 
 	private void updateEvent() {
+		PenaltyService penaltyService = new PenaltyService();
 		for (Entry<Long, String> entry : this.entries) {
 			PenaltyHistory his = null;
 			try {
@@ -77,23 +79,14 @@ public class ConfirmRemoteEventTask implements Runnable {
 				if (msg == null || "".equals(msg)) {
 					his.setStatus(PenaltyHistory.ST_DONE);
 					penalty = penaltyDAO.get(his.getPenaltyId());
+					player = playerDAO.get(penalty.getPlayer());
 					penalty.setSynced(true);
-					if (penalty.getType() == Penalty.BAN) {
-						player = playerDAO.get(penalty.getPlayer());
-					}
 					if (his.getFuncId() == PenaltyHistory.FUNC_ID_ADD) {
-						if (player != null) {
-							player.setBanInfo(penalty.getCreated());
-						}
-						penalty.setActive(true);
+						penaltyService.addPenalty(penalty, player);
 					} else {
-						if (player != null) {
-							player.setBanInfo(null);
-						}						
-						penalty.setActive(false);
+						penaltyService.removePenalty(penalty, player);
 					}
-					if (player != null) playerDAO.save(player);
-					penaltyDAO.save(penalty);
+					playerDAO.save(player);
 				} else {
 					his.setStatus(PenaltyHistory.ST_ERROR);
 					his.setError(msg);

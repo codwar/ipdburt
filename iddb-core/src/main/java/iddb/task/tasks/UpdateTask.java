@@ -19,6 +19,7 @@
 package iddb.task.tasks;
 
 import iddb.api.Events;
+import iddb.core.PenaltyService;
 import iddb.core.model.Penalty;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
@@ -90,9 +91,11 @@ public class UpdateTask implements Runnable {
 			for (PlayerInfo playerInfo : list) {
 				try {
 					Date playerLastUpdate;
+					boolean created = false;
 					Player player = playerDAO.findByServerAndHash(server.getKey(),
 							playerInfo.getHash());
 					if (player == null) {
+						created = true;
 						player = createPlayer(server, playerInfo);
 						playerLastUpdate = playerInfo.getUpdated();
 					} else {
@@ -114,9 +117,11 @@ public class UpdateTask implements Runnable {
 					
 					handlePlayerEvent(playerInfo, player);
 					
-					playerDAO.save(player);
+					if (created) playerDAO.save(player);
 
-					handlePenaltyEvent(playerInfo, player);
+					if (handlePenaltyEvent(playerInfo, player) || !created) {
+						playerDAO.save(player);
+					}
 					
 					boolean update = false;
 					if (Events.CONNECT.equals(playerInfo.getEvent())) {
@@ -146,7 +151,10 @@ public class UpdateTask implements Runnable {
 		}
 	}
 
-	private void handlePenaltyEvent(PlayerInfo playerInfo, Player player) {
+	private boolean handlePenaltyEvent(PlayerInfo playerInfo, Player player) {
+		boolean updated = false;
+		PenaltyService penaltyService = new PenaltyService();
+		
 		if (Events.BAN.equals(playerInfo.getEvent())
 			|| Events.ADDNOTE.equals(playerInfo.getEvent())
 			|| Events.UNBAN.equals(playerInfo.getEvent())
@@ -154,6 +162,7 @@ public class UpdateTask implements Runnable {
 			
 			if (Events.UNBAN.equals(playerInfo.getEvent())) {
 				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
+				player.setBanInfo(null);
 //				List<Penalty> penalties = penaltyDAO.findByPlayerAndType(player.getKey(), Penalty.BAN);
 //				if (penalties.size() > 0) penaltyDAO.disable(penalties);
 			} else if (Events.BAN.equals(playerInfo.getEvent())) {
@@ -175,7 +184,9 @@ public class UpdateTask implements Runnable {
 					}
 				}
 				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
-				penaltyDAO.save(penalty);
+				penaltyService.addPenalty(penalty, player);
+				updated = true;
+				//penaltyDAO.save(penalty);
 			} else if (Events.ADDNOTE.equals(playerInfo.getEvent())) {
 				Penalty penalty = new Penalty();
 				penalty.setPlayer(player.getKey());
@@ -193,11 +204,14 @@ public class UpdateTask implements Runnable {
 						log.error(e.getMessage());
 					}
 				}
-				penaltyDAO.save(penalty);				
+				penaltyService.addPenalty(penalty, player);
+				updated = true;
+				//penaltyDAO.save(penalty);				
 			} else {
 				log.warn("Unhandled event {}", playerInfo.getEvent());
 			}
 		}
+		return updated;
 	}
 
 	/**
@@ -214,7 +228,7 @@ public class UpdateTask implements Runnable {
 				|| Events.DISCONNECT.equals(playerInfo.getEvent())
 				|| Events.UNBAN.equals(playerInfo.getEvent())
 				|| Events.UPDATE.equals(playerInfo.getEvent())) {
-			player.setBanInfo(null);
+			//player.setBanInfo(null);
 			if (playerInfo.getUpdated().after(grace) && 
 					(Events.CONNECT.equals(playerInfo.getEvent()) 
 							|| Events.UPDATE.equals(playerInfo.getEvent()))) {
