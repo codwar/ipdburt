@@ -944,8 +944,10 @@ input.search {
 }
 /* fix firefox shadow error */
 fieldset { position: relative; }
-fieldset legend { position: absolute; top: -35px; left: 0; }
-.webkit fieldset legend { position: relative; top: 0px; }
+/* .webkit fieldset legend { position: relative; top: 0px; } */
+fieldset legend { position: relative; top: 0px; }
+.gecko fieldset legend { position: absolute; top: -25px; left: 10px; }
+.ff9 fieldset legend, .ff8 fieldset legend { top: -35px; left: 0; }
 
 .context-message {
 	text-align: center;
