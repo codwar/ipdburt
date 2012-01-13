@@ -3,10 +3,10 @@ import time
 import datetime
 import socket
 
-keys= ['57a69b7c573a8416881d67aec13e39b523fd5d8b']
+keys= ['bb38874ad4d2c1bac0db61f2da5f1262f73f7f36']
 
 for  key in keys:
-    proxy = xmlrpclib.ServerProxy("http://slave.ipdb.com.ar/api/v3/xmlrpc")
+    proxy = xmlrpclib.ServerProxy("http://166.40.231.124:8080/iddb-web/api/v4/xmlrpc")
     socket.setdefaulttimeout(10)
     
     print "Update Name"
@@ -34,7 +34,7 @@ for  key in keys:
                 ('connect', 'Player3-1','guid3', '3', '127.0.0.3', '1'),
                 ('connect', 'Player4-1','guid4', '4', '127.0.0.4', '2'),
                 ('connect', 'Player5-1','guid5', '5', '127.0.0.5', '20'),
-                ('connect', 'Player6-1','guid6', '6', '127.0.0.1', '0'),
+                ('connect', 'Dead','BFC703719AB17CAA6DB1FC6D0414AA80', '7', '127.0.0.1', '0'),
                 ('disconnect', 'Player1-2','guid1', '1', '127.0.0.1', '0'),
                 ('update', 'Player2-2','guid2', '2', '127.0.0.1', '1'),
                 ('banned', 'Player2-2','guid2', '2', '127.0.0.1', '1', int(time.time()), baninfo),
@@ -43,4 +43,4 @@ for  key in keys:
                 ('unbanned', 'Player2-2','guid2', '2', '127.0.0.1', '1'),]
     
     print "Update logs"
-    proxy.update(key,players)
+    proxy.update(key,players, int(time.time()))

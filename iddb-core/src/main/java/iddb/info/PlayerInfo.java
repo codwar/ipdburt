@@ -124,4 +124,21 @@ public class PlayerInfo implements Serializable {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("Name: %s - GUID %s - ClientId %s - IP %s - Level %s - Updated %s - HashID %s - HasPenalty %s",
+							this.name,
+							this.guid,
+							this.clientId,
+							this.ip,
+							this.level,
+							this.updated.toString(),
+							this.hash,
+							Boolean.toString(this.penaltyInfo != null));
+		 
+	}
 }

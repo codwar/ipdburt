@@ -184,8 +184,20 @@ public class RPC4Handler extends RPC3Handler {
 			penalty.setReason((String) data[1]);
 			penalty.setAdmin((String) data[2]);
 			penalty.setAdminId(getClientHash(uid, smartCast(data[3])));
+			try {
+				penalty.setRemoteId((String) data[4]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+			}
 			playerInfo.setPenaltyInfo(penalty);			
+		} else if (Events.DELNOTE.equals(event)) {
+			try {
+				PenaltyInfo penalty = new PenaltyInfo();
+				penalty.setRemoteId((String)((Object[]) values[7])[0]);
+				playerInfo.setPenaltyInfo(penalty);
+			} catch (ArrayIndexOutOfBoundsException e) {
+			}
 		}
+		if (log.isDebugEnabled()) log.debug("{}: {}", event, playerInfo.toString());
 		return playerInfo;
 	}
 

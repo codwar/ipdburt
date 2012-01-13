@@ -35,6 +35,7 @@ public class PenaltyInfo implements Serializable {
 	private String adminId;
 	private String adminHash;
 	private String admin;
+	private String remoteId;
 	
 	public Date getCreated() {
 		return created;
@@ -82,6 +83,12 @@ public class PenaltyInfo implements Serializable {
 	}
 	public void setAdminHash(String adminHash) {
 		this.adminHash = adminHash;
+	}
+	public String getRemoteId() {
+		return remoteId;
+	}
+	public void setRemoteId(String remoteId) {
+		this.remoteId = remoteId;
 	}
 	
 }

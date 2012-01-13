@@ -186,4 +186,12 @@ public class PenaltyDAOCached extends CachedDAO implements PenaltyDAO {
 		impl.resetLongPendingPenalties(serverId, days);
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#match(java.lang.String)
+	 */
+	@Override
+	public List<Penalty> query(String q) {
+		return impl.query(q);
+	}
+
 }

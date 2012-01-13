@@ -29,6 +29,7 @@ import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
 import iddb.core.model.util.AliasManager;
+import iddb.exception.EntityDoesNotExistsException;
 import iddb.info.PlayerInfo;
 
 import java.io.PrintWriter;
@@ -40,6 +41,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sgt.utils.sql.builder.QueryBuilder;
 
 public class UpdateTask implements Runnable {
 
@@ -163,8 +166,6 @@ public class UpdateTask implements Runnable {
 			if (Events.UNBAN.equals(playerInfo.getEvent())) {
 				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
 				player.setBanInfo(null);
-//				List<Penalty> penalties = penaltyDAO.findByPlayerAndType(player.getKey(), Penalty.BAN);
-//				if (penalties.size() > 0) penaltyDAO.disable(penalties);
 			} else if (Events.BAN.equals(playerInfo.getEvent())) {
 				Penalty penalty = new Penalty();
 				penalty.setPlayer(player.getKey());
@@ -186,7 +187,6 @@ public class UpdateTask implements Runnable {
 				penaltyDAO.deletePlayerPenalty(player.getKey(), Penalty.BAN);
 				penaltyService.addPenalty(penalty, player);
 				updated = true;
-				//penaltyDAO.save(penalty);
 			} else if (Events.ADDNOTE.equals(playerInfo.getEvent())) {
 				Penalty penalty = new Penalty();
 				penalty.setPlayer(player.getKey());
@@ -196,6 +196,11 @@ public class UpdateTask implements Runnable {
 				penalty.setReason(playerInfo.getPenaltyInfo().getReason());
 				penalty.setSynced(true);
 				penalty.setActive(true);
+				if (playerInfo.getPenaltyInfo().getRemoteId() != null) {
+					if (playerInfo.getPenaltyInfo().getRemoteId().startsWith("P$")) {
+						penalty.setDuration(Long.parseLong(playerInfo.getPenaltyInfo().getRemoteId().substring(2)));
+					}
+				}
 				if (StringUtils.isNotEmpty(playerInfo.getPenaltyInfo().getAdminId())) {
 					try {
 						Player admin = playerDAO.findByServerAndHash(player.getServer(), playerInfo.getPenaltyInfo().getAdminId());
@@ -206,7 +211,29 @@ public class UpdateTask implements Runnable {
 				}
 				penaltyService.addPenalty(penalty, player);
 				updated = true;
-				//penaltyDAO.save(penalty);				
+			} else if (Events.DELNOTE.equals(playerInfo.getEvent())) {
+				try {
+					if (playerInfo.getPenaltyInfo().getRemoteId() != null) {
+						if (playerInfo.getPenaltyInfo().getRemoteId().startsWith("P$")) {
+							Long id = Long.parseLong(playerInfo.getPenaltyInfo().getRemoteId().substring(2));
+							QueryBuilder b = new QueryBuilder();
+							b.and("playerid", player.getKey());
+							b.and("type", Penalty.NOTICE);
+							b.and("duration", id);
+							penaltyDAO.delete(penaltyDAO.query(b.toString()));
+						} else {
+							Long id = Long.parseLong(playerInfo.getPenaltyInfo().getRemoteId());
+							try {
+								Penalty p = penaltyDAO.get(id);
+								penaltyDAO.delete(p);
+							} catch (EntityDoesNotExistsException e) {
+								log.warn(e.getMessage());
+							}
+						}
+					}
+				} catch (NumberFormatException e) {
+					log.warn(e.getMessage());
+				}
 			} else {
 				log.warn("Unhandled event {}", playerInfo.getEvent());
 			}

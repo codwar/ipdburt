@@ -581,4 +581,35 @@ public class PenaltyDAOImpl implements PenaltyDAO {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.PenaltyDAO#match(java.lang.String)
+	 */
+	@Override
+	public List<Penalty> query(String q) {
+		String sql = "select * from penalty where " + q;
+		logger.trace(sql);
+		Connection conn = null;
+		List<Penalty> list = new ArrayList<Penalty>();
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			while (rs.next()) {
+				Penalty penalty = new Penalty();
+				loadPenalty(penalty, rs);
+				list.add(penalty);
+			}
+		} catch (SQLException e) {
+			logger.error("match: {}", e);
+		} catch (IOException e) {
+			logger.error("match: {}", e);			
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
 }

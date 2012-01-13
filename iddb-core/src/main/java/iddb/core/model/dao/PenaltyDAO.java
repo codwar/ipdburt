@@ -66,5 +66,7 @@ public interface PenaltyDAO {
 	
 	public abstract void resetLongPendingPenalties(Long serverId, Integer days);
 	
+	public abstract List<Penalty> query(String q);
+	
 
 }
