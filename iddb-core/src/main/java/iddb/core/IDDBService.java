@@ -325,11 +325,10 @@ public class IDDBService {
 			throws EntityDoesNotExistsException, ApplicationError {
 
 		List<SearchResult> results = new ArrayList<SearchResult>();
-
+		
 		for (Alias alias : aliasses) {
-
 			Player player = playerDAO.get(alias.getPlayer());
-			Server server;
+			Server server = null;
 			try {
 				server = serverDAO.get(player.getServer());
 			} catch (DAOException e) {
@@ -338,12 +337,10 @@ public class IDDBService {
 
 			// Whoops! inconsistent data.
 			if (alias == null || server == null)
-				continue;
+				return null;
 
-			SearchResult result = marshall(player, server);
-			results.add(result);
+			results.add(marshall(player, server));
 		}
-
 		return results;
 	}
 

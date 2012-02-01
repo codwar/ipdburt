@@ -19,6 +19,8 @@
 package iddb.task;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -28,19 +30,20 @@ import org.slf4j.LoggerFactory;
 public class TaskManager {
 
 	private static final Logger log = LoggerFactory.getLogger(TaskManager.class);
-
-	private int poolSize = 10;
-	private int maxPoolSize = 100;
+	private int poolSize = 50;
+	private int maxPoolSize = poolSize * 2;
+	private int queueSize = 250;
+	
 	private long keepAliveTime = 10;
 	
-	private ThreadPoolExecutor threadPool = null;
+	private ThreadPoolExecutor executor = null;
 	
-	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(poolSize);
+	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
 	
 	private static TaskManager instance;
 	
 	private TaskManager() {
-		threadPool = new ThreadPoolExecutor(poolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, queue);
+		executor = new ThreadPoolExecutor(poolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, queue);
 	}
 	
 	synchronized public static TaskManager getInstance() {
@@ -51,12 +54,18 @@ public class TaskManager {
 	}
 	
 	public void runTask(Runnable task) {
-		threadPool.execute(task);
-		log.debug("Task queue size: {}", queue.size());
+		log.debug("Active Tasks: {}", executor.getActiveCount());
+		executor.execute(task);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Future submit(Callable callable) {
+		log.debug("Active Tasks: {}", executor.getActiveCount());
+		return executor.submit(callable);
 	}
 	
 	public void shutdown() {
-		threadPool.shutdown();
+		executor.shutdown();
 	}
 	
 	@Override
