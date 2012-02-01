@@ -96,7 +96,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 */
 	@Override
 	public List<UserServer> findByUser(Long user) {
-		String sql = "select * from userserver where userid = ?";
+		String sql = "select u.* from userserver u inner join server s on u.serverid = s.id where s.disabled = 0 and u.userid = ?";
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
@@ -139,7 +139,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 */
 	@Override
 	public List<UserServer> findByServer(Long server) {
-		String sql = "select * from userserver where serverid = ?";
+		String sql = "select u.* from userserver u inner join server s on u.serverid = s.id where u.serverid = ? and s.disabled = 0";
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
@@ -203,7 +203,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	@Override
 	public UserServer findByUserAndServer(Long user, Long server)
 			throws EntityDoesNotExistsException {
-		String sql = "select * from userserver where userid = ? and serverid = ? limit 1";
+		String sql = "select u.* from userserver u INNER JOIN server s ON u.serverid = s.id where s.disabled = 0 and u.userid = ? and u.serverid = ? limit 1";
 		UserServer userServer = null;
 		Connection conn = null;
 		try {
@@ -237,7 +237,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	@Override
 	public UserServer findByPlayerAndServer(Long player, Long server)
 			throws EntityDoesNotExistsException {
-		String sql = "select * from userserver where playerid = ? and serverid = ? limit 1";
+		String sql = "select u.* from userserver u INNER JOIN server s ON u.serverid = s.id where u.playerid = ? and u.serverid = ? and s.disabled = 0 limit 1";
 		UserServer userServer = null;
 		Connection conn = null;
 		try {
@@ -270,7 +270,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	 */
 	@Override
 	public Boolean existsAny(Long user, Integer level) {
-		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.userid = ? AND p.level >= ? limit 1";
+		String sql = "SELECT 1 FROM userserver u INNER JOIN player p INNER JOIN server s ON u.playerid = p.id AND u.serverid = s.id WHERE s.disabled = 0 AND u.userid = ? AND p.level >= ? limit 1";
 		Boolean res = Boolean.FALSE;
 		Connection conn = null;
 		try {
@@ -297,7 +297,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 
 	@Override
 	public List<UserServer> listUserServers(Long user, Integer level) {
-		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.userid = ? AND p.level >= ?";
+		String sql = "SELECT u.* FROM userserver u INNER JOIN player p INNER JOIN server s ON u.playerid = p.id AND u.serverid = s.id WHERE s.disabled = 0 AND u.userid = ? AND p.level >= ?";
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
@@ -326,7 +326,7 @@ public class UserServerDAOImpl implements UserServerDAO {
 	
 	@Override
 	public List<UserServer> findServerAdmins(Long server, Integer level) {
-		String sql = "SELECT * FROM userserver u INNER JOIN player p ON u.playerid = p.id WHERE u.serverid = ? AND p.level >= ?";
+		String sql = "SELECT u.* FROM userserver u INNER JOIN player p INNER JOIN server s ON u.playerid = p.id AND u.serverid = s.id WHERE s.disabled = 0 AND u.serverid = ? AND p.level >= ?";
 		List<UserServer> list = new ArrayList<UserServer>();
 		Connection conn = null;
 		try {
