@@ -80,12 +80,7 @@
 <img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif'/>
 </div>
 <jsp:include page="/include/navigation.jsp"/>
-<%-- jsp:include page="/pages/login_box.jsp"/--%>
-<!-- 
-<div class="beta">
-	<img src="${pageContext.request.contextPath}/media/images/bimage.png" width="105" height="107"/>
-</div>
- -->
+
 <div class="container">	
 
 <div class="clearer"><span></span></div>

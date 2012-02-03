@@ -231,7 +231,7 @@ if (canApplyAction) {
 		</tr>
 	</thead>
 	<tbody id="tablealias">
-	<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE; "><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif'/></td></tr>
+	<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE; "><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif' border="0"/></td></tr>
 	</tbody>
 	<tfoot>
 		<tr>
@@ -253,7 +253,7 @@ if (canApplyAction) {
 		</tr>
 	</thead>
 	<tbody id="tableip">
-		<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE;"><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif'/></td></tr>
+		<tr><td colspan="3" style="text-align: center; background-color: #EEEEEE;"><img src='${pageContext.request.contextPath}/media/images/metabox_loader.gif' border="0"/></td></tr>
 	</tbody>
 	<tfoot>
 		<tr>

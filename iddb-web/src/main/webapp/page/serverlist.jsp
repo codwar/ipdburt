@@ -37,7 +37,7 @@
 				<c:choose>
 				<c:when test="${server.dirty}">
 				<input type="hidden" name="key" value="${server.key}"/>
- 				<img class="fetch-server" alt="${server.key}" src='/media/images/loader.gif'/>
+ 				<img class="fetch-server" alt="${server.key}" src='/media/images/loader.gif' border="0"/>
 				</c:when>
 				<c:otherwise>
 				${server.onlinePlayers}
