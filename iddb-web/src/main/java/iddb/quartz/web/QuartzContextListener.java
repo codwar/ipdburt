@@ -26,6 +26,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -69,7 +70,11 @@ public class QuartzContextListener implements ServletContextListener {
 		log.debug("Shutting down quartz engine");
 		try {
 			if (scheduler != null) {
-				//scheduler.clear();
+				for (JobExecutionContext job : scheduler.getCurrentlyExecutingJobs()) {
+					log.debug("Stopping {}", job.getJobDetail().getDescription());
+					scheduler.interrupt(job.getJobDetail().getKey());
+				}
+				scheduler.clear();
 				scheduler.shutdown();
 			}
 		} catch (SchedulerException e) {

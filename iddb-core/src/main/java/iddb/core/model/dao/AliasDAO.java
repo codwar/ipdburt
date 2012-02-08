@@ -19,6 +19,7 @@
 package iddb.core.model.dao;
 
 import iddb.core.model.Alias;
+import iddb.core.model.Player;
 import iddb.core.model.dao.cached.AliasDAOCached;
 
 import java.util.Collection;
@@ -48,7 +49,7 @@ public interface AliasDAO {
 	 * @param count
 	 * @return
 	 */
-	public abstract List<Alias> findBySimilar(String query, int offset,
+	public abstract List<Player> findBySimilar(String query, Long server, int offset,
 			int limit, int[] count);
 
 	/**
@@ -83,26 +84,14 @@ public interface AliasDAO {
 	public abstract Alias findByPlayerAndNickname(Long player, String nickname);
 
 	/**
-	 * List aliases using boolean search filtering by server
 	 * @param query
 	 * @param serverkey
 	 * @param offset
-	 * @param i
+	 * @param limit
 	 * @param count
 	 * @return
 	 */
-	public abstract List<Alias> booleanSearchByServer(String query,
-			Long serverkey, int offset, int limit, int[] count);
-
-	/**
-	 * List aliases using boolean search
-	 * @param query
-	 * @param offset
-	 * @param i
-	 * @param count
-	 * @return
-	 */
-	public abstract List<Alias> booleanSearch(String query, int offset, int limit,
-			int[] count);
+	public abstract List<Player> findBySimilar(String[] query, Long serverkey,
+			int offset, int limit, int[] count);
 
 }

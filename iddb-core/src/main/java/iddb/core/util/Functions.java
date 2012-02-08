@@ -18,13 +18,12 @@
  */
 package iddb.core.util;
 
-import iddb.core.Parameters;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -83,16 +82,19 @@ public class Functions {
 		return s.toString();
 	}
 
-	public static String fixIp(String query) {
+	public static String fixIp(String query, boolean range) {
 		String[] parts = query.split("\\.");
 		String[] r = new String[4];
-		for (int i = 0; i < 3; i++) {
+		int l;
+		if (range) l = 3;
+		else l = 4;
+		for (int i = 0; i < l; i++) {
 			if (i < parts.length)
 				r[i] = parts[i];
 			else
 				r[i] = "*";
 		}
-		r[3] = "*";
+		if (range) r[3] = "*";	
 		if ("*".equals(r[0]))
 			return "0.0.0.0";
 		return join(r, ".");
@@ -220,47 +222,13 @@ public class Functions {
 		return String.format("%.2g%s", num, suffix); // 2=1 decimal
 	}
 
-	public static String normalize(String text) {
-		// TODO agregar lo que vaya siendo necesario
-//		String s = text.toLowerCase();
-//		s = s.replace("@", "a");
-//		s = s.replace("`", "");
-//		s = s.replace("*", "");
-//		s = s.replace("<", "");
-//		s = s.replace(">", "");
-//		s = s.replace("&", "");
-//		//s = s.replace("_", " ");
-//		//s = s.replace("-", "_");
-//		//s = s.replace("+", " ");
-//		s = s.replace("{", "");
-//		s = s.replace("}", "");
-//		//s = s.replace("'", "");
-//		s = s.replace("|", "");
-//		s = s.replace("!", "");
-//		s = s.replace("[", "");
-//		s = s.replace("]", "");
-//		s = s.replace(".", "");
-//		s = s.replace(",", "");
-//		s = s.replace(":", "");
-//		s = s.replace("#", "");
-		// reemplazamos los numeros por posibles usos como letras
-//		s = s.replace("0", "o");
-//		s = s.replace("1", "i");
-//		s = s.replace("3", "e");
-//		s = s.replace("4", "a");
-//		s = s.replace("5", "s");
-//		s = s.replace("7", "t");
-//		s = s.replace(" ", "_");
-		// buscamos caracteres repetidos y los eliminas
+	public static String normalizeCleanUp(String text) {
 		char[] v = text.toLowerCase().toCharArray();
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < v.length ; i++) {
 			char c = v[i];
 			char r;
 			switch (c) {
-			case '@':
-				r = 'a';
-				break;
 			case ' ':
 			case '`':
 			case '*':
@@ -279,6 +247,32 @@ public class Functions {
 			case '\'':
 			case '#':
 				r = '\b';
+				break;
+			default:
+				r = c;
+			}
+			if (r != '\b') {
+				if (i > 0) {
+					if (c != v[i-1]) {
+						sb.append(r);
+					}
+				} else {
+					sb.append(r);
+				}
+			}
+		}
+		return sb.toString();		
+	}
+	
+	public static String normalizeReplace(String text) {
+		char[] v = text.toLowerCase().toCharArray();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < v.length ; i++) {
+			char c = v[i];
+			char r;
+			switch (c) {
+			case '@':
+				r = 'a';
 				break;
 			case '|':
 			case '!':
@@ -321,15 +315,25 @@ public class Functions {
 		return sb.toString();
 	}
 	
+	public static String normalize(String text) {
+		return normalizeReplace(normalizeCleanUp(text));
+	}
+	
 	public static String createNameIndex(String name) {
-		Collection<String> n = NGrams.ngrams(name, Parameters.INDEX_MIN_LENGTH);
-		n.addAll(NGrams.ngrams(Functions.normalize(name), Parameters.INDEX_MIN_LENGTH));
-		n.add(Functions.normalize(name));
-		return Functions.join(new HashSet<String>(n), " ");		
+//		Collection<String> n = NGrams.ngrams(name, Parameters.INDEX_MIN_LENGTH);
+//		n.addAll(NGrams.ngrams(Functions.normalize(name), Parameters.INDEX_MIN_LENGTH));
+//		n.add(Functions.normalize(name));
+//		return Functions.join(new HashSet<String>(n), " ");
+		Set<String> n = new HashSet<String>();
+		n.add(name.toLowerCase());
+		n.add(normalizeCleanUp(name));
+		n.add(normalizeReplace(name));
+		n.add(normalize(name));
+		return join(n.toArray(new String[0]), " ");
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(minutes2Str(873074L));
+		System.out.println(createNameIndex("[uy].Juan"));
 		
 //		System.out.println(normalize(">pr0.frankillo"));
 //		System.out.println(normalize("H'ace"));

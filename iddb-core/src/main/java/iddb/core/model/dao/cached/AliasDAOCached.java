@@ -19,7 +19,10 @@
 package iddb.core.model.dao.cached;
 
 import iddb.core.model.Alias;
+import iddb.core.model.Player;
 import iddb.core.model.dao.AliasDAO;
+import iddb.core.util.Functions;
+import iddb.core.util.HashUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,13 +48,18 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 	}
 
 	@Override
-	public List<Alias> findBySimilar(String query, int offset, int limit,
+	public List<Player> findBySimilar(String query, Long server, int offset, int limit,
 			int[] count) {
-		String key = "gram" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		String key;
+		if (server != null) {
+			key = "gram" + query + "|S" + Long.toString(server) +  "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		} else {
+			key = "gram" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		}
 		@SuppressWarnings("unchecked")
-		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+		List<Player> aliasses = (List<Player>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
-		aliasses = impl.findBySimilar(query, offset, limit, count);
+		aliasses = impl.findBySimilar(query, server, offset, limit, count);
 		putCachedList(key, aliasses, count);
 		return aliasses;
 	}
@@ -101,31 +109,24 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 	}
 
 	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#booleanSearchByServer(java.lang.String, java.lang.Long, int, int, int[])
+	 * @see iddb.core.model.dao.AliasDAO#findBySimilar(java.lang.String[], java.lang.Long, int, int, int[])
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Alias> booleanSearchByServer(String query, Long serverkey, int offset, int limit, int[] count) {
-		String key = "boos" + query + "S" + serverkey.toString() + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
-		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+	public List<Player> findBySimilar(String[] query, Long server,
+			int offset, int limit, int[] count) {
+		String key;
+		String queryKey = HashUtils.getSHA1Hash(Functions.join(query, "_"));
+		if (server != null) {
+			key = "gram" + queryKey + "|S" + Long.toString(server) +  "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		} else {
+			key = "gram" + queryKey + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
+		}
+		@SuppressWarnings("unchecked")
+		List<Player> aliasses = (List<Player>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
-		aliasses = impl.booleanSearchByServer(query, serverkey, offset, limit, count);
+		aliasses = impl.findBySimilar(query, server, offset, limit, count);
 		putCachedList(key, aliasses, count);
 		return aliasses;
 	}
 
-	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#booleanSearch(java.lang.String, int, int, int[])
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Alias> booleanSearch(String query, int offset, int limit,
-			int[] count) {
-		String key = "bool" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
-		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
-		if (aliasses != null) return aliasses;
-		aliasses = impl.booleanSearch(query, offset, limit, count);
-		putCachedList(key, aliasses, count);
-		return aliasses;
-	}
 }

@@ -223,7 +223,15 @@
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
 				<span class="minus"	id="minus-ip-${player.key}" style="display: none;">[-]</span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.ipSearch}"/></url:url>"><iddb:maskip value="${player.ip}"/></a>&nbsp;<a
+				<c:choose>
+                    <c:when test="${hasAdmin}">
+                        <url:url name="search" var="ipurl"><url:param name="query" value="${player.ip}"/></url:url>
+                    </c:when>
+                    <c:otherwise>
+                        <url:url name="search" var="ipurl"><url:param name="query" value="${player.ipSearch}"/></url:url>
+                    </c:otherwise>
+                </c:choose>				
+				<a href="${ipurl}"><iddb:maskip value="${player.ip}"/></a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
 					class="icon vcard"></a></td>

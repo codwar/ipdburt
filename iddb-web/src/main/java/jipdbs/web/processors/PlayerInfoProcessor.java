@@ -47,8 +47,6 @@ import jipdbs.web.MessageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.mail.handlers.message_rfc822;
-
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ProcessorException;
 import ar.sgt.resolver.processor.ResolverContext;

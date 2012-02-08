@@ -9,18 +9,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>false</downloadSources>
 		<skipTests>true</skipTests>
+		<core-version>0.9.17-SNAPSHOT</core-version>
 	</properties>
 		
 	<dependencies>
 		<dependency>
 			<groupId>iddb</groupId>
 			<artifactId>iddb-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${core-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>iddb</groupId>
 			<artifactId>iddb-db-runtime</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${core-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jopt-simple</groupId>

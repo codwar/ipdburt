@@ -18,8 +18,8 @@
  */
 package iddb.runtime.db.model.dao.impl.mysql;
 
-import iddb.core.Parameters;
 import iddb.core.model.Alias;
+import iddb.core.model.Player;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.util.Functions;
 import iddb.runtime.db.ConnectionFactory;
@@ -30,7 +30,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +37,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sgt.utils.sql.builder.QueryBuilder;
 
 public class AliasDAOImpl implements AliasDAO {
 
@@ -80,33 +81,54 @@ public class AliasDAOImpl implements AliasDAO {
 		return list;
 	}
 
-	public List<Alias> findBySimilar(String query, int offset, int limit,
+	public List<Player> findBySimilar(String query, Long server, int offset, int limit,
 			int[] count) {
-//		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid";
-//		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? WITH QUERY EXPANSION) GROUP BY playerid LIMIT ?,?";
-		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (?) GROUP BY playerid";
-		String sql = "SELECT * FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (?) GROUP BY playerid LIMIT ?,?";
+
+		String sqlCount;
+		String sql;
+		if (server != null) {
+			sqlCount = "SELECT COUNT(1) FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND a.nameindex LIKE ? GROUP BY a.playerid";
+			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE p.serverid = ? AND a.nameindex LIKE ? GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
+		} else {
+			sqlCount = "SELECT COUNT(1) FROM alias WHERE nameindex LIKE ? GROUP BY playerid";
+			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE nameindex LIKE ? GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
+		}
 		
-		List<Alias> list = new ArrayList<Alias>();
+		PlayerDAOImpl playerDAO = new PlayerDAOImpl(); 
+		List<Player> list = new ArrayList<Player>();
 		Connection conn = null;
 		try {
-			String nquery = query + " " + Functions.normalize(query);
+			String nquery = "%" + query + "%";
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setString(1, nquery);
+			if (server != null) {
+				stC.setLong(1, server);
+				stC.setString(2, nquery);	
+			} else {
+				stC.setString(1, nquery);
+			}
 			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, nquery);
-			st.setInt(2, offset);
-			st.setInt(3, limit);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Alias alias = new Alias();
-				loadAlias(alias, rs);
-				list.add(alias);
+			if (count[0] > 0) {
+				PreparedStatement st = conn.prepareStatement(sql);
+				if (server != null) {
+					st.setLong(1, server);
+					st.setString(2, nquery);
+					st.setInt(3, offset);
+					st.setInt(4, limit);
+				} else {
+					st.setString(1, nquery);
+					st.setInt(2, offset);
+					st.setInt(3, limit);
+				}				
+				ResultSet rs = st.executeQuery();
+				while (rs.next()) {
+					Player player = new Player();
+					playerDAO.loadPlayer(player, rs);
+					list.add(player);
+				}
 			}
 		} catch (SQLException e) {
 			logger.error("findBySimilar: {}", e);
@@ -170,7 +192,7 @@ public class AliasDAOImpl implements AliasDAO {
 	public void save(Alias alias) {
 		String sql;
 		if (alias.getKey() == null) {
-			sql = "insert into alias (updated, count, playerid, nickname, created, normalized, textindex) values (?,?,?,?,?,?,?)"; 
+			sql = "insert into alias (updated, count, playerid, nickname, created, nameindex) values (?,?,?,?,?,?)"; 
 		} else {
 			sql = "update alias set updated = ?," +
 					"count = ? where id = ? limit 1";
@@ -189,12 +211,12 @@ public class AliasDAOImpl implements AliasDAO {
 				st.setLong(3, alias.getPlayer());
 				st.setString(4, alias.getNickname());
 				st.setTimestamp(5, new java.sql.Timestamp(alias.getCreated().getTime()));
-				st.setString(6, Functions.normalize(alias.getNickname()));
-				if (alias.getNickname().length() > Parameters.INDEX_MIN_LENGTH) {
+				st.setString(6, Functions.createNameIndex(alias.getNickname()));
+/*				if (alias.getNickname().length() > Parameters.INDEX_MIN_LENGTH) {
 					st.setString(7, Functions.createNameIndex(alias.getNickname()));
 				} else {
 					st.setNull(7, Types.VARCHAR);
-				}
+				}*/
 			}
 			st.executeUpdate();
 			if (alias.getKey() == null) {
@@ -249,86 +271,77 @@ public class AliasDAOImpl implements AliasDAO {
 		}
 		return alias;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#booleanSearchByServer(java.lang.String, java.lang.Long, int, int, int[])
+	 * @see iddb.core.model.dao.AliasDAO#findBySimilar(java.lang.String[], java.lang.Long, int, int, int[])
 	 */
 	@Override
-	public List<Alias> booleanSearchByServer(String query, Long serverkey,
+	public List<Player> findBySimilar(String[] query, Long server,
 			int offset, int limit, int[] count) {
-		String sqlCount = "SELECT COUNT(a.id) FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid";
-		String sql = "SELECT a.*,MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) AS RELEVANCE FROM alias a INNER JOIN player p ON a.playerid = p.id WHERE p.serverid = ? AND MATCH (a.nickname,a.normalized,a.textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY a.playerid ORDER BY RELEVANCE LIMIT ?,?";
-		
-		List<Alias> list = new ArrayList<Alias>();
-		Connection conn = null;
-		try {
-			conn = ConnectionFactory.getSecondaryConnection();
-			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setLong(1, serverkey);
-			stC.setString(2, query);
-			ResultSet rsC = stC.executeQuery();
-			if (rsC.next()) {
-				count[0] = rsC.getInt(1);
-			}
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, query);
-			st.setLong(2, serverkey);
-			st.setString(3, query);
-			st.setInt(4, offset);
-			st.setInt(5, limit);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Alias alias = new Alias();
-				loadAlias(alias, rs);
-				list.add(alias);
-			}
-		} catch (SQLException e) {
-			logger.error("booleanSearchByServer: {}", e);
-		} catch (IOException e) {
-			logger.error("booleanSearchByServer: {}", e);
-		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (Exception e) {
-			}
+		String sqlCount;
+		String sql;
+		if (server != null) {
+			sqlCount = "SELECT COUNT(1) FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND (%s) GROUP BY a.playerid";
+			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE p.serverid = ? AND (%s) GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
+		} else {
+			sqlCount = "SELECT COUNT(1) FROM alias a WHERE %s GROUP BY a.playerid";
+			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE %s GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
 		}
-		return list;
-	}
-
-	/* (non-Javadoc)
-	 * @see iddb.core.model.dao.AliasDAO#booleanSearch(java.lang.String, int, int, int[])
-	 */
-	@Override
-	public List<Alias> booleanSearch(String query, int offset, int limit,
-			int[] count) {
-		String sqlCount = "SELECT COUNT(id) FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid";
-		String sql = "SELECT *, MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) AS RELEVANCE FROM alias WHERE MATCH (nickname,normalized,textindex) AGAINST (? IN BOOLEAN MODE) GROUP BY playerid ORDER BY RELEVANCE LIMIT ?,?";
 		
-		List<Alias> list = new ArrayList<Alias>();
+		PlayerDAOImpl playerDAO = new PlayerDAOImpl(); 
+		List<Player> list = new ArrayList<Player>();
 		Connection conn = null;
 		try {
+			QueryBuilder builder = new QueryBuilder();
+			QueryBuilder notQuery = new QueryBuilder();
+			
+			for (String q : query) {
+				if (q.startsWith("+")) {
+					builder.and("a.nameindex", "%" + q.substring(1) + "%", "LIKE");
+				} else if (q.startsWith("-")) {
+					//notQuery.or("a.nameindex", "%" + q.substring(1) + "%", "LIKE");
+					notQuery.and("a.nameindex", "%" + q.substring(1) + "%", "LIKE");
+				} else {
+					builder.or("a.nameindex", "%" + q + "%", "LIKE");
+				}
+			}
+			
+			String nquery = builder.toString();
+			if (notQuery.toString().length() > 0) {
+				nquery = nquery + String.format(" AND NOT EXISTS (select 1 from alias a2 where %s and a.playerid = a2.playerid)", notQuery.toString()); 	
+			}
+			//logger.debug(nquery);
+			
 			conn = ConnectionFactory.getSecondaryConnection();
-			PreparedStatement stC = conn.prepareStatement(sqlCount);
-			stC.setString(1, query);
+			PreparedStatement stC = conn.prepareStatement(String.format(sqlCount, nquery));
+			if (server != null) {
+				stC.setLong(1, server);
+			}
 			ResultSet rsC = stC.executeQuery();
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, query);
-			st.setString(2, query);
-			st.setInt(3, offset);
-			st.setInt(4, limit);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Alias alias = new Alias();
-				loadAlias(alias, rs);
-				list.add(alias);
+			if (count[0] > 0) {
+				PreparedStatement st = conn.prepareStatement(String.format(sql, nquery));
+				if (server != null) {
+					st.setLong(1, server);
+					st.setInt(2, offset);
+					st.setInt(3, limit);
+				} else {
+					st.setInt(1, offset);
+					st.setInt(2, limit);
+				}	
+				ResultSet rs = st.executeQuery();
+				while (rs.next()) {
+					Player player = new Player();
+					playerDAO.loadPlayer(player, rs);
+					list.add(player);
+				}
 			}
 		} catch (SQLException e) {
-			logger.error("booleanSearch: {}", e);
+			logger.error("findBySimilar: {}", e);
 		} catch (IOException e) {
-			logger.error("booleanSearch: {}", e);
+			logger.error("findBySimilar: {}", e);
 		} finally {
 			try {
 				if (conn != null) conn.close();

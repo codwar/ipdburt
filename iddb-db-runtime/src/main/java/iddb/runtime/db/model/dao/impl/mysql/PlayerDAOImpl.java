@@ -218,7 +218,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 	 * @param rs
 	 * @throws SQLException 
 	 */
-	private void loadPlayer(Player player, ResultSet rs) throws SQLException {
+	protected void loadPlayer(Player player, ResultSet rs) throws SQLException {
 		player.setKey(rs.getLong("id"));
 		player.setServer(rs.getLong("serverid"));
 		player.setHash(rs.getString("guid"));

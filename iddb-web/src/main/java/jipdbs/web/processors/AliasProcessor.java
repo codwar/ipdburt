@@ -20,6 +20,8 @@ package jipdbs.web.processors;
 
 import iddb.core.IDDBService;
 import iddb.info.AliasResult;
+import iddb.web.security.service.UserPermission;
+import iddb.web.security.service.UserServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,8 @@ public class AliasProcessor extends ResponseProcessor {
 
 		List<AliasResult> list = new ArrayList<AliasResult>();
 
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(UserPermission.LEVEL_MOD);
+		
 		int[] count = new int[1];
 		if (context.hasParameter("ip")) {
 			log.debug("Alias IP");
@@ -74,7 +78,8 @@ public class AliasProcessor extends ResponseProcessor {
 		req.setAttribute("total", count[0]);
 		req.setAttribute("pages", (int) Math.ceil((double) count[0] / pageSize));
 		req.setAttribute("offset", page);
-	
+		req.setAttribute("hasAdmin", hasAdmin);
+		
 		return null;
 	}
 

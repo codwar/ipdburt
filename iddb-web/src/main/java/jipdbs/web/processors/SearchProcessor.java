@@ -50,10 +50,6 @@ import ar.sgt.resolver.processor.ResponseProcessor;
 
 public class SearchProcessor extends ResponseProcessor {
 
-	/**
-	 * 
-	 */
-	private static final int MIN_LENGTH_QUERY = 4;
 	private static final Logger log = LoggerFactory.getLogger(SearchProcessor.class);
 
 	@Override
@@ -104,6 +100,8 @@ public class SearchProcessor extends ResponseProcessor {
 
 		List<SearchResult> list = new ArrayList<SearchResult>();
 
+		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(UserPermission.LEVEL_MOD);
+		
 		if ("server".equals(type)) {
 			log.debug("Server filter");
 			queryValue = "";
@@ -118,16 +116,13 @@ public class SearchProcessor extends ResponseProcessor {
 		} else if (StringUtils.isEmpty(query)) {
 			log.debug("Root");
 			list = app.rootQuery(offset, limit, total);
-		} else if ("adv".equals(type)) {
-			String server = req.getParameter("server");
-			log.debug("Advanced search - query: {} - server: {}", query, server);
-			list = app.aliasAdvSearch(query, server, offset, limit, total);
-			if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
-				Flash.warn(req,MessageResource.getMessage("too_many_results"));
-			}
 		} else if (Validator.isValidSearchIp(query)) {
 			log.debug("Search IP {}", query);
-			query = Functions.fixIp(query);
+			if (hasAdmin) {
+				query = Functions.fixIp(query, false);
+			} else {
+				query = Functions.fixIp(query, true);
+			}
 			queryValue = query;
 			list = app.ipSearch(query, offset, limit, total);
 		} else if (Validator.isValidClientId(query)) {
@@ -140,17 +135,19 @@ public class SearchProcessor extends ResponseProcessor {
 			}
 		} else {
 			log.debug("Search Alias " + query);
-			if (query.length() >= MIN_LENGTH_QUERY && Validator.isValidPlayerName(query)) {
-				list = app.aliasSearch(query, offset, limit, total, "exact".equals(match));
+			if (query.length() >= Parameters.INDEX_MIN_LENGTH) {
+				if (UserServiceFactory.getUserService().getCurrentUser().isAuthenticated()) {
+					String server = req.getParameter("server");
+					if (query.contains(" ")) {
+						list = app.aliasSearch(query.split(" "), server, offset, limit, total);
+					} else {
+						list = app.aliasSearch(query, server, offset, limit, total, "exact".equals(match));	
+					}
+				} else {
+					list = app.aliasSearch(query, null, offset, limit, total, "exact".equals(match));	
+				}
 			} else {
-				log.debug("Using advanced mode");
-				if (query.length() < MIN_LENGTH_QUERY) {
-					query = query + "*";
-				}
-				if (!query.startsWith("+") && !query.startsWith("-")) {
-					query = "+" + query;
-				}
-				list = app.aliasAdvSearch(query, null, offset, limit, total);
+				Flash.error(req,MessageResource.getMessage("query_too_short"));
 			}
 			if (total[0] > Parameters.MAX_SEARCH_LIMIT) {
 				Flash.warn(req,MessageResource.getMessage("too_many_results"));
@@ -163,7 +160,6 @@ public class SearchProcessor extends ResponseProcessor {
 
 		int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
-		Boolean hasAdmin = UserServiceFactory.getUserService().hasAnyServer(UserPermission.LEVEL_MOD); 
 		if (hasAdmin) {
 			for (SearchResult result : list) {
 				if (result.isBanned()) {
@@ -191,6 +187,7 @@ public class SearchProcessor extends ResponseProcessor {
 		req.setAttribute("time", time);
 		req.setAttribute("queryValue", queryValue);
 		req.setAttribute("query", query);
+		req.setAttribute("hasAdmin", hasAdmin);
 		req.setAttribute("pageLink", new PageLink(page, pageSize, totalPages));
 
 		if ("code".equals(mode)) return "/data/search_bbcode.jsp";

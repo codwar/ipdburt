@@ -252,27 +252,39 @@ public class IDDBService {
 		}
 	}
 
-	public List<SearchResult> aliasSearch(String query, int offset, int limit,
-			int[] count, boolean exactMatch) {
+	public List<SearchResult> aliasSearch(String query, String server, int offset, int limit, int[] count, boolean exactMatch) {
 
 		try {
-			List<Alias> aliasses = new ArrayList<Alias>();
-
+			Long serverkey = null;
+			if (server != null) serverkey = Long.parseLong(server);
+				
 			if (exactMatch) {
-				aliasses = aliasDAO.findByNickname(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
-			} else if (query.length() >= Parameters.MIN_NGRAM_QUERY && query.length() <= Parameters.MAX_NGRAM_QUERY) {
-				query = query.length() <= Parameters.MAX_NGRAM_QUERY ? query : query.substring(0, Parameters.MAX_NGRAM_QUERY);
-				aliasses = aliasDAO.findBySimilar(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
+				return marshallAliasses(aliasDAO.findByNickname(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
+			} else if (query.length() <= Parameters.MAX_QUERY_LENGTH) {
+				return marshallPlayers(aliasDAO.findBySimilar(query, serverkey, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
 			}
-
-			return marshall(aliasses);
 		} catch (Exception e) {
 			log.error("Unable to fetch players: [{}]", e.getMessage());
 			count[0] = 0;
-			return Collections.emptyList();
 		}
+		return Collections.emptyList();
 	}
 
+	public List<SearchResult> aliasSearch(String[] query, String server, int offset, int limit, int[] count) {
+
+		try {
+			Long serverkey = null;
+			if (server != null) serverkey = Long.parseLong(server);
+			
+			return marshallPlayers(aliasDAO.findBySimilar(query, serverkey, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
+
+		} catch (Exception e) {
+			log.error("Unable to fetch players: [{}]", e.getMessage());
+			count[0] = 0;
+		}
+		return Collections.emptyList();
+	}
+	
 	public List<SearchResult> ipSearch(String query, int offset, int limit,
 			int[] count) {
 
@@ -321,7 +333,29 @@ public class IDDBService {
 		}
 	}
 
-	private List<SearchResult> marshall(List<Alias> aliasses)
+	/**
+	 * @param findBySimilar
+	 * @return
+	 * @throws EntityDoesNotExistsException 
+	 * @throws ApplicationError 
+	 */
+	private List<SearchResult> marshallPlayers(List<Player> players) throws EntityDoesNotExistsException, ApplicationError {
+		List<SearchResult> results = new ArrayList<SearchResult>();
+		
+		for (Player player : players) {
+			Server server = null;
+			try {
+				server = serverDAO.get(player.getServer());
+			} catch (DAOException e) {
+				throw new ApplicationError(e);
+			}
+
+			results.add(marshall(player, server));
+		}
+		return results;
+	}
+	
+	private List<SearchResult> marshallAliasses(List<Alias> aliasses)
 			throws EntityDoesNotExistsException, ApplicationError {
 
 		List<SearchResult> results = new ArrayList<SearchResult>();
@@ -514,44 +548,17 @@ public class IDDBService {
 		}
 		return p;
 	}
-
-	/**
-	 * 
-	 * @param query
-	 * @param server
-	 * @param offset
-	 * @param limit
-	 * @param count
-	 * @return
-	 */
-	public List<SearchResult> aliasAdvSearch(String query, String server, int offset, int limit, int[] count) {
-		try {
-			List<Alias> aliasses = new ArrayList<Alias>();
-			Long serverkey = null;
-			if (server != null) {
-				serverkey = Long.parseLong(server);
-				aliasses = aliasDAO.booleanSearchByServer(query, serverkey, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
-			} else {
-				aliasses = aliasDAO.booleanSearch(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count);
-			}
-			return marshall(aliasses);
-		} catch (Exception e) {
-			log.error("Unable to fetch players: [{}]", e.getMessage());
-			count[0] = 0;
-			return Collections.emptyList();
-		}
-	}
 	
 	public List<Penalty> listPendingEvents(Long serverId) {
 		return penaltyDAO.findPendingPenalties(serverId);
 	}
 
 	public void confirmRemoteEvent(List<Entry<Long, String>> list) {
-		TaskManager.getInstance().runTask(new ConfirmRemoteEventTask(list));
+		TaskManager.getInstance().execute(new ConfirmRemoteEventTask(list));
 	}
 	
 	public void updatePenaltyHistory(List<PenaltyHistory> list) {
-		TaskManager.getInstance().runTask(new UpdatePenaltyStatusTask(list, PenaltyHistory.ST_WAITING));
+		TaskManager.getInstance().execute(new UpdatePenaltyStatusTask(list, PenaltyHistory.ST_WAITING));
 	}
 	
 	public PenaltyHistory getLastPenaltyHistory(Penalty penalty) {

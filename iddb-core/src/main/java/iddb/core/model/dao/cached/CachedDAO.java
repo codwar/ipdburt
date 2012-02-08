@@ -35,7 +35,7 @@ public abstract class CachedDAO {
 	
 	private Cache cacheImpl;
 	
-	protected Integer SEARCH_EXPIRE = 60;
+	protected Integer SEARCH_EXPIRE = 120;
 	
 	public CachedDAO(String namespace) {
 		initProperties();

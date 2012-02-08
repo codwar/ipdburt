@@ -132,7 +132,7 @@ public class Update {
 	 */
 	public void updatePlayer(Server server, List<PlayerInfo> list) throws Exception {
 		log.info("Processing server: {}", server.getName());
-		TaskManager.getInstance().runTask(new UpdateTask(server, list));
+		TaskManager.getInstance().execute(new UpdateTask(server, list));
 	}
 
 	/**

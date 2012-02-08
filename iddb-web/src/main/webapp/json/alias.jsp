@@ -20,7 +20,14 @@
                     <json:property name="nickname_url" value="${url}"/>
                 </c:when>
                 <c:otherwise>
-                    <url:url name="search" var="url"><url:param name="query" value="${item.ipSearch}"/></url:url>
+					<c:choose>
+	                    <c:when test="${hasAdmin}">
+	                        <url:url name="search" var="url"><url:param name="query" value="${item.ip}"/></url:url>
+	                    </c:when>
+	                    <c:otherwise>
+	                        <url:url name="search" var="url"><url:param name="query" value="${item.ipSearch}"/></url:url>
+	                    </c:otherwise>
+	                </c:choose>
                     <util:maskip value="${item.ip}" var="ip"/>
                     <json:property name="ip" value="${ip}" />
                     <json:property name="ip_url" value="${url}" />

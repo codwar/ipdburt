@@ -53,7 +53,7 @@ public class TaskManager {
 		return instance;
 	}
 	
-	public void runTask(Runnable task) {
+	public void execute(Runnable task) {
 		log.debug("Active Tasks: {}", executor.getActiveCount());
 		executor.execute(task);
 	}
@@ -66,6 +66,7 @@ public class TaskManager {
 	
 	public void shutdown() {
 		executor.shutdown();
+		executor.shutdownNow();
 	}
 	
 	@Override

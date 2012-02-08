@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class PenaltyService {
 
-	private static final Logger log = LoggerFactory.getLogger(PenaltyService.class);
+	private static final Logger logger = LoggerFactory.getLogger(PenaltyService.class);
 
 	protected final PenaltyHistoryDAO penaltyHistoryDAO = (PenaltyHistoryDAO) DAOFactory.forClass(PenaltyHistoryDAO.class);
 	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
