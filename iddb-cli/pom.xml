@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>iddb-cli</groupId>
 	<artifactId>iddb-cli</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,6 +60,7 @@
 					<extraJvmArguments>-Xms256m -Xmx256m</extraJvmArguments>
 					<repositoryLayout>flat</repositoryLayout>
 					<repositoryName>lib</repositoryName>
+					<copyConfigurationDirectory>true</copyConfigurationDirectory>
 					<platforms>
 						<platform>windows</platform>
 						<platform>unix</platform>
@@ -86,11 +87,33 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
+	
+	<profiles>
+	  <profile>
+	    <id>prod</id>
+	    <activation>
+	      <activeByDefault>false</activeByDefault>
+	    </activation>
+	    <build>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>appassembler-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<configuration>
+						<configurationSourceDirectory>profile/prod/resources</configurationSourceDirectory>
+					</configuration>
+				</plugin>
+			</plugins>			
+	    </build>
+	    
+	  </profile>
+	</profiles>
+		
 </project>
