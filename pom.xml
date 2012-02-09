@@ -4,7 +4,7 @@
 	<groupId>iddb</groupId>
 	<artifactId>iddb</artifactId>
 	<packaging>pom</packaging>
-	<version>0.10.1-SNAPSHOT</version>
+	<version>0.10.1</version>
 	<name>iddb</name>
 	<modules>
 		<module>iddb-core</module>
