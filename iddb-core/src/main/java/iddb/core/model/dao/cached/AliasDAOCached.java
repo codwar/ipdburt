@@ -38,9 +38,9 @@ public class AliasDAOCached extends CachedDAO implements AliasDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Alias> findByNickname(String query, int offset, int limit, int[] count) {
+	public List<Player> findByNickname(String query, int offset, int limit, int[] count) {
 		String key = "nick" + query + "O" + Integer.toString(offset) + "L" + Integer.toString(limit);
-		List<Alias> aliasses = (List<Alias>) getCachedList(key, count);
+		List<Player> aliasses = (List<Player>) getCachedList(key, count);
 		if (aliasses != null) return aliasses;
 		aliasses = impl.findByNickname(query, offset, limit, count);
 		putCachedList(key, aliasses, count);

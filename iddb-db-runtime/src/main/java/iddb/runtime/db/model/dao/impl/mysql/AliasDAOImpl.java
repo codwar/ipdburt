@@ -44,12 +44,13 @@ public class AliasDAOImpl implements AliasDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(AliasDAOImpl.class);
 	
-	public List<Alias> findByNickname(String query, int offset, int limit,
+	public List<Player> findByNickname(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "select count(1) from (select 1 from alias where nickname = ? group by playerid) c";
-		String sql = "select * from alias where nickname = ? group by playerid order by updated desc limit ?,?";
-		List<Alias> list = new ArrayList<Alias>();
+		String sqlCount = "select count(1) from (select 1 from alias where nickname like ? group by playerid) c";
+		String sql = "select p.* from player p INNER JOIN alias a on p.id = a.playerid where a.nickname like ? group by p.id order by p.updated desc limit ?,?";
+		List<Player> list = new ArrayList<Player>();
 		Connection conn = null;
+		PlayerDAOImpl playerDAO = new PlayerDAOImpl();
 		try {
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement stC = conn.prepareStatement(sqlCount);
@@ -58,15 +59,17 @@ public class AliasDAOImpl implements AliasDAO {
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setString(1, query);
-			st.setInt(2, offset);
-			st.setInt(3, limit);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Alias alias = new Alias();
-				loadAlias(alias, rs);
-				list.add(alias);
+			if (count[0] > 0) {
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setString(1, query);
+				st.setInt(2, offset);
+				st.setInt(3, limit);
+				ResultSet rs = st.executeQuery();
+				while (rs.next()) {
+					Player player = new Player();
+					playerDAO.loadPlayer(player, rs);
+					list.add(player);
+				}
 			}
 		} catch (SQLException e) {
 			logger.error("findByNickname: {}", e);

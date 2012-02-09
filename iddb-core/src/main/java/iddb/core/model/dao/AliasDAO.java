@@ -38,7 +38,7 @@ public interface AliasDAO {
 	 * @param count
 	 * @return
 	 */
-	public abstract List<Alias> findByNickname(String query, int offset,
+	public abstract List<Player> findByNickname(String query, int offset,
 			int limit, int[] count);
 
 	/**

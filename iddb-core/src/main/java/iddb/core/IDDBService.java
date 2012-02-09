@@ -259,7 +259,7 @@ public class IDDBService {
 			if (server != null) serverkey = Long.parseLong(server);
 				
 			if (exactMatch) {
-				return marshallAliasses(aliasDAO.findByNickname(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
+				return marshallPlayers(aliasDAO.findByNickname(query, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
 			} else if (query.length() <= Parameters.MAX_QUERY_LENGTH) {
 				return marshallPlayers(aliasDAO.findBySimilar(query, serverkey, offset, limit < Parameters.MAX_SEARCH_LIMIT ? limit : Parameters.MAX_SEARCH_LIMIT, count));
 			}
@@ -339,15 +339,19 @@ public class IDDBService {
 	 * @throws EntityDoesNotExistsException 
 	 * @throws ApplicationError 
 	 */
-	private List<SearchResult> marshallPlayers(List<Player> players) throws EntityDoesNotExistsException, ApplicationError {
+	private List<SearchResult> marshallPlayers(List<Player> players) {
 		List<SearchResult> results = new ArrayList<SearchResult>();
 		
 		for (Player player : players) {
 			Server server = null;
 			try {
 				server = serverDAO.get(player.getServer());
+			} catch (EntityDoesNotExistsException e) {
+				log.error(e.getMessage());
+				continue;
 			} catch (DAOException e) {
-				throw new ApplicationError(e);
+				log.error(e.getMessage());
+				continue;
 			}
 
 			results.add(marshall(player, server));
@@ -355,24 +359,21 @@ public class IDDBService {
 		return results;
 	}
 	
-	private List<SearchResult> marshallAliasses(List<Alias> aliasses)
-			throws EntityDoesNotExistsException, ApplicationError {
-
+	private List<SearchResult> marshallAliasses(List<Alias> aliasses) {
 		List<SearchResult> results = new ArrayList<SearchResult>();
-		
 		for (Alias alias : aliasses) {
-			Player player = playerDAO.get(alias.getPlayer());
-			Server server = null;
+			Player player;
+			Server server;
 			try {
+				player = playerDAO.get(alias.getPlayer());
 				server = serverDAO.get(player.getServer());
+			} catch (EntityDoesNotExistsException e) {
+				log.error(e.getMessage());
+				continue;
 			} catch (DAOException e) {
-				throw new ApplicationError(e);
+				log.error(e.getMessage());
+				continue;
 			}
-
-			// Whoops! inconsistent data.
-			if (alias == null || server == null)
-				return null;
-
 			results.add(marshall(player, server));
 		}
 		return results;
