@@ -182,7 +182,7 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	@Override
 	public List<AliasIP> findByIP(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "select count(id) from aliasip where ip between ? and ? group by playerid";
+		String sqlCount = "select count(1) from (select 1 from aliasip where ip between ? and ? group by playerid) c";
 		String sql = "select * from aliasip where ip between ? and ? group by playerid order by updated desc limit ?,?";
 		Connection conn = null;
 		List<AliasIP> list = new ArrayList<AliasIP>();

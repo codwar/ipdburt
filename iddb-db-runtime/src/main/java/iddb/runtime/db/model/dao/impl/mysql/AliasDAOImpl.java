@@ -46,7 +46,7 @@ public class AliasDAOImpl implements AliasDAO {
 	
 	public List<Alias> findByNickname(String query, int offset, int limit,
 			int[] count) {
-		String sqlCount = "select count(id) from alias where nickname = ? group by playerid";
+		String sqlCount = "select count(1) from (select 1 from alias where nickname = ? group by playerid) c";
 		String sql = "select * from alias where nickname = ? group by playerid order by updated desc limit ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
@@ -87,10 +87,10 @@ public class AliasDAOImpl implements AliasDAO {
 		String sqlCount;
 		String sql;
 		if (server != null) {
-			sqlCount = "SELECT COUNT(1) FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND a.nameindex LIKE ? GROUP BY a.playerid";
+			sqlCount = "SELECT COUNT(1) FROM (SELECT 1 FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND a.nameindex LIKE ? GROUP BY a.playerid) c";
 			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE p.serverid = ? AND a.nameindex LIKE ? GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
 		} else {
-			sqlCount = "SELECT COUNT(1) FROM alias WHERE nameindex LIKE ? GROUP BY playerid";
+			sqlCount = "SELECT COUNT(1) FROM (SELECT 1 FROM alias WHERE nameindex LIKE ? GROUP BY playerid) c";
 			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE nameindex LIKE ? GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
 		}
 		
@@ -145,7 +145,7 @@ public class AliasDAOImpl implements AliasDAO {
 
 	public List<Alias> findByPlayer(Long player, int offset, int limit,
 			int[] count) {
-		String sqlCount = "select count(id) from alias where playerid = ?";
+		String sqlCount = "select count(1) from alias where playerid = ?";
 		String sql = "select * from alias where playerid = ? order by updated desc limit ?,?";
 		List<Alias> list = new ArrayList<Alias>();
 		Connection conn = null;
@@ -281,10 +281,10 @@ public class AliasDAOImpl implements AliasDAO {
 		String sqlCount;
 		String sql;
 		if (server != null) {
-			sqlCount = "SELECT COUNT(1) FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND (%s) GROUP BY a.playerid";
+			sqlCount = "SELECT COUNT(1) FROM (SELECT 1 FROM alias a INNER JOIN player p on p.id = a.playerid WHERE p.serverid = ? AND (%s) GROUP BY a.playerid) c";
 			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE p.serverid = ? AND (%s) GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
 		} else {
-			sqlCount = "SELECT COUNT(1) FROM alias a WHERE %s GROUP BY a.playerid";
+			sqlCount = "SELECT COUNT(1) FROM (SELECT 1 FROM alias a WHERE %s GROUP BY a.playerid) c";
 			sql = "SELECT p.* FROM player p INNER JOIN alias a on p.id = a.playerid WHERE %s GROUP BY p.id ORDER BY count(p.id) desc LIMIT ?,?";
 		}
 		
