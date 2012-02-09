@@ -95,14 +95,14 @@ public class AliasIPDAOImpl implements AliasIPDAO {
 	 */
 	@Override
 	public AliasIP findByPlayerAndIp(Long player, String ip) {
-		String sql = "select * from aliasip where playerid = ? and ip = ?";
+		String sql = "select * from aliasip where ip = ? and playerid = ?";
 		Connection conn = null;
 		AliasIP alias = null;
 		try {
 			conn = ConnectionFactory.getSecondaryConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setLong(1, player);
-			st.setLong(2, Functions.ipToDecimal(ip));
+			st.setLong(1, Functions.ipToDecimal(ip));
+			st.setLong(2, player);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				alias = new AliasIP();
