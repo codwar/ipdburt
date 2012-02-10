@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import jipdbs.web.Flash;
 import jipdbs.web.MessageResource;
+import jipdbs.web.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -148,7 +149,7 @@ public class PasswordRecoverProcessor extends ResponseProcessor {
 						logger.error(e.getMessage());
 						throw new ProcessorException(e);
 					}
-					d.put("link", link);
+					d.put("link", UrlUtils.getRealPath(req, link));
 					try {
 						MailManager.getInstance().sendMail(MessageResource.getMessage("mail_password_recover_subject"),
 															MessageResource.getMessage("mail_password_recover_template"),

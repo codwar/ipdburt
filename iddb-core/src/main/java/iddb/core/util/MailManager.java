@@ -91,6 +91,7 @@ public class MailManager {
 			for (String adr : dest) {
 				email.addTo(adr);
 			}
+			email.setCharset("ISO-8859-1");
 			setEmailProps(email);
 			email.send();
 		} catch (Exception e) {

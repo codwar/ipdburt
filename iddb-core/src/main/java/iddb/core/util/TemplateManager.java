@@ -20,6 +20,7 @@ package iddb.core.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Locale;
 import java.util.Map;
 
 import freemarker.cache.ClassTemplateLoader;
@@ -35,6 +36,7 @@ public class TemplateManager {
 		Configuration cfg = new Configuration();
 		TemplateLoader loader = new ClassTemplateLoader(TemplateManager.class, "/templates");
 		cfg.setTemplateLoader(loader);
+		cfg.setEncoding(Locale.getDefault(), "ISO-8859-1");
 		cfg.setObjectWrapper(new DefaultObjectWrapper());
 		StringWriter out = new StringWriter();
 		Template template;
