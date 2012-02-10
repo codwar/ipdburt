@@ -87,6 +87,9 @@ public class IDDBService {
 		if (StringUtils.isEmpty(recaptchaPrivateKey) || StringUtils.isEmpty(recaptchaPublicKey)) {
 			log.warn("reCaptcha has not been initialized correclty.");
 		}
+		if (recaptchaPrivateKey.equals(recaptchaPublicKey) && "dev".equals(recaptchaPrivateKey)) {
+			return "<span>CAPTCHA</span>";
+		}
 		ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey,
 				recaptchaPrivateKey, false);
 		Properties cProp = new Properties();
@@ -97,12 +100,23 @@ public class IDDBService {
 
 	public boolean isRecaptchaValid(String remoteAddr, String challenge,
 			String uresponse) {
+		
+		if (recaptchaPrivateKey.equals(recaptchaPublicKey) && "dev".equals(recaptchaPrivateKey)) {
+			return true;
+		}
+		
 		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
 
 		reCaptcha.setPrivateKey(recaptchaPrivateKey);
 
-		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-				challenge, uresponse);
+		ReCaptchaResponse reCaptchaResponse;
+		try {
+			reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+					challenge, uresponse);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return false;
+		}
 
 		return reCaptchaResponse.isValid();
 	}

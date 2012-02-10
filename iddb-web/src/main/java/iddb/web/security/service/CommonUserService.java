@@ -225,6 +225,14 @@ public abstract class CommonUserService implements UserService {
 		context = null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#generatePassKey(java.lang.String)
+	 */
+	@Override
+	public String generatePassKey(String data) {
+		return HashUtils.generate(data + Long.toString(System.currentTimeMillis()));
+	}
+	
 	protected abstract Session findSession(String key, Long userId, String ip);
 	
 	protected abstract void createSession(String key, Long userId, String ip);

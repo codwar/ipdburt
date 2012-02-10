@@ -38,6 +38,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,4 +234,86 @@ public class UserDAOImpl implements UserDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#findPassKey(java.lang.String)
+	 */
+	@Override
+	public String findPassKey(String passkey, Integer hoursLimit) {
+		String sql = "select * from user_pass_rec where created between ? and ? and passkey = ? limit 1";
+		Connection conn = null;
+		String value = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			Date limit = DateUtils.addHours(new Date(), Math.abs(hoursLimit) * -1);
+			st.setTimestamp(1, new Timestamp(limit.getTime()));
+			st.setTimestamp(2, new Timestamp(new Date().getTime()));
+			st.setString(3, passkey);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				value = rs.getString("loginid");
+			}
+		} catch (SQLException e) {
+			logger.error("findPassKey: {}", e);
+		} catch (IOException e) {
+			logger.error("findPassKey: {}", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return value;
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#savePassKey(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void savePassKey(String email, String passKey) {
+		String sql;
+		sql = "insert into user_pass_rec (loginid, created, passkey) values (?,?,?)"; 
+		Connection conn = null;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, email);
+			st.setTimestamp(2, new Timestamp(new Date().getTime()));
+			st.setString(3, passKey);
+			st.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("savePassKey: {}", e);
+		} catch (IOException e) {
+			logger.error("savePassKey: {}", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	@Override
+	public Integer cleanUp(Integer hoursLimit) {
+		String sql = "delete from user_pass_rec where created < ?";
+		Connection conn = null;
+		Integer res = 0;
+		try {
+			conn = ConnectionFactory.getMasterConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			Date limit = DateUtils.addHours(new Date(), Math.abs(hoursLimit) * -1);
+			st.setTimestamp(1, new Timestamp(limit.getTime()));
+			res = st.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("cleanUp: {}", e);
+		} catch (IOException e) {
+			logger.error("cleanUp: {}", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return res;
+	}
 }

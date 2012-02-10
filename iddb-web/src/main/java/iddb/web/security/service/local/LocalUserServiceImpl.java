@@ -167,4 +167,12 @@ public class LocalUserServiceImpl extends CommonUserService {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.web.security.service.UserService#generatePassKey(java.lang.String)
+	 */
+	@Override
+	public String generatePassKey(String data) {
+		return null;
+	}
+
 }

@@ -10,7 +10,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `alias`
 --
 
-DROP TABLE IF EXISTS `alias`;
 CREATE TABLE IF NOT EXISTS `alias` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `playerid` int(11) unsigned NOT NULL,
@@ -31,7 +30,6 @@ CREATE TABLE IF NOT EXISTS `alias` (
 -- Table structure for table `aliasip`
 --
 
-DROP TABLE IF EXISTS `aliasip`;
 CREATE TABLE IF NOT EXISTS `aliasip` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `playerid` int(11) unsigned NOT NULL,
@@ -50,7 +48,6 @@ CREATE TABLE IF NOT EXISTS `aliasip` (
 -- Table structure for table `penalty`
 --
 
-DROP TABLE IF EXISTS `penalty`;
 CREATE TABLE IF NOT EXISTS `penalty` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `playerid` int(11) unsigned NOT NULL,
@@ -78,7 +75,6 @@ CREATE TABLE IF NOT EXISTS `penalty` (
 -- Table structure for table `penalty_history`
 --
 
-DROP TABLE IF EXISTS `penalty_history`;
 CREATE TABLE IF NOT EXISTS `penalty_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `penaltyid` int(11) unsigned NOT NULL,
@@ -100,7 +96,6 @@ CREATE TABLE IF NOT EXISTS `penalty_history` (
 -- Table structure for table `player`
 --
 
-DROP TABLE IF EXISTS `player`;
 CREATE TABLE IF NOT EXISTS `player` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -132,7 +127,6 @@ CREATE TABLE IF NOT EXISTS `player` (
 -- Table structure for table `server`
 --
 
-DROP TABLE IF EXISTS `server`;
 CREATE TABLE IF NOT EXISTS `server` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -166,7 +160,6 @@ CREATE TABLE IF NOT EXISTS `server` (
 -- Table structure for table `server_ban_perm`
 --
 
-DROP TABLE IF EXISTS `server_ban_perm`;
 CREATE TABLE IF NOT EXISTS `server_ban_perm` (
   `serverid` int(11) unsigned NOT NULL,
   `level` tinyint(4) unsigned NOT NULL,
@@ -180,7 +173,6 @@ CREATE TABLE IF NOT EXISTS `server_ban_perm` (
 -- Table structure for table `server_permission`
 --
 
-DROP TABLE IF EXISTS `server_permission`;
 CREATE TABLE IF NOT EXISTS `server_permission` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` int(11) unsigned NOT NULL,
@@ -196,7 +188,6 @@ CREATE TABLE IF NOT EXISTS `server_permission` (
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `loginid` varchar(75) COLLATE utf8_unicode_ci NOT NULL,
@@ -214,7 +205,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Table structure for table `userserver`
 --
 
-DROP TABLE IF EXISTS `userserver`;
 CREATE TABLE IF NOT EXISTS `userserver` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(11) unsigned NOT NULL,
@@ -233,7 +223,6 @@ CREATE TABLE IF NOT EXISTS `userserver` (
 -- Table structure for table `user_session`
 --
 
-DROP TABLE IF EXISTS `user_session`;
 CREATE TABLE IF NOT EXISTS `user_session` (
   `id` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `userid` int(11) unsigned NOT NULL,
@@ -242,4 +231,12 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   PRIMARY KEY (`id`),
   KEY `created` (`created`),
   KEY `key` (`id`,`userid`,`ip`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `user_pass_rec` (
+  `loginid` varchar(75) COLLATE utf8_unicode_ci NOT NULL,
+  `passkey` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `date_passkey` (`created`,`passkey`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

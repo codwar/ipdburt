@@ -12,7 +12,7 @@
      		version = "-";
      	}
      %>
-     <div class="left">&copy; 2011 Shonaka & SGT. Based on the idea of lakebodom. v<% out.print(version); %>. Times are displayed in UTC-3.</div>
+     <div class="left">&copy; 2011-2012 Shonaka & SGT. v<% out.print(version); %>. Times are UTC-3.</div>
      <div class="clearer"><span></span></div>
  </div>
 </div>

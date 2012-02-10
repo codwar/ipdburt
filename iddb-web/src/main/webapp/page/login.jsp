@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -32,14 +33,11 @@ $(document).ready(function() {
 			<input id="signin_submit" value="Aceptar" tabindex="6" type="submit">
 			<input id="remember" name="remember" value="1" tabindex="7" type="checkbox"> <label for="remember">Recordarme</label>
 		</p>
-		<!-- 
 		<p class="forgot">
-			<a href="#" id="resend_password_link">Forgot your password?</a>
+			<a href="<url:url name="passwordrecovery"/>" id="resend_password_link">Olvid&eacute; mi contrase&ntilde;a</a>
 		</p>
 		<p class="forgot-username">
-			<A id=forgot_username_link
-				title="If you remember your password, try logging in with your email"
-				href="#">Forgot your username?</A>
-		</p>-->
+			<span>¿Olvidaste tu usuario? Si recuerdas tu contrase&ntilde;a, prueba usando tu direcci&oacute;n de correo</span>
+		</p>
 	</form>
 </fieldset>

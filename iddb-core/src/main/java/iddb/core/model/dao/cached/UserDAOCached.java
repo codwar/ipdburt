@@ -87,4 +87,28 @@ public class UserDAOCached extends CachedDAO implements UserDAO {
 		cachePut("key+" + user.getKey().toString(), user, 10);
 	}
 
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#findPassKey(java.lang.String)
+	 */
+	@Override
+	public String findPassKey(String passkey, Integer hoursLimit) {
+		return this.impl.findPassKey(passkey, hoursLimit);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#savePassKey(java.lang.String, java.lang.String, java.lang.Integer)
+	 */
+	@Override
+	public void savePassKey(String email, String passKey) {
+		this.impl.savePassKey(email, passKey);
+	}
+
+	/* (non-Javadoc)
+	 * @see iddb.core.model.dao.UserDAO#cleanUp(java.lang.Integer)
+	 */
+	@Override
+	public Integer cleanUp(Integer hoursLimit) {
+		return this.impl.cleanUp(hoursLimit);
+	}
+
 }

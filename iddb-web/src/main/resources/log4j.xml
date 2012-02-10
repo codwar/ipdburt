@@ -25,7 +25,7 @@
     </logger>
 
     <logger name="iddb.web.security" additivity="false">
-        <level value="trace" />
+        <level value="warn" />
         <appender-ref ref="console" />
     </logger>    
     

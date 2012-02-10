@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urlresolver.xsd">
   <processor class="jipdbs.web.processors.PlayerInfoProcessor" redirect="/page/playerinfo.jsp">
-    <rule name="playerinfo" pattern="^/detail/($key[\w-_]+)/$"/>
+    <rule name="playerinfo" pattern="^/p/($key[\w-_]+)/$"/>
+    <rule pattern="^/detail/($key[\w-_]+)/$"/>
   </processor>
   <processor class="jipdbs.web.processors.SearchProcessor" redirect="/page/search.jsp">
     <rule name="home" pattern="^/$"/>
-    <rule name="search" pattern="^/search/($query.+)/$"/>
+    <rule name="search" pattern="^/s/($query.+)/$"/>
+    <rule pattern="^/search/($query.+)/$"/>
     <rule name="banlist" pattern="^/banlist/$">
         <arg name="type" value="ban"/>
     </rule>
@@ -15,6 +17,10 @@
     <rule name="advsearch-do" pattern="^/adv/search/($query.+)/$">
     	<arg name="type" value="adv"/>
     </rule>
+  </processor>
+  <processor class="jipdbs.web.processors.PasswordRecoverProcessor" redirect="/page/password_recover_step1.jsp">
+    <rule name="passwordrecovery_link" pattern="^/recover/password/($key[\w]+)/confirm/$"/>
+    <rule name="passwordrecovery" pattern="^/recover/password/$"/>
   </processor>
   <processor class="jipdbs.web.processors.AdvancedSearchProcessor" redirect="/page/advsearch.jsp">
     <rule name="advsearch" pattern="^/adv/search/$"/>

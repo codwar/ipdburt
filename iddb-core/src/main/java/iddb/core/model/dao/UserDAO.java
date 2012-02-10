@@ -34,5 +34,15 @@ public interface UserDAO {
 	public abstract User get(String loginId) throws EntityDoesNotExistsException;
 
 	public abstract void change_password(User user);
+
+	public abstract String findPassKey(String passkey, Integer hoursLimit);
+	
+	public abstract void savePassKey(String email, String passKey);
+
+	/**
+	 * @param hoursLimit
+	 * @return
+	 */
+	public abstract Integer cleanUp(Integer hoursLimit);
 	
 }

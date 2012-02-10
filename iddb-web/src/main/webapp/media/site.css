@@ -821,7 +821,9 @@ input.search {
 	clear: both;
 	margin: 5px 0;
 }
-
+.forgot a:hover {
+	background: none !important;
+}
 #signin_menu p a,#signin_form p a {
 	color: #27B !important;
 }

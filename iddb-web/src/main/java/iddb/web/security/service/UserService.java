@@ -137,4 +137,11 @@ public interface UserService {
 	 */
 	public Player getUserPlayer(User user, Long server);
 	
+	/**
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String generatePassKey(String data);
+	
 }

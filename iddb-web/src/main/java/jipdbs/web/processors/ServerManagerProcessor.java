@@ -79,7 +79,7 @@ public class ServerManagerProcessor extends ResponseProcessor {
 					log.error(e.getMessage());
 					throw new ProcessorException(e);
 				}
-				throw new ForceRedirect(req.getContextPath() + url);
+				throw new ForceRedirect(req.getContextPath(), url);
 			} else {
 				if (servers.size() == 0) Flash.warn(req, MessageResource.getMessage("manager_noservers"));
 				req.setAttribute("servers", servers);
