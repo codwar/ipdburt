@@ -240,3 +240,12 @@ CREATE TABLE IF NOT EXISTS `user_pass_rec` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `date_passkey` (`created`,`passkey`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `adv` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `expires` (`expires`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
