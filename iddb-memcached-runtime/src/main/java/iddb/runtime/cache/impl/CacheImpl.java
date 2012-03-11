@@ -18,6 +18,8 @@
  */
 package iddb.runtime.cache.impl;
 
+import org.apache.commons.lang.StringUtils;
+
 import iddb.core.cache.Cache;
 import iddb.core.cache.UnavailableCacheException;
 
@@ -41,7 +43,8 @@ public class CacheImpl implements Cache {
 	private Integer expiration = 3600;
 	private String namespace;
 	private String prefix;
-	
+	private String instanceName;
+    
 	public CacheImpl() throws UnavailableCacheException {
 		Properties props = new Properties();
 		try {
@@ -58,12 +61,17 @@ public class CacheImpl implements Cache {
 		log.debug("Initialized memcache instance.");
 	}
 	
+    private String getCachePrefix() {
+        return StringUtils.StringUtils(Long.toString(System.currentTimeMillis() / 1000), 5)
+    }
+
 	public String getNamespace() {
-		return namespace;
+		return this.instanceName;
 	}
 
 	public void setNamespace(String namespace) {
-		this.namespace = this.prefix + "-" + namespace;
+		this.namespace = namespace;
+        this.instanceName = this.prefix + "-" + getCachePrefix() + "-" + namespace
 	}
 
 	/* (non-Javadoc)
@@ -71,7 +79,8 @@ public class CacheImpl implements Cache {
 	 */
 	@Override
 	public void clear() {
-		// TODO not implemented
+        # clear is not supported. lets create a new namespace instead
+		setNamespace(this.namespace)
 	}
 
 	/* (non-Javadoc)
@@ -81,9 +90,9 @@ public class CacheImpl implements Cache {
 	public Object get(String key) {
 		synchronized (key) {
 			Object obj = null;
-			Future<Object> asGet = client.asyncGet(this.namespace + "-" + key);
+			Future<Object> asGet = client.asyncGet(getNamespace() + "-" + key);
 			try {
-				obj = asGet.get(5, TimeUnit.SECONDS);
+				obj = asGet.get(10, TimeUnit.SECONDS);
 			} catch (TimeoutException e) {
 				asGet.cancel(false);
 				log.error(e.getMessage());
@@ -102,7 +111,7 @@ public class CacheImpl implements Cache {
 	@Override
 	public void put(String key, Object value) {
 		if (client == null) return;
-		client.set(this.namespace + "-" + key, expiration, value);
+		client.set(getNamespace() + "-" + key, expiration, value);
 	}
 
 	/* (non-Javadoc)
@@ -111,7 +120,7 @@ public class CacheImpl implements Cache {
 	@Override
 	public void put(String key, Object value, Integer expire) {
 		if (client == null) return;
-		client.set(this.namespace + "-" + key, expire, value);
+		client.set(getNamespace() + "-" + key, expire, value);
 	}
 
 }
