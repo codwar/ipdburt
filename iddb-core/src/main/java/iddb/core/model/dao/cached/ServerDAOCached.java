@@ -37,7 +37,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 
 	@Override
 	public void save(Server server) throws DAOException {
-        Boolean lastStatus = server.getDisabled()
+        Boolean lastStatus = server.getDisabled();
 		if (server.getKey() == null) {
 			// if the server is new, we clear the cache for the listed servers
 			cacheClear();
@@ -45,7 +45,7 @@ public class ServerDAOCached extends CachedDAO implements ServerDAO {
 		impl.save(server);
 		cachePut(cacheKey(server.getUid()), server);
 		cachePut("server"+server.getKey().toString(), server);
-        if (!lastStatus.equals(server.getDisabled()) {
+        if (!lastStatus.equals(server.getDisabled())) {
 			// if the status was updated clean the cache
 			cacheClear();        
         }

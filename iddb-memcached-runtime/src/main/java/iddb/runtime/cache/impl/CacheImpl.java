@@ -62,7 +62,7 @@ public class CacheImpl implements Cache {
 	}
 	
     private String getCachePrefix() {
-        return StringUtils.StringUtils(Long.toString(System.currentTimeMillis() / 1000), 5)
+        return StringUtils.right(Long.toString(System.currentTimeMillis() / 1000), 5);
     }
 
 	public String getNamespace() {
@@ -71,7 +71,7 @@ public class CacheImpl implements Cache {
 
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
-        this.instanceName = this.prefix + "-" + getCachePrefix() + "-" + namespace
+        this.instanceName = this.prefix + "-" + getCachePrefix() + "-" + namespace;
 	}
 
 	/* (non-Javadoc)
@@ -79,8 +79,8 @@ public class CacheImpl implements Cache {
 	 */
 	@Override
 	public void clear() {
-        # clear is not supported. lets create a new namespace instead
-		setNamespace(this.namespace)
+        // clear is not supported. lets create a new namespace instead
+		setNamespace(this.namespace);
 	}
 
 	/* (non-Javadoc)
