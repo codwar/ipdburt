@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>iddb</artifactId>
 		<groupId>iddb</groupId>
-		<version>0.10.6</version>
+		<version>0.10.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>iddb-core</artifactId>
 
