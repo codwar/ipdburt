@@ -40,7 +40,14 @@
  				<img class="fetch-server" alt="${server.key}" src='/media/images/loader.gif' border="0"/>
 				</c:when>
 				<c:otherwise>
-				${server.onlinePlayers}
+					<c:choose>
+					<c:when test="${server.onlinePlayers}=='0'">
+						${server.onlinePlayers}
+					</c:when>
+					<c:otherwise>
+						<span style="font-weight: bold;">${server.onlinePlayers}</span>
+					</c:otherwise>
+					</c:choose>
 				</c:otherwise>
 				</c:choose>
 				</td>

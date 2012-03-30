@@ -95,7 +95,12 @@ function updateServerList() {
     		var res = ($.parseJSON(d));
     		for (var i = 0; i < res.list.length; i++) { 
     		    server = res.list[i];
-    		    $(".fetch-server[alt="+server.key+"]").replaceWith("<span>"+server.count+"</span>");
+    		    if (server.count == '0') {
+    		    	value = "<span>"+server.count+"</span>";
+    		    } else {
+    		    	value = "<span style="font-weight: bold;">"+server.count+"</span>";
+    		    }
+    		    $(".fetch-server[alt="+server.key+"]").replaceWith(value);
     		}
     	});       	
     }
