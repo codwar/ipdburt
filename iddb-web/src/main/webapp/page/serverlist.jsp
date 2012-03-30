@@ -41,7 +41,7 @@
 				</c:when>
 				<c:otherwise>
 					<c:choose>
-					<c:when test="${server.onlinePlayers}=='0'">
+					<c:when test='${server.onlinePlayers=="0"}'>
 						${server.onlinePlayers}
 					</c:when>
 					<c:otherwise>
