@@ -136,7 +136,9 @@ public class SearchProcessor extends ResponseProcessor {
 		} else {
 			log.debug("Search Alias " + query);
 			if (query.length() >= Parameters.INDEX_MIN_LENGTH) {
-				if (UserServiceFactory.getUserService().getCurrentUser().isAuthenticated()) {
+				String server = req.getParameter("server");
+				list = app.aliasSearch(query, server, offset, limit, total, "exact".equals(match));
+/*				if (UserServiceFactory.getUserService().getCurrentUser().isAuthenticated()) {
 					String server = req.getParameter("server");
 					if (query.contains(" ")) {
 						list = app.aliasSearch(query.split(" "), server, offset, limit, total);
@@ -145,7 +147,7 @@ public class SearchProcessor extends ResponseProcessor {
 					}
 				} else {
 					list = app.aliasSearch(query, null, offset, limit, total, "exact".equals(match));	
-				}
+				}*/
 			} else {
 				Flash.error(req,MessageResource.getMessage("query_too_short"));
 			}
