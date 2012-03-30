@@ -23,42 +23,9 @@ $(document).ready(
             $(window).unload( function () { showContextLoader(); } );
             
             updateServerList();
-            
-            $(".search").keypress(function(e) {
-            	if ( e.which == 13 ) {
-            		if ($(this).val().length > 0) window.location = dutils.urls.resolve('search', {'query': $(this).val()});
-            	}
-            });
-            
+
             $(".tip").tipTip({delay: 200});
-/*
-           $(":checkbox").change(checkElements);
-           $("#multiselect").click(function(){
-        	   $("input[name='selector']").attr('checked',$(this).is(':checked'));
-           });
-           $("#copyall").click(function() {
-               var text = "";
-               $("input[name='selector']").filter(":checked").each(
-                   function() {
-                       var id = $(this).val();
-                       var rowText = "";
-                       $("#"+id).children("td").not('[copiable="false"]').each(function() {
-                           var v = $.trim($(this).text());
-                           if (v.substring(0,3)=='[+]') {
-                               v = $.trim(v.substring(12));
-                           }
-                           rowText = rowText + "[td]" + v + "[/td]";
-                       });
-                       text = text + "[tr]" + rowText + "[/tr]<br/>";
-                   }
-               );
-               if (text != "") {
-            	   $("#copycontent").html("[table]"+text+"[/table]");
-            	   $("#copyTrigger").nm().nmCall();
-               }
-           });
-           checkElements();
-*/           
+
 });
 
 function showContextLoader() {
@@ -98,7 +65,7 @@ function updateServerList() {
     		    if (server.count == '0') {
     		    	value = "<span>"+server.count+"</span>";
     		    } else {
-    		    	value = "<span style="font-weight: bold;">"+server.count+"</span>";
+    		    	value = "<span style=\"font-weight: bold;\">"+server.count+"</span>";
     		    }
     		    $(".fetch-server[alt="+server.key+"]").replaceWith(value);
     		}

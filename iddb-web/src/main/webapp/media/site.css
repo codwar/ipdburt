@@ -866,6 +866,23 @@ input.search {
 	background: url('images/magnifier_zoom_in.png') no-repeat 5px 50% !important;
 	opacity: 1;
 }
+#advsearch {
+	display: none;
+	position: absolute;
+	top: 40px;
+	background-color: #222222;
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	-webkit-border-radius: 0px 0px 10px 10px;
+	border-radius: 0px 0px 10px 10px; 
+	-webkit-box-shadow: 5px 5px 5px 2px ;
+	-moz-box-shadow: 5px 5px 5px 2px ;
+	box-shadow: 5px 5px 5px 2px ; 
+	padding: 5px;
+	color: #fff;	
+}
 #advsearch ul {
 	list-style-position: outside;
 	margin-left: 25px;
