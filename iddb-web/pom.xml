@@ -183,7 +183,8 @@
 					<webappDirectory>
 						${project.build.directory}/minimized
 					</webappDirectory>
-					<nosuffix>true</nosuffix>
+					<suffix>${buildNumber}</suffix>
+					<!-- nosuffix>true</nosuffix-->
 				</configuration>
 			</plugin>
 
