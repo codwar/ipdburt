@@ -11,6 +11,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
+<%@ taglib uri="/WEB-INF/tld/geoip.tld" prefix="geo"%>
 
 <jsp:include page="/include/jqueryui.jsp"/>
 
@@ -162,7 +163,7 @@ if (canApplyAction) {
                     <c:otherwise>
                         offline
                     </c:otherwise>
-                </c:choose>"></span></legend>
+                </c:choose>"></span><geo:geo ip="${player.ip}"/></legend>
 	<strong>Id:</strong> ${player.clientId}<br />
 	<strong>Visto:</strong> <fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />

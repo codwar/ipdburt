@@ -7,6 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="iddb"%>
+<%@ taglib uri="/WEB-INF/tld/geoip.tld" prefix="geo"%>
 
 <script type="text/javascript">
     dutils.conf.urls.alias = "<url:clean name="alias"/>";
@@ -62,8 +63,9 @@ $(function() {
 				" alt="${player.baninfo}"><span class="plus" alt="alias" id="plus-${player.key}">[+]</span>
 				<span class="minus"	id="minus-${player.key}" style="display: none;">[-]</span>
 				<span>
-				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a></span>
-
+				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a>
+				</span>
+				<geo:geo ip="${player.ip}"/>
 			    <c:if test="${not empty player.guid}">
 			    	<iddb:choose>
 						<iddb:whenvalidguid test="${player.guid}">
@@ -73,7 +75,6 @@ $(function() {
 			    		</iddb:otherwise>
 			    	</iddb:choose>
 			    </c:if>
-    				
 				</td>
 				<td>
 				<span class="plus" alt="ip" id="plus-ip-${player.key}">[+]</span>
@@ -89,7 +90,8 @@ $(function() {
 				<a href="${ipurl}"><iddb:maskip value="${player.ip}"/></a>&nbsp;<a
 					target="_blank"
 					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
-					class="icon vcard"></a></td>
+					class="icon vcard"></a>
+					</td>
 				<td style="text-align: right;">
                 <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>
