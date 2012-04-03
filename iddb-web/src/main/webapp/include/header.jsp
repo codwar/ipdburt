@@ -51,6 +51,7 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/selector/js/openid-es.js"></script>
 -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/css_browser_selector${buildNumber}.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/media/js/encoder${buildNumber}.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/dutils${buildNumber}.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/base${buildNumber}.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/main${buildNumber}.js"></script>

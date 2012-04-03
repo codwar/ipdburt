@@ -90,5 +90,25 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+    <tag>
+    	<description>Whois</description>
+        <name>whois</name>
+        <tag-class>jipdbs.web.tag.WhoisTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>ip</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>        
+    </tag>
+	
 </taglib>
 

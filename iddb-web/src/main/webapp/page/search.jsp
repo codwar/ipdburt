@@ -65,7 +65,6 @@ $(function() {
 				<span>
 				<a href="<url:url name="search"><url:param name="query" value="${player.name}"/><url:param name="match" value="exact"/></url:url>">${fn:escapeXml(player.name)}</a>
 				</span>
-				<geo:geo ip="${player.ip}"/>
 			    <c:if test="${not empty player.guid}">
 			    	<iddb:choose>
 						<iddb:whenvalidguid test="${player.guid}">
@@ -87,11 +86,10 @@ $(function() {
                         <url:url name="search" var="ipurl"><url:param name="query" value="${player.ipSearch}"/></url:url>
                     </c:otherwise>
                 </c:choose>				
-				<a href="${ipurl}"><iddb:maskip value="${player.ip}"/></a>&nbsp;<a
-					target="_blank"
-					href="http://whois.domaintools.com/${player.ipZero}" title="Whois"
-					class="icon vcard"></a>
-					</td>
+				<a href="${ipurl}"><iddb:maskip value="${player.ip}"/></a>&nbsp;
+				<a target="_blank" href="<iddb:whois ip="${player.ip}"/>" title="Whois" class="icon vcard"></a>
+				<geo:geo ip="${player.ip}"/>					
+				</td>
 				<td style="text-align: right;">
                 <fmt:formatDate value="${player.latest}" type="both" timeZone="GMT-3:00" pattern="dd-MM-yyyy HH:mm:ss" />
                 </td>

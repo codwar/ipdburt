@@ -18,8 +18,6 @@
  */
 package jipdbs.web.tag;
 
-import iddb.util.GeoIpUtil;
-
 import java.io.IOException;
 import java.io.Writer;
 
@@ -29,16 +27,14 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.maxmind.geoip.Country;
-
-public class GeoIpTag extends TagSupport {
+public class WhoisTag extends TagSupport {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7151287922259908971L;
+	private static final long serialVersionUID = 7151287546548908971L;
 
-	private static final Logger logger = LoggerFactory.getLogger(GeoIpTag.class);
+	private static final Logger logger = LoggerFactory.getLogger(WhoisTag.class);
 	
 	private String ip;
 	private String var;
@@ -56,19 +52,24 @@ public class GeoIpTag extends TagSupport {
 	 */
 	@Override
 	public int doEndTag() throws JspException {
+		// http://whois.domaintools.com/${player.ipZero}
 		Writer out = pageContext.getOut();
-		Country country = GeoIpUtil.getInstance().countryLookup(this.ip);
-		try {
-			String v = null;
-			if (country != null) {
-				v = String.format("<img class=\"geoicon\" title=\"%s\" alt=\"[%s]\" src=\"%s/media/images/flags/%s.gif\"/>", country.getName(), country.getName(), pageContext.getServletContext().getContextPath(), country.getCode().toLowerCase());
+		String value;
+		if (this.ip == null) {
+			value = "#";
+		} else {
+			int l = ip.lastIndexOf('.');
+			if (l < 0) {
+				value = "#";
 			} else {
-				v = "";
+				value = ip.substring(0, l + 1) + "0";	
 			}
+		}
+		try {
 			if (this.var != null) {
-				pageContext.setAttribute(this.var, v);
+				pageContext.setAttribute(this.var, value);
 			} else {
-				out.write(v);
+				out.write(value);
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());

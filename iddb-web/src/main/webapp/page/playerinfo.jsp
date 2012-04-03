@@ -26,85 +26,10 @@
 	request.setAttribute("maxw", maxw);
 %>
 <script type="text/javascript">
+	var clientKey = '${player.key}';
 	$(function() {
 		$("input[name=duration]").spinner({step: 0.2, min: 0.2, 'max': ${maxw}, value: 0.2});	
 	});
-
-	var clientKey = '${player.key}';
-    function pagination(key, offset, hasMore, pages, total) {
-        prev = $("#prev-"+key);
-        $(prev).unbind('click');
-    	if (offset == 1) {
-			$(prev).removeClass('prev').addClass('prev-na');
-    	} else {
-    	    $(prev).removeClass('prev-na').addClass('prev');
-    	    $(prev).click({'offset': offset-1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
-    	}
-        next = $("#next-"+key);
-        $(next).unbind('click');
-    	if (hasMore) {
-    		$(next).removeClass('next-na').addClass('next');
-    		$(next).click({'offset': offset+1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
-    	} else {
-    	    $(next).removeClass('next').addClass('next-na');
-    	}
-    	if (pages == 0) offset = 0;
-    	$("#curr-"+key).html("{0}-{1}".format(offset,pages));
-    	$("#total-"+key).html(total);
-    }
-    function getHTML(key, offset) {
-    	if (key == 'alias') {
-    		getAlias(offset);
-    	} else {
-    	    getAliasIP(offset);
-    	}
-    }
-	function getAlias(offset) {
-	    url = dutils.urls.resolve('alias', { key: clientKey}) + "?o=" + offset;
-		$.getJSON(url , function(data) {
-			$("#tablealias").html("");
-			$.each(data.items, function(key, value) {
-				var html = "";
-				html += "<tr class=\"aliasrow\">";
-				html += "<td><a href=\"" + value.nickname_url + "\">";
-				html += value.nickname;
-				html += "</a></td>";
-				html += "<td>";
-				html += value.updated;
-				html += "</td>";
-				html += "<td style='text-align: right;'>";
-				html += value.count;
-				html += "</td>";
-				html += "</tr>";
-				$("#tablealias").append(html);
-			});
-			pagination('alias', data.offset, data.hasMore, data.pages, data.total);
-		});
-	}
-	function getAliasIP(offset) {
-        url = dutils.urls.resolve('aliasip', { key: clientKey}) + "?o=" + offset;
-		$.getJSON(url, function(data) {
-			$("#tableip").html("");
-			$.each(data.items, function(key, value) {
-				var html = "";
-				html += "<tr class=\"aliasrow\">";
-				html += "<td><a href=\"";
-				html += value.ip_url;
-				html += "\">";
-				html += value.ip;
-				html += "</td>";
-				html += "<td>";
-				html += value.updated;
-				html += "</td>";
-				html += "<td style='text-align: right;'>";
-				html += value.count;
-				html += "</td>";
-				html += "</tr>";
-				$("#tableip").append(html);
-			});
-			pagination('ip', data.offset, data.hasMore, data.pages, data.total);
-		});
-	}
 </script>
 
 <%
@@ -163,11 +88,11 @@ if (canApplyAction) {
                     <c:otherwise>
                         offline
                     </c:otherwise>
-                </c:choose>"></span><geo:geo ip="${player.ip}"/></legend>
+                </c:choose>"></span></legend>
 	<strong>Id:</strong> ${player.clientId}<br />
 	<strong>Visto:</strong> <fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />
-    <strong>IP:</strong> <a href="<url:url name="search"><url:param name="query" value="${player.ip}"/></url:url>">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><br />
+    <strong>IP:</strong> <a href="<url:url name="search"><url:param name="query" value="${player.ip}"/></url:url>">${player.ip}</a>&nbsp;<a target="_blank" href="http://whois.domaintools.com/${player.ipZero}" title="Whois" class="icon vcard"></a><geo:geo ip="${player.ip}"/><br />
     <strong>Nivel:</strong> ${player.level}<br />
     <c:if test="${not empty player.banInfo}">
 	   <strong>Estado:</strong> ${player.banInfo}<br />
@@ -305,8 +230,8 @@ if (canApplyAction) {
 <script type="text/javascript">
 $(document).ready(
 	function() {
-		setTimeout("getAlias(1)", 500);
-		setTimeout("getAliasIP(1)", 1000);
+		setTimeout("getAliasPlayer(1)", 500);
+		setTimeout("getAliasPlayerIP(1)", 1000);
 
 		$("#addnote").click(function() {
 			var dialog = $("#add-note-dialog");

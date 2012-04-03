@@ -5,6 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="/WEB-INF/tld/urlresolver.tld" prefix="url"%>
 <%@ taglib uri="/WEB-INF/tld/ipdbs.tld" prefix="util"%>
+<%@ taglib uri="/WEB-INF/tld/geoip.tld" prefix="geo"%>
 
 <json:object>
 	<json:property name="hasMore" value="${hasMore}" />
@@ -29,8 +30,12 @@
 	                    </c:otherwise>
 	                </c:choose>
                     <util:maskip value="${item.ip}" var="ip"/>
+                    <geo:geo ip="${item.ip}" var="geoimg"/>
+                    <util:whois ip="${item.ip}" var="whoisip"/>
                     <json:property name="ip" value="${ip}" />
                     <json:property name="ip_url" value="${url}" />
+                    <json:property name="geo_img" value="${geoimg}" />
+                    <json:property name="whois" value="${whoisip}" />
                 </c:otherwise>
             </c:choose>
 			<json:property name="updated">

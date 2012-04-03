@@ -50,6 +50,9 @@ function getAlias(key, offset, callback) {
 		callback(data.offset, rows, data.hasMore, data.pages, data.total);
 	});
 }
+function addExtraIpData(value) {
+	return "&nbsp;<a target=\"_blank\" href=\"" + value.whois + "\" title=\"Whois\" class=\"icon vcard\"></a>" + Encoder.htmlDecode(value.geo_img);
+}
 function getAliasIP(key, offset, callback) {
 	url = dutils.urls.resolve('aliasip', { key: key}) + "?o=" + offset;
 	$.getJSON(url, function(data) {
@@ -60,7 +63,7 @@ function getAliasIP(key, offset, callback) {
             html += "<td><a href=\"";
             html += value.ip_url;
             html += "\">";
-            html += value.ip;
+            html += value.ip + "</a>" + addExtraIpData(value);
 			html += "</td>";
 			html += "<td>";
 			html += value.updated;
@@ -172,3 +175,80 @@ $(function() {
 	});
     
 });    
+
+/*--- PLAYER INFO -------------*/
+
+function paginationPlayer(key, offset, hasMore, pages, total) {
+    prev = $("#prev-"+key);
+    $(prev).unbind('click');
+	if (offset == 1) {
+		$(prev).removeClass('prev').addClass('prev-na');
+	} else {
+	    $(prev).removeClass('prev-na').addClass('prev');
+	    $(prev).click({'offset': offset-1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
+	}
+    next = $("#next-"+key);
+    $(next).unbind('click');
+	if (hasMore) {
+		$(next).removeClass('next-na').addClass('next');
+		$(next).click({'offset': offset+1, 'elem': key}, function(e) {getHTML(e.data.elem,e.data.offset);});
+	} else {
+	    $(next).removeClass('next').addClass('next-na');
+	}
+	if (pages == 0) offset = 0;
+	$("#curr-"+key).html("{0}-{1}".format(offset,pages));
+	$("#total-"+key).html(total);
+}
+function getHTML(key, offset) {
+	if (key == 'alias') {
+		getAliasPlayer(offset);
+	} else {
+	    getAliasPlayerIP(offset);
+	}
+}
+function getAliasPlayer(offset) {
+    url = dutils.urls.resolve('alias', { key: clientKey}) + "?o=" + offset;
+	$.getJSON(url , function(data) {
+		$("#tablealias").html("");
+		$.each(data.items, function(key, value) {
+			var html = "";
+			html += "<tr class=\"aliasrow\">";
+			html += "<td><a href=\"" + value.nickname_url + "\">";
+			html += value.nickname;
+			html += "</a></td>";
+			html += "<td>";
+			html += value.updated;
+			html += "</td>";
+			html += "<td style='text-align: right;'>";
+			html += value.count;
+			html += "</td>";
+			html += "</tr>";
+			$("#tablealias").append(html);
+		});
+		paginationPlayer('alias', data.offset, data.hasMore, data.pages, data.total);
+	});
+}
+function getAliasPlayerIP(offset) {
+    url = dutils.urls.resolve('aliasip', { key: clientKey}) + "?o=" + offset;
+	$.getJSON(url, function(data) {
+		$("#tableip").html("");
+		$.each(data.items, function(key, value) {
+			var html = "";
+			html += "<tr class=\"aliasrow\">";
+			html += "<td><a href=\"";
+			html += value.ip_url;
+			html += "\">";
+			html += value.ip + "</a>" + addExtraIpData(value);
+			html += "</td>";
+			html += "<td>";
+			html += value.updated;
+			html += "</td>";
+			html += "<td style='text-align: right;'>";
+			html += value.count;
+			html += "</td>";
+			html += "</tr>";
+			$("#tableip").append(html);
+		});
+		paginationPlayer('ip', data.offset, data.hasMore, data.pages, data.total);
+	});
+}
