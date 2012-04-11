@@ -858,6 +858,10 @@ input.search {
 #ffox {
 	float: right;
 }
+.advsearch {
+	float: right;
+	margin-top: 10px;
+}
 .advsearch a {
 	background-image: url('images/magnifier_zoom_in.png');
 	opacity: 0.6;

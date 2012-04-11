@@ -34,7 +34,7 @@
             </div>                
         </li>   
         <li>
-        <small><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
+        <small style="float: left;"><input placeholder="Ingrese consulta" class="search focus" type="text" name="q" value="${queryValue}" style="margin-top: 8px;"/></small>
         <span class="advsearch"><a class="icon tip clean_menu" title="Búsqueda avanzada"></a></span>
         </li>    
         <li><a href="<url:url name="banlist"/>">Baneados</a></li>
