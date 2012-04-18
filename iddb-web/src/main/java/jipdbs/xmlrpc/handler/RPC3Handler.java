@@ -39,18 +39,26 @@ public class RPC3Handler {
 		this.updateApi = new Update();
 	}
 
-	public void updateName(String key, String name, Object[] data) {
+	public void updateName(String key, String name, Object[] data) throws UpdateApiException {
 		// plugins using this api doesn't support remote permissions.
-		this.updateApi.updateName(key, name, (String) data[0], 0, getClientAddress());
+		try {
+			this.updateApi.updateName(key, name, (String) data[0], 0, getClientAddress(), null, null);
+		} catch (Exception e) {
+			throw new UpdateApiException(e.getMessage());
+		}
 	}
 
 	public String getClientAddress() {
 		return JIPDBSXmlRpc3Servlet.getClientIpAddress();
 	}
 	
+	public Server getAuthorizedServer(String key) throws UnauthorizedUpdateException {
+		return ServerManager.getAuthorizedServer(key, getClientAddress());
+	}
+	
 	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			Server server = getAuthorizedServer(key);
 			PlayerInfo playerInfo = new PlayerInfo(Events.REGISTER);
 			playerInfo.setName((String) data[0]);
 			playerInfo.setHash((String) data[1]);
@@ -75,7 +83,7 @@ public class RPC3Handler {
 	public void update(String key, Object[] plist) throws UpdateApiException, Exception {
 
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
+			Server server = getAuthorizedServer(key);
 
 			List<PlayerInfo> list = new ArrayList<PlayerInfo>();
 			for (Object o : plist) {
@@ -189,7 +197,7 @@ public class RPC3Handler {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public List eventQueue(String key) {
+	public List eventQueue(String key) throws UpdateApiException {
 		return Collections.EMPTY_LIST;
 	}
 	

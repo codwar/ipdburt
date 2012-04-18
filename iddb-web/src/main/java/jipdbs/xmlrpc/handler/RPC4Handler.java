@@ -1,7 +1,6 @@
 package jipdbs.xmlrpc.handler;
 
 import iddb.api.Events;
-import iddb.api.ServerManager;
 import iddb.api.SimpleMapEntry;
 import iddb.core.IDDBService;
 import iddb.core.model.Penalty;
@@ -40,10 +39,14 @@ public class RPC4Handler extends RPC3Handler {
 		super(app);
 	}
 
-	public void updateName(String key, String name, Object[] data) {
-		this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress());
+	public void updateName(String key, String name, Object[] data) throws UpdateApiException {
 		if (log.isDebugEnabled()) {
 			log.debug("Update Server {} - {}", name, Arrays.toString(data));	
+		}
+		try {
+			this.updateApi.updateName(key, name, (String) data[0], (Integer) data[1], getClientAddress(), null, null);	
+		} catch (Exception e) {
+			throw new UpdateApiException(e.getClass().getName());
 		}
 	}
 	
@@ -60,6 +63,18 @@ public class RPC4Handler extends RPC3Handler {
 		return HashUtils.getSHA1Hash(guid + key);
 	}
 	
+	
+	public void update(String key, Object[] plist, Integer timestamp) throws UpdateApiException {
+		Server server = null;
+		try {
+			server = getAuthorizedServer(key);
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+			throw new UpdateApiException("UnauthorizedUpdateException");
+		}
+		update(server, plist, timestamp);
+	}
+	
 	/**
 	 * 
 	 * @param key
@@ -68,10 +83,8 @@ public class RPC4Handler extends RPC3Handler {
 	 * @throws UpdateApiException
 	 * @throws Exception
 	 */
-	public void update(String key, Object[] plist, Integer timestamp) throws UpdateApiException, Exception {
+	public void update(Server server, Object[] plist, Integer timestamp) throws UpdateApiException {
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-
 			log.info("Update {} - {}", server.getName(), plist.length);
 			
 			if (plist.length > maxListSize) {
@@ -99,22 +112,29 @@ public class RPC4Handler extends RPC3Handler {
 					updateApi.cleanServer(server);
 				}
 			}
-			
-		} catch (UnauthorizedUpdateException e) {
-			log.warn(e.getMessage());
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.error(w.getBuffer().toString());
-			throw e;
+			throw new UpdateApiException(e.getMessage());
 		}
 	}
 
-	public Integer register(String key, String userid, Object[] data) throws UpdateApiException, Exception {
+	public Integer register(String key, String userid, Object[] data) throws UpdateApiException {
+		Server server = null;
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-			
+			server = getAuthorizedServer(key);
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+			throw new UpdateApiException("UnauthorizedUpdateException");
+		}
+		return register(server, userid, data);
+	}
+	
+	public Integer register(Server server, String userid, Object[] data) throws UpdateApiException {
+		try {
 			log.debug("Register {} - User {}", server.getName(), userid);
 			
 			PlayerInfo playerInfo = new PlayerInfo(Events.REGISTER);
@@ -126,16 +146,12 @@ public class RPC4Handler extends RPC3Handler {
 			playerInfo.setHash(getClientHash(server.getUid(), playerInfo.getGuid()));
 			
 			return this.updateApi.linkUser(server, userid, playerInfo);
-			
-		} catch (UnauthorizedUpdateException e) {
-			log.warn(e.getMessage());
-			throw new UpdateApiException(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.error(w.getBuffer().toString());
-			throw e;
+			throw new UpdateApiException(e.getMessage());
 		}
 	}
 	
@@ -201,13 +217,23 @@ public class RPC4Handler extends RPC3Handler {
 		return playerInfo;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public List eventQueue(String key) throws UpdateApiException {
+		Server server = null;
+		try {
+			server = getAuthorizedServer(key);
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+			throw new UpdateApiException("UnauthorizedUpdateException");
+		}
+		return eventQueue(server);
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List eventQueue(String key) {
+	public List eventQueue(Server server) throws UpdateApiException {
 		List list = new ArrayList();
 		List<PenaltyHistory> events = new ArrayList<PenaltyHistory>();
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-			
 			log.debug("Query Event Queue {}", server.getName());
 			
 			List<Penalty> penalties = app.listPendingEvents(server.getKey());
@@ -250,21 +276,33 @@ public class RPC4Handler extends RPC3Handler {
 			}
 			
 			app.updatePenaltyHistory(events);
-		} catch (UnauthorizedUpdateException e) {
+		} catch (Exception e) {
 			log.warn(e.getMessage());
+			throw new UpdateApiException(e.getMessage());
 		}
 		return list;
+	}
+	
+	public void confirmEvent(String key, Object[] list) throws UpdateApiException {
+		Server server = null;
+		try {
+			server = getAuthorizedServer(key);
+		} catch (UnauthorizedUpdateException e) {
+			log.warn(e.getMessage());
+			throw new UpdateApiException("UnauthorizedUpdateException");
+		}
+		confirmEvent(server, list);		
 	}
 	
 	/**
 	 * 
 	 * @param key
 	 * @param list
+	 * @throws UpdateApiException 
 	 */
-	public void confirmEvent(String key, Object[] list) {
+	public void confirmEvent(Server server, Object[] list) throws UpdateApiException  {
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, getClientAddress());
-			
+
 			if (log.isDebugEnabled()) {
 				log.debug("Confirm Event {} - {}", server.getName(), Arrays.toString(list));
 			}
@@ -278,8 +316,9 @@ public class RPC4Handler extends RPC3Handler {
 			if (eventList.size() > 0) {
 				app.confirmRemoteEvent(eventList);
 			}
-		} catch (UnauthorizedUpdateException e) {
+		} catch (Exception e) {
 			log.warn(e.getMessage());
+			throw new UpdateApiException(e.getMessage());
 		}
 		
 	}

@@ -67,6 +67,10 @@
 		<servlet-name>xmlrpc4</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc4Servlet</servlet-class>
 	</servlet>	
+	<servlet>
+		<servlet-name>xmlrpc5</servlet-name>
+		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc5Servlet</servlet-class>
+	</servlet>		
 
 	<servlet-mapping>
 		<servlet-name>httphandler</servlet-name>
@@ -80,7 +84,10 @@
 		<servlet-name>xmlrpc4</servlet-name>
 		<url-pattern>/api/v4/xmlrpc</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>xmlrpc5</servlet-name>
+		<url-pattern>/api/v5/xmlrpc</url-pattern>
+	</servlet-mapping>
      
 	<error-page>
 		<error-code>403</error-code>

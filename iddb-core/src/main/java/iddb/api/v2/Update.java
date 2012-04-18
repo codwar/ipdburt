@@ -78,11 +78,12 @@ public class Update {
 	 * 			allowed actions for server admins
 	 * @param remoteAddr
 	 *            the server's remote address.
+	 * @throws Exception 
 	 * @since 0.5
 	 */
-	public void updateName(String key, String name, String version,	Integer permission, String remoteAddr) {
+	public void updateName(String key, String name, String version,	Integer permission, String remoteAddr, String publicIp, Integer port) throws Exception {
 		try {
-			Server server = ServerManager.getAuthorizedServer(key, remoteAddr,name);
+			Server server = ServerManager.getAuthorizedServer(key, remoteAddr, name, publicIp, port);
 			server.setName(name);
 			server.setRemotePermission(permission);
 			server.setUpdated(new Date());
@@ -95,11 +96,13 @@ public class Update {
 				log.error(me.getMessage());
 			}
 			log.error(e.getMessage());
+			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			StringWriter w = new StringWriter();
 			e.printStackTrace(new PrintWriter(w));
 			log.error(w.getBuffer().toString());
+			throw e;
 		}
 	}
 	

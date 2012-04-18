@@ -18,26 +18,30 @@
  */
 package iddb.api;
 
-import org.apache.commons.lang.StringUtils;
-
 import iddb.core.model.Server;
 import iddb.core.model.dao.DAOFactory;
 import iddb.core.model.dao.ServerDAO;
 import iddb.exception.UnauthorizedUpdateException;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ServerManager {
 
+	private static final Logger log = LoggerFactory.getLogger(ServerManager.class);
+	
 	private final static ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 
 	private ServerManager() {};
 	
 	public static Server getAuthorizedServer(String key, String remoteAddress)
 			throws UnauthorizedUpdateException {
-		return getAuthorizedServer(key, remoteAddress, null);
+		return getAuthorizedServer(key, remoteAddress, null, null, null);
 	}
 
 	public static Server getAuthorizedServer(String key, String remoteAddress,
-			String serverName) throws UnauthorizedUpdateException {
+			String serverName, String publicIp, Integer port) throws UnauthorizedUpdateException {
 
 		Server server = serverDAO.findByUid(key);
 
@@ -72,8 +76,8 @@ public class ServerManager {
 			throw new UnauthorizedUpdateException(message);
 		}
 		
+		
 		if (StringUtils.isNotEmpty(remoteAddress) && StringUtils.isNotEmpty(server.getAddress()) && !remoteAddress.equals(server.getAddress())) {
-
 			// Compose.
 			StringBuilder builder = new StringBuilder(
 					"Intento de actualizar desde IP no autorizada.\n");
@@ -86,6 +90,28 @@ public class ServerManager {
 
 			// Throw.
 			throw new UnauthorizedUpdateException(message);
+		}
+		if (port != null && StringUtils.isNotEmpty(server.getDisplayAddress())) {
+			try {
+				String[] pIp = server.getDisplayAddress().split(":");
+				if (!(publicIp.equals(pIp[0]) && port.equals(Integer.parseInt(pIp[1])))) {
+					// Compose.
+					StringBuilder builder = new StringBuilder(
+							"Intento de actualizar desde IP:PORT no autorizado.\n");
+					builder.append("Key: " + key).append("\n");
+					if (serverName != null)
+						builder.append("Nombre: " + serverName).append("\n");
+					if (remoteAddress != null)
+						builder.append("IP: " + remoteAddress).append("\n");
+					builder.append("IP Pública: " + publicIp).append("\n");
+					builder.append("Puerto: " + port.toString()).append("\n");
+					String message = builder.toString();
+					// Throw.
+					throw new UnauthorizedUpdateException(message);					
+				}
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 		}
 
 		return server;
