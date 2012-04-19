@@ -52,17 +52,16 @@ public class WhoisTag extends TagSupport {
 	 */
 	@Override
 	public int doEndTag() throws JspException {
-		// http://whois.domaintools.com/${player.ipZero}
 		Writer out = pageContext.getOut();
-		String value;
+		String value = "http://whois.domaintools.com/";
 		if (this.ip == null) {
-			value = "#";
+			value += "#";
 		} else {
 			int l = ip.lastIndexOf('.');
 			if (l < 0) {
-				value = "#";
+				value += "#";
 			} else {
-				value = ip.substring(0, l + 1) + "0";	
+				value += ip.substring(0, l + 1) + "0";	
 			}
 		}
 		try {
