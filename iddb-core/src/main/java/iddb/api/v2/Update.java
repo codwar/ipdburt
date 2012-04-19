@@ -20,12 +20,14 @@ package iddb.api.v2;
 
 import iddb.api.ServerManager;
 import iddb.core.DAOException;
+import iddb.core.model.LogModel;
 import iddb.core.model.Player;
 import iddb.core.model.Server;
 import iddb.core.model.User;
 import iddb.core.model.UserServer;
 import iddb.core.model.dao.AliasDAO;
 import iddb.core.model.dao.DAOFactory;
+import iddb.core.model.dao.LogModelDAO;
 import iddb.core.model.dao.PenaltyDAO;
 import iddb.core.model.dao.PlayerDAO;
 import iddb.core.model.dao.ServerDAO;
@@ -44,11 +46,13 @@ import iddb.task.tasks.UpdateTask;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,11 +61,15 @@ import org.slf4j.LoggerFactory;
 public class Update {
 
 	private static final Logger log = LoggerFactory.getLogger(Update.class); 
-
+	
 	protected final ServerDAO serverDAO = (ServerDAO) DAOFactory.forClass(ServerDAO.class);
 	protected final PlayerDAO playerDAO = (PlayerDAO) DAOFactory.forClass(PlayerDAO.class);
 	protected final AliasDAO aliasDAO = (AliasDAO) DAOFactory.forClass(AliasDAO.class);
 	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
+	
+	protected final LogModelDAO logDAO = (LogModelDAO) DAOFactory.forClass(LogModelDAO.class);
+	protected static Set<String> logServerCache = Collections.synchronizedSet(new HashSet<String>());
+
 	
 	/**
 	 * Updates the name of a server given its uid.
@@ -89,11 +97,18 @@ public class Update {
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
 			serverDAO.save(server);
+			logServerCache.remove(key);
 		} catch (UnauthorizedUpdateException e) {
-			try {
-				MailManager.getInstance().sendAdminMail("WARN", e.getMessage(), null);
-			} catch (Exception me) {
-				log.error(me.getMessage());
+//			try {
+//				MailManager.getInstance().sendAdminMail("WARN", e.getMessage(), null);
+//			} catch (Exception me) {
+//				log.error(me.getMessage());
+//			}
+			if (!logServerCache.contains(key)) {
+				logServerCache.add(key);
+				LogModel logmodel = new LogModel();
+				logmodel.setMessage(e.getMessage());
+				logDAO.save(logmodel);
 			}
 			log.error(e.getMessage());
 			throw e;
