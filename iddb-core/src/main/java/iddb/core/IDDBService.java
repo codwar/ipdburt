@@ -569,11 +569,19 @@ public class IDDBService {
 	}
 
 	public void confirmRemoteEvent(List<Entry<Long, String>> list) {
-		TaskManager.getInstance().execute(new ConfirmRemoteEventTask(list));
+		try {
+			TaskManager.getInstance().execute(new ConfirmRemoteEventTask(list));
+		} catch (InterruptedException e) {
+			log.error(e.getMessage());
+		}
 	}
 	
 	public void updatePenaltyHistory(List<PenaltyHistory> list) {
-		TaskManager.getInstance().execute(new UpdatePenaltyStatusTask(list, PenaltyHistory.ST_WAITING));
+		try {
+			TaskManager.getInstance().execute(new UpdatePenaltyStatusTask(list, PenaltyHistory.ST_WAITING));
+		} catch (InterruptedException e) {
+			log.error(e.getMessage());
+		}
 	}
 	
 	public PenaltyHistory getLastPenaltyHistory(Penalty penalty) {

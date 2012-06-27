@@ -30,20 +30,22 @@ import org.slf4j.LoggerFactory;
 public class TaskManager {
 
 	private static final Logger log = LoggerFactory.getLogger(TaskManager.class);
-	private int poolSize = 50;
-	private int maxPoolSize = poolSize * 2;
-	private int queueSize = 250;
+
+	private final Integer DEFAULT_CORE_SIZE = 5;
+	private final Integer DEFAULT_POOL_SIZE = 50;
+	private final Integer DEFAULT_QUEUE_SIZE = 200;
+	private final Long DEFAULT_KEEP_ALIVE = 5L;
 	
-	private long keepAliveTime = 10;
+	private final ArrayBlockingQueue<Runnable> queue;
 	
 	private ThreadPoolExecutor executor = null;
-	
-	private final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
 	
 	private static TaskManager instance;
 	
 	private TaskManager() {
-		executor = new ThreadPoolExecutor(poolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, queue);
+		queue = new ArrayBlockingQueue<Runnable>(DEFAULT_QUEUE_SIZE);
+		executor = new ThreadPoolExecutor(DEFAULT_CORE_SIZE, DEFAULT_POOL_SIZE, DEFAULT_KEEP_ALIVE, TimeUnit.SECONDS, queue);
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());	
 	}
 	
 	synchronized public static TaskManager getInstance() {
@@ -53,15 +55,35 @@ public class TaskManager {
 		return instance;
 	}
 	
-	public void execute(Runnable task) {
-		log.debug("Active Tasks: {}", executor.getActiveCount());
+	/**
+	 * Execute a simple runnable task.
+	 * If the queue is full the task is executed in the current Thread.
+	 * @param Runnable
+	 * @throws InterruptedException
+	 */
+	public synchronized void execute(Runnable task) throws InterruptedException {
+		if (executor.isTerminating()) throw new InterruptedException();
+		log.trace("execute");
 		executor.execute(task);
+		log.trace("Active Tasks: {} - Pool Size: {}", 
+				new Object[]{executor.getActiveCount(), executor.getPoolSize()});
 	}
 	
+	/**
+	 * Execute a callable async task.
+	 * If the queue is full the task is executed in the current Thread.
+	 * @param Callable
+	 * @return A Future instance referencing the submitted task.
+	 * @throws InterruptedException
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Future submit(Callable callable) {
-		log.debug("Active Tasks: {}", executor.getActiveCount());
-		return executor.submit(callable);
+	public synchronized Future submit(Callable task) throws InterruptedException {
+		if (executor.isTerminating()) throw new InterruptedException();
+		log.trace("submit");
+		Future f = executor.submit(task);
+		log.trace("Active Tasks: {} - Pool Size: {}", 
+				new Object[]{executor.getActiveCount(), executor.getPoolSize()});
+		return f;
 	}
 	
 	public void shutdown() {
