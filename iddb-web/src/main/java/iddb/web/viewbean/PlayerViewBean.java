@@ -45,6 +45,7 @@ public class PlayerViewBean implements Serializable {
 	private String note;
 	private String guid;
 	private PenaltyViewBean banInfo;
+	private String pbid;
 	
 	public String getGuid() {
 		return guid;
@@ -126,6 +127,12 @@ public class PlayerViewBean implements Serializable {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public String getPbid() {
+		return pbid;
+	}
+	public void setPbid(String pbid) {
+		this.pbid = pbid;
 	}	
 	
 }

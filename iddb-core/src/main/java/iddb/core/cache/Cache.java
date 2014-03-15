@@ -20,12 +20,12 @@ package iddb.core.cache;
 
 public interface Cache {
 
-	public void clear();
+	void clear();
 	
-	public Object get(String key);
+	Object get(String key);
 	
-	public void put(String key, Object value);
+	void put(String key, Object value);
 	
-	public void put(String key, Object value, Integer expiration);
+	void put(String key, Object value, Integer expiration);
 	
 }

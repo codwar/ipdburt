@@ -37,7 +37,9 @@
  -->
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/media/site${buildNumber}.css" media="screen"/>
 <!-- script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!-- script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script-->
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.nm.min${buildNumber}.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.measure${buildNumber}.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/media/js/jquery.place${buildNumber}.js"></script>

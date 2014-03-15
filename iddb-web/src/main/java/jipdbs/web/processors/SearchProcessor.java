@@ -113,6 +113,9 @@ public class SearchProcessor extends ResponseProcessor {
 		} else if ("ban".equals(type)) {
 			log.debug("Ban list");
 			list = app.bannedQuery(offset, limit, total);
+		} else if ("pbid".equals(type)) {
+			log.debug("PBID Search");
+			list = app.pbIdSearch(query, offset, limit, total);
 		} else if (StringUtils.isEmpty(query)) {
 			log.debug("Root");
 			list = app.rootQuery(offset, limit, total);

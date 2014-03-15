@@ -52,45 +52,31 @@
 	</filter-mapping>
 
 	<servlet>
-		<servlet-name>xmlrpc2</servlet-name>
-		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc2Servlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>httphandler</servlet-name>
 		<servlet-class>jipdbs.http.JIPDBSHTTPHandler</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>xmlrpc3</servlet-name>
-		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc3Servlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>xmlrpc4</servlet-name>
-		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc4Servlet</servlet-class>
-	</servlet>	
-	<servlet>
 		<servlet-name>xmlrpc5</servlet-name>
 		<servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc5Servlet</servlet-class>
 	</servlet>		
+    <servlet>
+        <servlet-name>xmlrpc6</servlet-name>
+        <servlet-class>jipdbs.xmlrpc.JIPDBSXmlRpc6Servlet</servlet-class>
+    </servlet>      
 
 	<servlet-mapping>
 		<servlet-name>httphandler</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
-<!-- 	
-	<servlet-mapping>
-		<servlet-name>xmlrpc3</servlet-name>
-		<url-pattern>/api/v3/xmlrpc</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>xmlrpc4</servlet-name>
-		<url-pattern>/api/v4/xmlrpc</url-pattern>
-	</servlet-mapping>
- -->	
 	<servlet-mapping>
 		<servlet-name>xmlrpc5</servlet-name>
 		<url-pattern>/api/v5/xmlrpc</url-pattern>
 	</servlet-mapping>
-     
+    <servlet-mapping>
+        <servlet-name>xmlrpc6</servlet-name>
+        <url-pattern>/api/v6/xmlrpc</url-pattern>
+    </servlet-mapping>
+         
 	<error-page>
 		<error-code>403</error-code>
 		<location>/page/error.jsp</location>

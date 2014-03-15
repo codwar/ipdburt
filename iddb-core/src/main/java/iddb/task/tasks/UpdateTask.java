@@ -86,6 +86,7 @@ public class UpdateTask implements Runnable {
 		player.setBanInfo(null);
 		player.setNickname(playerInfo.getName());
 		player.setIp(playerInfo.getIp());
+		player.setPbid(playerInfo.getPbid());
 		return player;
 	}
 	

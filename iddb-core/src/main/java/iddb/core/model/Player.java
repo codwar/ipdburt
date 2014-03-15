@@ -38,7 +38,8 @@ public class Player implements Serializable {
 	private Boolean connected;
 	private String nickname;
 	private String ip;
-
+	private String pbid;
+	
 	public Long getKey() {
 		return key;
 	}
@@ -175,4 +176,13 @@ public class Player implements Serializable {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
+
+	public String getPbid() {
+		return pbid;
+	}
+
+	public void setPbid(String pbid) {
+		this.pbid = pbid;
+	}
+	
 }

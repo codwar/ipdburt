@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS `penalty_history` (
 CREATE TABLE IF NOT EXISTS `player` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `pbid` varchar(50) COLLATE utf8_unicode_ci NULL,
   `serverid` int(11) unsigned NOT NULL,
   `nickname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
@@ -118,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `player` (
   KEY `gaekey` (`gaekey`),
   KEY `serverid_upd` (`serverid`,`updated`),
   KEY `clientid_upd` (`clientid`,`updated`),
+  KEY `pbid` (`pbid`),
   KEY `serverid_con_upd` (`serverid`,`connected`,`updated`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

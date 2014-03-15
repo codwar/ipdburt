@@ -124,6 +124,7 @@ public class PlayerInfoProcessor extends ResponseProcessor {
 		PlayerViewBean infoView = new PlayerViewBean();
 		infoView.setKey(player.getKey().toString());
 		infoView.setName(player.getNickname());
+		infoView.setPbid(player.getPbid());
 		if (hasAdmin) {
 			infoView.setGuid(player.getGuid());
 			infoView.setIp(player.getIp());

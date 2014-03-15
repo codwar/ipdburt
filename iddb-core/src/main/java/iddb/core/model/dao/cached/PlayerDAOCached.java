@@ -149,5 +149,17 @@ public class PlayerDAOCached extends CachedDAO implements PlayerDAO {
 	public Player findByOldKey(String key) throws EntityDoesNotExistsException {
 		return this.impl.findByOldKey(key);
 	}
+
+	@Override
+	public List<Player> findByPbId(String pbid, int offset, int limit,
+			int[] count) {
+		String key = "player-pbid-" + pbid + Integer.toString(offset) + "L" + Integer.toString(limit);
+		@SuppressWarnings("unchecked")
+		List<Player> players = (List<Player>) getCachedList(key, count);
+		if (players != null) return players;
+		players = impl.findByPbId(pbid, offset, limit, count);
+		putCachedList(key, players, count);
+		return players;
+	}
 	
 }

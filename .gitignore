@@ -9,3 +9,4 @@ test
 pom.xml.versionsBackup
 **/profile/prod/resources/*.properties
 **/profile/prod/resources/*.xml
+**/profile/prod/resources/*.conf

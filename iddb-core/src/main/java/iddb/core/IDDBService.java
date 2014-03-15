@@ -373,6 +373,7 @@ public class IDDBService {
 		return results;
 	}
 	
+	@Deprecated
 	private List<SearchResult> marshallAliasses(List<Alias> aliasses) {
 		List<SearchResult> results = new ArrayList<SearchResult>();
 		for (Alias alias : aliasses) {
@@ -544,6 +545,32 @@ public class IDDBService {
 		}
 	}
 
+	public List<SearchResult> pbIdSearch(String pbid, int offset,
+			int limit, int[] count) {
+
+		try {
+			List<SearchResult> results = new ArrayList<SearchResult>();
+			List<Player> players = playerDAO.findByPbId(pbid, offset,
+					limit, count);
+
+			for (Player player : players) {
+				Server server = serverDAO.get(player.getServer());
+
+				// Whoops! inconsistent data.
+				if (server == null)
+					continue;
+
+				SearchResult result = marshall(player, server);
+				results.add(result);
+			}
+			return results;
+		} catch (Exception e) {
+			log.error("Unable to fetch players [{}]", e.getMessage());
+			count[0] = 0;
+			return Collections.emptyList();
+		}
+	}
+	
 	public Penalty getLastPenalty(Long key) {
 		return penaltyDAO.findLastActivePenalty(key, Penalty.BAN);
 	}

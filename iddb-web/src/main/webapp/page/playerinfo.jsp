@@ -90,6 +90,7 @@ if (canApplyAction) {
                     </c:otherwise>
                 </c:choose>"></span></legend>
 	<strong>Id:</strong> ${player.clientId}<br />
+	<strong>FSA Id:</strong> <c:if test="${not empty player.pbid}"><a href="<url:url name="pbidfilter"><url:param name="query" value="${player.pbid}"/></url:url>">${player.pbid}</a></c:if><br />
 	<strong>Visto:</strong> <fmt:formatDate	type="both" pattern="dd-MM-yyyy HH:mm:ss" value="${player.updated}" /><br/>
     <strong>Servidor:</strong> <a href="<url:url name="serverfilter"><url:param name="query" value="${player.server.key}"/></url:url>">${player.server.name}</a><br />
     <strong>IP:</strong> <a href="<url:url name="search"><url:param name="query" value="${player.ip}"/></url:url>">${player.ip}</a>&nbsp;<a target="_blank" href="<iddb:whois ip="${player.ip}"/>" title="Whois" class="icon vcard"></a><geo:geo ip="${player.ip}"/><br />

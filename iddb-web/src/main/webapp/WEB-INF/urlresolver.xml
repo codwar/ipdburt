@@ -14,6 +14,9 @@
     <rule name="serverfilter" pattern="^/server/($query[\d]+)/$">
         <arg name="type" value="server"/>
     </rule>
+    <rule name="pbidfilter" pattern="^/pbid/($query.+)/$">
+        <arg name="type" value="pbid"/>
+    </rule>    
     <rule name="advsearch-do" pattern="^/adv/search/($query.+)/$">
     	<arg name="type" value="adv"/>
     </rule>

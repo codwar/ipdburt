@@ -232,13 +232,14 @@ public class PlayerDAOImpl implements PlayerDAO {
 		player.setConnected(rs.getBoolean("connected"));
 		player.setNickname(rs.getString("nickname"));
 		player.setIp(rs.getString("ip"));
+		player.setPbid(rs.getString("pbid"));
 	}
 
 	@Override
 	public void save(Player player) {
 		String sql;
 		if (player.getKey() == null) {
-			sql = "insert into player (serverid, guid, rguid, created, updated, baninfo, clientid, level, note, connected, nickname, ip) values (?,?,?,?,?,?,?,?,?,?,?,?)"; 
+			sql = "insert into player (serverid, guid, rguid, created, updated, baninfo, clientid, level, note, connected, nickname, ip, pbid) values (?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		} else {
 			sql = "update player set serverid = ?," +
 					"guid = ?," +
@@ -251,7 +252,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 					"note = ?," +
 					"connected = ?," +
 					"nickname = ?," +
-					"ip = ? where id = ? limit 1";
+					"ip = ?," +
+					"pbid = ? where id = ? limit 1";
 		}
 		Connection conn = null;
 		try {
@@ -274,7 +276,8 @@ public class PlayerDAOImpl implements PlayerDAO {
 			st.setBoolean(10, player.isConnected());
 			st.setString(11, player.getNickname());
 			st.setString(12, player.getIp());
-			if (player.getKey() != null) st.setLong(13, player.getKey());
+			st.setString(13, player.getPbid());
+			if (player.getKey() != null) st.setLong(14, player.getKey());
 			st.executeUpdate();
 			if (player.getKey() == null) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -375,15 +378,17 @@ public class PlayerDAOImpl implements PlayerDAO {
 			if (rsC.next()) {
 				count[0] = rsC.getInt(1);
 			}
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setLong(1, clientId);
-			st.setInt(2, offset);
-			st.setInt(3, limit);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Player player = new Player();
-				loadPlayer(player, rs);
-				list.add(player);
+			if (count[0] > 0) {
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setLong(1, clientId);
+				st.setInt(2, offset);
+				st.setInt(3, limit);
+				ResultSet rs = st.executeQuery();
+				while (rs.next()) {
+					Player player = new Player();
+					loadPlayer(player, rs);
+					list.add(player);
+				}
 			}
 		} catch (SQLException e) {
 			logger.error("findByClientId: {}", e);
@@ -448,6 +453,46 @@ public class PlayerDAOImpl implements PlayerDAO {
 			}
 		}
 		return player;
+	}
+
+	@Override
+	public List<Player> findByPbId(String pbid, int offset, int limit,
+			int[] count) {
+		String sqlCount = "select count(1) from player where pbid like ?";
+		String sql = "select * from player where pbid like ? order by updated desc limit ?,?";
+		Connection conn = null;
+		List<Player> list = new ArrayList<Player>();
+		try {
+			conn = ConnectionFactory.getSecondaryConnection();
+			PreparedStatement stC = conn.prepareStatement(sqlCount);
+			stC.setString(1, pbid + "%");
+			ResultSet rsC = stC.executeQuery();
+			if (rsC.next()) {
+				count[0] = rsC.getInt(1);
+			}
+			if (count[0] > 0) {
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setString(1, pbid + "%");
+				st.setInt(2, offset);
+				st.setInt(3, limit);
+				ResultSet rs = st.executeQuery();
+				while (rs.next()) {
+					Player player = new Player();
+					loadPlayer(player, rs);
+					list.add(player);
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("findByPbId: {}", e);
+		} catch (IOException e) {
+			logger.error("findByPbId: {}", e);
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
 	}
 
 }

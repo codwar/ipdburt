@@ -61,4 +61,7 @@ public interface PlayerDAO {
 	public abstract List<Player> findByClientId(Long clientId, int offset,
 			int limit, int[] count);
 
+	public abstract List<Player> findByPbId(String pbid, int offset,
+			int limit, int[] count);
+
 }

@@ -36,6 +36,7 @@ public class PlayerInfo implements Serializable {
 	private Date updated = new Date();
 	private PenaltyInfo penaltyInfo = null;
 	private String hash = null;
+	private String pbid;
 	
 	private String event;
 	
@@ -130,8 +131,9 @@ public class PlayerInfo implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return String.format("Name: %s - GUID %s - ClientId %s - IP %s - Level %s - Updated %s - HashID %s - HasPenalty %s",
+		return String.format("Name: %s - PBID %s - GUID %s - ClientId %s - IP %s - Level %s - Updated %s - HashID %s - HasPenalty %s",
 							this.name,
+							this.pbid,
 							this.guid,
 							this.clientId,
 							this.ip,
@@ -141,4 +143,13 @@ public class PlayerInfo implements Serializable {
 							Boolean.toString(this.penaltyInfo != null));
 		 
 	}
+
+	public String getPbid() {
+		return pbid;
+	}
+
+	public void setPbid(String pbid) {
+		this.pbid = pbid;
+	}
+	
 }
