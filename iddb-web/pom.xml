@@ -63,6 +63,8 @@
 			<groupId>json-taglib</groupId>
 			<artifactId>json-taglib</artifactId>
 			<version>0.4.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/json-taglib-0.4.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

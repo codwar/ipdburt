@@ -43,7 +43,7 @@ public class LogModelDAOImpl implements iddb.core.model.dao.LogModelDAO {
 	public void save(LogModel model) {
 		String sql;
 		if (model.getKey() == null) {
-			sql = "insert into logmodel (id, message, created) values (?,?,?)"; 
+			sql = "insert into logmodel (message, created) values (?,?)"; 
 		} else {
 			sql = "update logmodel set message = ? where id = ? limit 1";
 		}

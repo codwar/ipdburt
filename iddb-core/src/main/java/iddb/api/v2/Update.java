@@ -68,8 +68,6 @@ public class Update {
 	protected final PenaltyDAO penaltyDAO = (PenaltyDAO) DAOFactory.forClass(PenaltyDAO.class);
 	
 	protected final LogModelDAO logDAO = (LogModelDAO) DAOFactory.forClass(LogModelDAO.class);
-	protected static Set<String> logServerCache = Collections.synchronizedSet(new HashSet<String>());
-
 	
 	/**
 	 * Updates the name of a server given its uid.
@@ -97,19 +95,16 @@ public class Update {
 			server.setUpdated(new Date());
 			server.setPluginVersion(version);
 			serverDAO.save(server);
-			logServerCache.remove(key);
 		} catch (UnauthorizedUpdateException e) {
 //			try {
 //				MailManager.getInstance().sendAdminMail("WARN", e.getMessage(), null);
 //			} catch (Exception me) {
 //				log.error(me.getMessage());
 //			}
-			if (!logServerCache.contains(key)) {
-				logServerCache.add(key);
-				LogModel logmodel = new LogModel();
-				logmodel.setMessage(e.getMessage());
-				logDAO.save(logmodel);
-			}
+            LogModel logmodel = new LogModel();
+            logmodel.setMessage(e.getMessage());
+            logDAO.save(logmodel);
+
 			log.error(e.getMessage());
 			throw e;
 		} catch (Exception e) {
